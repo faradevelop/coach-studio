@@ -1,0 +1,35 @@
+import 'dart:async';
+
+import 'package:coach_studio/features/exercises/domain/repositories/exercise_repository.dart';
+import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class ExerciseCubit extends Cubit<ExerciseState> {
+  final ExerciseRepository repository;
+
+  StreamSubscription? _subscription;
+
+  ExerciseCubit({required this.repository}) : super(ExerciseInitial());
+
+  void loadExercises() {
+    emit(ExerciseLoading());
+
+    _subscription?.cancel();
+
+    _subscription = repository.watchExercises().listen(
+      (exercises) {
+        emit(ExerciseLoaded(exercises));
+      },
+      onError: (error) {
+        emit(ExerciseError(error.toString()));
+      },
+    );
+  }
+
+  @override
+  Future<void> close() {
+    _subscription?.cancel();
+
+    return super.close();
+  }
+}
