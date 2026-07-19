@@ -8,7 +8,7 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
   ExerciseRepositoryImpl({required this.datasource});
 
   @override
-  Stream<List<ExerciseModel>> getExercises() {
+  Stream<List<ExerciseModel>> watchExercises() {
     return datasource.watchExercises();
   }
 
