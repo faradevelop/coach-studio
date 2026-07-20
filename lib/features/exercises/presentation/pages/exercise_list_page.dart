@@ -4,7 +4,7 @@ import 'package:coach_studio/features/exercises/presentation/pages/add_exercise_
 import 'package:coach_studio/features/exercises/presentation/pages/edit_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/delete_exercise_dialog.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/empty_exercises.dart';
-import 'package:coach_studio/features/exercises/presentation/widgets/exercise_tile.dart';
+import 'package:coach_studio/features/exercises/presentation/widgets/exercise_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,7 +44,7 @@ class ExerciseListPage extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final exercise = exercises[index];
 
-                        return ExerciseTile(
+                        return ExerciseCard(
                           exercise: exercise,
                           onEdit: () {
                             Navigator.push(
