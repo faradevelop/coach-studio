@@ -1,4 +1,5 @@
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/theme/app_theme.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/exercise_list_page.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Coach Studio',
+      theme: AppTheme.light,
       home: BlocProvider(
         create: (_) => sl<ExerciseCubit>()..loadExercises(),
         child: const ExerciseListPage(),
