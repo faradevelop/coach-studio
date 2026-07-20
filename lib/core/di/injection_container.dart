@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coach_studio/features/exercises/data/datasources/exercise_firestore_datasource.dart';
 import 'package:coach_studio/features/exercises/data/repositories/exercise_repository_impl.dart';
 import 'package:coach_studio/features/exercises/domain/repositories/exercise_repository.dart';
+import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 final sl = GetIt.instance;
@@ -22,4 +23,8 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<ExerciseRepository>(
     () => ExerciseRepositoryImpl(datasource: sl()),
   );
+
+  //Bloc
+
+  sl.registerFactory(() => ExerciseCubit(repository: sl()));
 }
