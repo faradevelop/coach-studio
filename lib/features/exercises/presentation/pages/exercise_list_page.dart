@@ -15,7 +15,7 @@ class ExerciseListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Exercises')),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
@@ -27,61 +27,108 @@ class ExerciseListPage extends StatelessWidget {
             ),
           );
         },
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text('Add Exercise'),
       ),
-      body: BlocBuilder<ExerciseCubit, ExerciseState>(
-        builder: (context, state) {
-          return switch (state) {
-            ExerciseLoading() => const Center(
-              child: CircularProgressIndicator(),
-            ),
+      body: Column(
+        children: [
+          _ExerciseHeader(),
+          Expanded(
+            child: BlocBuilder<ExerciseCubit, ExerciseState>(
+              builder: (context, state) {
+                return switch (state) {
+                  ExerciseLoading() => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
 
-            ExerciseLoaded(:final exercises) =>
-              exercises.isEmpty
-                  ? const EmptyExercises()
-                  : ListView.builder(
-                      itemCount: exercises.length,
-                      itemBuilder: (context, index) {
-                        final exercise = exercises[index];
+                  ExerciseLoaded(:final exercises) =>
+                    exercises.isEmpty
+                        ? const EmptyExercises()
+                        : ListView.builder(
+                            padding: const EdgeInsets.all(16),
+                            itemCount: exercises.length,
+                            itemBuilder: (context, index) {
+                              final exercise = exercises[index];
 
-                        return ExerciseCard(
-                          exercise: exercise,
-                          onEdit: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => BlocProvider.value(
-                                  value: context.read<ExerciseCubit>(),
-                                  child: EditExercisePage(exercise: exercise),
-                                ),
-                              ),
-                            );
-                          },
+                              return ExerciseCard(
+                                exercise: exercise,
+                                onEdit: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => BlocProvider.value(
+                                        value: context.read<ExerciseCubit>(),
+                                        child: EditExercisePage(
+                                          exercise: exercise,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
 
-                          onDelete: () async {
-                            final result = await showDialog<bool>(
-                              context: context,
+                                onDelete: () async {
+                                  final result = await showDialog<bool>(
+                                    context: context,
 
-                              builder: (_) => DeleteExerciseDialog(
-                                exerciseName: exercise.name,
-                              ),
-                            );
+                                    builder: (_) => DeleteExerciseDialog(
+                                      exerciseName: exercise.name,
+                                    ),
+                                  );
 
-                            if (result == true && context.mounted) {
-                              context.read<ExerciseCubit>().deleteExercise(
-                                exercise.id,
+                                  if (result == true && context.mounted) {
+                                    context
+                                        .read<ExerciseCubit>()
+                                        .deleteExercise(exercise.id);
+                                  }
+                                },
                               );
-                            }
-                          },
-                        );
-                      },
-                    ),
+                            },
+                          ),
 
-            ExerciseError(:final message) => Center(child: Text(message)),
+                  ExerciseError(:final message) => Center(child: Text(message)),
 
-            ExerciseInitial() => const SizedBox(),
-          };
-        },
+                  ExerciseInitial() => const SizedBox(),
+                };
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExerciseHeader extends StatelessWidget {
+  const _ExerciseHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+
+        children: [
+          Text(
+            'Manage your exercises',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+
+          const SizedBox(height: 12),
+
+          TextField(
+            decoration: InputDecoration(
+              hintText: 'Search exercises...',
+
+              prefixIcon: const Icon(Icons.search),
+
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
