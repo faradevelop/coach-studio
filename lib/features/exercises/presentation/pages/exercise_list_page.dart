@@ -42,7 +42,18 @@ class ExerciseListPage extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final exercise = exercises[index];
 
-                        return ExerciseTile(exercise: exercise);
+                        return ExerciseTile(
+                          exercise: exercise,
+                          onEdit: () {
+                            // later
+                          },
+
+                          onDelete: () {
+                            context.read<ExerciseCubit>().deleteExercise(
+                              exercise.id,
+                            );
+                          },
+                        );
                       },
                     ),
 
