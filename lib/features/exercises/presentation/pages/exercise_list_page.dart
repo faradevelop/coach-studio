@@ -1,5 +1,6 @@
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
+import 'package:coach_studio/features/exercises/presentation/pages/add_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/empty_exercises.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/exercise_tile.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,20 @@ class ExerciseListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Exercises')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: context.read<ExerciseCubit>(),
+                child: const AddExercisePage(),
+              ),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
       body: BlocBuilder<ExerciseCubit, ExerciseState>(
         builder: (context, state) {
           return switch (state) {
