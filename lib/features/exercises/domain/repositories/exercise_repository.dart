@@ -4,4 +4,8 @@ abstract class ExerciseRepository {
   Stream<List<ExerciseModel>> watchExercises();
 
   Future<void> addExercise(ExerciseModel exercise);
+
+  Future<void> updateExercise(ExerciseModel exercise);
+
+  Future<void> deleteExercise(String id);
 }

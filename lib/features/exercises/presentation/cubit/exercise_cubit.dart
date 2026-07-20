@@ -35,6 +35,22 @@ class ExerciseCubit extends Cubit<ExerciseState> {
     }
   }
 
+  Future<void> updateExercise(ExerciseModel exercise) async {
+    try {
+      await repository.updateExercise(exercise);
+    } catch (e) {
+      emit(ExerciseError(e.toString()));
+    }
+  }
+
+  Future<void> deleteExercise(String id) async {
+    try {
+      await repository.deleteExercise(id);
+    } catch (e) {
+      emit(ExerciseError(e.toString()));
+    }
+  }
+
   @override
   Future<void> close() {
     _subscription?.cancel();

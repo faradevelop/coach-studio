@@ -22,4 +22,12 @@ class ExerciseFirestoreDatasource {
   Future<void> addExercise(ExerciseModel exercise) async {
     await _collection.add(exercise.toFirestore());
   }
+
+  Future<void> updateExercise(ExerciseModel exercise) async {
+    await _collection.doc(exercise.id).update(exercise.toFirestore());
+  }
+
+  Future<void> deleteExercise(String id) async {
+    await _collection.doc(id).update({'isActive': false});
+  }
 }

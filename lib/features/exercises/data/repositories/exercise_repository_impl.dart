@@ -16,4 +16,14 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
   Future<void> addExercise(ExerciseModel exercise) {
     return datasource.addExercise(exercise);
   }
+
+  @override
+  Future<void> updateExercise(ExerciseModel exercise) {
+    return datasource.updateExercise(exercise);
+  }
+
+  @override
+  Future<void> deleteExercise(String id) {
+    return datasource.deleteExercise(id);
+  }
 }
