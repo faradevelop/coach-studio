@@ -86,4 +86,24 @@ class ExerciseModel {
           : FieldValue.serverTimestamp(),
     };
   }
+
+  ExerciseModel copyWith({
+    String? name,
+    String? targetMuscle,
+    String? difficulty,
+    String? equipment,
+    String? description,
+  }) {
+    return ExerciseModel(
+      id: id,
+      name: name ?? this.name,
+      targetMuscle: targetMuscle ?? this.targetMuscle,
+      difficulty: difficulty ?? this.difficulty,
+      equipment: equipment ?? this.equipment,
+      imageUrl: imageUrl,
+      videoUrl: videoUrl,
+      description: description ?? this.description,
+      isActive: isActive,
+    );
+  }
 }

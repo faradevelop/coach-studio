@@ -1,6 +1,7 @@
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/add_exercise_page.dart';
+import 'package:coach_studio/features/exercises/presentation/pages/edit_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/delete_exercise_dialog.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/empty_exercises.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/exercise_tile.dart';
@@ -46,7 +47,15 @@ class ExerciseListPage extends StatelessWidget {
                         return ExerciseTile(
                           exercise: exercise,
                           onEdit: () {
-                            // later
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider.value(
+                                  value: context.read<ExerciseCubit>(),
+                                  child: EditExercisePage(exercise: exercise),
+                                ),
+                              ),
+                            );
                           },
 
                           onDelete: () async {
