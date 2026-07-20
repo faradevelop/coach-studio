@@ -1,6 +1,7 @@
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/add_exercise_page.dart';
+import 'package:coach_studio/features/exercises/presentation/widgets/delete_exercise_dialog.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/empty_exercises.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/exercise_tile.dart';
 import 'package:flutter/material.dart';
@@ -48,10 +49,20 @@ class ExerciseListPage extends StatelessWidget {
                             // later
                           },
 
-                          onDelete: () {
-                            context.read<ExerciseCubit>().deleteExercise(
-                              exercise.id,
+                          onDelete: () async {
+                            final result = await showDialog<bool>(
+                              context: context,
+
+                              builder: (_) => DeleteExerciseDialog(
+                                exerciseName: exercise.name,
+                              ),
                             );
+
+                            if (result == true && context.mounted) {
+                              context.read<ExerciseCubit>().deleteExercise(
+                                exercise.id,
+                              );
+                            }
                           },
                         );
                       },
