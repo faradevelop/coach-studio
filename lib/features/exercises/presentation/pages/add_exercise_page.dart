@@ -1,4 +1,5 @@
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
+import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/exercise_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,13 +12,19 @@ class AddExercisePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Add Exercise')),
 
-      body: ExerciseForm(
-        onSubmit: (exercise) async {
-          await context.read<ExerciseCubit>().addExercise(exercise);
+      body: BlocBuilder<ExerciseCubit, ExerciseState>(
+        builder: (context, state) {
+          final isLoading = state is ExerciseLoaded && state.isSubmitting;
+          return ExerciseForm(
+            isLoading: isLoading,
+            onSubmit: (exercise) async {
+              await context.read<ExerciseCubit>().addExercise(exercise);
 
-          if (context.mounted) {
-            Navigator.pop(context);
-          }
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+          );
         },
       ),
     );

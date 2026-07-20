@@ -5,10 +5,16 @@ import 'package:flutter/material.dart';
 
 class ExerciseForm extends StatefulWidget {
   final ExerciseModel? initialExercise;
+  final bool isLoading;
 
   final Function(ExerciseModel exercise) onSubmit;
 
-  const ExerciseForm({super.key, this.initialExercise, required this.onSubmit});
+  const ExerciseForm({
+    super.key,
+    this.initialExercise,
+    required this.onSubmit,
+    this.isLoading = false,
+  });
 
   @override
   State<ExerciseForm> createState() => _ExerciseFormState();
@@ -119,6 +125,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
 
           AppButton(
             text: oldExercise == null ? 'Create' : 'Update',
+            isLoading: widget.isLoading,
             onPressed: _submit,
           ),
         ],

@@ -19,7 +19,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
 
     _subscription = repository.watchExercises().listen(
       (exercises) {
-        emit(ExerciseLoaded(exercises));
+        emit(ExerciseLoaded(exercises: exercises));
       },
       onError: (error) {
         emit(ExerciseError(error.toString()));
@@ -28,18 +28,30 @@ class ExerciseCubit extends Cubit<ExerciseState> {
   }
 
   Future<void> addExercise(ExerciseModel exercise) async {
-    try {
-      await repository.addExercise(exercise);
-    } catch (e) {
-      emit(ExerciseError(e.toString()));
+    final currentState = state;
+
+    if (currentState is ExerciseLoaded) {
+      emit(currentState.copyWith(isSubmitting: true));
+      try {
+        await repository.addExercise(exercise);
+        emit(currentState.copyWith(isSubmitting: false));
+      } catch (e) {
+        emit(ExerciseError(e.toString()));
+      }
     }
   }
 
   Future<void> updateExercise(ExerciseModel exercise) async {
-    try {
-      await repository.updateExercise(exercise);
-    } catch (e) {
-      emit(ExerciseError(e.toString()));
+    final currentState = state;
+
+    if (currentState is ExerciseLoaded) {
+      emit(currentState.copyWith(isSubmitting: true));
+      try {
+        await repository.updateExercise(exercise);
+        emit(currentState.copyWith(isSubmitting: false));
+      } catch (e) {
+        emit(ExerciseError(e.toString()));
+      }
     }
   }
 

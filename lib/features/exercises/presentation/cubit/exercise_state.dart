@@ -8,8 +8,20 @@ class ExerciseLoading extends ExerciseState {}
 
 class ExerciseLoaded extends ExerciseState {
   final List<ExerciseModel> exercises;
+  final bool isSubmitting;
 
-  ExerciseLoaded(this.exercises);
+  ExerciseLoaded({required this.exercises, this.isSubmitting = false});
+
+  ExerciseLoaded copyWith({
+    List<ExerciseModel>? exercises,
+    bool? isSubmitting,
+  }) {
+    return ExerciseLoaded(
+      exercises: exercises ?? this.exercises,
+
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+    );
+  }
 }
 
 class ExerciseError extends ExerciseState {
