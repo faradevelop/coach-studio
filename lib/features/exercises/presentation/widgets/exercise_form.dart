@@ -1,4 +1,6 @@
+import 'package:coach_studio/core/constants/app_options.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/app_dropdown.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/features/exercises/data/models/exercise_model.dart';
 import 'package:flutter/material.dart';
@@ -24,10 +26,10 @@ class _ExerciseFormState extends State<ExerciseForm> {
   final _formKey = GlobalKey<FormState>();
 
   late final TextEditingController _nameController;
-  late final TextEditingController _muscleController;
-  late final TextEditingController _difficultyController;
-  late final TextEditingController _equipmentController;
   late final TextEditingController _descriptionController;
+  String? _selectedMuscle;
+  String? _selectedDifficulty;
+  String? _selectedEquipment;
 
   @override
   void initState() {
@@ -36,19 +38,9 @@ class _ExerciseFormState extends State<ExerciseForm> {
     final exercise = widget.initialExercise;
 
     _nameController = TextEditingController(text: exercise?.name ?? '');
-
-    _muscleController = TextEditingController(
-      text: exercise?.targetMuscle ?? '',
-    );
-
-    _difficultyController = TextEditingController(
-      text: exercise?.difficulty ?? '',
-    );
-
-    _equipmentController = TextEditingController(
-      text: exercise?.equipment ?? '',
-    );
-
+    _selectedMuscle = exercise?.targetMuscle;
+    _selectedDifficulty = exercise?.difficulty;
+    _selectedEquipment = exercise?.equipment;
     _descriptionController = TextEditingController(
       text: exercise?.description ?? '',
     );
@@ -57,9 +49,6 @@ class _ExerciseFormState extends State<ExerciseForm> {
   @override
   void dispose() {
     _nameController.dispose();
-    _muscleController.dispose();
-    _difficultyController.dispose();
-    _equipmentController.dispose();
     _descriptionController.dispose();
 
     super.dispose();
@@ -74,21 +63,13 @@ class _ExerciseFormState extends State<ExerciseForm> {
 
     final exercise = ExerciseModel(
       id: oldExercise?.id ?? '',
-
       name: _nameController.text.trim(),
-
-      targetMuscle: _muscleController.text.trim(),
-
-      difficulty: _difficultyController.text.trim(),
-
-      equipment: _equipmentController.text.trim(),
-
+      targetMuscle: _selectedMuscle ?? '',
+      difficulty: _selectedDifficulty ?? '',
+      equipment: _selectedEquipment ?? '',
       imageUrl: oldExercise?.imageUrl ?? '',
-
       videoUrl: oldExercise?.videoUrl ?? '',
-
       description: _descriptionController.text.trim(),
-
       isActive: oldExercise?.isActive ?? true,
     );
 
@@ -112,17 +93,49 @@ class _ExerciseFormState extends State<ExerciseForm> {
             validator: (value) =>
                 value == null || value.isEmpty ? 'Required' : null,
           ),
-          AppTextField(controller: _muscleController, label: 'Target Muscle'),
-          AppTextField(controller: _difficultyController, label: 'Difficulty'),
-          AppTextField(controller: _equipmentController, label: 'Equipment'),
+          const SizedBox(height: 22),
+          AppDropdown<String>(
+            label: 'Target Muscle',
+            value: _selectedMuscle,
+            items: AppOptions.muscles,
+            itemLabel: (item) => item,
+            onChanged: (value) {
+              setState(() {
+                _selectedMuscle = value;
+              });
+            },
+          ),
+          const SizedBox(height: 22),
+          AppDropdown<String>(
+            label: 'Difficulty',
+            value: _selectedDifficulty,
+            items: AppOptions.difficulties,
+            itemLabel: (item) => item,
+            onChanged: (value) {
+              setState(() {
+                _selectedDifficulty = value;
+              });
+            },
+          ),
+          const SizedBox(height: 22),
+          AppDropdown<String>(
+            label: 'Equipment',
+            value: _selectedEquipment,
+            items: AppOptions.equipments,
+            itemLabel: (item) => item,
+            onChanged: (value) {
+              setState(() {
+                _selectedEquipment = value;
+              });
+            },
+          ),
+          const SizedBox(height: 22),
           AppTextField(
             controller: _descriptionController,
             label: 'Description',
             maxLines: 3,
           ),
-
-          const SizedBox(height: 28),
-
+          const SizedBox(height: 32),
           AppButton(
             text: oldExercise == null ? 'Create' : 'Update',
             isLoading: widget.isLoading,
