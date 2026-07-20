@@ -1,3 +1,5 @@
+import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/features/exercises/data/models/exercise_model.dart';
 import 'package:flutter/material.dart';
 
@@ -98,47 +100,26 @@ class _ExerciseFormState extends State<ExerciseForm> {
         padding: const EdgeInsets.all(16),
 
         children: [
-          TextFormField(
+          AppTextField(
             controller: _nameController,
-            decoration: const InputDecoration(labelText: 'Name'),
-
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return 'Name is required';
-              }
-
-              return null;
-            },
+            label: 'Name',
+            validator: (value) =>
+                value == null || value.isEmpty ? 'Required' : null,
           ),
-
-          TextFormField(
-            controller: _muscleController,
-            decoration: const InputDecoration(labelText: 'Target Muscle'),
-          ),
-
-          TextFormField(
-            controller: _difficultyController,
-            decoration: const InputDecoration(labelText: 'Difficulty'),
-          ),
-
-          TextFormField(
-            controller: _equipmentController,
-            decoration: const InputDecoration(labelText: 'Equipment'),
-          ),
-
-          TextFormField(
+          AppTextField(controller: _muscleController, label: 'Target Muscle'),
+          AppTextField(controller: _difficultyController, label: 'Difficulty'),
+          AppTextField(controller: _equipmentController, label: 'Equipment'),
+          AppTextField(
             controller: _descriptionController,
-            decoration: const InputDecoration(labelText: 'Description'),
-
+            label: 'Description',
             maxLines: 3,
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
 
-          FilledButton(
+          AppButton(
+            text: oldExercise == null ? 'Create' : 'Update',
             onPressed: _submit,
-
-            child: Text(oldExercise == null ? 'Create' : 'Update'),
           ),
         ],
       ),
