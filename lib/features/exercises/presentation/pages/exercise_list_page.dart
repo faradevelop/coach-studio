@@ -1,5 +1,6 @@
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
+import 'package:coach_studio/features/exercises/presentation/widgets/empty_exercises.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/exercise_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,7 @@ class ExerciseListPage extends StatelessWidget {
 
             ExerciseLoaded(:final exercises) =>
               exercises.isEmpty
-                  ? const Center(child: Text('No exercises found'))
+                  ? const EmptyExercises()
                   : ListView.builder(
                       itemCount: exercises.length,
                       itemBuilder: (context, index) {
