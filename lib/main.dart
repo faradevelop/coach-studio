@@ -2,6 +2,8 @@ import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/theme/app_theme.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/exercise_list_page.dart';
+import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_list_page.dart';
+import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,9 +28,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Coach Studio',
       theme: AppTheme.light,
+      // home: BlocProvider(
+      //   create: (_) => sl<ExerciseCubit>()..loadExercises(),
+      //   child: const ExerciseListPage(),
+      // ),
       home: BlocProvider(
-        create: (_) => sl<ExerciseCubit>()..loadExercises(),
-        child: const ExerciseListPage(),
+        create: (_) => sl<WorkoutProgramCubit>()..loadPrograms(),
+        child: const WorkoutProgramListPage(),
       ),
     );
   }
