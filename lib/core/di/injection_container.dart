@@ -3,6 +3,7 @@ import 'package:coach_studio/features/exercises/data/datasources/exercise_firest
 import 'package:coach_studio/features/exercises/data/repositories/exercise_repository_impl.dart';
 import 'package:coach_studio/features/exercises/domain/repositories/exercise_repository.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
+import 'package:coach_studio/features/workout_programs/data/datasources/program_exercise_firestore_datasource.dart';
 import 'package:coach_studio/features/workout_programs/data/datasources/workout_program_firestore_datasource.dart';
 import 'package:coach_studio/features/workout_programs/data/repositories/program_exercise_repository_impl.dart';
 import 'package:coach_studio/features/workout_programs/data/repositories/workout_program_repository_impl.dart';
@@ -27,6 +28,10 @@ Future<void> initDependencies() async {
 
   sl.registerLazySingleton(
     () => WorkoutProgramFirestoreDatasource(firestore: sl()),
+  );
+
+  sl.registerLazySingleton(
+    () => ProgramExerciseFirestoreDatasource(firestore: sl()),
   );
 
   // Repository
