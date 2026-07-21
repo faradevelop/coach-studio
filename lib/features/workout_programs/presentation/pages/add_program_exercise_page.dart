@@ -1,13 +1,50 @@
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddProgramExercisePage extends StatelessWidget {
+class AddProgramExercisePage extends StatefulWidget {
   final String programId;
 
   const AddProgramExercisePage({super.key, required this.programId});
+
+  @override
+  State<AddProgramExercisePage> createState() => _AddProgramExercisePageState();
+}
+
+class _AddProgramExercisePageState extends State<AddProgramExercisePage> {
+  final TextEditingController _searchController = TextEditingController();
+
+  String _query = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<Exercise> _filterExercises(List<Exercise> exercises) {
+    if (_query.trim().isEmpty) {
+      return exercises;
+    }
+
+    final query = _query.toLowerCase();
+
+    return exercises.where((exercise) {
+      return exercise.name.toLowerCase().contains(query) ||
+          exercise.targetMuscle.toLowerCase().contains(query) ||
+          exercise.equipment.toLowerCase().contains(query);
+    }).toList();
+  }
+
+  void _selectExercise(Exercise exercise) {
+    // مرحله بعد:
+    // Navigator به ExerciseConfigurationPage
+
+    debugPrint('Selected: ${exercise.name}');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,22 +61,74 @@ class AddProgramExercisePage extends StatelessWidget {
                 child: CircularProgressIndicator(),
               ),
 
-              ExerciseLoaded(:final exercises) => ListView.builder(
-                itemCount: exercises.length,
+              ExerciseLoaded(:final exercises) => Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
 
-                itemBuilder: (_, index) {
-                  final exercise = exercises[index];
+                    child: TextField(
+                      controller: _searchController,
 
-                  return ListTile(
-                    title: Text(exercise.name),
+                      decoration: const InputDecoration(
+                        hintText: 'Search exercise...',
 
-                    subtitle: Text(exercise.targetMuscle),
+                        prefixIcon: Icon(Icons.search),
 
-                    onTap: () {
-                      // مرحله بعد
-                    },
-                  );
-                },
+                        border: OutlineInputBorder(),
+                      ),
+
+                      onChanged: (value) {
+                        setState(() {
+                          _query = value;
+                        });
+                      },
+                    ),
+                  ),
+
+                  Expanded(
+                    child: Builder(
+                      builder: (_) {
+                        final filtered = _filterExercises(exercises);
+
+                        if (filtered.isEmpty) {
+                          return const Center(child: Text('No exercise found'));
+                        }
+
+                        return ListView.builder(
+                          itemCount: filtered.length,
+                          itemBuilder: (_, index) {
+                            final exercise = filtered[index];
+
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 6,
+                              ),
+
+                              child: ListTile(
+                                title: Text(exercise.name),
+
+                                subtitle: Text(
+                                  '${exercise.targetMuscle} • '
+                                  '${exercise.equipment}',
+                                ),
+
+                                trailing: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 18,
+                                ),
+
+                                onTap: () {
+                                  _selectExercise(exercise);
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
 
               ExerciseError(:final message) => Center(child: Text(message)),
