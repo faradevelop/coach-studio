@@ -32,7 +32,7 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
         );
   }
 
-  Future<void> addExercise(ProgramExercise exercise) async {
+  Future<void> addProgramExercise(ProgramExercise exercise) async {
     final current = state;
 
     if (current is ProgramExerciseLoaded) {
