@@ -44,7 +44,7 @@ class WorkoutProgramDetailPage extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (_) =>
-                            AddProgramExercisePage(programId: program.id),
+                            AddProgramExercisePage(program: program),
                       ),
                     );
                   },

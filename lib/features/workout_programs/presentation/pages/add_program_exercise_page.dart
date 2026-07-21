@@ -2,14 +2,15 @@ import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/exercise_configuration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddProgramExercisePage extends StatefulWidget {
-  final String programId;
+  final WorkoutProgram program;
 
-  const AddProgramExercisePage({super.key, required this.programId});
+  const AddProgramExercisePage({super.key, required this.program});
 
   @override
   State<AddProgramExercisePage> createState() => _AddProgramExercisePageState();
@@ -118,8 +119,7 @@ class _AddProgramExercisePageState extends State<AddProgramExercisePage> {
 
                                     MaterialPageRoute(
                                       builder: (_) => ExerciseConfigurationPage(
-                                        programId: widget.programId,
-
+                                        program: widget.program,
                                         exercise: exercise,
                                       ),
                                     ),

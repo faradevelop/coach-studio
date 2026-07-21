@@ -1,14 +1,16 @@
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
+import 'package:coach_studio/features/workout_programs/domain/enums/training_system.dart';
 import 'package:flutter/material.dart';
 
 class ExerciseConfigurationPage extends StatefulWidget {
-  final String programId;
+  final WorkoutProgram program;
   final Exercise exercise;
 
   const ExerciseConfigurationPage({
     super.key,
-    required this.programId,
     required this.exercise,
+    required this.program,
   });
 
   @override
@@ -22,6 +24,8 @@ class _ExerciseConfigurationPageState extends State<ExerciseConfigurationPage> {
   final _repsController = TextEditingController(text: '10-12');
   final _tempoController = TextEditingController(text: '3-1-1');
   final _restController = TextEditingController(text: '90');
+
+  TrainingSystem _trainingSystem = TrainingSystem.dropSet;
 
   int _day = 1;
   int _order = 1;
@@ -79,6 +83,27 @@ class _ExerciseConfigurationPageState extends State<ExerciseConfigurationPage> {
                 controller: _restController,
 
                 decoration: const InputDecoration(labelText: 'Rest'),
+              ),
+
+              DropdownButtonFormField<TrainingSystem>(
+                initialValue: _trainingSystem,
+
+                decoration: const InputDecoration(labelText: 'Training System'),
+
+                items: TrainingSystem.values.map((system) {
+                  return DropdownMenuItem(
+                    value: system,
+                    child: Text(system.name),
+                  );
+                }).toList(),
+
+                onChanged: (value) {
+                  if (value == null) return;
+
+                  setState(() {
+                    _trainingSystem = value;
+                  });
+                },
               ),
 
               const SizedBox(height: 20),
