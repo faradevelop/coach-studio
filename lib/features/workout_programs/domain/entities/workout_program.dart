@@ -1,4 +1,3 @@
-import 'package:coach_studio/features/workout_programs/data/models/workout_program_model.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
 

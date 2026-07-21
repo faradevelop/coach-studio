@@ -1,5 +1,3 @@
-import 'package:coach_studio/features/exercises/data/models/exercise_model.dart';
-
 class Exercise {
   final String id;
   final String name;

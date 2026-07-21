@@ -1,4 +1,3 @@
-import 'package:coach_studio/features/workout_programs/data/models/program_exercise_model.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/training_system.dart';
 
 class ProgramExercise {
