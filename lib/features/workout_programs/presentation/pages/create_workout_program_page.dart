@@ -1,3 +1,5 @@
+import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_detail_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/workout_program_form.dart';
@@ -22,9 +24,9 @@ class CreateWorkoutProgramPage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => BlocProvider.value(
-                  value: context.read<WorkoutProgramCubit>(),
-
+                builder: (_) => BlocProvider(
+                  create: (_) =>
+                      sl<ProgramExerciseCubit>()..loadExercises(program.id),
                   child: WorkoutProgramDetailPage(program: createdProgram),
                 ),
               ),
