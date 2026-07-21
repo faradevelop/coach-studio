@@ -1,8 +1,8 @@
-import 'package:coach_studio/features/exercises/data/models/exercise_model.dart';
+import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:flutter/material.dart';
 
 class ExerciseCard extends StatelessWidget {
-  final ExerciseModel exercise;
+  final Exercise exercise;
 
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:coach_studio/features/exercises/data/models/exercise_model.dart';
+import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/domain/repositories/exercise_repository.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +27,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
     );
   }
 
-  Future<void> addExercise(ExerciseModel exercise) async {
+  Future<void> addExercise(Exercise exercise) async {
     final currentState = state;
 
     if (currentState is ExerciseLoaded) {
@@ -41,7 +41,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
     }
   }
 
-  Future<void> updateExercise(ExerciseModel exercise) async {
+  Future<void> updateExercise(Exercise exercise) async {
     final currentState = state;
 
     if (currentState is ExerciseLoaded) {

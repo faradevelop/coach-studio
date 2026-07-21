@@ -1,11 +1,11 @@
-import 'package:coach_studio/features/exercises/data/models/exercise_model.dart';
+import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 
 abstract class ExerciseRepository {
-  Stream<List<ExerciseModel>> watchExercises();
+  Stream<List<Exercise>> watchExercises();
 
-  Future<void> addExercise(ExerciseModel exercise);
+  Future<void> addExercise(Exercise exercise);
 
-  Future<void> updateExercise(ExerciseModel exercise);
+  Future<void> updateExercise(Exercise exercise);
 
   Future<void> deleteExercise(String id);
 }

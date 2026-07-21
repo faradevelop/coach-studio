@@ -2,14 +2,14 @@ import 'package:coach_studio/core/constants/app_options.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_dropdown.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
-import 'package:coach_studio/features/exercises/data/models/exercise_model.dart';
+import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:flutter/material.dart';
 
 class ExerciseForm extends StatefulWidget {
-  final ExerciseModel? initialExercise;
+  final Exercise? initialExercise;
   final bool isLoading;
 
-  final Function(ExerciseModel exercise) onSubmit;
+  final Function(Exercise exercise) onSubmit;
 
   const ExerciseForm({
     super.key,
@@ -61,7 +61,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
 
     final oldExercise = widget.initialExercise;
 
-    final exercise = ExerciseModel(
+    final exercise = Exercise(
       id: oldExercise?.id ?? '',
       name: _nameController.text.trim(),
       targetMuscle: _selectedMuscle ?? '',

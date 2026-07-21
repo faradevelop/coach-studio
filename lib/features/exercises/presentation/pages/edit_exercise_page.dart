@@ -1,4 +1,4 @@
-import 'package:coach_studio/features/exercises/data/models/exercise_model.dart';
+import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/exercise_form.dart';
@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EditExercisePage extends StatelessWidget {
-  final ExerciseModel exercise;
+  final Exercise exercise;
 
   const EditExercisePage({super.key, required this.exercise});
 
