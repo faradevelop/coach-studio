@@ -1,4 +1,4 @@
-import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 
 sealed class ProgramExerciseState {
   const ProgramExerciseState();
@@ -13,18 +13,20 @@ class ProgramExerciseLoading extends ProgramExerciseState {
 }
 
 class ProgramExerciseLoaded extends ProgramExerciseState {
-  final List<ProgramExercise> exercises;
-
+  final List<ProgramExerciseDetails> exercises;
   final bool isSubmitting;
 
-  const ProgramExerciseLoaded(this.exercises, {this.isSubmitting = false});
+  const ProgramExerciseLoaded({
+    required this.exercises,
+    this.isSubmitting = false,
+  });
 
   ProgramExerciseLoaded copyWith({
-    List<ProgramExercise>? exercises,
+    List<ProgramExerciseDetails>? exercises,
     bool? isSubmitting,
   }) {
     return ProgramExerciseLoaded(
-      exercises ?? this.exercises,
+      exercises: exercises ?? this.exercises,
       isSubmitting: isSubmitting ?? this.isSubmitting,
     );
   }

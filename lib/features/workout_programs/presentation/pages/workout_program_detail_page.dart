@@ -68,12 +68,13 @@ class WorkoutProgramDetailPage extends StatelessWidget {
                           : ListView.builder(
                               itemCount: exercises.length,
                               itemBuilder: (context, index) {
-                                final exercise = exercises[index];
+                                final item = exercises[index];
 
                                 return ListTile(
-                                  title: Text(exercise.exerciseId),
+                                  title: Text(item.exercise.name),
                                   subtitle: Text(
-                                    '${exercise.sets} sets | ${exercise.reps}',
+                                    '${item.programExercise.sets} sets | '
+                                    '${item.programExercise.reps}',
                                   ),
                                 );
                               },

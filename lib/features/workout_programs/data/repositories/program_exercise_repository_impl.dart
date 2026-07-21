@@ -1,18 +1,43 @@
+import 'package:coach_studio/features/exercises/domain/repositories/exercise_repository.dart';
 import 'package:coach_studio/features/workout_programs/data/datasources/program_exercise_firestore_datasource.dart';
 import 'package:coach_studio/features/workout_programs/data/models/program_exercise_model.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/repositories/program_exercise_repository.dart';
 
 class ProgramExerciseRepositoryImpl implements ProgramExerciseRepository {
   final ProgramExerciseFirestoreDatasource datasource;
+  final ExerciseRepository exerciseRepository;
 
-  ProgramExerciseRepositoryImpl({required this.datasource});
+  ProgramExerciseRepositoryImpl({
+    required this.datasource,
+    required this.exerciseRepository,
+  });
 
   @override
-  Stream<List<ProgramExercise>> watchProgramExercises(String programId) {
-    return datasource
-        .watchProgramExercises(programId)
-        .map((models) => models.map((e) => e.toEntity()).toList());
+  Stream<List<ProgramExerciseDetails>> watchProgramExercises(String programId) {
+    return datasource.watchProgramExercises(programId).asyncMap((models) async {
+      final result = <ProgramExerciseDetails>[];
+
+      for (final model in models) {
+        final programExercise = model.toEntity();
+
+        final exercise = await exerciseRepository.getExerciseById(
+          programExercise.exerciseId,
+        );
+
+        if (exercise != null) {
+          result.add(
+            ProgramExerciseDetails(
+              programExercise: programExercise,
+              exercise: exercise,
+            ),
+          );
+        }
+      }
+
+      return result;
+    });
   }
 
   @override

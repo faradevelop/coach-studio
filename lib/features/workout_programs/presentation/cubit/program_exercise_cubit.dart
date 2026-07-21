@@ -23,7 +23,7 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
         .watchProgramExercises(programId)
         .listen(
           (exercises) {
-            emit(ProgramExerciseLoaded(exercises));
+            emit(ProgramExerciseLoaded(exercises: exercises));
           },
 
           onError: (error) {
