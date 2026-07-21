@@ -30,4 +30,13 @@ class ExerciseFirestoreDatasource {
   Future<void> deleteExercise(String id) async {
     await _collection.doc(id).update({'isActive': false});
   }
+
+  Future<ExerciseModel?> getExerciseById(String id) async {
+    final doc = await _collection.doc(id).get();
+    if (!doc.exists) {
+      return null;
+    }
+
+    return ExerciseModel.fromFirestore(doc);
+  }
 }

@@ -29,4 +29,10 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
   Future<void> deleteExercise(String id) {
     return datasource.deleteExercise(id);
   }
+
+  @override
+  Future<Exercise?> getExerciseById(String id) async {
+    final model = await datasource.getExerciseById(id);
+    return model?.toEntity();
+  }
 }

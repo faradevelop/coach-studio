@@ -8,4 +8,6 @@ abstract class ExerciseRepository {
   Future<void> updateExercise(Exercise exercise);
 
   Future<void> deleteExercise(String id);
+
+  Future<Exercise?> getExerciseById(String id);
 }
