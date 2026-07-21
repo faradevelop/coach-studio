@@ -1,6 +1,7 @@
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_state.dart';
+import 'package:coach_studio/features/workout_programs/presentation/pages/add_program_exercise_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,7 +39,15 @@ class WorkoutProgramDetailPage extends StatelessWidget {
                 ),
 
                 FilledButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            AddProgramExercisePage(programId: program.id),
+                      ),
+                    );
+                  },
                   icon: const Icon(Icons.add),
                   label: const Text('Add Exercise'),
                 ),
