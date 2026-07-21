@@ -1,19 +1,14 @@
+import 'package:coach_studio/features/workout_programs/data/models/workout_program_model.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
 
 class WorkoutProgram {
   final String id;
-
   final String title;
-
   final ProgramGoal goal;
-
   final ProgramLevel level;
-
   final int daysPerWeek;
-
-  final String notes;
-
+  final String? notes;
   final bool isTemplate;
 
   const WorkoutProgram({
@@ -22,12 +17,44 @@ class WorkoutProgram {
     required this.goal,
     required this.level,
     required this.daysPerWeek,
-    required this.notes,
+    this.notes,
     required this.isTemplate,
   });
 
-  WorkoutProgram toEntity() {
+  WorkoutProgram copyWith({
+    String? id,
+    String? title,
+    ProgramGoal? goal,
+    ProgramLevel? level,
+    int? daysPerWeek,
+    String? notes,
+    bool? isTemplate,
+  }) {
     return WorkoutProgram(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      goal: goal ?? this.goal,
+      level: level ?? this.level,
+      daysPerWeek: daysPerWeek ?? this.daysPerWeek,
+      notes: notes ?? this.notes,
+      isTemplate: isTemplate ?? this.isTemplate,
+    );
+  }
+
+  factory WorkoutProgram.fromModel(WorkoutProgramModel model) {
+    return WorkoutProgram(
+      id: model.id,
+      title: model.title,
+      goal: model.goal,
+      level: model.level,
+      daysPerWeek: model.daysPerWeek,
+      notes: model.notes,
+      isTemplate: model.isTemplate,
+    );
+  }
+
+  WorkoutProgramModel toModel() {
+    return WorkoutProgramModel(
       id: id,
       title: title,
       goal: goal,

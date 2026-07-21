@@ -10,7 +10,9 @@ class WorkoutProgramRepositoryImpl implements WorkoutProgramRepository {
 
   @override
   Stream<List<WorkoutProgram>> watchPrograms() {
-    return datasource.watchPrograms().map((programs) => programs);
+    return datasource.watchPrograms().map(
+      (programs) => programs.map((program) => program.toEntity()).toList(),
+    );
   }
 
   @override
