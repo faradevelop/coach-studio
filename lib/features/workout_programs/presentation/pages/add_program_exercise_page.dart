@@ -2,6 +2,7 @@ import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
+import 'package:coach_studio/features/workout_programs/presentation/pages/exercise_configuration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,13 +38,6 @@ class _AddProgramExercisePageState extends State<AddProgramExercisePage> {
           exercise.targetMuscle.toLowerCase().contains(query) ||
           exercise.equipment.toLowerCase().contains(query);
     }).toList();
-  }
-
-  void _selectExercise(Exercise exercise) {
-    // مرحله بعد:
-    // Navigator به ExerciseConfigurationPage
-
-    debugPrint('Selected: ${exercise.name}');
   }
 
   @override
@@ -119,7 +113,17 @@ class _AddProgramExercisePageState extends State<AddProgramExercisePage> {
                                 ),
 
                                 onTap: () {
-                                  _selectExercise(exercise);
+                                  Navigator.push(
+                                    context,
+
+                                    MaterialPageRoute(
+                                      builder: (_) => ExerciseConfigurationPage(
+                                        programId: widget.programId,
+
+                                        exercise: exercise,
+                                      ),
+                                    ),
+                                  );
                                 },
                               ),
                             );
