@@ -19,10 +19,12 @@ class WorkoutProgramFirestoreDatasource {
         );
   }
 
-  Future<void> addProgram(WorkoutProgramModel program) async {
+  Future<WorkoutProgramModel> addProgram(WorkoutProgramModel program) async {
     final doc = _collection.doc();
+    final newProgram = program.copyWith(id: doc.id);
 
-    await doc.set(program.copyWith(id: doc.id).toFirestore());
+    await doc.set(newProgram.toFirestore());
+    return newProgram;
   }
 
   Future<void> updateProgram(WorkoutProgramModel program) async {

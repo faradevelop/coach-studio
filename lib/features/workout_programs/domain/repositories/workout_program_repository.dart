@@ -3,7 +3,7 @@ import 'package:coach_studio/features/workout_programs/domain/entities/workout_p
 abstract class WorkoutProgramRepository {
   Stream<List<WorkoutProgram>> watchPrograms();
 
-  Future<void> addProgram(WorkoutProgram program);
+  Future<WorkoutProgram> addProgram(WorkoutProgram program);
 
   Future<void> updateProgram(WorkoutProgram program);
 

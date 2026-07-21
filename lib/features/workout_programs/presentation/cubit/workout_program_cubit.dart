@@ -29,11 +29,12 @@ class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
     );
   }
 
-  Future<void> addProgram(WorkoutProgram program) async {
+  Future<WorkoutProgram?> addProgram(WorkoutProgram program) async {
     try {
-      await repository.addProgram(program);
+      return await repository.addProgram(program);
     } catch (e) {
       emit(WorkoutProgramError(e.toString()));
+      return null;
     }
   }
 

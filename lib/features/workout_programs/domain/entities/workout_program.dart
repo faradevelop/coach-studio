@@ -25,4 +25,16 @@ class WorkoutProgram {
     required this.notes,
     required this.isTemplate,
   });
+
+  WorkoutProgram toEntity() {
+    return WorkoutProgram(
+      id: id,
+      title: title,
+      goal: goal,
+      level: level,
+      daysPerWeek: daysPerWeek,
+      notes: notes,
+      isTemplate: isTemplate,
+    );
+  }
 }

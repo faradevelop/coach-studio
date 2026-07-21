@@ -14,18 +14,20 @@ class WorkoutProgramRepositoryImpl implements WorkoutProgramRepository {
   }
 
   @override
-  Future<void> addProgram(WorkoutProgram program) async {
-    await datasource.addProgram(
-      WorkoutProgramModel(
-        id: program.id,
-        title: program.title,
-        goal: program.goal,
-        level: program.level,
-        daysPerWeek: program.daysPerWeek,
-        notes: program.notes,
-        isTemplate: program.isTemplate,
-      ),
+  Future<WorkoutProgram> addProgram(WorkoutProgram program) async {
+    final model = WorkoutProgramModel(
+      id: program.id,
+      title: program.title,
+      goal: program.goal,
+      level: program.level,
+      daysPerWeek: program.daysPerWeek,
+      notes: program.notes,
+      isTemplate: program.isTemplate,
     );
+
+    final workoutProgramModel = await datasource.addProgram(model);
+
+    return workoutProgramModel.toEntity();
   }
 
   @override

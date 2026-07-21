@@ -13,10 +13,21 @@ class CreateWorkoutProgramPage extends StatelessWidget {
 
       body: WorkoutProgramForm(
         onSubmit: (program) async {
-          await context.read<WorkoutProgramCubit>().addProgram(program);
+          final createdProgram = await context
+              .read<WorkoutProgramCubit>()
+              .addProgram(program);
 
-          if (context.mounted) {
-            Navigator.pop(context);
+          if (createdProgram != null && context.mounted) {
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (_) => BlocProvider.value(
+            //       value: context.read<WorkoutProgramCubit>(),
+
+            //       child: WorkoutProgramDetailPage(program: createdProgram),
+            //     ),
+            //   ),
+            // );
           }
         },
       ),
