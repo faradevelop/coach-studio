@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_state.dart';
@@ -9,6 +10,20 @@ class WorkoutProgramDetailPage extends StatelessWidget {
   final WorkoutProgram program;
 
   const WorkoutProgramDetailPage({super.key, required this.program});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<ProgramExerciseCubit>()..loadExercises(program.id),
+      child: _WorkoutProgramDetailView(program: program),
+    );
+  }
+}
+
+class _WorkoutProgramDetailView extends StatelessWidget {
+  final WorkoutProgram program;
+
+  const _WorkoutProgramDetailView({required this.program});
 
   @override
   Widget build(BuildContext context) {
@@ -68,10 +83,7 @@ class WorkoutProgramDetailPage extends StatelessWidget {
                       child: Text(message),
                     ),
 
-                    ProgramExerciseLoaded(
-                      :final exercises,
-                      :final isSubmitting,
-                    ) =>
+                    ProgramExerciseLoaded(:final exercises) =>
                       exercises.isEmpty
                           ? const Center(child: Text('No exercises added yet'))
                           : ListView.builder(
