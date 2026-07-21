@@ -6,6 +6,7 @@ import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubi
 import 'package:coach_studio/features/workout_programs/data/datasources/workout_program_firestore_datasource.dart';
 import 'package:coach_studio/features/workout_programs/data/repositories/workout_program_repository_impl.dart';
 import 'package:coach_studio/features/workout_programs/domain/repositories/workout_program_repository.dart';
+import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:get_it/get_it.dart';
 
@@ -41,4 +42,6 @@ Future<void> initDependencies() async {
   sl.registerFactory(() => ExerciseCubit(repository: sl()));
 
   sl.registerFactory(() => WorkoutProgramCubit(repository: sl()));
+
+  sl.registerFactory(() => ProgramExerciseCubit(repository: sl()));
 }
