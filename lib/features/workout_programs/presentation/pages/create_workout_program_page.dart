@@ -1,4 +1,5 @@
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
+import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_detail_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/workout_program_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,16 +19,16 @@ class CreateWorkoutProgramPage extends StatelessWidget {
               .addProgram(program);
 
           if (createdProgram != null && context.mounted) {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (_) => BlocProvider.value(
-            //       value: context.read<WorkoutProgramCubit>(),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => BlocProvider.value(
+                  value: context.read<WorkoutProgramCubit>(),
 
-            //       child: WorkoutProgramDetailPage(program: createdProgram),
-            //     ),
-            //   ),
-            // );
+                  child: WorkoutProgramDetailPage(program: createdProgram),
+                ),
+              ),
+            );
           }
         },
       ),
