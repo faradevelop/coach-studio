@@ -7,30 +7,48 @@ import 'package:coach_studio/features/workout_programs/presentation/cubit/progra
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ExerciseConfigurationPage extends StatefulWidget {
+class ExerciseConfigurationPage extends StatelessWidget {
   final WorkoutProgram program;
   final Exercise exercise;
 
   const ExerciseConfigurationPage({
     super.key,
-    required this.exercise,
     required this.program,
+    required this.exercise,
   });
 
   @override
-  State<ExerciseConfigurationPage> createState() =>
-      _ExerciseConfigurationPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<ProgramExerciseCubit>(),
+      child: _ExerciseConfigurationView(program: program, exercise: exercise),
+    );
+  }
 }
 
-class _ExerciseConfigurationPageState extends State<ExerciseConfigurationPage> {
+class _ExerciseConfigurationView extends StatefulWidget {
+  final WorkoutProgram program;
+  final Exercise exercise;
+
+  const _ExerciseConfigurationView({
+    required this.program,
+    required this.exercise,
+  });
+
+  @override
+  State<_ExerciseConfigurationView> createState() =>
+      _ExerciseConfigurationViewState();
+}
+
+class _ExerciseConfigurationViewState
+    extends State<_ExerciseConfigurationView> {
   final _formKey = GlobalKey<FormState>();
   final _setsController = TextEditingController(text: '4');
   final _repsController = TextEditingController(text: '10-12');
   final _tempoController = TextEditingController(text: '3-1-1');
   final _restController = TextEditingController(text: '90');
 
-  TrainingSystem _trainingSystem = TrainingSystem.dropSet;
-
+  TrainingSystem _trainingSystem = TrainingSystem.superSet;
   int _day = 1;
   int _order = 1;
 
@@ -46,88 +64,91 @@ class _ExerciseConfigurationPageState extends State<ExerciseConfigurationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ProgramExerciseCubit>(),
-      child: Scaffold(
-        appBar: AppBar(title: Text(widget.exercise.name)),
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.exercise.name)),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              Text(
+                widget.exercise.name,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
 
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              children: [
-                Text(
-                  widget.exercise.name,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _setsController,
-                  decoration: const InputDecoration(labelText: 'Sets'),
-                ),
-                TextFormField(
-                  controller: _repsController,
-                  decoration: const InputDecoration(labelText: 'Reps'),
-                ),
-                TextFormField(
-                  controller: _tempoController,
-                  decoration: const InputDecoration(labelText: 'Tempo'),
-                ),
+              const SizedBox(height: 20),
 
-                TextFormField(
-                  controller: _restController,
-                  decoration: const InputDecoration(labelText: 'Rest'),
-                ),
+              TextFormField(
+                controller: _setsController,
+                decoration: const InputDecoration(labelText: 'Sets'),
+              ),
 
-                DropdownButtonFormField<TrainingSystem>(
-                  initialValue: _trainingSystem,
-                  decoration: const InputDecoration(
-                    labelText: 'Training System',
-                  ),
-                  items: TrainingSystem.values.map((system) {
-                    return DropdownMenuItem(
-                      value: system,
-                      child: Text(system.name),
-                    );
-                  }).toList(),
+              TextFormField(
+                controller: _repsController,
+                decoration: const InputDecoration(labelText: 'Reps'),
+              ),
 
-                  onChanged: (value) {
-                    if (value == null) return;
-                    setState(() {
-                      _trainingSystem = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                FilledButton(
-                  onPressed: () async {
-                    final programExercise = ProgramExercise(
-                      id: '',
-                      programId: widget.program.id,
-                      exerciseId: widget.exercise.id,
-                      day: _day,
-                      order: _order,
-                      sets: _setsController.text,
-                      reps: _repsController.text,
-                      tempo: _tempoController.text,
-                      rest: _restController.text,
-                      trainingSystem: _trainingSystem,
-                    );
+              TextFormField(
+                controller: _tempoController,
+                decoration: const InputDecoration(labelText: 'Tempo'),
+              ),
 
-                    await context
-                        .read<ProgramExerciseCubit>()
-                        .addProgramExercise(programExercise);
+              TextFormField(
+                controller: _restController,
+                decoration: const InputDecoration(labelText: 'Rest'),
+              ),
 
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                    }
-                  },
+              DropdownButtonFormField<TrainingSystem>(
+                initialValue: _trainingSystem,
 
-                  child: const Text('Save Exercise'),
-                ),
-              ],
-            ),
+                decoration: const InputDecoration(labelText: 'Training System'),
+
+                items: TrainingSystem.values.map((system) {
+                  return DropdownMenuItem(
+                    value: system,
+                    child: Text(system.name),
+                  );
+                }).toList(),
+
+                onChanged: (value) {
+                  if (value == null) return;
+
+                  setState(() {
+                    _trainingSystem = value;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 20),
+
+              FilledButton(
+                onPressed: () async {
+                  final programExercise = ProgramExercise(
+                    id: '',
+                    programId: widget.program.id,
+                    exerciseId: widget.exercise.id,
+                    day: _day,
+                    order: _order,
+                    sets: _setsController.text,
+                    reps: _repsController.text,
+                    tempo: _tempoController.text,
+                    rest: _restController.text,
+                    trainingSystem: _trainingSystem,
+                  );
+
+                  await context.read<ProgramExerciseCubit>().addProgramExercise(
+                    programExercise,
+                  );
+
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                },
+
+                child: const Text('Save Exercise'),
+              ),
+            ],
           ),
         ),
       ),
