@@ -51,34 +51,4 @@ class ProgramExercise {
       trainingSystem: trainingSystem ?? this.trainingSystem,
     );
   }
-
-  factory ProgramExercise.fromModel(ProgramExerciseModel model) {
-    return ProgramExercise(
-      id: model.id,
-      programId: model.programId,
-      exerciseId: model.exerciseId,
-      day: model.day,
-      order: model.order,
-      sets: model.sets,
-      reps: model.reps,
-      tempo: model.tempo,
-      rest: model.rest,
-      trainingSystem: model.trainingSystem,
-    );
-  }
-
-  ProgramExerciseModel toModel() {
-    return ProgramExerciseModel(
-      id: id,
-      programId: programId,
-      exerciseId: exerciseId,
-      day: day,
-      order: order,
-      sets: sets,
-      reps: reps,
-      tempo: tempo,
-      rest: rest,
-      trainingSystem: trainingSystem,
-    );
-  }
 }

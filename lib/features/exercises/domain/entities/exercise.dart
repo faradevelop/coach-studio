@@ -54,40 +54,4 @@ class Exercise {
       isActive: isActive ?? this.isActive,
     );
   }
-
-  factory Exercise.fromModel(ExerciseModel model) {
-    return Exercise(
-      id: model.id,
-      name: model.name,
-      targetMuscle: model.targetMuscle,
-      difficulty: model.difficulty,
-      equipment: model.equipment,
-      imageUrl: model.imageUrl,
-      videoUrl: model.videoUrl,
-      description: model.description,
-      instructions: model.instructions,
-      mistakes: model.mistakes,
-      isActive: model.isActive,
-      createdAt: model.createdAt,
-      updatedAt: model.updatedAt,
-    );
-  }
-
-  ExerciseModel toModel() {
-    return ExerciseModel(
-      id: id,
-      name: name,
-      targetMuscle: targetMuscle,
-      difficulty: difficulty,
-      equipment: equipment,
-      imageUrl: imageUrl,
-      videoUrl: videoUrl,
-      description: description,
-      instructions: instructions,
-      mistakes: mistakes,
-      isActive: isActive,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
-    );
-  }
 }

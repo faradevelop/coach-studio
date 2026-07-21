@@ -40,28 +40,4 @@ class WorkoutProgram {
       isTemplate: isTemplate ?? this.isTemplate,
     );
   }
-
-  factory WorkoutProgram.fromModel(WorkoutProgramModel model) {
-    return WorkoutProgram(
-      id: model.id,
-      title: model.title,
-      goal: model.goal,
-      level: model.level,
-      daysPerWeek: model.daysPerWeek,
-      notes: model.notes,
-      isTemplate: model.isTemplate,
-    );
-  }
-
-  WorkoutProgramModel toModel() {
-    return WorkoutProgramModel(
-      id: id,
-      title: title,
-      goal: goal,
-      level: level,
-      daysPerWeek: daysPerWeek,
-      notes: notes,
-      isTemplate: isTemplate,
-    );
-  }
 }
