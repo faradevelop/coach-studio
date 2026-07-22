@@ -1,10 +1,8 @@
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/theme/app_theme.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_list_page.dart';
-import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'firebase_options.dart';
 

@@ -22,7 +22,7 @@ class CreateWorkoutProgramPage extends StatelessWidget {
 
 class _CreateWorkoutProgramView extends StatelessWidget {
   final WorkoutProgram? existingProgram;
-  const _CreateWorkoutProgramView({super.key, this.existingProgram});
+  const _CreateWorkoutProgramView({this.existingProgram});
 
   @override
   Widget build(BuildContext context) {
