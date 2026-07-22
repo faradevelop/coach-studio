@@ -42,8 +42,15 @@ class ProgramExerciseRepositoryImpl implements ProgramExerciseRepository {
 
   @override
   Future<void> addProgramExercise(ProgramExercise exercise) async {
+    final nextOrder = await datasource.getNextOrder(
+      programId: exercise.programId,
+      day: exercise.day,
+    );
+
+    final updatedExercise = exercise.copyWith(order: nextOrder);
+
     await datasource.addProgramExercise(
-      ProgramExerciseModel.fromEntity(exercise),
+      ProgramExerciseModel.fromEntity(updatedExercise),
     );
   }
 

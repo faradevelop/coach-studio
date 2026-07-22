@@ -58,7 +58,6 @@ class _ExerciseConfigurationViewState
 
   TrainingSystem _trainingSystem = TrainingSystem.superSet;
   int _day = 1;
-  int _order = 1;
 
   @override
   void initState() {
@@ -74,7 +73,6 @@ class _ExerciseConfigurationViewState
 
       _trainingSystem = existing.trainingSystem;
       _day = existing.day;
-      _order = existing.order;
     } else {
       _setsController.text = '4';
       _repsController.text = '10-12';
@@ -175,7 +173,7 @@ class _ExerciseConfigurationViewState
                     programId: widget.program.id,
                     exerciseId: widget.exercise.id,
                     day: _day,
-                    order: _order,
+                    order: 0, // This will be set in the repository
                     sets: _setsController.text,
                     reps: _repsController.text,
                     tempo: _tempoController.text,

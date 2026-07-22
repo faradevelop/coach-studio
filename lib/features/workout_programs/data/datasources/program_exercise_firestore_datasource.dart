@@ -34,4 +34,25 @@ class ProgramExerciseFirestoreDatasource {
   Future<void> deleteProgramExercise(String id) async {
     await _collection.doc(id).delete();
   }
+
+  Future<int> getNextOrder({
+    required String programId,
+    required int day,
+  }) async {
+    final snapshot = await firestore
+        .collection('program_exercises')
+        .where('programId', isEqualTo: programId)
+        .where('day', isEqualTo: day)
+        .orderBy('order', descending: true)
+        .limit(1)
+        .get();
+
+    if (snapshot.docs.isEmpty) {
+      return 1;
+    }
+
+    final lastOrder = snapshot.docs.first.data()['order'] as int;
+
+    return lastOrder + 1;
+  }
 }
