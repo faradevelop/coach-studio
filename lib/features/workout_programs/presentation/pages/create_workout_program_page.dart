@@ -1,4 +1,5 @@
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_detail_page.dart';
@@ -7,43 +8,53 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreateWorkoutProgramPage extends StatelessWidget {
-  const CreateWorkoutProgramPage({super.key});
+  final WorkoutProgram? existingProgram;
+  const CreateWorkoutProgramPage({super.key, this.existingProgram});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<WorkoutProgramCubit>(),
-      child: const _CreateWorkoutProgramView(),
+    return BlocProvider.value(
+      value: context.read<WorkoutProgramCubit>(),
+      child: _CreateWorkoutProgramView(existingProgram: existingProgram),
     );
   }
 }
 
 class _CreateWorkoutProgramView extends StatelessWidget {
-  const _CreateWorkoutProgramView();
+  final WorkoutProgram? existingProgram;
+  const _CreateWorkoutProgramView({super.key, this.existingProgram});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Program')),
-
+      appBar: AppBar(
+        title: Text(
+          existingProgram == null ? 'Create Program' : 'Edit Program',
+        ),
+      ),
       body: WorkoutProgramForm(
+        initialProgram: existingProgram,
         onSubmit: (program) async {
-          final createdProgram = await context
-              .read<WorkoutProgramCubit>()
-              .addProgram(program);
+          if (existingProgram == null) {
+            final createdProgram = await context
+                .read<WorkoutProgramCubit>()
+                .addProgram(program);
 
-          if (createdProgram != null && context.mounted) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => BlocProvider(
-                  create: (_) =>
-                      sl<ProgramExerciseCubit>()
-                        ..loadExercises(createdProgram.id),
-                  child: WorkoutProgramDetailPage(program: createdProgram),
+            if (createdProgram != null && context.mounted) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      WorkoutProgramDetailPage(program: createdProgram),
                 ),
-              ),
-            );
+              );
+            }
+          } else {
+            await context.read<WorkoutProgramCubit>().updateProgram(program);
+
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
           }
         },
       ),

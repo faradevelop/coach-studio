@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/create_workout_program_page.dart';
@@ -10,13 +11,30 @@ class WorkoutProgramListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<WorkoutProgramCubit>()..loadPrograms(),
+      child: const _WorkoutProgramListView(),
+    );
+  }
+}
+
+class _WorkoutProgramListView extends StatelessWidget {
+  const _WorkoutProgramListView();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Workout Programs')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           await Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const CreateWorkoutProgramPage()),
+            MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: context.read<WorkoutProgramCubit>(),
+                child: const CreateWorkoutProgramPage(),
+              ),
+            ),
           );
 
           if (context.mounted) {
@@ -41,16 +59,12 @@ class WorkoutProgramListPage extends StatelessWidget {
                   ? _EmptyProgramsState()
                   : ListView.builder(
                       itemCount: programs.length,
-
                       itemBuilder: (context, index) {
                         final program = programs[index];
-
                         return Card(
                           margin: const EdgeInsets.only(bottom: 12),
-
                           child: InkWell(
                             borderRadius: BorderRadius.circular(12),
-
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -84,7 +98,23 @@ class WorkoutProgramListPage extends StatelessWidget {
                                         onSelected: (value) {
                                           switch (value) {
                                             case 'edit':
-                                              // بعداً
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => BlocProvider.value(
+                                                    value: context
+                                                        .read<
+                                                          WorkoutProgramCubit
+                                                        >(),
+                                                    child:
+                                                        CreateWorkoutProgramPage(
+                                                          existingProgram:
+                                                              program,
+                                                        ),
+                                                  ),
+                                                ),
+                                              );
+
                                               break;
 
                                             case 'delete':

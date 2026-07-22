@@ -26,10 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Coach Studio',
       theme: AppTheme.light,
-      home: BlocProvider(
-        create: (_) => sl<WorkoutProgramCubit>()..loadPrograms(),
-        child: const WorkoutProgramListPage(),
-      ),
+      home: const WorkoutProgramListPage(),
     );
   }
 }
