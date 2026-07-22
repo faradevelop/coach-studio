@@ -1,6 +1,4 @@
-import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
-import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_detail_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/workout_program_form.dart';
@@ -22,7 +20,7 @@ class CreateWorkoutProgramPage extends StatelessWidget {
 
 class _CreateWorkoutProgramView extends StatelessWidget {
   final WorkoutProgram? existingProgram;
-  const _CreateWorkoutProgramView({super.key, this.existingProgram});
+  const _CreateWorkoutProgramView({this.existingProgram});
 
   @override
   Widget build(BuildContext context) {
