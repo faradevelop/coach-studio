@@ -1,4 +1,5 @@
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_state.dart';
@@ -23,8 +24,26 @@ class WorkoutProgramDetailPage extends StatelessWidget {
 
 class _WorkoutProgramDetailView extends StatelessWidget {
   final WorkoutProgram program;
-
   const _WorkoutProgramDetailView({required this.program});
+
+  Map<int, List<ProgramExerciseDetails>> _groupByDay(
+    List<ProgramExerciseDetails> exercises,
+  ) {
+    final map = <int, List<ProgramExerciseDetails>>{};
+
+    for (final exercise in exercises) {
+      map.putIfAbsent(exercise.programExercise.day, () => []);
+      map[exercise.programExercise.day]!.add(exercise);
+    }
+
+    for (final list in map.values) {
+      list.sort(
+        (a, b) => a.programExercise.order.compareTo(b.programExercise.order),
+      );
+    }
+
+    return map;
+  }
 
   void _showDeleteDialog(BuildContext context, String id) {
     showDialog(
@@ -118,63 +137,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                     ProgramExerciseLoaded(:final exercises) =>
                       exercises.isEmpty
                           ? const Center(child: Text('No exercises added yet'))
-                          : ListView.builder(
-                              itemCount: exercises.length,
-                              itemBuilder: (context, index) {
-                                final item = exercises[index];
-
-                                return ListTile(
-                                  title: Text(item.exercise.name),
-
-                                  subtitle: Text(
-                                    '${item.programExercise.sets} sets | '
-                                    '${item.programExercise.reps}',
-                                  ),
-
-                                  trailing: PopupMenuButton<String>(
-                                    onSelected: (value) {
-                                      switch (value) {
-                                        case 'edit':
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) =>
-                                                  ExerciseConfigurationPage(
-                                                    program: program,
-                                                    exercise: item.exercise,
-                                                    existingExercise:
-                                                        item.programExercise,
-                                                  ),
-                                            ),
-                                          );
-
-                                          break;
-
-                                        case 'delete':
-                                          _showDeleteDialog(
-                                            context,
-                                            item.programExercise.id,
-                                          );
-
-                                          break;
-                                      }
-                                    },
-
-                                    itemBuilder: (_) => const [
-                                      PopupMenuItem(
-                                        value: 'edit',
-                                        child: Text('Edit'),
-                                      ),
-
-                                      PopupMenuItem(
-                                        value: 'delete',
-                                        child: Text('Delete'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
+                          : _buildExercisesByDay(context, exercises),
 
                     _ => const SizedBox(),
                   };
@@ -184,6 +147,64 @@ class _WorkoutProgramDetailView extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildExercisesByDay(
+    BuildContext context,
+    List<ProgramExerciseDetails> exercises,
+  ) {
+    final grouped = _groupByDay(exercises);
+
+    return ListView(
+      children: grouped.entries.map((entry) {
+        final day = entry.key;
+
+        final dayExercises = entry.value;
+
+        return ExpansionTile(
+          title: Text('Day $day'),
+
+          children: dayExercises.map((item) {
+            return ListTile(
+              title: Text(item.exercise.name),
+
+              subtitle: Text(
+                '${item.programExercise.sets} sets | '
+                '${item.programExercise.reps}',
+              ),
+
+              trailing: PopupMenuButton<String>(
+                onSelected: (value) {
+                  switch (value) {
+                    case 'edit':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ExerciseConfigurationPage(
+                            program: program,
+                            exercise: item.exercise,
+                            existingExercise: item.programExercise,
+                          ),
+                        ),
+                      );
+                      break;
+
+                    case 'delete':
+                      _showDeleteDialog(context, item.programExercise.id);
+                      break;
+                  }
+                },
+
+                itemBuilder: (_) => const [
+                  PopupMenuItem(value: 'edit', child: Text('Edit')),
+                  PopupMenuItem(value: 'delete', child: Text('Delete')),
+                ],
+              ),
+            );
+          }).toList(),
+        );
+      }).toList(),
     );
   }
 }
