@@ -67,11 +67,48 @@ class WorkoutProgramListPage extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    program.title,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleLarge,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          program.title,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleLarge,
+                                        ),
+                                      ),
+
+                                      PopupMenuButton<String>(
+                                        onSelected: (value) {
+                                          switch (value) {
+                                            case 'edit':
+                                              // بعداً
+                                              break;
+
+                                            case 'delete':
+                                              _showDeleteDialog(
+                                                context,
+                                                program.id,
+                                              );
+                                              break;
+                                          }
+                                        },
+
+                                        itemBuilder: (_) => const [
+                                          PopupMenuItem(
+                                            value: 'edit',
+                                            child: Text('Edit'),
+                                          ),
+
+                                          PopupMenuItem(
+                                            value: 'delete',
+                                            child: Text('Delete'),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
 
                                   const SizedBox(height: 8),
@@ -108,6 +145,37 @@ class WorkoutProgramListPage extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showDeleteDialog(BuildContext context, String id) {
+  showDialog(
+    context: context,
+    builder: (_) {
+      return AlertDialog(
+        title: const Text('Delete Program'),
+        content: const Text('Are you sure you want to delete this program?'),
+
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+
+            child: const Text('Cancel'),
+          ),
+
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await context.read<WorkoutProgramCubit>().deleteProgram(id);
+            },
+
+            child: const Text('Delete'),
+          ),
+        ],
+      );
+    },
+  );
 }
 
 class _EmptyProgramsState extends StatelessWidget {
