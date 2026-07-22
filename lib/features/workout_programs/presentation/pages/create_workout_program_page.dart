@@ -11,6 +11,18 @@ class CreateWorkoutProgramPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<WorkoutProgramCubit>(),
+      child: const _CreateWorkoutProgramView(),
+    );
+  }
+}
+
+class _CreateWorkoutProgramView extends StatelessWidget {
+  const _CreateWorkoutProgramView();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Create Program')),
 
@@ -26,7 +38,8 @@ class CreateWorkoutProgramPage extends StatelessWidget {
               MaterialPageRoute(
                 builder: (_) => BlocProvider(
                   create: (_) =>
-                      sl<ProgramExerciseCubit>()..loadExercises(program.id),
+                      sl<ProgramExerciseCubit>()
+                        ..loadExercises(createdProgram.id),
                   child: WorkoutProgramDetailPage(program: createdProgram),
                 ),
               ),

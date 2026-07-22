@@ -1,5 +1,6 @@
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
+import 'package:coach_studio/features/workout_programs/presentation/pages/create_workout_program_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +13,16 @@ class WorkoutProgramListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Workout Programs')),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CreateWorkoutProgramPage()),
+          );
+
+          if (context.mounted) {
+            context.read<WorkoutProgramCubit>().loadPrograms();
+          }
+        },
         icon: const Icon(Icons.add),
         label: const Text('Create Program'),
       ),
@@ -35,18 +45,59 @@ class WorkoutProgramListPage extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final program = programs[index];
 
-                        return ListTile(
-                          title: Text(program.title),
-                          subtitle: Text(program.level.name),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    WorkoutProgramDetailPage(program: program),
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 12),
+
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => WorkoutProgramDetailPage(
+                                    program: program,
+                                  ),
+                                ),
+                              );
+                            },
+
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    program.title,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleLarge,
+                                  ),
+
+                                  const SizedBox(height: 8),
+
+                                  Row(
+                                    children: [
+                                      _InfoChip(
+                                        icon: Icons.flag,
+                                        text: program.goal.name,
+                                      ),
+
+                                      const SizedBox(width: 8),
+                                      _InfoChip(
+                                        icon: Icons.bar_chart,
+                                        text: program.level.name,
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 12),
+
+                                  Text('${program.daysPerWeek} days / week'),
+                                ],
                               ),
-                            );
-                          },
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -79,6 +130,29 @@ class _EmptyProgramsState extends StatelessWidget {
           const SizedBox(height: 8),
           const Text('Create your first program'),
         ],
+      ),
+    );
+  }
+}
+
+class _InfoChip extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _InfoChip({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      ),
+
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [Icon(icon, size: 16), const SizedBox(width: 4), Text(text)],
       ),
     );
   }
