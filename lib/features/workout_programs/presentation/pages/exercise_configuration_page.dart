@@ -173,7 +173,9 @@ class _ExerciseConfigurationViewState
                     programId: widget.program.id,
                     exerciseId: widget.exercise.id,
                     day: _day,
-                    order: 0, // This will be set in the repository
+                    order:
+                        widget.existingExercise?.order ??
+                        0, // This will be set in the repository
                     sets: _setsController.text,
                     reps: _repsController.text,
                     tempo: _tempoController.text,
