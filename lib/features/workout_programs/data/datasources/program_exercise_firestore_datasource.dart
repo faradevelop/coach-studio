@@ -55,4 +55,14 @@ class ProgramExerciseFirestoreDatasource {
 
     return lastOrder + 1;
   }
+
+  Future<ProgramExerciseModel?> getProgramExerciseById(String id) async {
+    final doc = await firestore.collection('program_exercises').doc(id).get();
+
+    if (!doc.exists) {
+      return null;
+    }
+
+    return ProgramExerciseModel.fromFirestore(doc);
+  }
 }

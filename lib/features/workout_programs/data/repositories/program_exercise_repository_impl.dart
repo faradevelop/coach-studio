@@ -56,8 +56,24 @@ class ProgramExerciseRepositoryImpl implements ProgramExerciseRepository {
 
   @override
   Future<void> updateProgramExercise(ProgramExercise exercise) async {
+    final oldModel = await datasource.getProgramExerciseById(exercise.id);
+    if (oldModel == null) {
+      throw Exception('Program exercise not found');
+    }
+
+    final oldEntity = oldModel.toEntity();
+    var updatedExercise = exercise;
+
+    if (oldEntity.day != exercise.day) {
+      final newOrder = await datasource.getNextOrder(
+        programId: exercise.programId,
+        day: exercise.day,
+      );
+
+      updatedExercise = exercise.copyWith(order: newOrder);
+    }
     await datasource.updateProgramExercise(
-      ProgramExerciseModel.fromEntity(exercise),
+      ProgramExerciseModel.fromEntity(updatedExercise),
     );
   }
 
