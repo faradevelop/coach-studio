@@ -11,6 +11,11 @@ class WorkoutProgramListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Workout Programs')),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {},
+        icon: const Icon(Icons.add),
+        label: const Text('Create Program'),
+      ),
 
       body: BlocBuilder<WorkoutProgramCubit, WorkoutProgramState>(
         builder: (context, state) {
@@ -21,31 +26,59 @@ class WorkoutProgramListPage extends StatelessWidget {
               child: CircularProgressIndicator(),
             ),
 
-            WorkoutProgramLoaded(:final programs) => ListView.builder(
-              itemCount: programs.length,
+            WorkoutProgramLoaded(:final programs) =>
+              programs.isEmpty
+                  ? _EmptyProgramsState()
+                  : ListView.builder(
+                      itemCount: programs.length,
 
-              itemBuilder: (context, index) {
-                final program = programs[index];
+                      itemBuilder: (context, index) {
+                        final program = programs[index];
 
-                return ListTile(
-                  title: Text(program.title),
-                  subtitle: Text(program.level.name),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            WorkoutProgramDetailPage(program: program),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+                        return ListTile(
+                          title: Text(program.title),
+                          subtitle: Text(program.level.name),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    WorkoutProgramDetailPage(program: program),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
 
             WorkoutProgramError(:final message) => Center(child: Text(message)),
           };
         },
+      ),
+    );
+  }
+}
+
+class _EmptyProgramsState extends StatelessWidget {
+  const _EmptyProgramsState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.fitness_center, size: 64),
+          const SizedBox(height: 16),
+
+          Text(
+            'No workout programs yet',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+
+          const SizedBox(height: 8),
+          const Text('Create your first program'),
+        ],
       ),
     );
   }
