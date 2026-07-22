@@ -130,9 +130,24 @@ class _ExerciseConfigurationViewState
                 decoration: const InputDecoration(labelText: 'Rest'),
               ),
 
+              DropdownButtonFormField<int>(
+                initialValue: _day,
+                decoration: const InputDecoration(labelText: 'Training Day'),
+                items: List.generate(widget.program.daysPerWeek, (index) {
+                  final day = index + 1;
+                  return DropdownMenuItem(value: day, child: Text('Day $day'));
+                }),
+
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() {
+                    _day = value;
+                  });
+                },
+              ),
+
               DropdownButtonFormField<TrainingSystem>(
                 initialValue: _trainingSystem,
-
                 decoration: const InputDecoration(labelText: 'Training System'),
 
                 items: TrainingSystem.values.map((system) {
