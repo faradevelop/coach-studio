@@ -1,5 +1,6 @@
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
+import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,8 +29,16 @@ class WorkoutProgramListPage extends StatelessWidget {
 
                 return ListTile(
                   title: Text(program.title),
-
                   subtitle: Text(program.level.name),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            WorkoutProgramDetailPage(program: program),
+                      ),
+                    );
+                  },
                 );
               },
             ),

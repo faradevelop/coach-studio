@@ -3,6 +3,7 @@ import 'package:coach_studio/features/workout_programs/domain/entities/workout_p
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/add_program_exercise_page.dart';
+import 'package:coach_studio/features/workout_programs/presentation/pages/exercise_configuration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,6 +25,37 @@ class _WorkoutProgramDetailView extends StatelessWidget {
   final WorkoutProgram program;
 
   const _WorkoutProgramDetailView({required this.program});
+
+  void _showDeleteDialog(BuildContext context, String id) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: const Text('Delete Exercise'),
+          content: const Text('Are you sure?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+
+            FilledButton(
+              onPressed: () async {
+                await context.read<ProgramExerciseCubit>().deleteExercise(id);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+              },
+
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +125,52 @@ class _WorkoutProgramDetailView extends StatelessWidget {
 
                                 return ListTile(
                                   title: Text(item.exercise.name),
+
                                   subtitle: Text(
                                     '${item.programExercise.sets} sets | '
                                     '${item.programExercise.reps}',
+                                  ),
+
+                                  trailing: PopupMenuButton<String>(
+                                    onSelected: (value) {
+                                      switch (value) {
+                                        case 'edit':
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  ExerciseConfigurationPage(
+                                                    program: program,
+                                                    exercise: item.exercise,
+                                                    existingExercise:
+                                                        item.programExercise,
+                                                  ),
+                                            ),
+                                          );
+
+                                          break;
+
+                                        case 'delete':
+                                          _showDeleteDialog(
+                                            context,
+                                            item.programExercise.id,
+                                          );
+
+                                          break;
+                                      }
+                                    },
+
+                                    itemBuilder: (_) => const [
+                                      PopupMenuItem(
+                                        value: 'edit',
+                                        child: Text('Edit'),
+                                      ),
+
+                                      PopupMenuItem(
+                                        value: 'delete',
+                                        child: Text('Delete'),
+                                      ),
+                                    ],
                                   ),
                                 );
                               },
