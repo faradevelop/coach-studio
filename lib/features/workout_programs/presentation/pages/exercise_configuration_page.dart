@@ -10,18 +10,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ExerciseConfigurationPage extends StatelessWidget {
   final WorkoutProgram program;
   final Exercise exercise;
+  final ProgramExercise? existingExercise;
 
   const ExerciseConfigurationPage({
     super.key,
     required this.program,
     required this.exercise,
+    this.existingExercise,
   });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<ProgramExerciseCubit>(),
-      child: _ExerciseConfigurationView(program: program, exercise: exercise),
+      child: _ExerciseConfigurationView(
+        program: program,
+        exercise: exercise,
+        existingExercise: existingExercise,
+      ),
     );
   }
 }
@@ -29,10 +35,12 @@ class ExerciseConfigurationPage extends StatelessWidget {
 class _ExerciseConfigurationView extends StatefulWidget {
   final WorkoutProgram program;
   final Exercise exercise;
+  final ProgramExercise? existingExercise;
 
   const _ExerciseConfigurationView({
     required this.program,
     required this.exercise,
+    this.existingExercise,
   });
 
   @override
@@ -43,14 +51,37 @@ class _ExerciseConfigurationView extends StatefulWidget {
 class _ExerciseConfigurationViewState
     extends State<_ExerciseConfigurationView> {
   final _formKey = GlobalKey<FormState>();
-  final _setsController = TextEditingController(text: '4');
-  final _repsController = TextEditingController(text: '10-12');
-  final _tempoController = TextEditingController(text: '3-1-1');
-  final _restController = TextEditingController(text: '90');
+  final _setsController = TextEditingController();
+  final _repsController = TextEditingController();
+  final _tempoController = TextEditingController();
+  final _restController = TextEditingController();
 
   TrainingSystem _trainingSystem = TrainingSystem.superSet;
   int _day = 1;
   int _order = 1;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final existing = widget.existingExercise;
+
+    if (existing != null) {
+      _setsController.text = existing.sets;
+      _repsController.text = existing.reps;
+      _tempoController.text = existing.tempo;
+      _restController.text = existing.rest;
+
+      _trainingSystem = existing.trainingSystem;
+      _day = existing.day;
+      _order = existing.order;
+    } else {
+      _setsController.text = '4';
+      _repsController.text = '10-12';
+      _tempoController.text = '3-1-1';
+      _restController.text = '90';
+    }
+  }
 
   @override
   void dispose() {
@@ -125,7 +156,7 @@ class _ExerciseConfigurationViewState
               FilledButton(
                 onPressed: () async {
                   final programExercise = ProgramExercise(
-                    id: '',
+                    id: widget.existingExercise?.id ?? '',
                     programId: widget.program.id,
                     exerciseId: widget.exercise.id,
                     day: _day,
@@ -137,16 +168,24 @@ class _ExerciseConfigurationViewState
                     trainingSystem: _trainingSystem,
                   );
 
-                  await context.read<ProgramExerciseCubit>().addProgramExercise(
-                    programExercise,
-                  );
+                  final cubit = context.read<ProgramExerciseCubit>();
+
+                  if (widget.existingExercise == null) {
+                    await cubit.addProgramExercise(programExercise);
+                  } else {
+                    await cubit.updateProgramExercise(programExercise);
+                  }
 
                   if (context.mounted) {
                     Navigator.pop(context);
                   }
                 },
 
-                child: const Text('Save Exercise'),
+                child: Text(
+                  widget.existingExercise == null
+                      ? 'Save Exercise'
+                      : 'Update Exercise',
+                ),
               ),
             ],
           ),

@@ -46,6 +46,20 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
     }
   }
 
+  Future<void> updateProgramExercise(ProgramExercise exercise) async {
+    final current = state;
+
+    if (current is ProgramExerciseLoaded) {
+      emit(current.copyWith(isSubmitting: true));
+    }
+
+    try {
+      await repository.updateProgramExercise(exercise);
+    } catch (e) {
+      emit(ProgramExerciseError(e.toString()));
+    }
+  }
+
   Future<void> deleteExercise(String id) async {
     try {
       await repository.deleteProgramExercise(id);
