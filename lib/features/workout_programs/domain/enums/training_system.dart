@@ -1,1 +1,1 @@
-enum TrainingSystem { normal, superSet, giantSet, dropSet, pyramid }
+enum TrainingSystem { normal, superSet }
