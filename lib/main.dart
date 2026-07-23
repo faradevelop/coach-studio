@@ -1,6 +1,6 @@
+import 'package:coach_studio/app/router/app_router.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/theme/app_theme.dart';
-import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -21,10 +21,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Coach Studio',
       theme: AppTheme.light,
-      home: const WorkoutProgramListPage(),
+      routerConfig: appRouter,
     );
   }
 }
