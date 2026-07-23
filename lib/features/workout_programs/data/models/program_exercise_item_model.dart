@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_item.dart';
 
 class ProgramExerciseItemModel {
