@@ -2,21 +2,31 @@ import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_draft.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
+import 'package:coach_studio/features/workout_programs/domain/enums/training_system.dart';
+import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/exercise_configuration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddProgramExercisePage extends StatefulWidget {
   final WorkoutProgram program;
+  final ProgramExerciseDraft draft;
 
-  const AddProgramExercisePage({super.key, required this.program});
+  const AddProgramExercisePage({
+    super.key,
+    required this.program,
+    required this.draft,
+  });
 
   @override
   State<AddProgramExercisePage> createState() => _AddProgramExercisePageState();
 }
 
 class _AddProgramExercisePageState extends State<AddProgramExercisePage> {
+  final List<Exercise> _selectedExercises = [];
+
   final TextEditingController _searchController = TextEditingController();
 
   String _query = '';
@@ -25,6 +35,15 @@ class _AddProgramExercisePageState extends State<AddProgramExercisePage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  int get _maxSelection {
+    switch (widget.draft.trainingSystem) {
+      case TrainingSystem.normal:
+        return 1;
+      case TrainingSystem.superSet:
+        return 2;
+    }
   }
 
   List<Exercise> _filterExercises(List<Exercise> exercises) {
@@ -60,15 +79,11 @@ class _AddProgramExercisePageState extends State<AddProgramExercisePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16),
-
                     child: TextField(
                       controller: _searchController,
-
                       decoration: const InputDecoration(
                         hintText: 'Search exercise...',
-
                         prefixIcon: Icon(Icons.search),
-
                         border: OutlineInputBorder(),
                       ),
 
@@ -101,8 +116,8 @@ class _AddProgramExercisePageState extends State<AddProgramExercisePage> {
                               ),
 
                               child: ListTile(
+                                selected: _selectedExercises.contains(exercise),
                                 title: Text(exercise.name),
-
                                 subtitle: Text(
                                   '${exercise.targetMuscle} • '
                                   '${exercise.equipment}',
@@ -114,22 +129,61 @@ class _AddProgramExercisePageState extends State<AddProgramExercisePage> {
                                 ),
 
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
+                                  setState(() {
+                                    if (_selectedExercises.contains(exercise)) {
+                                      _selectedExercises.remove(exercise);
 
-                                    MaterialPageRoute(
-                                      builder: (_) => ExerciseConfigurationPage(
-                                        program: widget.program,
-                                        exercise: exercise,
-                                      ),
-                                    ),
-                                  );
+                                      return;
+                                    }
+
+                                    if (_selectedExercises.length >=
+                                        _maxSelection) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'You can select only $_maxSelection exercise(s)',
+                                          ),
+                                        ),
+                                      );
+
+                                      return;
+                                    }
+
+                                    _selectedExercises.add(exercise);
+                                  });
                                 },
                               ),
                             );
                           },
                         );
                       },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+
+                    child: FilledButton(
+                      onPressed: _selectedExercises.length != _maxSelection
+                          ? null
+                          : () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider.value(
+                                    value: context.read<ProgramExerciseCubit>(),
+                                    child: ExerciseConfigurationPage(
+                                      program: widget.program,
+                                      draft: widget.draft,
+                                      exercises: _selectedExercises,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+
+                      child: const Text('Configure'),
                     ),
                   ),
                 ],
