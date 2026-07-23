@@ -18,20 +18,20 @@ class ProgramExerciseItemModel {
     required this.tempo,
   });
 
-  factory ProgramExerciseItemModel.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> doc,
-  ) {
-    final data = doc.data()!;
+  // factory ProgramExerciseItemModel.fromFirestore(
+  //   DocumentSnapshot<Map<String, dynamic>> doc,
+  // ) {
+  //   final data = doc.data()!;
 
-    return ProgramExerciseItemModel(
-      id: doc.id,
-      programExerciseId: data['programExerciseId'],
-      exerciseId: data['exerciseId'],
-      order: data['order'],
-      reps: data['reps'],
-      tempo: data['tempo'],
-    );
-  }
+  //   return ProgramExerciseItemModel(
+  //     id: doc.id,
+  //     programExerciseId: data['programExerciseId'],
+  //     exerciseId: data['exerciseId'],
+  //     order: data['order'],
+  //     reps: data['reps'],
+  //     tempo: data['tempo'],
+  //   );
+  // }
 
   Map<String, dynamic> toFirestore() {
     return {
@@ -62,6 +62,17 @@ class ProgramExerciseItemModel {
       order: order,
       reps: reps,
       tempo: tempo,
+    );
+  }
+
+  factory ProgramExerciseItemModel.fromMap(Map<String, dynamic> data) {
+    return ProgramExerciseItemModel(
+      id: data['id'] ?? '',
+      programExerciseId: data['programExerciseId'] ?? '',
+      exerciseId: data['exerciseId'],
+      order: data['order'],
+      reps: data['reps'],
+      tempo: data['tempo'],
     );
   }
 }

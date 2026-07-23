@@ -21,19 +21,26 @@ class ProgramExerciseRepositoryImpl implements ProgramExerciseRepository {
 
       for (final model in models) {
         final programExercise = model.toEntity();
+        final items = <ProgramExerciseItemDetails>[];
 
-        final exercise = await exerciseRepository.getExerciseById(
-          programExercise.exerciseId,
-        );
-
-        if (exercise != null) {
-          result.add(
-            ProgramExerciseDetails(
-              programExercise: programExercise,
-              exercise: exercise,
-            ),
+        for (final item in programExercise.items) {
+          final exercise = await exerciseRepository.getExerciseById(
+            item.exerciseId,
           );
+
+          if (exercise != null) {
+            items.add(
+              ProgramExerciseItemDetails(item: item, exercise: exercise),
+            );
+          }
         }
+
+        result.add(
+          ProgramExerciseDetails(
+            programExercise: programExercise,
+            items: items,
+          ),
+        );
       }
 
       return result;
@@ -42,7 +49,7 @@ class ProgramExerciseRepositoryImpl implements ProgramExerciseRepository {
 
   @override
   Future<void> addProgramExercise(ProgramExercise exercise) async {
-    final nextOrder = await datasource.getNextOrder(
+    final nextOrder = await datasource.getNextProgramExerciseOrder(
       programId: exercise.programId,
       day: exercise.day,
     );
@@ -65,7 +72,7 @@ class ProgramExerciseRepositoryImpl implements ProgramExerciseRepository {
     var updatedExercise = exercise;
 
     if (oldEntity.day != exercise.day) {
-      final newOrder = await datasource.getNextOrder(
+      final newOrder = await datasource.getNextProgramExerciseOrder(
         programId: exercise.programId,
         day: exercise.day,
       );

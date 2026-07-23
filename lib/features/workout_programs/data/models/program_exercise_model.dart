@@ -37,8 +37,13 @@ class ProgramExerciseModel {
       sets: data['sets'],
       rest: data['rest'],
       trainingSystem: TrainingSystem.values.byName(data['trainingSystem']),
-      items: (data['items'] as List<dynamic>)
-          .map((e) => ProgramExerciseItemModel.fromFirestore(e))
+      // items: (data['items'] as List<dynamic>)
+      //     .map((e) => ProgramExerciseItemModel.fromFirestore(e))
+      //     .toList(),
+      items: (data['items'] as List<dynamic>? ?? [])
+          .map(
+            (e) => ProgramExerciseItemModel.fromMap(e as Map<String, dynamic>),
+          )
           .toList(),
     );
   }
@@ -51,7 +56,8 @@ class ProgramExerciseModel {
       'sets': sets,
       'rest': rest,
       'trainingSystem': trainingSystem.name,
-      'items': items.map((e) => e.toFirestore()).toList(),
+      // 'items': items.map((e) => e.toFirestore()).toList(),
+      'items': items.map((e) => {'id': e.id, ...e.toFirestore()}).toList(),
     };
   }
 

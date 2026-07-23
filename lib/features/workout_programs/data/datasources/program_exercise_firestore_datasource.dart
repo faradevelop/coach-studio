@@ -35,7 +35,7 @@ class ProgramExerciseFirestoreDatasource {
     await _collection.doc(id).delete();
   }
 
-  Future<int> getNextOrder({
+  Future<int> getNextProgramExerciseOrder({
     required String programId,
     required int day,
   }) async {
