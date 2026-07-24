@@ -7,27 +7,27 @@ import 'package:coach_studio/features/exercises/presentation/cubit/exercise_stat
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_draft.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/training_system.dart';
-import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
-import 'package:coach_studio/features/workout_programs/presentation/pages/exercise_configuration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class AddProgramExercisePage extends StatefulWidget {
+class AddProgramExerciseItemPage extends StatefulWidget {
   final WorkoutProgram program;
   final ProgramExerciseDraft draft;
 
-  const AddProgramExercisePage({
+  const AddProgramExerciseItemPage({
     super.key,
     required this.program,
     required this.draft,
   });
 
   @override
-  State<AddProgramExercisePage> createState() => _AddProgramExercisePageState();
+  State<AddProgramExerciseItemPage> createState() =>
+      _AddProgramExerciseItemPageState();
 }
 
-class _AddProgramExercisePageState extends State<AddProgramExercisePage> {
+class _AddProgramExerciseItemPageState
+    extends State<AddProgramExerciseItemPage> {
   final List<Exercise> _selectedExercises = [];
 
   final TextEditingController _searchController = TextEditingController();
@@ -171,24 +171,10 @@ class _AddProgramExercisePageState extends State<AddProgramExercisePage> {
                       onPressed: _selectedExercises.length != _maxSelection
                           ? null
                           : () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => BlocProvider.value(
-                                    value: context.read<ProgramExerciseCubit>(),
-                                    child: ExerciseConfigurationPage(
-                                      program: widget.program,
-                                      draft: widget.draft,
-                                      exercises: _selectedExercises,
-                                    ),
-                                  ),
-                                ),
-                              );
-
-                              context.pushNamed(
+                              context.pushReplacementNamed(
                                 AppRouteNames.configureProgramExercise,
                                 pathParameters: {
-                                  'programExerciseId': widget.program.id,
+                                  'programId': widget.program.id,
                                 },
                                 extra: ProgramExerciseConfigurationArgs(
                                   program: widget.program,
