@@ -1,3 +1,5 @@
+import 'package:coach_studio/app/routing/app_route_names.dart';
+import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
@@ -9,6 +11,7 @@ import 'package:coach_studio/features/workout_programs/presentation/cubit/progra
 import 'package:coach_studio/features/workout_programs/presentation/pages/exercise_configuration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class AddProgramExercisePage extends StatefulWidget {
   final WorkoutProgram program;
@@ -179,6 +182,18 @@ class _AddProgramExercisePageState extends State<AddProgramExercisePage> {
                                       exercises: _selectedExercises,
                                     ),
                                   ),
+                                ),
+                              );
+
+                              context.pushNamed(
+                                AppRouteNames.configureProgramExercise,
+                                pathParameters: {
+                                  'programExerciseId': widget.program.id,
+                                },
+                                extra: ProgramExerciseConfigurationArgs(
+                                  program: widget.program,
+                                  draft: widget.draft,
+                                  exercises: _selectedExercises,
                                 ),
                               );
                             },

@@ -1,9 +1,10 @@
+import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
-import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_detail_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/workout_program_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateWorkoutProgramPage extends StatelessWidget {
   final WorkoutProgram? existingProgram;
@@ -39,12 +40,10 @@ class _CreateWorkoutProgramView extends StatelessWidget {
                 .addProgram(program);
 
             if (createdProgram != null && context.mounted) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (_) =>
-                      WorkoutProgramDetailPage(program: createdProgram),
-                ),
+              context.goNamed(
+                AppRouteNames.workoutProgramDetail,
+                pathParameters: {'programId': createdProgram.id},
+                extra: createdProgram,
               );
             }
           } else {

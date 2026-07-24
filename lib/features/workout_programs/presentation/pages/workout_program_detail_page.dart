@@ -1,11 +1,12 @@
+import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_state.dart';
-import 'package:coach_studio/features/workout_programs/presentation/pages/create_program_exercise_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class WorkoutProgramDetailPage extends StatelessWidget {
   final WorkoutProgram program;
@@ -105,12 +106,10 @@ class _WorkoutProgramDetailView extends StatelessWidget {
 
                 FilledButton.icon(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            CreateProgramExercisePage(program: program),
-                      ),
+                    context.pushNamed(
+                      AppRouteNames.createProgramExercise,
+                      pathParameters: {'programId': program.id},
+                      extra: program,
                     );
                   },
                   icon: const Icon(Icons.add),
