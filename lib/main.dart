@@ -1,4 +1,4 @@
-import 'package:coach_studio/app/router/app_router.dart';
+import 'package:coach_studio/app/routing/app_router.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Coach Studio',
       theme: AppTheme.light,
-      routerConfig: appRouter,
+      routerConfig: AppRouter.router,
     );
   }
 }
