@@ -1,12 +1,9 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_selection_args.dart';
-import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_draft.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/training_system.dart';
-import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class CreateProgramExercisePage extends StatelessWidget {
@@ -16,10 +13,7 @@ class CreateProgramExercisePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ProgramExerciseCubit>(),
-      child: _CreateProgramExerciseView(program: program),
-    );
+    return _CreateProgramExerciseView(program: program);
   }
 }
 
@@ -99,9 +93,9 @@ class _CreateProgramExerciseViewState
                   draft: draft,
                 );
 
-                context.pushNamed(
+                context.pushReplacementNamed(
                   AppRouteNames.addProgramExerciseItems,
-                  pathParameters: {'programExerciseId': widget.program.id},
+                  pathParameters: {'programId': widget.program.id},
                   extra: args,
                 );
               },

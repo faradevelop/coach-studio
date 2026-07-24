@@ -20,14 +20,13 @@ class AppRouter {
   AppRouter._();
 
   static final GoRouter router = GoRouter(
-    initialLocation:
-        AppRoutes.workoutProgramsList, // workoutPrograms = '/programs'
+    initialLocation: AppRoutes.workoutProgramsList,
 
     routes: [
       GoRoute(
         path: AppRoutes.workoutProgramsList,
         name: AppRouteNames.workoutPrograms,
-        builder: (_, __) {
+        builder: (_, state) {
           return BlocProvider(
             create: (_) => sl<WorkoutProgramCubit>()..loadPrograms(),
             child: const WorkoutProgramListPage(),
@@ -36,8 +35,7 @@ class AppRouter {
       ),
 
       GoRoute(
-        path: AppRoutes
-            .createWorkoutProgram, //  createWorkoutProgram = '/programs/create'
+        path: AppRoutes.createWorkoutProgram,
         name: AppRouteNames.createWorkoutProgram,
         builder: (_, state) {
           final program = state.extra as WorkoutProgram?;
@@ -53,15 +51,13 @@ class AppRouter {
         builder: (context, state, child) {
           return BlocProvider(
             create: (_) => sl<ProgramExerciseCubit>(),
-
             child: child,
           );
         },
 
         routes: [
           GoRoute(
-            path: AppRoutes
-                .workoutProgramDetail, //workoutProgramDetail = '/programs/:programId'
+            path: AppRoutes.workoutProgramDetail,
             name: AppRouteNames.workoutProgramDetail,
 
             builder: (_, state) {

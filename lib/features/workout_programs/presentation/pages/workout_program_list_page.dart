@@ -1,20 +1,16 @@
-import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
-import 'package:coach_studio/features/workout_programs/presentation/pages/create_workout_program_page.dart';
-import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class WorkoutProgramListPage extends StatelessWidget {
   const WorkoutProgramListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<WorkoutProgramCubit>()..loadPrograms(),
-      child: const _WorkoutProgramListView(),
-    );
+    return const _WorkoutProgramListView();
   }
 }
 
@@ -27,15 +23,7 @@ class _WorkoutProgramListView extends StatelessWidget {
       appBar: AppBar(title: const Text('Workout Programs')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider.value(
-                value: context.read<WorkoutProgramCubit>(),
-                child: const CreateWorkoutProgramPage(),
-              ),
-            ),
-          );
+          context.pushNamed(AppRouteNames.createWorkoutProgram);
 
           if (context.mounted) {
             context.read<WorkoutProgramCubit>().loadPrograms();
@@ -66,13 +54,10 @@ class _WorkoutProgramListView extends StatelessWidget {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(12),
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => WorkoutProgramDetailPage(
-                                    program: program,
-                                  ),
-                                ),
+                              context.pushNamed(
+                                AppRouteNames.workoutProgramDetail,
+                                pathParameters: {'programId': program.id},
+                                extra: program,
                               );
                             },
 
@@ -98,21 +83,10 @@ class _WorkoutProgramListView extends StatelessWidget {
                                         onSelected: (value) {
                                           switch (value) {
                                             case 'edit':
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => BlocProvider.value(
-                                                    value: context
-                                                        .read<
-                                                          WorkoutProgramCubit
-                                                        >(),
-                                                    child:
-                                                        CreateWorkoutProgramPage(
-                                                          existingProgram:
-                                                              program,
-                                                        ),
-                                                  ),
-                                                ),
+                                              context.pushNamed(
+                                                AppRouteNames
+                                                    .createWorkoutProgram,
+                                                extra: program,
                                               );
 
                                               break;
@@ -188,7 +162,7 @@ void _showDeleteDialog(BuildContext context, String id) {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
             },
 
             child: const Text('Cancel'),
@@ -196,7 +170,7 @@ void _showDeleteDialog(BuildContext context, String id) {
 
           FilledButton(
             onPressed: () async {
-              Navigator.pop(context);
+              context.pop();
               await context.read<WorkoutProgramCubit>().deleteProgram(id);
             },
 

@@ -40,7 +40,12 @@ class _CreateWorkoutProgramView extends StatelessWidget {
                 .addProgram(program);
 
             if (createdProgram != null && context.mounted) {
-              context.goNamed(
+              // context.goNamed(
+              //   AppRouteNames.workoutProgramDetail,
+              //   pathParameters: {'programId': createdProgram.id},
+              //   extra: createdProgram,
+              // );
+              context.pushReplacementNamed(
                 AppRouteNames.workoutProgramDetail,
                 pathParameters: {'programId': createdProgram.id},
                 extra: createdProgram,
@@ -50,7 +55,7 @@ class _CreateWorkoutProgramView extends StatelessWidget {
             await context.read<WorkoutProgramCubit>().updateProgram(program);
 
             if (context.mounted) {
-              Navigator.pop(context);
+              context.pop();
             }
           }
         },

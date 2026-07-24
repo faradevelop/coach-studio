@@ -1,5 +1,4 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
-import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
@@ -15,10 +14,8 @@ class WorkoutProgramDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ProgramExerciseCubit>()..loadExercises(program.id),
-      child: _WorkoutProgramDetailView(program: program),
-    );
+    context.read<ProgramExerciseCubit>().loadExercises(program.id);
+    return _WorkoutProgramDetailView(program: program);
   }
 }
 
@@ -55,7 +52,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                context.pop();
               },
               child: const Text('Cancel'),
             ),
@@ -64,7 +61,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
               onPressed: () async {
                 await context.read<ProgramExerciseCubit>().deleteExercise(id);
                 if (context.mounted) {
-                  Navigator.pop(context);
+                  context.pop();
                 }
               },
 
@@ -220,63 +217,4 @@ class _WorkoutProgramDetailView extends StatelessWidget {
       }).toList(),
     );
   }
-
-  // Widget _buildExercisesByDay(
-  //   BuildContext context,
-  //   List<ProgramExerciseDetails> exercises,
-  // ) {
-  //   final grouped = _groupByDay(exercises);
-
-  //   return ListView(
-  //     children: grouped.entries.map((entry) {
-  //       final day = entry.key;
-
-  //       final dayProgramExercises = entry.value;
-
-  //       return ExpansionTile(
-  //         title: Text('Day $day'),
-
-  //         children: dayProgramExercises.map((details) {
-  //           final programExercise = details.programExercise;
-  //           return ListTile(
-  //             title: Text(programExercise.exercise.name),
-
-  //             subtitle: Text(
-  //               '${item.programExercise.sets} sets | '
-  //               '${item.programExercise.reps}',
-  //             ),
-
-  //             trailing: PopupMenuButton<String>(
-  //               onSelected: (value) {
-  //                 switch (value) {
-  //                   case 'edit':
-  //                     Navigator.push(
-  //                       context,
-  //                       MaterialPageRoute(
-  //                         builder: (_) => ExerciseConfigurationPage(
-  //                           program: program,
-  //                           exercise: item.exercise,
-  //                           existingExercise: item.programExercise,
-  //                         ),
-  //                       ),
-  //                     );
-  //                     break;
-
-  //                   case 'delete':
-  //                     _showDeleteDialog(context, item.programExercise.id);
-  //                     break;
-  //                 }
-  //               },
-
-  //               itemBuilder: (_) => const [
-  //                 PopupMenuItem(value: 'edit', child: Text('Edit')),
-  //                 PopupMenuItem(value: 'delete', child: Text('Delete')),
-  //               ],
-  //             ),
-  //           );
-  //         }).toList(),
-  //       );
-  //     }).toList(),
-  //   );
-  // }
 }

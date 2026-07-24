@@ -6,6 +6,7 @@ import 'package:coach_studio/features/workout_programs/domain/entities/workout_p
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ExerciseConfigurationPage extends StatelessWidget {
   final WorkoutProgram program;
@@ -114,7 +115,7 @@ class _ExerciseConfigurationViewState
     );
 
     if (mounted) {
-      Navigator.pop(context);
+      context.pop();
     }
   }
 
