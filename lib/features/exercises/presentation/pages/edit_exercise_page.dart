@@ -4,6 +4,7 @@ import 'package:coach_studio/features/exercises/presentation/cubit/exercise_stat
 import 'package:coach_studio/features/exercises/presentation/widgets/exercise_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class EditExercisePage extends StatelessWidget {
   final Exercise exercise;
@@ -27,7 +28,7 @@ class EditExercisePage extends StatelessWidget {
               );
 
               if (context.mounted) {
-                Navigator.pop(context);
+                context.pop();
               }
             },
           );

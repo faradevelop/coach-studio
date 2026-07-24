@@ -3,6 +3,7 @@ import 'package:coach_studio/features/exercises/presentation/cubit/exercise_stat
 import 'package:coach_studio/features/exercises/presentation/widgets/exercise_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class AddExercisePage extends StatelessWidget {
   const AddExercisePage({super.key});
@@ -21,7 +22,7 @@ class AddExercisePage extends StatelessWidget {
               await context.read<ExerciseCubit>().addExercise(exercise);
 
               if (context.mounted) {
-                Navigator.pop(context);
+                context.pop();
               }
             },
           );

@@ -8,4 +8,12 @@ abstract final class AppRoutes {
   static const createWorkoutProgram = '/programs/create';
 
   static const workoutProgramDetail = '/programs/:programId';
+
+  // Exercises
+
+  static const exercises = '/exercises';
+
+  static const createExercise = '/exercises/create';
+
+  static const editExercise = '/exercises/:exerciseId/edit';
 }

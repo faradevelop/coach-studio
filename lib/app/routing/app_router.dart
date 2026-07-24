@@ -3,7 +3,11 @@ import 'package:coach_studio/app/routing/app_routes.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_selection_args.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
+import 'package:coach_studio/features/exercises/presentation/pages/add_exercise_page.dart';
+import 'package:coach_studio/features/exercises/presentation/pages/edit_exercise_page.dart';
+import 'package:coach_studio/features/exercises/presentation/pages/exercise_list_page.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
@@ -20,9 +24,11 @@ class AppRouter {
   AppRouter._();
 
   static final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.workoutProgramsList,
+    //initialLocation: AppRoutes.workoutProgramsList,
+    initialLocation: AppRoutes.exercises,
 
     routes: [
+      // workout program
       GoRoute(
         path: AppRoutes.workoutProgramsList,
         name: AppRouteNames.workoutPrograms,
@@ -111,6 +117,49 @@ class AppRouter {
                     },
                   ),
                 ],
+              ),
+            ],
+          ),
+        ],
+      ),
+
+      //Exercise
+      ShellRoute(
+        builder: (context, state, child) {
+          return BlocProvider(
+            create: (_) => sl<ExerciseCubit>()..loadExercises(),
+            child: child,
+          );
+        },
+
+        routes: [
+          GoRoute(
+            path: AppRoutes.exercises,
+            name: AppRouteNames.exercises,
+
+            builder: (_, state) {
+              return const ExerciseListPage();
+            },
+
+            routes: [
+              GoRoute(
+                path: 'create',
+                name: AppRouteNames.createExercise,
+
+                builder: (_, state) {
+                  return const AddExercisePage();
+                },
+              ),
+
+              GoRoute(
+                path: ':exerciseId/edit',
+                name: AppRouteNames.editExercise,
+
+                builder: (_, state) {
+                  final exercise = state.extra as Exercise;
+
+                  return EditExercisePage(exercise: exercise);
+                },
               ),
             ],
           ),

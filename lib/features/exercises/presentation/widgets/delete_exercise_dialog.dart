@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DeleteExerciseDialog extends StatelessWidget {
   const DeleteExerciseDialog({super.key, required this.exerciseName});
@@ -15,14 +16,16 @@ class DeleteExerciseDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.pop(context, false);
+            //Navigator.pop(context, false);
+            context.pop(false);
           },
           child: const Text('Cancel'),
         ),
 
         FilledButton(
           onPressed: () {
-            Navigator.pop(context, true);
+            //Navigator.pop(context, true);
+            context.pop(true);
           },
           child: const Text('Delete'),
         ),

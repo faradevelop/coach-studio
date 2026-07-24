@@ -1,12 +1,13 @@
+import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
-import 'package:coach_studio/features/exercises/presentation/pages/add_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/edit_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/delete_exercise_dialog.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/empty_exercises.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/exercise_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ExerciseListPage extends StatelessWidget {
   const ExerciseListPage({super.key});
@@ -17,15 +18,7 @@ class ExerciseListPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Exercises')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider.value(
-                value: context.read<ExerciseCubit>(),
-                child: const AddExercisePage(),
-              ),
-            ),
-          );
+          context.pushNamed(AppRouteNames.createExercise);
         },
         icon: const Icon(Icons.add),
         label: const Text('Add Exercise'),
@@ -53,16 +46,10 @@ class ExerciseListPage extends StatelessWidget {
                               return ExerciseCard(
                                 exercise: exercise,
                                 onEdit: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => BlocProvider.value(
-                                        value: context.read<ExerciseCubit>(),
-                                        child: EditExercisePage(
-                                          exercise: exercise,
-                                        ),
-                                      ),
-                                    ),
+                                  context.pushNamed(
+                                    AppRouteNames.editExercise,
+                                    pathParameters: {'exerciseId': exercise.id},
+                                    extra: exercise,
                                   );
                                 },
 
