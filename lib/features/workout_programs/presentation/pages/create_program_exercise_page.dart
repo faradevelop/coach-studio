@@ -13,16 +13,12 @@ class CreateProgramExercisePage extends StatelessWidget {
   const CreateProgramExercisePage({super.key, required this.program});
 
   @override
-  Widget build(Object context) {
+  Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<ProgramExerciseCubit>(),
       child: _CreateProgramExerciseView(program: program),
     );
   }
-
-  // @override
-  // State<CreateProgramExercisePage> createState() =>
-  //     _CreateProgramExercisePageState();
 }
 
 class _CreateProgramExerciseView extends StatefulWidget {
