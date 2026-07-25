@@ -3,7 +3,7 @@ abstract final class AppRouteNames {
 
   // Workout Programs
 
-  static const workoutPrograms = 'workoutPrograms';
+  static const workoutProgramsList = 'workoutProgramsList';
 
   static const createWorkoutProgram = 'createWorkoutProgram';
 

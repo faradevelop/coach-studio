@@ -31,7 +31,7 @@ class AppRouter {
       // workout program
       GoRoute(
         path: AppRoutes.workoutProgramsList,
-        name: AppRouteNames.workoutPrograms,
+        name: AppRouteNames.workoutProgramsList,
         builder: (_, state) {
           return BlocProvider(
             create: (_) => sl<WorkoutProgramCubit>()..loadPrograms(),
