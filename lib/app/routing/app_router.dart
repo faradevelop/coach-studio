@@ -139,6 +139,21 @@ class AppRouter {
 
             routes: [
               GoRoute(
+                path: 'program-exercises/:programExerciseId/edit',
+                name: AppRouteNames.editProgramExercise,
+                builder: (_, state) {
+                  final args = state.extra as ProgramExerciseConfigurationArgs;
+
+                  return ExerciseConfigurationPage(
+                    program: args.program,
+                    draft: args.draft,
+                    exercises: args.exercises,
+                    existingExercise: args.existingExercise,
+                  );
+                },
+              ),
+
+              GoRoute(
                 path: 'program-exercises/create',
                 name: AppRouteNames.createProgramExercise,
                 builder: (_, state) {

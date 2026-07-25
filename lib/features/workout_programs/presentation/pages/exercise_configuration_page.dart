@@ -13,11 +13,14 @@ class ExerciseConfigurationPage extends StatelessWidget {
   final ProgramExerciseDraft draft;
   final List<Exercise> exercises;
 
+  final ProgramExercise? existingExercise;
+
   const ExerciseConfigurationPage({
     super.key,
     required this.program,
     required this.draft,
     required this.exercises,
+    this.existingExercise,
   });
 
   @override
@@ -26,6 +29,7 @@ class ExerciseConfigurationPage extends StatelessWidget {
       program: program,
       draft: draft,
       exercises: exercises,
+      existingExercise: existingExercise,
     );
   }
 }
@@ -34,11 +38,13 @@ class _ExerciseConfigurationView extends StatefulWidget {
   final WorkoutProgram program;
   final ProgramExerciseDraft draft;
   final List<Exercise> exercises;
+  final ProgramExercise? existingExercise;
 
   const _ExerciseConfigurationView({
     required this.program,
     required this.draft,
     required this.exercises,
+    this.existingExercise,
   });
 
   @override
@@ -54,17 +60,37 @@ class _ExerciseConfigurationViewState
   final Map<String, TextEditingController> _repsControllers = {};
   final Map<String, TextEditingController> _tempoControllers = {};
 
+  bool get _isEditMode => widget.existingExercise != null;
+
+  ProgramExerciseItem? _existingItemFor(String exerciseId) {
+    final items = widget.existingExercise?.items;
+    if (items == null) return null;
+
+    for (final item in items) {
+      if (item.exerciseId == exerciseId) return item;
+    }
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
 
-    _setsController.text = '4';
-    _restController.text = '90';
+    final existing = widget.existingExercise;
+
+    _setsController.text = existing?.sets ?? '4';
+    _restController.text = existing?.rest ?? '90';
 
     for (final exercise in widget.exercises) {
-      _repsControllers[exercise.id] = TextEditingController(text: '10-12');
+      final existingItem = _existingItemFor(exercise.id);
 
-      _tempoControllers[exercise.id] = TextEditingController(text: '3-1-1');
+      _repsControllers[exercise.id] = TextEditingController(
+        text: existingItem?.reps ?? '10-12',
+      );
+
+      _tempoControllers[exercise.id] = TextEditingController(
+        text: existingItem?.tempo ?? '3-1-1',
+      );
     }
   }
 
@@ -76,7 +102,6 @@ class _ExerciseConfigurationViewState
     for (final controller in _repsControllers.values) {
       controller.dispose();
     }
-
     for (final controller in _tempoControllers.values) {
       controller.dispose();
     }
@@ -85,13 +110,16 @@ class _ExerciseConfigurationViewState
   }
 
   Future<void> _save() async {
+    final existing = widget.existingExercise;
+
     final items = widget.exercises.asMap().entries.map((entry) {
       final index = entry.key;
       final exercise = entry.value;
+      final existingItem = _existingItemFor(exercise.id);
 
       return ProgramExerciseItem(
-        id: '',
-        programExerciseId: '',
+        id: existingItem?.id ?? '',
+        programExerciseId: existing?.id ?? '',
         exerciseId: exercise.id,
         order: index + 1,
         reps: _repsControllers[exercise.id]!.text,
@@ -100,19 +128,23 @@ class _ExerciseConfigurationViewState
     }).toList();
 
     final programExercise = ProgramExercise(
-      id: '',
+      id: existing?.id ?? '',
       programId: widget.program.id,
       day: widget.draft.day,
-      order: 0,
+      order: existing?.order ?? 0,
       sets: _setsController.text,
       rest: _restController.text,
       trainingSystem: widget.draft.trainingSystem,
       items: items,
     );
 
-    await context.read<ProgramExerciseCubit>().addProgramExercise(
-      programExercise,
-    );
+    final cubit = context.read<ProgramExerciseCubit>();
+
+    if (_isEditMode) {
+      await cubit.updateProgramExercise(programExercise);
+    } else {
+      await cubit.addProgramExercise(programExercise);
+    }
 
     if (mounted) {
       context.pop();
@@ -122,7 +154,11 @@ class _ExerciseConfigurationViewState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Configure Program Exercise')),
+      appBar: AppBar(
+        title: Text(
+          _isEditMode ? 'Edit Program Exercise' : 'Configure Program Exercise',
+        ),
+      ),
 
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -178,8 +214,11 @@ class _ExerciseConfigurationViewState
 
           FilledButton(
             onPressed: _save,
-
-            child: const Text('Create Program Exercise'),
+            child: Text(
+              _isEditMode
+                  ? 'Update Program Exercise'
+                  : 'Create Program Exercise',
+            ),
           ),
         ],
       ),

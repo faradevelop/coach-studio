@@ -17,6 +17,8 @@ abstract final class AppRouteNames {
 
   static const configureProgramExercise = 'configureProgramExercise';
 
+  static const editProgramExercise = 'editProgramExercise';
+
   // Exercises
 
   static const exercises = 'exercises';

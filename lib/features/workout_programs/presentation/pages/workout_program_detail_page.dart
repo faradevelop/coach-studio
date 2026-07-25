@@ -1,5 +1,7 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
+import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_draft.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_state.dart';
@@ -186,15 +188,25 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                     onSelected: (value) {
                       switch (value) {
                         case 'edit':
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (_) => ExerciseConfigurationPage(
-                          //       program: program,
-                          //       existingExercise: programExercise,
-                          //     ),
-                          //   ),
-                          // );
+                          context.pushNamed(
+                            AppRouteNames.editProgramExercise,
+                            pathParameters: {
+                              'programId': program.id,
+                              'programExerciseId': programExercise.id,
+                            },
+                            extra: ProgramExerciseConfigurationArgs(
+                              program: program,
+                              draft: ProgramExerciseDraft(
+                                programId: program.id,
+                                day: programExercise.day,
+                                trainingSystem: programExercise.trainingSystem,
+                              ),
+                              exercises: details.items
+                                  .map((itemDetails) => itemDetails.exercise)
+                                  .toList(),
+                              existingExercise: programExercise,
+                            ),
+                          );
                           break;
 
                         case 'delete':
@@ -205,7 +217,6 @@ class _WorkoutProgramDetailView extends StatelessWidget {
 
                     itemBuilder: (_) => const [
                       PopupMenuItem(value: 'edit', child: Text('Edit')),
-
                       PopupMenuItem(value: 'delete', child: Text('Delete')),
                     ],
                   ),

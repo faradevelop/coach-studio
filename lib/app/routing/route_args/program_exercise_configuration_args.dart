@@ -1,4 +1,5 @@
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_draft.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 
@@ -7,9 +8,12 @@ class ProgramExerciseConfigurationArgs {
   final ProgramExerciseDraft draft;
   final List<Exercise> exercises;
 
+  final ProgramExercise? existingExercise;
+
   const ProgramExerciseConfigurationArgs({
     required this.program,
     required this.draft,
     required this.exercises,
+    this.existingExercise,
   });
 }
