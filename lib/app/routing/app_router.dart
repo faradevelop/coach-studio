@@ -2,58 +2,125 @@ import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/app_routes.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_selection_args.dart';
+import 'package:coach_studio/app/routing/scaffold_with_bottom_nav.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
-import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/add_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/edit_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/exercise_list_page.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
-import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/add_program_exercise_item_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/create_program_exercise_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/create_workout_program_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/exercise_configuration_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_detail_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_list_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
   AppRouter._();
 
+  // Root Navigator — internal pages are pushed onto this Navigator
+  // instead of the branch Navigator.
+  static final GlobalKey<NavigatorState> _rootNavigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'root');
+
+  // Navigator dedicated to each Branch (optional, but recommended by go_router).
+  static final GlobalKey<NavigatorState> _exerciseBranchNavigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'exerciseBranch');
+
+  static final GlobalKey<NavigatorState> _programBranchNavigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'programBranch');
+
   static final GoRouter router = GoRouter(
-    //initialLocation: AppRoutes.workoutProgramsList,
+    navigatorKey: _rootNavigatorKey,
     initialLocation: AppRoutes.exercises,
 
     routes: [
-      // workout program
+      // -----------------------------------------------------------------
+      // Main tabs
+      // -----------------------------------------------------------------
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return ScaffoldWithBottomNav(navigationShell: navigationShell);
+        },
+
+        branches: [
+          // ---------------- Exercises Branch ----------------
+          StatefulShellBranch(
+            navigatorKey: _exerciseBranchNavigatorKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.exercises,
+                name: AppRouteNames.exercises,
+                builder: (_, __) => const ExerciseListPage(),
+                // Note: There are no child routes defined here.
+                // Create/Edit routes are defined as top-level routes with parentNavigatorKey
+                // so they are pushed onto the root Navigator and do not cover the BottomNav.
+              ),
+            ],
+          ),
+
+          // ---------------- Programs Branch ----------------
+          StatefulShellBranch(
+            navigatorKey: _programBranchNavigatorKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.workoutProgramsList,
+                name: AppRouteNames.workoutProgramsList,
+                builder: (_, __) => const WorkoutProgramListPage(),
+              ),
+            ],
+          ),
+        ],
+      ),
+
+      // -----------------------------------------------------------------
+      // Exercises internal pages — pushed onto the root Navigator (without BottomNav).
+      // ExerciseCubit is provided globally in main.dart,
+      // so context.read<ExerciseCubit>() here accesses the same instance used by the list page.
+      // -----------------------------------------------------------------
       GoRoute(
-        path: AppRoutes.workoutProgramsList,
-        name: AppRouteNames.workoutProgramsList,
+        path: AppRoutes.createExercise,
+        name: AppRouteNames.createExercise,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (_, __) => const AddExercisePage(),
+      ),
+
+      GoRoute(
+        path: AppRoutes.editExercise,
+        name: AppRouteNames.editExercise,
+        parentNavigatorKey: _rootNavigatorKey,
         builder: (_, state) {
-          return BlocProvider(
-            create: (_) => sl<WorkoutProgramCubit>()..loadPrograms(),
-            child: const WorkoutProgramListPage(),
-          );
+          final exercise = state.extra as Exercise;
+          return EditExercisePage(exercise: exercise);
         },
       ),
 
+      // -----------------------------------------------------------------
+      // Programs internal pages — pushed onto the root Navigator
+      // instead of the Branch Navigator (without BottomNav).
+      // -----------------------------------------------------------------
       GoRoute(
         path: AppRoutes.createWorkoutProgram,
         name: AppRouteNames.createWorkoutProgram,
+        parentNavigatorKey: _rootNavigatorKey,
         builder: (_, state) {
           final program = state.extra as WorkoutProgram?;
-
-          return BlocProvider(
-            create: (_) => sl<WorkoutProgramCubit>(),
-            child: CreateWorkoutProgramPage(existingProgram: program),
-          );
+          return CreateWorkoutProgramPage(existingProgram: program);
         },
       ),
 
+      // Program Detail + its entire internal flow (create/select/configure)
+      // uses a separate non-stateful ShellRoute on the root Navigator.
+      // It is only used to provide a fresh instance of ProgramExerciseCubit
+      // to this subtree. When the entire flow is popped, the Cubit is disposed
+      // (according to the rule: state persistence across tabs is not required).
       ShellRoute(
+        parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state, child) {
           return BlocProvider(
             create: (_) => sl<ProgramExerciseCubit>(),
@@ -65,10 +132,8 @@ class AppRouter {
           GoRoute(
             path: AppRoutes.workoutProgramDetail,
             name: AppRouteNames.workoutProgramDetail,
-
             builder: (_, state) {
               final program = state.extra as WorkoutProgram;
-
               return WorkoutProgramDetailPage(program: program);
             },
 
@@ -76,10 +141,8 @@ class AppRouter {
               GoRoute(
                 path: 'program-exercises/create',
                 name: AppRouteNames.createProgramExercise,
-
                 builder: (_, state) {
                   final program = state.extra as WorkoutProgram;
-
                   return CreateProgramExercisePage(program: program);
                 },
 
@@ -87,16 +150,11 @@ class AppRouter {
                   GoRoute(
                     path: 'select',
                     name: AppRouteNames.addProgramExerciseItems,
-
                     builder: (_, state) {
                       final args = state.extra as ProgramExerciseSelectionArgs;
-
-                      return BlocProvider(
-                        create: (_) => sl<ExerciseCubit>()..loadExercises(),
-                        child: AddProgramExerciseItemPage(
-                          program: args.program,
-                          draft: args.draft,
-                        ),
+                      return AddProgramExerciseItemPage(
+                        program: args.program,
+                        draft: args.draft,
                       );
                     },
                   ),
@@ -104,11 +162,9 @@ class AppRouter {
                   GoRoute(
                     path: 'configure',
                     name: AppRouteNames.configureProgramExercise,
-
                     builder: (_, state) {
                       final args =
                           state.extra as ProgramExerciseConfigurationArgs;
-
                       return ExerciseConfigurationPage(
                         program: args.program,
                         draft: args.draft,
@@ -117,49 +173,6 @@ class AppRouter {
                     },
                   ),
                 ],
-              ),
-            ],
-          ),
-        ],
-      ),
-
-      //Exercise
-      ShellRoute(
-        builder: (context, state, child) {
-          return BlocProvider(
-            create: (_) => sl<ExerciseCubit>()..loadExercises(),
-            child: child,
-          );
-        },
-
-        routes: [
-          GoRoute(
-            path: AppRoutes.exercises,
-            name: AppRouteNames.exercises,
-
-            builder: (_, state) {
-              return const ExerciseListPage();
-            },
-
-            routes: [
-              GoRoute(
-                path: 'create',
-                name: AppRouteNames.createExercise,
-
-                builder: (_, state) {
-                  return const AddExercisePage();
-                },
-              ),
-
-              GoRoute(
-                path: ':exerciseId/edit',
-                name: AppRouteNames.editExercise,
-
-                builder: (_, state) {
-                  final exercise = state.extra as Exercise;
-
-                  return EditExercisePage(exercise: exercise);
-                },
               ),
             ],
           ),

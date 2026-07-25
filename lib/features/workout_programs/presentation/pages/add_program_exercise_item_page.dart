@@ -1,6 +1,5 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
-import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
@@ -65,137 +64,129 @@ class _AddProgramExerciseItemPageState
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ExerciseCubit>()..loadExercises(),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Select Exercise')),
 
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Select Exercise')),
+      body: BlocBuilder<ExerciseCubit, ExerciseState>(
+        builder: (context, state) {
+          return switch (state) {
+            ExerciseLoading() => const Center(
+              child: CircularProgressIndicator(),
+            ),
 
-        body: BlocBuilder<ExerciseCubit, ExerciseState>(
-          builder: (context, state) {
-            return switch (state) {
-              ExerciseLoading() => const Center(
-                child: CircularProgressIndicator(),
-              ),
-
-              ExerciseLoaded(:final exercises) => Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: const InputDecoration(
-                        hintText: 'Search exercise...',
-                        prefixIcon: Icon(Icons.search),
-                        border: OutlineInputBorder(),
-                      ),
-
-                      onChanged: (value) {
-                        setState(() {
-                          _query = value;
-                        });
-                      },
+            ExerciseLoaded(:final exercises) => Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: const InputDecoration(
+                      hintText: 'Search exercise...',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
                     ),
+
+                    onChanged: (value) {
+                      setState(() {
+                        _query = value;
+                      });
+                    },
                   ),
+                ),
 
-                  Expanded(
-                    child: Builder(
-                      builder: (_) {
-                        final filtered = _filterExercises(exercises);
+                Expanded(
+                  child: Builder(
+                    builder: (_) {
+                      final filtered = _filterExercises(exercises);
 
-                        if (filtered.isEmpty) {
-                          return const Center(child: Text('No exercise found'));
-                        }
+                      if (filtered.isEmpty) {
+                        return const Center(child: Text('No exercise found'));
+                      }
 
-                        return ListView.builder(
-                          itemCount: filtered.length,
-                          itemBuilder: (_, index) {
-                            final exercise = filtered[index];
+                      return ListView.builder(
+                        itemCount: filtered.length,
+                        itemBuilder: (_, index) {
+                          final exercise = filtered[index];
 
-                            return Card(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 6,
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 6,
+                            ),
+
+                            child: ListTile(
+                              selected: _selectedExercises.contains(exercise),
+                              title: Text(exercise.name),
+                              subtitle: Text(
+                                '${exercise.targetMuscle} • '
+                                '${exercise.equipment}',
                               ),
 
-                              child: ListTile(
-                                selected: _selectedExercises.contains(exercise),
-                                title: Text(exercise.name),
-                                subtitle: Text(
-                                  '${exercise.targetMuscle} • '
-                                  '${exercise.equipment}',
-                                ),
+                              trailing: const Icon(
+                                Icons.arrow_forward_ios,
+                                size: 18,
+                              ),
 
-                                trailing: const Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: 18,
-                                ),
+                              onTap: () {
+                                setState(() {
+                                  if (_selectedExercises.contains(exercise)) {
+                                    _selectedExercises.remove(exercise);
 
-                                onTap: () {
-                                  setState(() {
-                                    if (_selectedExercises.contains(exercise)) {
-                                      _selectedExercises.remove(exercise);
+                                    return;
+                                  }
 
-                                      return;
-                                    }
-
-                                    if (_selectedExercises.length >=
-                                        _maxSelection) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'You can select only $_maxSelection exercise(s)',
-                                          ),
+                                  if (_selectedExercises.length >=
+                                      _maxSelection) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'You can select only $_maxSelection exercise(s)',
                                         ),
-                                      );
+                                      ),
+                                    );
 
-                                      return;
-                                    }
+                                    return;
+                                  }
 
-                                    _selectedExercises.add(exercise);
-                                  });
-                                },
+                                  _selectedExercises.add(exercise);
+                                });
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+
+                  child: FilledButton(
+                    onPressed: _selectedExercises.length != _maxSelection
+                        ? null
+                        : () {
+                            context.pushReplacementNamed(
+                              AppRouteNames.configureProgramExercise,
+                              pathParameters: {'programId': widget.program.id},
+                              extra: ProgramExerciseConfigurationArgs(
+                                program: widget.program,
+                                draft: widget.draft,
+                                exercises: _selectedExercises,
                               ),
                             );
                           },
-                        );
-                      },
-                    ),
+
+                    child: const Text('Configure'),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
+                ),
+              ],
+            ),
 
-                    child: FilledButton(
-                      onPressed: _selectedExercises.length != _maxSelection
-                          ? null
-                          : () {
-                              context.pushReplacementNamed(
-                                AppRouteNames.configureProgramExercise,
-                                pathParameters: {
-                                  'programId': widget.program.id,
-                                },
-                                extra: ProgramExerciseConfigurationArgs(
-                                  program: widget.program,
-                                  draft: widget.draft,
-                                  exercises: _selectedExercises,
-                                ),
-                              );
-                            },
+            ExerciseError(:final message) => Center(child: Text(message)),
 
-                      child: const Text('Configure'),
-                    ),
-                  ),
-                ],
-              ),
-
-              ExerciseError(:final message) => Center(child: Text(message)),
-
-              _ => const SizedBox(),
-            };
-          },
-        ),
+            _ => const SizedBox(),
+          };
+        },
       ),
     );
   }

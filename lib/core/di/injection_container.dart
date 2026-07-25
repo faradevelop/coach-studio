@@ -51,11 +51,20 @@ Future<void> initDependencies() async {
     ),
   );
 
-  //Bloc
+  // Bloc / Cubit
+  //
+  // ExerciseCubit and WorkoutProgramCubit are intentionally registered as Singletons:
+  // These two Cubits are provided above the MaterialApp (outside of GoRouter)
+  // so that both the list screens (inside Tabs) and internal pages such as Add/Edit,
+  // which are pushed on the root Navigator, can access the same instance.
+  // This prevents the list state from being lost when navigating to Add/Edit
+  // and returning back.
+  sl.registerLazySingleton(() => ExerciseCubit(repository: sl()));
+  sl.registerLazySingleton(() => WorkoutProgramCubit(repository: sl()));
 
-  sl.registerFactory(() => ExerciseCubit(repository: sl()));
-
-  sl.registerFactory(() => WorkoutProgramCubit(repository: sl()));
-
+  // ProgramExerciseCubit remains a Factory:
+  // A new instance is created every time we enter the Program Detail flow,
+  // and it is disposed when leaving that flow (as required).
+  // Persisting its state across tabs is not needed.
   sl.registerFactory(() => ProgramExerciseCubit(repository: sl()));
 }
