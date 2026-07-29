@@ -10,7 +10,6 @@ import 'package:coach_studio/features/workout_programs/domain/enums/program_goal
 import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/training_system.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:shamsi_date/shamsi_date.dart';
@@ -890,50 +889,50 @@ class WorkoutProgramPdfGenerator {
     );
   }
 
-  pw.Widget _numberBadge(int number, pw.Font boldFont) {
-    return pw.Container(
-      width: 20,
-      height: 20,
-      alignment: pw.Alignment.center,
-      decoration: pw.BoxDecoration(
-        color: _black,
-        borderRadius: pw.BorderRadius.circular(4),
-      ),
-      child: pw.Text(
-        '$number',
-        style: pw.TextStyle(font: boldFont, fontSize: 11, color: _orange),
-      ),
-    );
-  }
+  // pw.Widget _numberBadge(int number, pw.Font boldFont) {
+  //   return pw.Container(
+  //     width: 20,
+  //     height: 20,
+  //     alignment: pw.Alignment.center,
+  //     decoration: pw.BoxDecoration(
+  //       color: _black,
+  //       borderRadius: pw.BorderRadius.circular(4),
+  //     ),
+  //     child: pw.Text(
+  //       '$number',
+  //       style: pw.TextStyle(font: boldFont, fontSize: 11, color: _orange),
+  //     ),
+  //   );
+  // }
 
-  pw.Widget _exerciseThumbnail(
-    Exercise? exercise,
-    Map<String, pw.MemoryImage> imageCache,
-    pw.MemoryImage muxcle,
-  ) {
-    if (exercise == null) return pw.SizedBox();
+  // pw.Widget _exerciseThumbnail(
+  //   Exercise? exercise,
+  //   Map<String, pw.MemoryImage> imageCache,
+  //   pw.MemoryImage muxcle,
+  // ) {
+  //   if (exercise == null) return pw.SizedBox();
 
-    final image = imageCache[exercise.id];
+  //   final image = imageCache[exercise.id];
 
-    if (image != null) {
-      return pw.SizedBox(
-        height: 30,
-        child: pw.Image(image, fit: pw.BoxFit.contain),
-      );
-    }
+  //   if (image != null) {
+  //     return pw.SizedBox(
+  //       height: 30,
+  //       child: pw.Image(image, fit: pw.BoxFit.contain),
+  //     );
+  //   }
 
-    return pw.SizedBox();
+  //   return pw.SizedBox();
 
-    // return pw.Container(
-    //   height: 30,
-    //   alignment: pw.Alignment.center,
-    //   child: pw.Text(
-    //     exercise.targetMuscle,
-    //     textAlign: pw.TextAlign.center,
-    //     style: const pw.TextStyle(fontSize: 6, color: PdfColors.grey500),
-    //   ),
-    // );
-  }
+  //   // return pw.Container(
+  //   //   height: 30,
+  //   //   alignment: pw.Alignment.center,
+  //   //   child: pw.Text(
+  //   //     exercise.targetMuscle,
+  //   //     textAlign: pw.TextAlign.center,
+  //   //     style: const pw.TextStyle(fontSize: 6, color: PdfColors.grey500),
+  //   //   ),
+  //   // );
+  // }
 
   // -------------------------------------------------------------------
   // صفحه توضیحات (Notes)
