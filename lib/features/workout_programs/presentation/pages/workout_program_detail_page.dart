@@ -1,13 +1,21 @@
+import 'dart:typed_data';
+
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
+import 'package:coach_studio/features/workout_programs/data/services/workout_program_pdf_generator.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_draft.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_details.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_state.dart';
+import 'package:coach_studio/features/workout_programs/presentation/widgets/athlete_info_form_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 
 class WorkoutProgramDetailPage extends StatelessWidget {
   final WorkoutProgram program;
@@ -75,10 +83,103 @@ class _WorkoutProgramDetailView extends StatelessWidget {
     );
   }
 
+  ///////////////////////
+  Future<void> _previewPdf(BuildContext context) async {
+    final state = context.read<ProgramExerciseCubit>().state;
+
+    if (state is! ProgramExerciseLoaded || state.exercises.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('ابتدا حداقل یک تمرین اضافه کنید')),
+      );
+      return;
+    }
+
+    // دیتای ورزشکار (میتونی از حالت یا دیفالت استفاده کنی)
+    final athlete = AthleteInfo(
+      fullName: 'ورزشکار',
+      weight: '--',
+      height: '--',
+      date: DateTime.now(),
+    );
+
+    final details = WorkoutProgramDetails(
+      program: program,
+      exercises: state.exercises,
+    );
+
+    // تولید PDF
+    final bytes = await WorkoutProgramPdfGenerator().generate(
+      details: details,
+      athlete: athlete,
+    );
+
+    if (!context.mounted) return;
+
+    // ✅ نمایش پیش‌نمایش PDF
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PdfPreview(
+          build: (format) async => bytes,
+          canChangeOrientation: true,
+          canChangePageFormat: true,
+          canDebug: true,
+          allowPrinting: true,
+          allowSharing: true,
+          initialPageFormat: PdfPageFormat.a4,
+          onError: (context, error) {
+            print('PDF Error: $error');
+            return Text('eeeeeeeeeeeeeeeeeeeeee');
+          },
+        ),
+      ),
+    );
+  }
+  ////////////////////////
+
+  // یک متد جدید داخل _WorkoutProgramDetailView
+  Future<void> _generatePdf(BuildContext context) async {
+    final state = context.read<ProgramExerciseCubit>().state;
+
+    if (state is! ProgramExerciseLoaded || state.exercises.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('ابتدا حداقل یک تمرین اضافه کنید')),
+      );
+      return;
+    }
+
+    final athlete = await showDialog<AthleteInfo>(
+      context: context,
+      builder: (_) => const AthleteInfoFormDialog(),
+    );
+    if (athlete == null || !context.mounted) return;
+
+    final details = WorkoutProgramDetails(
+      program: program,
+      exercises: state.exercises,
+    );
+
+    final bytes = await WorkoutProgramPdfGenerator().generate(
+      details: details,
+      athlete: athlete,
+    );
+
+    await Printing.sharePdf(bytes: bytes, filename: '${program.title}.pdf');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(program.title)),
+      appBar: AppBar(
+        title: Text(program.title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf_outlined),
+            tooltip: 'Generate PDF',
+            onPressed: () => _generatePdf(context),
+          ),
+        ],
+      ),
 
       body: Padding(
         padding: const EdgeInsets.all(16),
