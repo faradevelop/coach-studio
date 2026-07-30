@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => sl<WorkoutProgramCubit>()..loadPrograms()),
       ],
       child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
         title: 'Coach Studio',
         theme: AppTheme.light,
         routerConfig: AppRouter.router,
