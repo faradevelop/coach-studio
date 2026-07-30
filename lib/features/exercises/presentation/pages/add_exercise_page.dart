@@ -11,8 +11,6 @@ class AddExercisePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Exercise')),
-
       body: BlocBuilder<ExerciseCubit, ExerciseState>(
         builder: (context, state) {
           final isLoading = state is ExerciseLoaded && state.isSubmitting;

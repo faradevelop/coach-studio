@@ -9,7 +9,7 @@ class EmptyExercises extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.fitness_center, size: 64),
+          const Icon(Icons.fitness_center_rounded, size: 64),
 
           const SizedBox(height: 16),
 
