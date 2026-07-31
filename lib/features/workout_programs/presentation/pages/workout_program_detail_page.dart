@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/features/workout_programs/data/services/workout_program_pdf_generator.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
@@ -53,132 +54,6 @@ class _WorkoutProgramDetailView extends StatelessWidget {
     }
 
     return map;
-  }
-
-  void _showDeleteDialog(BuildContext context, String id) {
-    showDialog(
-      context: context,
-      builder: (_) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.42),
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: Colors.white.withOpacity(0.55)),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: _orange.withOpacity(0.15),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.delete_outline_rounded,
-                        color: _orange,
-                        size: 28,
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    const Text(
-                      'Delete Exercise',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: _charcoal,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Are you sure you want to delete\nthis exercise?',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 15,
-                        height: 1.4,
-                        color: _charcoal.withOpacity(0.75),
-                      ),
-                    ),
-                    const SizedBox(height: 28),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () => context.pop(),
-                            child: Container(
-                              height: 48,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(
-                                  color: Colors.white.withOpacity(0.6),
-                                ),
-                              ),
-                              child: const Text(
-                                'Cancel',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: _charcoal,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () async {
-                              await context
-                                  .read<ProgramExerciseCubit>()
-                                  .deleteExercise(id);
-                              if (context.mounted) context.pop();
-                            },
-                            child: Container(
-                              height: 48,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: _orange,
-                                borderRadius: BorderRadius.circular(14),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: _orange.withOpacity(0.35),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: const Text(
-                                'Delete',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
   }
 
   Future<void> _generatePdf(BuildContext context) async {
@@ -375,7 +250,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                       Row(
                         children: [
                           const Text(
-                            'Exercises',
+                            'تمرین‌ها',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
@@ -415,15 +290,15 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                                     color: Colors.white,
                                     size: 18,
                                   ),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    'Add',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                    ),
-                                  ),
+                                  // SizedBox(width: 6),
+                                  // Text(
+                                  //   '',
+                                  //   style: TextStyle(
+                                  //     color: Colors.white,
+                                  //     fontWeight: FontWeight.w600,
+                                  //     fontSize: 14,
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -516,7 +391,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        'Day $day',
+                        'روز $day',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -555,13 +430,13 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '${pe.sets} sets · ${pe.rest} rest',
+                                '${pe.sets} ست • ${pe.rest} استراحت',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: _charcoal.withOpacity(0.65),
+                                  color: _charcoal,
                                 ),
                               ),
-                              const SizedBox(width: 6),
+                              const SizedBox(width: 12),
                               PopupMenuButton<String>(
                                 padding: EdgeInsets.zero,
                                 iconSize: 18,
@@ -593,27 +468,44 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                                       );
                                       break;
                                     case 'delete':
-                                      _showDeleteDialog(context, pe.id);
+                                      //_showDeleteDialog(context, pe.id);
+                                      () async {
+                                        final result = await showDialog<bool>(
+                                          context: context,
+
+                                          builder: (_) => DeleteDialog(
+                                            itemName: '',
+                                            title: 'نمرین',
+                                          ),
+                                        );
+
+                                        if (result == true && context.mounted) {
+                                          context
+                                              .read<ProgramExerciseCubit>()
+                                              .deleteExercise(pe.id);
+                                        }
+                                      };
+
                                       break;
                                   }
                                 },
                                 itemBuilder: (_) => const [
                                   PopupMenuItem(
                                     value: 'edit',
-                                    child: Text('Edit'),
+                                    child: Text('ویرایش'),
                                   ),
                                   PopupMenuItem(
                                     value: 'delete',
                                     child: Text(
-                                      'Delete',
+                                      'حذف',
                                       style: TextStyle(color: _orange),
                                     ),
                                   ),
                                 ],
                                 child: Icon(
-                                  Icons.more_vert_rounded,
-                                  size: 18,
-                                  color: _charcoal.withOpacity(0.5),
+                                  Icons.more_horiz_rounded,
+                                  size: 20,
+                                  color: _charcoal,
                                 ),
                               ),
                             ],
@@ -649,19 +541,19 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    '${item.reps} reps',
+                                    '${item.reps} تکرار •',
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: _charcoal.withOpacity(0.7),
+                                      color: _charcoal,
                                     ),
                                   ),
                                   const SizedBox(width: 10),
                                   Text(
-                                    'T ${item.tempo}',
+                                    'تمپو ${item.tempo}',
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: _orange,
-                                      fontWeight: FontWeight.w600,
+                                      color: _charcoal,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ],
