@@ -25,9 +25,9 @@ class ScaffoldWithBottomNav extends StatelessWidget {
         ),
 
         // Glow
-        Positioned(
+        PositionedDirectional(
           top: -80,
-          right: -50,
+          start: -50,
           child: Container(
             width: 220,
             height: 220,
@@ -50,9 +50,9 @@ class ScaffoldWithBottomNav extends StatelessWidget {
           bottomNavigationBar: null, // use custom bottom nav bar instead
         ),
         // Floating Glass Navbar
-        Positioned(
-          left: 0,
-          right: 0,
+        PositionedDirectional(
+          start: 0,
+          end: 0,
           bottom: 0,
           child: GlassBottomNav(
             currentIndex: navigationShell.currentIndex,
@@ -80,7 +80,7 @@ class GlassBottomNav extends StatelessWidget {
 
   final List<_NavItemData> _items = [
     _NavItemData(
-      name: 'Program',
+      name: 'برنامه',
       icon: FaIcon(FontAwesomeIcons.list, size: 20, color: AppColors.charcoal),
       activeIcon: FaIcon(
         FontAwesomeIcons.list,
@@ -89,7 +89,7 @@ class GlassBottomNav extends StatelessWidget {
       ),
     ),
     _NavItemData(
-      name: 'Exercise',
+      name: 'تمرین',
       icon: FaIcon(
         FontAwesomeIcons.dumbbell,
         size: 20,
