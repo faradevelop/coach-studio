@@ -41,10 +41,12 @@ class ExerciseListPage extends StatelessWidget {
                           ? const EmptyExercises()
                           : ListView.builder(
                               padding: const EdgeInsets.symmetric(vertical: 12),
-                              itemCount: exercises.length,
+                              itemCount: exercises.length + 1,
                               itemBuilder: (context, index) {
+                                if (index == exercises.length) {
+                                  return SizedBox(height: 60);
+                                }
                                 final exercise = exercises[index];
-
                                 return ExerciseCard(
                                   exercise: exercise,
                                   onEdit: () {
