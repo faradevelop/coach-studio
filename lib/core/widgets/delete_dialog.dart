@@ -29,46 +29,48 @@ class DeleteDialog extends StatelessWidget {
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  //mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.charcoal,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-
                     Container(
-                      width: 54,
-                      height: 54,
+                      width: 42,
+                      height: 42,
                       decoration: BoxDecoration(
-                        color: AppColors.orange.withOpacity(0.15),
+                        color: AppColors.orange.withOpacity(0.2),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
                         Icons.delete_outline_rounded,
                         color: AppColors.orange,
-                        size: 28,
+                        size: 26,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'حذف $title',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.charcoal,
                       ),
                     ),
                   ],
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
 
-                Text(
-                  'آیا از حذف $title "$itemName" مطمئن هستید؟',
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                    fontSize: 15,
-                    height: 1.4,
-                    color: AppColors.charcoal.withOpacity(0.75),
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 6),
+                  child: Text(
+                    'آیا از حذف $title "$itemName" مطمئن هستید؟',
+                    textAlign: TextAlign.end,
+                    style: TextStyle(
+                      fontSize: 15,
+                      height: 1.4,
+                      color: AppColors.charcoal.withOpacity(0.90),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -78,7 +80,7 @@ class DeleteDialog extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () => context.pop(false),
                         child: Container(
-                          height: 48,
+                          height: 42,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.5),
@@ -104,7 +106,7 @@ class DeleteDialog extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () => context.pop(true),
                         child: Container(
-                          height: 48,
+                          height: 42,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: AppColors.orange,
