@@ -25,7 +25,9 @@ class AppButton extends StatelessWidget {
       child: FilledButton(
         onPressed: isLoading ? null : onPressed,
         style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(AppColors.orange),
+          backgroundColor: onPressed == null
+              ? WidgetStatePropertyAll(AppColors.grey)
+              : WidgetStatePropertyAll(AppColors.orange),
         ),
         child: isLoading
             ? const SizedBox(
