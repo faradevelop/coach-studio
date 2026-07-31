@@ -1,4 +1,5 @@
-// lib/features/workout_programs/presentation/widgets/athlete_info_form_dialog.dart
+import 'dart:ui';
+import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,9 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
   final _nameController = TextEditingController();
   final _heightController = TextEditingController();
   final _weightController = TextEditingController();
+
+  static const Color _orange = Color(0xFFFF6B35);
+  static const Color _charcoal = Color(0xFF2D2D2D);
 
   @override
   void dispose() {
@@ -38,47 +42,142 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('اطلاعات ورزشکار'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'نام و نام خانوادگی',
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(22, 26, 22, 20),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.42),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.55),
+                width: 1.2,
               ),
-              validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? 'الزامی' : null,
             ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _heightController,
-              decoration: const InputDecoration(labelText: 'قد (cm)'),
-              keyboardType: TextInputType.number,
-              validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? 'الزامی' : null,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // آیکون
+                  Container(
+                    width: 54,
+                    height: 54,
+                    decoration: BoxDecoration(
+                      color: _orange.withOpacity(0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.person_outline_rounded,
+                      color: _orange,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // عنوان
+                  const Text(
+                    'اطلاعات ورزشکار',
+                    style: TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w700,
+                      color: _charcoal,
+                    ),
+                  ),
+                  const SizedBox(height: 22),
+
+                  // فیلدها
+                  AppTextField(
+                    controller: _nameController,
+                    label: 'نام و نام خانوادگی',
+                    validator: (v) =>
+                        (v == null || v.trim().isEmpty) ? 'الزامی' : null,
+                  ),
+                  const SizedBox(height: 14),
+                  AppTextField(
+                    controller: _heightController,
+                    label: 'قد (cm)',
+                    validator: (v) =>
+                        (v == null || v.trim().isEmpty) ? 'الزامی' : null,
+                  ),
+                  const SizedBox(height: 14),
+                  AppTextField(
+                    controller: _weightController,
+                    label: 'وزن (kg)',
+                    validator: (v) =>
+                        (v == null || v.trim().isEmpty) ? 'الزامی' : null,
+                  ),
+                  const SizedBox(height: 26),
+
+                  // دکمه‌ها
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: Container(
+                            height: 48,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.6),
+                              ),
+                            ),
+                            child: const Text(
+                              'انصراف',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: _charcoal,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: _submit,
+                          child: Container(
+                            height: 48,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: _orange,
+                              borderRadius: BorderRadius.circular(14),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: _orange.withOpacity(0.35),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: const Text(
+                              'تایید و ساخت PDF',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _weightController,
-              decoration: const InputDecoration(labelText: 'وزن (kg)'),
-              keyboardType: TextInputType.number,
-              validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? 'الزامی' : null,
-            ),
-          ],
+          ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('انصراف'),
-        ),
-        FilledButton(onPressed: _submit, child: const Text('تایید و ساخت PDF')),
-      ],
     );
   }
 }
