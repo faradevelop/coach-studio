@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/custom_search_bar.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
@@ -112,7 +113,7 @@ class _AddProgramExerciseItemPageState
                     Column(
                       children: [
                         const Text(
-                          'Select Exercise',
+                          'انتخاب تمرین',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -138,7 +139,7 @@ class _AddProgramExerciseItemPageState
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: _orange.withOpacity(0.15),
+                        color: _cream.withOpacity(0.70),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -154,47 +155,14 @@ class _AddProgramExerciseItemPageState
                 ),
               ),
 
-              // Search
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.45),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.55),
-                        ),
-                      ),
-                      child: TextField(
-                        controller: _searchController,
-                        style: const TextStyle(color: _charcoal, fontSize: 15),
-                        cursorColor: _orange,
-                        decoration: InputDecoration(
-                          hintText: 'Search exercise...',
-                          hintStyle: TextStyle(
-                            color: _charcoal.withOpacity(0.45),
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search_rounded,
-                            color: _orange,
-                            size: 22,
-                          ),
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 14,
-                          ),
-                        ),
-                        onChanged: (value) {
-                          setState(() => _query = value);
-                        },
-                      ),
-                    ),
-                  ),
+                child: CustomSearchBar(
+                  hint: 'جستجو ...',
+                  controller: _searchController,
+                  onChanged: (value) {
+                    setState(() => _query = value);
+                  },
                 ),
               ),
 
@@ -254,7 +222,7 @@ class _AddProgramExerciseItemPageState
                                         ).showSnackBar(
                                           SnackBar(
                                             content: Text(
-                                              'You can select only $_maxSelection exercise(s)',
+                                              'فقط $_maxSelection تمرین میتوانید انتخاب کنید.',
                                             ),
                                             behavior: SnackBarBehavior.floating,
                                           ),
@@ -370,7 +338,7 @@ class _AddProgramExerciseItemPageState
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
                 child: AppButton(
-                  text: 'Configure',
+                  text: 'تایید و مرحله بعد',
                   onPressed: _selectedExercises.length != _maxSelection
                       ? null
                       : () {
