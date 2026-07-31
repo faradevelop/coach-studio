@@ -12,24 +12,6 @@ class CustomAppBar extends StatelessWidget {
       padding: const EdgeInsets.only(top: 20),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: onPressed,
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.orange,
-                borderRadius: BorderRadius.circular(50),
-                border: Border.all(color: Colors.white.withOpacity(0.4)),
-              ),
-              child: const Icon(
-                Icons.add_rounded,
-                color: Colors.white,
-                size: 30,
-              ),
-            ),
-          ),
-          const Spacer(),
           IntrinsicWidth(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -54,6 +36,24 @@ class CustomAppBar extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+          const Spacer(),
+          GestureDetector(
+            onTap: onPressed,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppColors.orange,
+                borderRadius: BorderRadius.circular(50),
+                border: Border.all(color: Colors.white.withOpacity(0.4)),
+              ),
+              child: const Icon(
+                Icons.add_rounded,
+                color: Colors.white,
+                size: 30,
+              ),
             ),
           ),
         ],
