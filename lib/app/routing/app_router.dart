@@ -37,7 +37,7 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRoutes.exercises,
+    initialLocation: AppRoutes.workoutProgramsList,
 
     routes: [
       // -----------------------------------------------------------------
@@ -49,6 +49,18 @@ class AppRouter {
         },
 
         branches: [
+          // ---------------- Programs Branch ----------------
+          StatefulShellBranch(
+            navigatorKey: _programBranchNavigatorKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.workoutProgramsList,
+                name: AppRouteNames.workoutProgramsList,
+                builder: (_, __) => const WorkoutProgramListPage(),
+              ),
+            ],
+          ),
+
           // ---------------- Exercises Branch ----------------
           StatefulShellBranch(
             navigatorKey: _exerciseBranchNavigatorKey,
@@ -60,18 +72,6 @@ class AppRouter {
                 // Note: There are no child routes defined here.
                 // Create/Edit routes are defined as top-level routes with parentNavigatorKey
                 // so they are pushed onto the root Navigator and do not cover the BottomNav.
-              ),
-            ],
-          ),
-
-          // ---------------- Programs Branch ----------------
-          StatefulShellBranch(
-            navigatorKey: _programBranchNavigatorKey,
-            routes: [
-              GoRoute(
-                path: AppRoutes.workoutProgramsList,
-                name: AppRouteNames.workoutProgramsList,
-                builder: (_, __) => const WorkoutProgramListPage(),
               ),
             ],
           ),
