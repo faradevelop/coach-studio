@@ -1,5 +1,7 @@
+import 'dart:ui';
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
+import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
@@ -28,10 +30,12 @@ class AddProgramExerciseItemPage extends StatefulWidget {
 class _AddProgramExerciseItemPageState
     extends State<AddProgramExerciseItemPage> {
   final List<Exercise> _selectedExercises = [];
-
   final TextEditingController _searchController = TextEditingController();
-
   String _query = '';
+
+  static const Color _orange = Color(0xFFFF6B35);
+  static const Color _cream = Color(0xFFFFF8F0);
+  static const Color _charcoal = Color(0xFF2D2D2D);
 
   @override
   void dispose() {
@@ -49,12 +53,9 @@ class _AddProgramExerciseItemPageState
   }
 
   List<Exercise> _filterExercises(List<Exercise> exercises) {
-    if (_query.trim().isEmpty) {
-      return exercises;
-    }
+    if (_query.trim().isEmpty) return exercises;
 
     final query = _query.toLowerCase();
-
     return exercises.where((exercise) {
       return exercise.name.toLowerCase().contains(query) ||
           exercise.targetMuscle.toLowerCase().contains(query) ||
@@ -65,128 +66,329 @@ class _AddProgramExerciseItemPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Select Exercise')),
-
-      body: BlocBuilder<ExerciseCubit, ExerciseState>(
-        builder: (context, state) {
-          return switch (state) {
-            ExerciseLoading() => const Center(
-              child: CircularProgressIndicator(),
-            ),
-
-            ExerciseLoaded(:final exercises) => Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: const InputDecoration(
-                      hintText: 'Search exercise...',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(),
+      backgroundColor: _cream,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFFF9A5A),
+              Color(0xFFFFC9A0),
+              Color(0xFFFFF0E0),
+              _cream,
+            ],
+            stops: [0.0, 0.18, 0.45, 1.0],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // AppBar
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.4),
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 18,
+                          color: _charcoal,
+                        ),
+                      ),
                     ),
+                    const Spacer(),
+                    Column(
+                      children: [
+                        const Text(
+                          'Select Exercise',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: _charcoal,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Container(
+                          height: 3,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: _orange,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    // نشانگر تعداد انتخاب‌شده
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _orange.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '${_selectedExercises.length}/$_maxSelection',
+                        style: const TextStyle(
+                          color: _orange,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
-                    onChanged: (value) {
-                      setState(() {
-                        _query = value;
-                      });
-                    },
+              // Search
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.45),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.55),
+                        ),
+                      ),
+                      child: TextField(
+                        controller: _searchController,
+                        style: const TextStyle(color: _charcoal, fontSize: 15),
+                        cursorColor: _orange,
+                        decoration: InputDecoration(
+                          hintText: 'Search exercise...',
+                          hintStyle: TextStyle(
+                            color: _charcoal.withOpacity(0.45),
+                          ),
+                          prefixIcon: Icon(
+                            Icons.search_rounded,
+                            color: _orange,
+                            size: 22,
+                          ),
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          setState(() => _query = value);
+                        },
+                      ),
+                    ),
                   ),
                 ),
+              ),
 
-                Expanded(
-                  child: Builder(
-                    builder: (_) {
-                      final filtered = _filterExercises(exercises);
+              // لیست تمرین‌ها
+              Expanded(
+                child: BlocBuilder<ExerciseCubit, ExerciseState>(
+                  builder: (context, state) {
+                    return switch (state) {
+                      ExerciseLoading() => const Center(
+                        child: CircularProgressIndicator(color: _orange),
+                      ),
+                      ExerciseError(:final message) => Center(
+                        child: Text(
+                          message,
+                          style: const TextStyle(color: _charcoal),
+                        ),
+                      ),
+                      ExerciseLoaded(:final exercises) => Builder(
+                        builder: (_) {
+                          final filtered = _filterExercises(exercises);
 
-                      if (filtered.isEmpty) {
-                        return const Center(child: Text('No exercise found'));
-                      }
-
-                      return ListView.builder(
-                        itemCount: filtered.length,
-                        itemBuilder: (_, index) {
-                          final exercise = filtered[index];
-
-                          return Card(
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 6,
-                            ),
-
-                            child: ListTile(
-                              selected: _selectedExercises.contains(exercise),
-                              title: Text(exercise.name),
-                              subtitle: Text(
-                                '${exercise.targetMuscle} • '
-                                '${exercise.equipment}',
+                          if (filtered.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'No exercise found',
+                                style: TextStyle(
+                                  color: _charcoal.withOpacity(0.6),
+                                  fontSize: 15,
+                                ),
                               ),
+                            );
+                          }
 
-                              trailing: const Icon(
-                                Icons.arrow_forward_ios,
-                                size: 18,
-                              ),
+                          return ListView.builder(
+                            padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
+                            itemCount: filtered.length,
+                            itemBuilder: (_, index) {
+                              final exercise = filtered[index];
+                              final isSelected = _selectedExercises.contains(
+                                exercise,
+                              );
 
-                              onTap: () {
-                                setState(() {
-                                  if (_selectedExercises.contains(exercise)) {
-                                    _selectedExercises.remove(exercise);
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      if (isSelected) {
+                                        _selectedExercises.remove(exercise);
+                                        return;
+                                      }
 
-                                    return;
-                                  }
+                                      if (_selectedExercises.length >=
+                                          _maxSelection) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'You can select only $_maxSelection exercise(s)',
+                                            ),
+                                            behavior: SnackBarBehavior.floating,
+                                          ),
+                                        );
+                                        return;
+                                      }
 
-                                  if (_selectedExercises.length >=
-                                      _maxSelection) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'You can select only $_maxSelection exercise(s)',
+                                      _selectedExercises.add(exercise);
+                                    });
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                        sigmaX: 12,
+                                        sigmaY: 12,
+                                      ),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 14,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: isSelected
+                                              ? _orange.withOpacity(0.18)
+                                              : Colors.white.withOpacity(0.40),
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
+                                          border: Border.all(
+                                            color: isSelected
+                                                ? _orange.withOpacity(0.6)
+                                                : Colors.white.withOpacity(
+                                                    0.55,
+                                                  ),
+                                            width: isSelected ? 1.5 : 1.1,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            // آیکون انتخاب
+                                            Container(
+                                              width: 24,
+                                              height: 24,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: isSelected
+                                                    ? _orange
+                                                    : Colors.white.withOpacity(
+                                                        0.5,
+                                                      ),
+                                                border: Border.all(
+                                                  color: isSelected
+                                                      ? _orange
+                                                      : _charcoal.withOpacity(
+                                                          0.3,
+                                                        ),
+                                                ),
+                                              ),
+                                              child: isSelected
+                                                  ? const Icon(
+                                                      Icons.check_rounded,
+                                                      size: 16,
+                                                      color: Colors.white,
+                                                    )
+                                                  : null,
+                                            ),
+                                            const SizedBox(width: 14),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    exercise.name,
+                                                    style: const TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: _charcoal,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 3),
+                                                  Text(
+                                                    '${exercise.targetMuscle} • ${exercise.equipment}',
+                                                    style: TextStyle(
+                                                      fontSize: 12.5,
+                                                      color: _charcoal
+                                                          .withOpacity(0.6),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    );
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                      _ => const SizedBox(),
+                    };
+                  },
+                ),
+              ),
 
-                                    return;
-                                  }
-
-                                  _selectedExercises.add(exercise);
-                                });
-                              },
+              // دکمه Configure
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                child: AppButton(
+                  text: 'Configure',
+                  onPressed: _selectedExercises.length != _maxSelection
+                      ? null
+                      : () {
+                          context.pushReplacementNamed(
+                            AppRouteNames.configureProgramExercise,
+                            pathParameters: {'programId': widget.program.id},
+                            extra: ProgramExerciseConfigurationArgs(
+                              program: widget.program,
+                              draft: widget.draft,
+                              exercises: _selectedExercises,
                             ),
                           );
                         },
-                      );
-                    },
-                  ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-
-                  child: FilledButton(
-                    onPressed: _selectedExercises.length != _maxSelection
-                        ? null
-                        : () {
-                            context.pushReplacementNamed(
-                              AppRouteNames.configureProgramExercise,
-                              pathParameters: {'programId': widget.program.id},
-                              extra: ProgramExerciseConfigurationArgs(
-                                program: widget.program,
-                                draft: widget.draft,
-                                exercises: _selectedExercises,
-                              ),
-                            );
-                          },
-
-                    child: const Text('Configure'),
-                  ),
-                ),
-              ],
-            ),
-
-            ExerciseError(:final message) => Center(child: Text(message)),
-
-            _ => const SizedBox(),
-          };
-        },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

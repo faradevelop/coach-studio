@@ -1,3 +1,6 @@
+import 'dart:ui';
+import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_draft.dart';
@@ -12,7 +15,6 @@ class ExerciseConfigurationPage extends StatelessWidget {
   final WorkoutProgram program;
   final ProgramExerciseDraft draft;
   final List<Exercise> exercises;
-
   final ProgramExercise? existingExercise;
 
   const ExerciseConfigurationPage({
@@ -59,6 +61,10 @@ class _ExerciseConfigurationViewState
 
   final Map<String, TextEditingController> _repsControllers = {};
   final Map<String, TextEditingController> _tempoControllers = {};
+
+  static const Color _orange = Color(0xFFFF6B35);
+  static const Color _cream = Color(0xFFFFF8F0);
+  static const Color _charcoal = Color(0xFF2D2D2D);
 
   bool get _isEditMode => widget.existingExercise != null;
 
@@ -154,73 +160,216 @@ class _ExerciseConfigurationViewState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _isEditMode ? 'Edit Program Exercise' : 'Configure Program Exercise',
+      backgroundColor: _cream,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFFF9A5A),
+              Color(0xFFFFC9A0),
+              Color(0xFFFFF0E0),
+              _cream,
+            ],
+            stops: [0.0, 0.18, 0.45, 1.0],
+          ),
         ),
-      ),
-
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-
-        children: [
-          Text(
-            widget.draft.trainingSystem.name,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-
-          const SizedBox(height: 20),
-
-          TextFormField(
-            controller: _setsController,
-            decoration: const InputDecoration(labelText: 'Sets'),
-          ),
-
-          TextFormField(
-            controller: _restController,
-            decoration: const InputDecoration(labelText: 'Rest'),
-          ),
-
-          const SizedBox(height: 24),
-
-          ...widget.exercises.map((exercise) {
-            return Card(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        child: SafeArea(
+          child: Column(
+            children: [
+              // AppBar
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+                child: Row(
                   children: [
-                    Text(
-                      exercise.name,
-                      style: Theme.of(context).textTheme.titleMedium,
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.4),
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 18,
+                          color: _charcoal,
+                        ),
+                      ),
                     ),
-
-                    TextFormField(
-                      controller: _repsControllers[exercise.id],
-                      decoration: const InputDecoration(labelText: 'Reps'),
+                    const Spacer(),
+                    Column(
+                      children: [
+                        Text(
+                          _isEditMode ? 'Edit Exercise' : 'Configure Exercise',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: _charcoal,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Container(
+                          height: 3,
+                          width: _isEditMode ? 90 : 120,
+                          decoration: BoxDecoration(
+                            color: _orange,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ],
                     ),
-
-                    TextFormField(
-                      controller: _tempoControllers[exercise.id],
-                      decoration: const InputDecoration(labelText: 'Tempo'),
-                    ),
+                    const Spacer(),
+                    const SizedBox(width: 40),
                   ],
                 ),
               ),
-            );
-          }),
 
-          const SizedBox(height: 20),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+                  child: Column(
+                    children: [
+                      // کارت اطلاعات کلی
+                      _GlassCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: _orange.withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    widget.draft.trainingSystem.name,
+                                    style: const TextStyle(
+                                      color: _orange,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Day ${widget.draft.day}',
+                                  style: TextStyle(
+                                    color: _charcoal.withOpacity(0.7),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 18),
+                            AppTextField(
+                              controller: _setsController,
+                              label: 'Sets',
+                            ),
+                            const SizedBox(height: 16),
+                            AppTextField(
+                              controller: _restController,
+                              label: 'Rest (seconds)',
+                            ),
+                          ],
+                        ),
+                      ),
 
-          FilledButton(
-            onPressed: _save,
-            child: Text(
-              _isEditMode
-                  ? 'Update Program Exercise'
-                  : 'Create Program Exercise',
+                      const SizedBox(height: 20),
+
+                      // کارت‌های هر تمرین
+                      ...widget.exercises.map((exercise) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 14),
+                          child: _GlassCard(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  exercise.name,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: _charcoal,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${exercise.targetMuscle} • ${exercise.equipment}',
+                                  style: TextStyle(
+                                    fontSize: 12.5,
+                                    color: _charcoal.withOpacity(0.6),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                AppTextField(
+                                  controller: _repsControllers[exercise.id]!,
+                                  label: 'Reps',
+                                ),
+                                const SizedBox(height: 14),
+                                AppTextField(
+                                  controller: _tempoControllers[exercise.id]!,
+                                  label: 'Tempo',
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+
+                      const SizedBox(height: 12),
+
+                      AppButton(
+                        text: _isEditMode
+                            ? 'Update Program Exercise'
+                            : 'Create Program Exercise',
+                        onPressed: _save,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _GlassCard extends StatelessWidget {
+  final Widget child;
+  const _GlassCard({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.38),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.55),
+              width: 1.1,
             ),
           ),
-        ],
+          child: child,
+        ),
       ),
     );
   }
