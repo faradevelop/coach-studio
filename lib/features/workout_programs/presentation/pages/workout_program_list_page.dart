@@ -31,7 +31,7 @@ class _WorkoutProgramListView extends StatelessWidget {
               onPressed: () {
                 context.pushNamed(AppRouteNames.createWorkoutProgram);
               },
-              title: 'Workout Programs',
+              title: 'برنامه‌های تمرینی',
             ),
           ),
           SizedBox(height: 28),
@@ -98,6 +98,7 @@ class _WorkoutProgramListView extends StatelessWidget {
 
                                         builder: (_) => DeleteDialog(
                                           itemName: program.title,
+                                          title: 'برنامه',
                                         ),
                                       );
 

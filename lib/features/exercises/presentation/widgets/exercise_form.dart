@@ -129,7 +129,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                   Column(
                     children: [
                       Text(
-                        isEdit ? 'Edit Exercise' : 'Add Exercise',
+                        isEdit ? 'ویرایش تمرین' : 'ایجاد تمرین',
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
@@ -179,7 +179,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                           children: [
                             AppTextField(
                               controller: _nameController,
-                              label: 'Name',
+                              label: 'نام تمرین',
                               validator: (value) =>
                                   value == null || value.isEmpty
                                   ? 'Required'
@@ -187,7 +187,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                             ),
                             const SizedBox(height: 20),
                             AppDropdown<String>(
-                              label: 'Target Muscle',
+                              label: 'عضله هدف',
                               value: _selectedMuscle,
                               items: AppOptions.muscles,
                               itemLabel: (item) => item,
@@ -197,7 +197,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                             ),
                             const SizedBox(height: 20),
                             AppDropdown<String>(
-                              label: 'Difficulty',
+                              label: 'سطح',
                               value: _selectedDifficulty,
                               items: AppOptions.difficulties,
                               itemLabel: (item) => item,
@@ -207,7 +207,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                             ),
                             const SizedBox(height: 20),
                             AppDropdown<String>(
-                              label: 'Equipment',
+                              label: 'وسیله',
                               value: _selectedEquipment,
                               items: AppOptions.equipments,
                               itemLabel: (item) => item,
@@ -218,12 +218,12 @@ class _ExerciseFormState extends State<ExerciseForm> {
                             const SizedBox(height: 20),
                             AppTextField(
                               controller: _descriptionController,
-                              label: 'Description',
+                              label: 'توضیح',
                               maxLines: 3,
                             ),
                             const SizedBox(height: 32),
                             AppButton(
-                              text: isEdit ? 'Update' : 'Create',
+                              text: isEdit ? 'ویرایش' : 'تایید',
                               isLoading: widget.isLoading,
                               onPressed: _submit,
                             ),

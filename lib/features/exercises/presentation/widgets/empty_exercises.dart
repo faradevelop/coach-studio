@@ -28,7 +28,7 @@ class EmptyExercises extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text(
-              'No exercises added yet',
+              'تمرینی وجود ندارد!',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -37,7 +37,7 @@ class EmptyExercises extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              'Tap Add to create the first one',
+              'با کلیک دکمه  +  تمرین ایجاد کنید',
               style: TextStyle(fontSize: 13, color: _charcoal.withOpacity(0.6)),
             ),
           ],

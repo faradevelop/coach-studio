@@ -141,7 +141,7 @@ class WorkoutProgramCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      '${program.daysPerWeek} days / week',
+                      '${program.daysPerWeek} روز در هفته',
                       style: TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w500,

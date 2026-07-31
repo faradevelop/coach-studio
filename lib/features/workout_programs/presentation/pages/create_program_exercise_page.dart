@@ -86,7 +86,7 @@ class _CreateProgramExerciseViewState
                     Column(
                       children: [
                         const Text(
-                          'Create Exercise Block',
+                          'تمرین جدید',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -134,13 +134,13 @@ class _CreateProgramExerciseViewState
                           children: [
                             // Day Dropdown
                             AppDropdown<int>(
-                              label: 'Training Day',
+                              label: 'روز تمرین',
                               value: _day,
                               items: List.generate(
                                 widget.program.daysPerWeek,
                                 (index) => index + 1,
                               ),
-                              itemLabel: (day) => 'Day $day',
+                              itemLabel: (day) => 'روز $day',
                               onChanged: (value) {
                                 if (value == null) return;
                                 setState(() => _day = value);
@@ -150,7 +150,7 @@ class _CreateProgramExerciseViewState
 
                             // Training System Dropdown
                             AppDropdown<TrainingSystem>(
-                              label: 'Training System',
+                              label: 'سیستم تمرینی',
                               value: _trainingSystem,
                               items: TrainingSystem.values,
                               itemLabel: (system) => system.name,
@@ -163,7 +163,7 @@ class _CreateProgramExerciseViewState
 
                             // دکمه ادامه
                             AppButton(
-                              text: 'Select Exercises',
+                              text: 'تایید و مرحله بعد',
                               onPressed: () {
                                 final draft = ProgramExerciseDraft(
                                   programId: widget.program.id,

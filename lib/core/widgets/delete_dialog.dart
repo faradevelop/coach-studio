@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class DeleteDialog extends StatelessWidget {
-  const DeleteDialog({super.key, required this.itemName});
-
+  const DeleteDialog({super.key, required this.itemName, required this.title});
+  final String title;
   final String itemName;
 
   @override
@@ -34,8 +34,8 @@ class DeleteDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const Text(
-                      'Delete Exercise',
+                    Text(
+                      title,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -63,7 +63,7 @@ class DeleteDialog extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 Text(
-                  'Are you sure you want to delete\n"$itemName"?',
+                  'آیا از حذف $title "$itemName" مطمئن هستید؟',
                   textAlign: TextAlign.end,
                   style: TextStyle(
                     fontSize: 15,
@@ -88,7 +88,7 @@ class DeleteDialog extends StatelessWidget {
                             ),
                           ),
                           child: const Text(
-                            'Cancel',
+                            'لغو',
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
@@ -118,7 +118,7 @@ class DeleteDialog extends StatelessWidget {
                             ],
                           ),
                           child: const Text(
-                            'Delete',
+                            'حذف',
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,

@@ -125,7 +125,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                   Column(
                     children: [
                       Text(
-                        isEdit ? 'Edit Program' : 'Create Program',
+                        isEdit ? 'ویرایش برنامه' : 'ایجاد برنامه',
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
@@ -175,7 +175,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                           children: [
                             AppTextField(
                               controller: _titleController,
-                              label: 'Program Name',
+                              label: 'نام برنامه',
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Required';
@@ -186,7 +186,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                             const SizedBox(height: 20),
 
                             AppDropdown<ProgramGoal>(
-                              label: 'Goal',
+                              label: 'هدف',
                               value: _goal,
                               items: ProgramGoal.values,
                               itemLabel: (item) => item.name,
@@ -199,7 +199,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                             const SizedBox(height: 20),
 
                             AppDropdown<ProgramLevel>(
-                              label: 'Level',
+                              label: 'سطح',
                               value: _level,
                               items: ProgramLevel.values,
                               itemLabel: (item) => item.name,
@@ -215,7 +215,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                               visible: widget.initialProgram == null,
                               child: AppTextField(
                                 controller: _daysController,
-                                label: 'Days Per Week',
+                                label: 'روز در هفته',
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Required';
@@ -231,13 +231,13 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
 
                             AppTextField(
                               controller: _notesController,
-                              label: 'Notes',
+                              label: 'توضیح',
                               maxLines: 3,
                             ),
                             const SizedBox(height: 32),
 
                             AppButton(
-                              text: isEdit ? 'Update' : 'Create',
+                              text: isEdit ? 'ویرایش' : 'تایید',
                               isLoading: widget.isLoading,
                               onPressed: _submit,
                             ),

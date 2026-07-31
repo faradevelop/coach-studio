@@ -206,7 +206,7 @@ class _ExerciseConfigurationViewState
                     Column(
                       children: [
                         Text(
-                          _isEditMode ? 'Edit Exercise' : 'Configure Exercise',
+                          _isEditMode ? 'ویرایش تمرین' : 'تنظیم تمرین',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -262,7 +262,7 @@ class _ExerciseConfigurationViewState
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'Day ${widget.draft.day}',
+                                  'روز ${widget.draft.day}',
                                   style: TextStyle(
                                     color: _charcoal.withOpacity(0.7),
                                     fontSize: 13,
@@ -274,12 +274,12 @@ class _ExerciseConfigurationViewState
                             const SizedBox(height: 18),
                             AppTextField(
                               controller: _setsController,
-                              label: 'Sets',
+                              label: 'ست',
                             ),
                             const SizedBox(height: 16),
                             AppTextField(
                               controller: _restController,
-                              label: 'Rest (seconds)',
+                              label: 'استراحت',
                             ),
                           ],
                         ),
@@ -314,12 +314,12 @@ class _ExerciseConfigurationViewState
                                 const SizedBox(height: 16),
                                 AppTextField(
                                   controller: _repsControllers[exercise.id]!,
-                                  label: 'Reps',
+                                  label: 'تکرار',
                                 ),
                                 const SizedBox(height: 14),
                                 AppTextField(
                                   controller: _tempoControllers[exercise.id]!,
-                                  label: 'Tempo',
+                                  label: 'تمپو',
                                 ),
                               ],
                             ),
@@ -330,9 +330,7 @@ class _ExerciseConfigurationViewState
                       const SizedBox(height: 12),
 
                       AppButton(
-                        text: _isEditMode
-                            ? 'Update Program Exercise'
-                            : 'Create Program Exercise',
+                        text: _isEditMode ? 'ویرایش' : 'تایید',
                         onPressed: _save,
                       ),
                     ],
