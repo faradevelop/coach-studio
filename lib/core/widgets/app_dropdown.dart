@@ -5,14 +5,14 @@ class AppDropdown<T> extends StatelessWidget {
   final T? value;
   final List<T> items;
   final String Function(T) itemLabel;
-  final ValueChanged<T?> onChanged;
+  final ValueChanged<T?>? onChanged;
 
   const AppDropdown({
     super.key,
     required this.label,
     required this.items,
     required this.itemLabel,
-    required this.onChanged,
+    this.onChanged,
     this.value,
   });
 
@@ -24,7 +24,7 @@ class AppDropdown<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-        // استایل منوی بازشونده
+        // Drop down menu style
         canvasColor: _cream,
         highlightColor: _orange.withOpacity(0.12),
         hoverColor: _orange.withOpacity(0.08),

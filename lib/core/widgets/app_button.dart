@@ -60,7 +60,7 @@ class MiniButton extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
           child: Container(
             width: 40,
-            height: 30,
+            height: 25,
             decoration: BoxDecoration(
               color: color,
               borderRadius: BorderRadius.circular(20),
