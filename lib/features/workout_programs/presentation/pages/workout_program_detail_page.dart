@@ -1,5 +1,7 @@
+import 'dart:ui';
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
+import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/features/workout_programs/data/services/workout_program_pdf_generator.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
@@ -30,6 +32,10 @@ class _WorkoutProgramDetailView extends StatelessWidget {
   final WorkoutProgram program;
   const _WorkoutProgramDetailView({required this.program});
 
+  static const Color _orange = Color(0xFFFF6B35);
+  static const Color _cream = Color(0xFFFFF8F0);
+  static const Color _charcoal = Color(0xFF2D2D2D);
+
   Map<int, List<ProgramExerciseDetails>> _groupByDay(
     List<ProgramExerciseDetails> exercises,
   ) {
@@ -53,88 +59,128 @@ class _WorkoutProgramDetailView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) {
-        return AlertDialog(
-          title: const Text('Delete Exercise'),
-          content: const Text('Are you sure?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text('Cancel'),
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.42),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: Colors.white.withOpacity(0.55)),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: _orange.withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.delete_outline_rounded,
+                        color: _orange,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    const Text(
+                      'Delete Exercise',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: _charcoal,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Are you sure you want to delete\nthis exercise?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                        height: 1.4,
+                        color: _charcoal.withOpacity(0.75),
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => context.pop(),
+                            child: Container(
+                              height: 48,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.6),
+                                ),
+                              ),
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: _charcoal,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () async {
+                              await context
+                                  .read<ProgramExerciseCubit>()
+                                  .deleteExercise(id);
+                              if (context.mounted) context.pop();
+                            },
+                            child: Container(
+                              height: 48,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: _orange,
+                                borderRadius: BorderRadius.circular(14),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: _orange.withOpacity(0.35),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: const Text(
+                                'Delete',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-
-            FilledButton(
-              onPressed: () async {
-                await context.read<ProgramExerciseCubit>().deleteExercise(id);
-                if (context.mounted) {
-                  context.pop();
-                }
-              },
-
-              child: const Text('Delete'),
-            ),
-          ],
+          ),
         );
       },
     );
   }
 
-  ///////////////////////
-  // Future<void> _previewPdf(BuildContext context) async {
-  //   final state = context.read<ProgramExerciseCubit>().state;
-
-  //   if (state is! ProgramExerciseLoaded || state.exercises.isEmpty) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('ابتدا حداقل یک تمرین اضافه کنید')),
-  //     );
-  //     return;
-  //   }
-
-  //   // دیتای ورزشکار (میتونی از حالت یا دیفالت استفاده کنی)
-  //   final athlete = AthleteInfo(
-  //     fullName: 'ورزشکار',
-  //     weight: '--',
-  //     height: '--',
-  //     date: DateTime.now(),
-  //   );
-
-  //   final details = WorkoutProgramDetails(
-  //     program: program,
-  //     exercises: state.exercises,
-  //   );
-
-  //   // تولید PDF
-  //   final bytes = await WorkoutProgramPdfGenerator().generate(
-  //     details: details,
-  //     athlete: athlete,
-  //   );
-
-  //   if (!context.mounted) return;
-
-  //   // ✅ نمایش پیش‌نمایش PDF
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => PdfPreview(
-  //         build: (format) async => bytes,
-  //         canChangeOrientation: true,
-  //         canChangePageFormat: true,
-  //         canDebug: true,
-  //         allowPrinting: true,
-  //         allowSharing: true,
-  //         initialPageFormat: PdfPageFormat.a4,
-  //         onError: (context, error) {
-  //           print('PDF Error: $error');
-  //           return Text('eeeeeeeeeeeeeeeeeeeeee');
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
-  ////////////////////////
-
-  // یک متد جدید داخل _WorkoutProgramDetailView
   Future<void> _generatePdf(BuildContext context) async {
     final state = context.read<ProgramExerciseCubit>().state;
 
@@ -167,79 +213,258 @@ class _WorkoutProgramDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(program.title),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.picture_as_pdf_outlined),
-            tooltip: 'Generate PDF',
-            onPressed: () => _generatePdf(context),
+      backgroundColor: _cream,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFFF9A5A),
+              Color(0xFFFFC9A0),
+              Color(0xFFFFF0E0),
+              _cream,
+            ],
+            stops: [0.0, 0.18, 0.45, 1.0],
           ),
-        ],
-      ),
-
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              program.title,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 12),
-            Text('Goal: ${program.goal.name}'),
-            Text('Level: ${program.level.name}'),
-            Text('Days: ${program.daysPerWeek}'),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-              children: [
-                Text(
-                  'Exercises',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-
-                FilledButton.icon(
-                  onPressed: () {
-                    context.pushNamed(
-                      AppRouteNames.createProgramExercise,
-                      pathParameters: {'programId': program.id},
-                      extra: program,
-                    );
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add Exercise'),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            Expanded(
-              child: BlocBuilder<ProgramExerciseCubit, ProgramExerciseState>(
-                builder: (context, state) {
-                  return switch (state) {
-                    ProgramExerciseLoading() => const Center(
-                      child: CircularProgressIndicator(),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // AppBar
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.4),
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 18,
+                          color: _charcoal,
+                        ),
+                      ),
                     ),
-
-                    ProgramExerciseError(:final message) => Center(
-                      child: Text(message),
+                    const Spacer(),
+                    Column(
+                      children: [
+                        Text(
+                          program.title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: _charcoal,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Container(
+                          height: 3,
+                          width: 60,
+                          decoration: BoxDecoration(
+                            color: _orange,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ],
                     ),
-
-                    ProgramExerciseLoaded(:final exercises) =>
-                      exercises.isEmpty
-                          ? const Center(child: Text('No exercises added yet'))
-                          : _buildExercisesByDay(context, exercises),
-
-                    _ => const SizedBox(),
-                  };
-                },
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () => _generatePdf(context),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.4),
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.picture_as_pdf_outlined,
+                          size: 20,
+                          color: _charcoal,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // کارت اطلاعات برنامه
+                      _GlassCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  program.title,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: _charcoal,
+                                  ),
+                                ),
+                                Spacer(),
+                                MiniButton(
+                                  color: Colors.blueAccent.withOpacity(0.38),
+                                  icon: Icon(
+                                    Icons.edit,
+                                    size: 14,
+                                    color: const Color.fromARGB(
+                                      255,
+                                      3,
+                                      29,
+                                      157,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    context.pushNamed(
+                                      AppRouteNames.createWorkoutProgram,
+                                      extra: program,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                _InfoChip(
+                                  icon: Icons.flag_rounded,
+                                  text: program.goal.name,
+                                ),
+                                _InfoChip(
+                                  icon: Icons.bar_chart_rounded,
+                                  text: program.level.name,
+                                ),
+                                _InfoChip(
+                                  icon: Icons.calendar_today_rounded,
+                                  text: '${program.daysPerWeek} days/week',
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // هدر Exercises + دکمه افزودن
+                      Row(
+                        children: [
+                          const Text(
+                            'Exercises',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: _charcoal,
+                            ),
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              context.pushNamed(
+                                AppRouteNames.createProgramExercise,
+                                pathParameters: {'programId': program.id},
+                                extra: program,
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: _orange,
+                                borderRadius: BorderRadius.circular(14),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: _orange.withOpacity(0.35),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.add_rounded,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    'Add',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // لیست روزها
+                      BlocBuilder<ProgramExerciseCubit, ProgramExerciseState>(
+                        builder: (context, state) {
+                          return switch (state) {
+                            ProgramExerciseLoading() => const Padding(
+                              padding: EdgeInsets.only(top: 40),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: _orange,
+                                ),
+                              ),
+                            ),
+                            ProgramExerciseError(:final message) => Center(
+                              child: Text(
+                                message,
+                                style: const TextStyle(color: _charcoal),
+                              ),
+                            ),
+                            ProgramExerciseLoaded(:final exercises) =>
+                              exercises.isEmpty
+                                  ? const _EmptyExercisesState()
+                                  : _buildExercisesByDay(context, exercises),
+                            _ => const SizedBox(),
+                          };
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -250,80 +475,322 @@ class _WorkoutProgramDetailView extends StatelessWidget {
     List<ProgramExerciseDetails> exercises,
   ) {
     final grouped = _groupByDay(exercises);
+    final sortedDays = grouped.keys.toList()..sort();
 
-    return ListView(
-      children: grouped.entries.map((entry) {
-        final day = entry.key;
-        final dayProgramExercises = entry.value;
+    return Column(
+      children: sortedDays.map((day) {
+        final dayExercises = grouped[day]!;
 
-        return ExpansionTile(
-          title: Text('Day $day'),
-
-          children: dayProgramExercises.map((details) {
-            final programExercise = details.programExercise;
-
-            return ExpansionTile(
-              title: Text(programExercise.trainingSystem.name),
-
-              subtitle: Text(
-                '${programExercise.sets} sets | '
-                '${programExercise.rest} rest',
-              ),
-
-              children: details.items.map((itemDetails) {
-                final item = itemDetails.item;
-                final exercise = itemDetails.exercise;
-
-                return ListTile(
-                  title: Text(exercise.name),
-
-                  subtitle: Text(
-                    '${item.reps} reps | '
-                    'Tempo ${item.tempo}',
-                  ),
-
-                  trailing: PopupMenuButton<String>(
-                    onSelected: (value) {
-                      switch (value) {
-                        case 'edit':
-                          context.pushNamed(
-                            AppRouteNames.editProgramExercise,
-                            pathParameters: {
-                              'programId': program.id,
-                              'programExerciseId': programExercise.id,
-                            },
-                            extra: ProgramExerciseConfigurationArgs(
-                              program: program,
-                              draft: ProgramExerciseDraft(
-                                programId: program.id,
-                                day: programExercise.day,
-                                trainingSystem: programExercise.trainingSystem,
-                              ),
-                              exercises: details.items
-                                  .map((itemDetails) => itemDetails.exercise)
-                                  .toList(),
-                              existingExercise: programExercise,
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: _GlassCard(
+            child: Material(
+              color: Colors.transparent,
+              child: Theme(
+                data: Theme.of(
+                  context,
+                ).copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  tilePadding: EdgeInsets.zero,
+                  childrenPadding: const EdgeInsets.only(top: 8),
+                  initiallyExpanded: true,
+                  title: Row(
+                    children: [
+                      Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: _orange.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '$day',
+                            style: const TextStyle(
+                              color: _orange,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
                             ),
-                          );
-                          break;
-
-                        case 'delete':
-                          _showDeleteDialog(context, programExercise.id);
-                          break;
-                      }
-                    },
-
-                    itemBuilder: (_) => const [
-                      PopupMenuItem(value: 'edit', child: Text('Edit')),
-                      PopupMenuItem(value: 'delete', child: Text('Delete')),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Day $day',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: _charcoal,
+                        ),
+                      ),
                     ],
                   ),
-                );
-              }).toList(),
-            );
-          }).toList(),
+                  children: dayExercises.map((details) {
+                    final pe = details.programExercise;
+
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.45),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // هدر سیستم تمرینی
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  pe.trainingSystem.name,
+                                  style: const TextStyle(
+                                    fontSize: 14.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: _charcoal,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                '${pe.sets} sets · ${pe.rest} rest',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: _charcoal.withOpacity(0.65),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              PopupMenuButton<String>(
+                                padding: EdgeInsets.zero,
+                                iconSize: 18,
+                                color: _cream,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                onSelected: (value) {
+                                  switch (value) {
+                                    case 'edit':
+                                      context.pushNamed(
+                                        AppRouteNames.editProgramExercise,
+                                        pathParameters: {
+                                          'programId': program.id,
+                                          'programExerciseId': pe.id,
+                                        },
+                                        extra: ProgramExerciseConfigurationArgs(
+                                          program: program,
+                                          draft: ProgramExerciseDraft(
+                                            programId: program.id,
+                                            day: pe.day,
+                                            trainingSystem: pe.trainingSystem,
+                                          ),
+                                          exercises: details.items
+                                              .map((e) => e.exercise)
+                                              .toList(),
+                                          existingExercise: pe,
+                                        ),
+                                      );
+                                      break;
+                                    case 'delete':
+                                      _showDeleteDialog(context, pe.id);
+                                      break;
+                                  }
+                                },
+                                itemBuilder: (_) => const [
+                                  PopupMenuItem(
+                                    value: 'edit',
+                                    child: Text('Edit'),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 'delete',
+                                    child: Text(
+                                      'Delete',
+                                      style: TextStyle(color: _orange),
+                                    ),
+                                  ),
+                                ],
+                                child: Icon(
+                                  Icons.more_vert_rounded,
+                                  size: 18,
+                                  color: _charcoal.withOpacity(0.5),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          // آیتم‌های تمرین
+                          ...details.items.map((itemDetails) {
+                            final item = itemDetails.item;
+                            final exercise = itemDetails.exercise;
+
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 6),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      exercise.name,
+                                      style: const TextStyle(
+                                        fontSize: 13.5,
+                                        fontWeight: FontWeight.w500,
+                                        color: _charcoal,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    '${item.reps} reps',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: _charcoal.withOpacity(0.7),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'T ${item.tempo}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: _orange,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
         );
       }).toList(),
+    );
+  }
+}
+
+// -------------------- Widgets کمکی --------------------
+
+class _GlassCard extends StatelessWidget {
+  final Widget child;
+  const _GlassCard({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.38),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.55),
+              width: 1.1,
+            ),
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoChip extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _InfoChip({required this.icon, required this.text});
+
+  static const Color _orange = Color(0xFFFF6B35);
+  static const Color _charcoal = Color(0xFF2D2D2D);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: _orange.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: _orange),
+          const SizedBox(width: 5),
+          Text(
+            text,
+            style: const TextStyle(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w500,
+              color: _charcoal,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyExercisesState extends StatelessWidget {
+  const _EmptyExercisesState();
+
+  static const Color _charcoal = Color(0xFF2D2D2D);
+  static const Color _orange = Color(0xFFFF6B35);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 40),
+      child: Center(
+        child: Column(
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.4),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.fitness_center_rounded,
+                size: 32,
+                color: _orange,
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'No exercises added yet',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: _charcoal,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Tap Add to create the first one',
+              style: TextStyle(fontSize: 13, color: _charcoal.withOpacity(0.6)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

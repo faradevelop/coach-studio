@@ -26,11 +26,6 @@ class _CreateWorkoutProgramView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          existingProgram == null ? 'Create Program' : 'Edit Program',
-        ),
-      ),
       body: WorkoutProgramForm(
         initialProgram: existingProgram,
         onSubmit: (program) async {

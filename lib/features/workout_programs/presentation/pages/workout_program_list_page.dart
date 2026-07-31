@@ -1,6 +1,9 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
+import 'package:coach_studio/core/widgets/custom_app_bar.dart';
+import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
+import 'package:coach_studio/features/workout_programs/presentation/widgets/workout_program_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -19,212 +22,161 @@ class _WorkoutProgramListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Workout Programs')),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          context.pushNamed(AppRouteNames.createWorkoutProgram);
-
-          if (context.mounted) {
-            context.read<WorkoutProgramCubit>().loadPrograms();
-          }
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Create Program'),
-      ),
-
-      body: BlocBuilder<WorkoutProgramCubit, WorkoutProgramState>(
-        builder: (context, state) {
-          return switch (state) {
-            WorkoutProgramInitial() => const SizedBox(),
-
-            WorkoutProgramLoading() => const Center(
-              child: CircularProgressIndicator(),
+    return SafeArea(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: CustomAppBar(
+              onPressed: () {
+                context.pushNamed(AppRouteNames.createWorkoutProgram);
+              },
+              title: 'Workout Programs',
             ),
+          ),
+          SizedBox(height: 28),
+          Expanded(
+            child: BlocBuilder<WorkoutProgramCubit, WorkoutProgramState>(
+              builder: (context, state) {
+                return switch (state) {
+                  WorkoutProgramInitial() => const SizedBox(),
 
-            WorkoutProgramLoaded(:final programs) =>
-              programs.isEmpty
-                  ? _EmptyProgramsState()
-                  : ListView.builder(
-                      itemCount: programs.length,
-                      itemBuilder: (context, index) {
-                        final program = programs[index];
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(12),
-                            onTap: () {
-                              context.pushNamed(
-                                AppRouteNames.workoutProgramDetail,
-                                pathParameters: {'programId': program.id},
-                                extra: program,
+                  WorkoutProgramLoading() => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  WorkoutProgramLoaded(:final programs) =>
+                    programs.isEmpty
+                        ? _EmptyProgramsState()
+                        : LayoutBuilder(
+                            builder: (context, constraints) {
+                              final width = constraints.maxWidth;
+                              int crossAxisCount;
+                              double childAspectRatio;
+
+                              if (width >= 1100) {
+                                // desktop
+                                crossAxisCount = 4;
+                                childAspectRatio = 2;
+                              } else if (width >= 700) {
+                                // tablet
+                                crossAxisCount = 3;
+                                childAspectRatio = 1.5;
+                              } else {
+                                // mobile
+                                crossAxisCount = 2;
+                                childAspectRatio = 1.3;
+                              }
+                              return GridView.builder(
+                                padding: const EdgeInsets.fromLTRB(
+                                  14,
+                                  12,
+                                  14,
+                                  100,
+                                ),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: crossAxisCount, //2,
+                                      mainAxisSpacing: 14,
+                                      crossAxisSpacing: 14,
+                                      childAspectRatio: childAspectRatio, //1.5,
+                                    ),
+                                itemCount: programs.length,
+                                itemBuilder: (context, index) {
+                                  final program = programs[index];
+                                  return WorkoutProgramCard(
+                                    program: program,
+                                    // onEdit: () {
+                                    //   context.pushNamed(
+                                    //     AppRouteNames.workoutProgramDetail,
+                                    //     pathParameters: {'programId': program.id},
+                                    //     extra: program,
+                                    //   );
+                                    // },
+                                    onDelete: () async {
+                                      final result = await showDialog<bool>(
+                                        context: context,
+
+                                        builder: (_) => DeleteDialog(
+                                          itemName: program.title,
+                                        ),
+                                      );
+
+                                      if (result == true && context.mounted) {
+                                        await context
+                                            .read<WorkoutProgramCubit>()
+                                            .deleteProgram(program.id);
+                                      }
+                                    },
+                                    onTap: () {
+                                      context.pushNamed(
+                                        AppRouteNames.workoutProgramDetail,
+                                        pathParameters: {
+                                          'programId': program.id,
+                                        },
+                                        extra: program,
+                                      );
+                                    },
+                                  );
+                                },
                               );
                             },
-
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          program.title,
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.titleLarge,
-                                        ),
-                                      ),
-
-                                      PopupMenuButton<String>(
-                                        onSelected: (value) {
-                                          switch (value) {
-                                            case 'edit':
-                                              context.pushNamed(
-                                                AppRouteNames
-                                                    .createWorkoutProgram,
-                                                extra: program,
-                                              );
-
-                                              break;
-
-                                            case 'delete':
-                                              _showDeleteDialog(
-                                                context,
-                                                program.id,
-                                              );
-                                              break;
-                                          }
-                                        },
-
-                                        itemBuilder: (_) => const [
-                                          PopupMenuItem(
-                                            value: 'edit',
-                                            child: Text('Edit'),
-                                          ),
-
-                                          PopupMenuItem(
-                                            value: 'delete',
-                                            child: Text('Delete'),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-
-                                  const SizedBox(height: 8),
-
-                                  Row(
-                                    children: [
-                                      _InfoChip(
-                                        icon: Icons.flag,
-                                        text: program.goal.name,
-                                      ),
-
-                                      const SizedBox(width: 8),
-                                      _InfoChip(
-                                        icon: Icons.bar_chart,
-                                        text: program.level.name,
-                                      ),
-                                    ],
-                                  ),
-
-                                  const SizedBox(height: 12),
-
-                                  Text('${program.daysPerWeek} days / week'),
-                                ],
-                              ),
-                            ),
                           ),
-                        );
-                      },
-                    ),
 
-            WorkoutProgramError(:final message) => Center(child: Text(message)),
-          };
-        },
+                  WorkoutProgramError(:final message) => Center(
+                    child: Text(message),
+                  ),
+                };
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
-}
-
-void _showDeleteDialog(BuildContext context, String id) {
-  showDialog(
-    context: context,
-    builder: (_) {
-      return AlertDialog(
-        title: const Text('Delete Program'),
-        content: const Text('Are you sure you want to delete this program?'),
-
-        actions: [
-          TextButton(
-            onPressed: () {
-              context.pop();
-            },
-
-            child: const Text('Cancel'),
-          ),
-
-          FilledButton(
-            onPressed: () async {
-              context.pop();
-              await context.read<WorkoutProgramCubit>().deleteProgram(id);
-            },
-
-            child: const Text('Delete'),
-          ),
-        ],
-      );
-    },
-  );
 }
 
 class _EmptyProgramsState extends StatelessWidget {
   const _EmptyProgramsState();
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.fitness_center, size: 64),
-          const SizedBox(height: 16),
-
-          Text(
-            'No workout programs yet',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-
-          const SizedBox(height: 8),
-          const Text('Create your first program'),
-        ],
-      ),
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const _InfoChip({required this.icon, required this.text});
+  static const Color _charcoal = Color(0xFF2D2D2D);
+  static const Color _orange = Color(0xFFFF6B35);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      ),
-
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [Icon(icon, size: 16), const SizedBox(width: 4), Text(text)],
+    return Padding(
+      padding: const EdgeInsets.only(top: 40),
+      child: Center(
+        child: Column(
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.4),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.fitness_center_rounded,
+                size: 32,
+                color: _orange,
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'No workout programs yet',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: _charcoal,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Create your first program',
+              style: TextStyle(fontSize: 13, color: _charcoal.withOpacity(0.6)),
+            ),
+          ],
+        ),
       ),
     );
   }
