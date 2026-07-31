@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:coach_studio/core/configs/firebase_options.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,15 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
+
+        locale: const Locale('fa'),
+        supportedLocales: const [Locale('fa')],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+
         title: 'Coach Studio',
         theme: AppTheme.light,
         routerConfig: AppRouter.router,
