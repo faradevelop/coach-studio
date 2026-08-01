@@ -135,7 +135,7 @@ class _ExerciseConfigurationViewState
 
     final programExercise = ProgramExercise(
       id: existing?.id ?? '',
-      programId: widget.program.id,
+      workoutId: widget.program.id,
       day: widget.draft.day,
       order: existing?.order ?? 0,
       sets: _setsController.text,
