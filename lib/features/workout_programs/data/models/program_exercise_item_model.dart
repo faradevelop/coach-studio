@@ -7,6 +7,7 @@ class ProgramExerciseItemModel {
   final int order;
   final String reps;
   final String tempo;
+  final String? description;
 
   const ProgramExerciseItemModel({
     required this.id,
@@ -15,6 +16,7 @@ class ProgramExerciseItemModel {
     required this.order,
     required this.reps,
     required this.tempo,
+    this.description,
   });
 
   // factory ProgramExerciseItemModel.fromFirestore(
@@ -39,6 +41,7 @@ class ProgramExerciseItemModel {
       'order': order,
       'reps': reps,
       'tempo': tempo,
+      'description': description,
     };
   }
 
@@ -50,6 +53,7 @@ class ProgramExerciseItemModel {
       order: entity.order,
       reps: entity.reps,
       tempo: entity.tempo,
+      description: entity.description,
     );
   }
 
@@ -61,6 +65,7 @@ class ProgramExerciseItemModel {
       order: order,
       reps: reps,
       tempo: tempo,
+      description: description,
     );
   }
 
@@ -72,6 +77,7 @@ class ProgramExerciseItemModel {
       order: data['order'],
       reps: data['reps'],
       tempo: data['tempo'],
+      description: data['description'],
     );
   }
 }
