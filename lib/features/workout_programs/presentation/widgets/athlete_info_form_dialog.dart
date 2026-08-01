@@ -46,14 +46,14 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
       backgroundColor: Colors.transparent,
       elevation: 0,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(28),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
             padding: const EdgeInsets.fromLTRB(22, 26, 22, 20),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.42),
-              borderRadius: BorderRadius.circular(24),
+              color: Colors.white.withOpacity(0.70),
+              borderRadius: BorderRadius.circular(28),
               border: Border.all(
                 color: Colors.white.withOpacity(0.55),
                 width: 1.2,
@@ -66,10 +66,10 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
                 children: [
                   // آیکون
                   Container(
-                    width: 54,
-                    height: 54,
+                    width: 50,
+                    height: 50,
                     decoration: BoxDecoration(
-                      color: _orange.withOpacity(0.15),
+                      color: _orange.withOpacity(0.20),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -121,11 +121,11 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
                         child: GestureDetector(
                           onTap: () => Navigator.of(context).pop(),
                           child: Container(
-                            height: 48,
+                            height: 44,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(50),
                               border: Border.all(
                                 color: Colors.white.withOpacity(0.6),
                               ),
@@ -134,7 +134,7 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
                               'انصراف',
                               style: TextStyle(
                                 fontSize: 15,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w500,
                                 color: _charcoal,
                               ),
                             ),
@@ -146,11 +146,11 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
                         child: GestureDetector(
                           onTap: _submit,
                           child: Container(
-                            height: 48,
+                            height: 44,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: _orange,
-                              borderRadius: BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(50),
                               boxShadow: [
                                 BoxShadow(
                                   color: _orange.withOpacity(0.35),
@@ -160,10 +160,10 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
                               ],
                             ),
                             child: const Text(
-                              'تایید و ساخت PDF',
+                              ' ساخت PDF',
                               style: TextStyle(
                                 fontSize: 14,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w500,
                                 color: Colors.white,
                               ),
                             ),

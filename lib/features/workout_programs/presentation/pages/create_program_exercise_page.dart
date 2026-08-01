@@ -63,25 +63,8 @@ class _CreateProgramExerciseViewState
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
                 child: Row(
                   children: [
-                    GestureDetector(
-                      onTap: () => context.pop(),
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.35),
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.4),
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          size: 18,
-                          color: _charcoal,
-                        ),
-                      ),
-                    ),
+                    const SizedBox(width: 40),
+
                     const Spacer(),
                     Column(
                       children: [
@@ -106,7 +89,28 @@ class _CreateProgramExerciseViewState
                       ],
                     ),
                     const Spacer(),
-                    const SizedBox(width: 40),
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.4),
+                          ),
+                        ),
+                        child: Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: const Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 18,
+                            color: _charcoal,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

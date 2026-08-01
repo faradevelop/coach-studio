@@ -164,7 +164,7 @@ class _EmptyProgramsState extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text(
-              'No workout programs yet',
+              'برنامه ای وجود ندارد!',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -173,7 +173,7 @@ class _EmptyProgramsState extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              'Create your first program',
+              'با کلیک روی  +  اولین برنامه را ایجاد کنید',
               style: TextStyle(fontSize: 13, color: _charcoal.withOpacity(0.6)),
             ),
           ],

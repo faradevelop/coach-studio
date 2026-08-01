@@ -60,9 +60,9 @@ class _WorkoutProgramDetailView extends StatelessWidget {
     final state = context.read<ProgramExerciseCubit>().state;
 
     if (state is! ProgramExerciseLoaded || state.exercises.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('ابتدا حداقل یک تمرین اضافه کنید')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('ابتدا تمرین اضافه کنید')));
       return;
     }
 
@@ -112,7 +112,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap: () => context.pop(),
+                      onTap: () => _generatePdf(context),
                       child: Container(
                         width: 40,
                         height: 40,
@@ -124,12 +124,13 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                           ),
                         ),
                         child: const Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          size: 18,
+                          Icons.picture_as_pdf_rounded,
+                          size: 22,
                           color: _charcoal,
                         ),
                       ),
                     ),
+
                     const Spacer(),
                     Column(
                       children: [
@@ -156,7 +157,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                     ),
                     const Spacer(),
                     GestureDetector(
-                      onTap: () => _generatePdf(context),
+                      onTap: () => context.pop(),
                       child: Container(
                         width: 40,
                         height: 40,
@@ -167,10 +168,13 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                             color: Colors.white.withOpacity(0.4),
                           ),
                         ),
-                        child: const Icon(
-                          Icons.picture_as_pdf_outlined,
-                          size: 20,
-                          color: _charcoal,
+                        child: Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: const Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 18,
+                            color: _charcoal,
+                          ),
                         ),
                       ),
                     ),
@@ -236,7 +240,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                                 ),
                                 _InfoChip(
                                   icon: Icons.calendar_today_rounded,
-                                  text: '${program.daysPerWeek} days/week',
+                                  text: '${program.daysPerWeek} روز در هفته',
                                 ),
                               ],
                             ),
@@ -668,7 +672,7 @@ class _EmptyExercisesState extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text(
-              'No exercises added yet',
+              'تمرینی در برنامه وجود ندارد!',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -677,7 +681,7 @@ class _EmptyExercisesState extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              'Tap Add to create the first one',
+              'اولین تمرین را اضافه کنید',
               style: TextStyle(fontSize: 13, color: _charcoal.withOpacity(0.6)),
             ),
           ],

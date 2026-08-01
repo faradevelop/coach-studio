@@ -90,22 +90,21 @@ class _AddProgramExerciseItemPageState
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
                 child: Row(
                   children: [
-                    GestureDetector(
-                      onTap: () => context.pop(),
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.35),
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.4),
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          size: 18,
-                          color: _charcoal,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _cream.withOpacity(0.70),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '${_selectedExercises.length}/$_maxSelection',
+                        style: const TextStyle(
+                          color: _orange,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
                         ),
                       ),
                     ),
@@ -132,22 +131,25 @@ class _AddProgramExerciseItemPageState
                       ],
                     ),
                     const Spacer(),
-                    // نشانگر تعداد انتخاب‌شده
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _cream.withOpacity(0.70),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        '${_selectedExercises.length}/$_maxSelection',
-                        style: const TextStyle(
-                          color: _orange,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 13,
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.4),
+                          ),
+                        ),
+                        child: Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: const Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 18,
+                            color: _charcoal,
+                          ),
                         ),
                       ),
                     ),
@@ -187,7 +189,7 @@ class _AddProgramExerciseItemPageState
                           if (filtered.isEmpty) {
                             return Center(
                               child: Text(
-                                'No exercise found',
+                                'تمرینی پیدا نشد!',
                                 style: TextStyle(
                                   color: _charcoal.withOpacity(0.6),
                                   fontSize: 15,
