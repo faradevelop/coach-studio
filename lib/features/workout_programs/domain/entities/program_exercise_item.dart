@@ -5,6 +5,7 @@ class ProgramExerciseItem {
   final int order;
   final String reps;
   final String tempo;
+  final String? description;
 
   const ProgramExerciseItem({
     required this.id,
@@ -13,6 +14,7 @@ class ProgramExerciseItem {
     required this.order,
     required this.reps,
     required this.tempo,
+    this.description,
   });
 
   ProgramExerciseItem copyWith({
@@ -22,6 +24,7 @@ class ProgramExerciseItem {
     int? order,
     String? reps,
     String? tempo,
+    String? description,
   }) {
     return ProgramExerciseItem(
       id: id ?? this.id,
@@ -30,6 +33,7 @@ class ProgramExerciseItem {
       order: order ?? this.order,
       reps: reps ?? this.reps,
       tempo: tempo ?? this.tempo,
+      description: description ?? this.description,
     );
   }
 }
