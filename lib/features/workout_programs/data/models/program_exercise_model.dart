@@ -5,7 +5,7 @@ import 'package:coach_studio/features/workout_programs/domain/enums/training_sys
 
 class ProgramExerciseModel {
   final String id;
-  final String programId;
+  final String workoutId;
   final int day;
   final int order;
   final String sets;
@@ -15,7 +15,7 @@ class ProgramExerciseModel {
 
   const ProgramExerciseModel({
     required this.id,
-    required this.programId,
+    required this.workoutId,
     required this.day,
     required this.order,
     required this.sets,
@@ -31,7 +31,7 @@ class ProgramExerciseModel {
 
     return ProgramExerciseModel(
       id: doc.id,
-      programId: data['programId'],
+      workoutId: data['workoutId'],
       day: data['day'],
       order: data['order'],
       sets: data['sets'],
@@ -50,7 +50,7 @@ class ProgramExerciseModel {
 
   Map<String, dynamic> toFirestore() {
     return {
-      'programId': programId,
+      'workoutId': workoutId,
       'day': day,
       'order': order,
       'sets': sets,
@@ -63,7 +63,7 @@ class ProgramExerciseModel {
 
   ProgramExerciseModel copyWith({
     String? id,
-    String? programId,
+    String? workoutId,
     int? day,
     int? order,
     String? sets,
@@ -73,7 +73,7 @@ class ProgramExerciseModel {
   }) {
     return ProgramExerciseModel(
       id: id ?? this.id,
-      programId: programId ?? this.programId,
+      workoutId: workoutId ?? this.workoutId,
       day: day ?? this.day,
       order: order ?? this.order,
       sets: sets ?? this.sets,
@@ -86,7 +86,7 @@ class ProgramExerciseModel {
   factory ProgramExerciseModel.fromEntity(ProgramExercise entity) {
     return ProgramExerciseModel(
       id: entity.id,
-      programId: entity.programId,
+      workoutId: entity.workoutId,
       day: entity.day,
       order: entity.order,
       sets: entity.sets,
@@ -101,7 +101,7 @@ class ProgramExerciseModel {
   ProgramExercise toEntity() {
     return ProgramExercise(
       id: id,
-      programId: programId,
+      workoutId: workoutId,
       day: day,
       order: order,
       sets: sets,

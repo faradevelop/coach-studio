@@ -3,7 +3,7 @@ import 'package:coach_studio/features/workout_programs/domain/enums/training_sys
 
 class ProgramExercise {
   final String id;
-  final String programId;
+  final String workoutId;
   final int day;
   final int order;
   final String sets;
@@ -13,7 +13,7 @@ class ProgramExercise {
 
   const ProgramExercise({
     required this.id,
-    required this.programId,
+    required this.workoutId,
     required this.day,
     required this.order,
     required this.sets,
@@ -24,7 +24,7 @@ class ProgramExercise {
 
   ProgramExercise copyWith({
     String? id,
-    String? programId,
+    String? workoutId,
     int? day,
     int? order,
     String? sets,
@@ -34,7 +34,7 @@ class ProgramExercise {
   }) {
     return ProgramExercise(
       id: id ?? this.id,
-      programId: programId ?? this.programId,
+      workoutId: workoutId ?? this.workoutId,
       day: day ?? this.day,
       order: order ?? this.order,
       sets: sets ?? this.sets,
