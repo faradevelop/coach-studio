@@ -15,8 +15,8 @@ class ProgramExerciseRepositoryImpl implements ProgramExerciseRepository {
   });
 
   @override
-  Stream<List<ProgramExerciseDetails>> watchProgramExercises(String programId) {
-    return datasource.watchProgramExercises(programId).asyncMap((models) async {
+  Stream<List<ProgramExerciseDetails>> watchProgramExercises(String workoutId) {
+    return datasource.watchProgramExercises(workoutId).asyncMap((models) async {
       final result = <ProgramExerciseDetails>[];
 
       for (final model in models) {
@@ -50,7 +50,7 @@ class ProgramExerciseRepositoryImpl implements ProgramExerciseRepository {
   @override
   Future<void> addProgramExercise(ProgramExercise exercise) async {
     final nextOrder = await datasource.getNextProgramExerciseOrder(
-      programId: exercise.programId,
+      workoutId: exercise.workoutId,
       day: exercise.day,
     );
 
@@ -73,7 +73,7 @@ class ProgramExerciseRepositoryImpl implements ProgramExerciseRepository {
 
     if (oldEntity.day != exercise.day) {
       final newOrder = await datasource.getNextProgramExerciseOrder(
-        programId: exercise.programId,
+        workoutId: exercise.workoutId,
         day: exercise.day,
       );
 

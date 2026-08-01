@@ -2,7 +2,7 @@ import 'package:coach_studio/features/workout_programs/domain/entities/program_e
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 
 abstract class ProgramExerciseRepository {
-  Stream<List<ProgramExerciseDetails>> watchProgramExercises(String programId);
+  Stream<List<ProgramExerciseDetails>> watchProgramExercises(String workoutId);
 
   Future<void> addProgramExercise(ProgramExercise exercise);
 

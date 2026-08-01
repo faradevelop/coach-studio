@@ -9,9 +9,9 @@ class ProgramExerciseFirestoreDatasource {
   CollectionReference<Map<String, dynamic>> get _collection =>
       firestore.collection('program_exercises');
 
-  Stream<List<ProgramExerciseModel>> watchProgramExercises(String programId) {
+  Stream<List<ProgramExerciseModel>> watchProgramExercises(String workoutId) {
     return _collection
-        .where('programId', isEqualTo: programId)
+        .where('workoutId', isEqualTo: workoutId)
         .orderBy('day')
         .orderBy('order')
         .snapshots()
@@ -36,12 +36,12 @@ class ProgramExerciseFirestoreDatasource {
   }
 
   Future<int> getNextProgramExerciseOrder({
-    required String programId,
+    required String workoutId,
     required int day,
   }) async {
     final snapshot = await firestore
         .collection('program_exercises')
-        .where('programId', isEqualTo: programId)
+        .where('workoutId', isEqualTo: workoutId)
         .where('day', isEqualTo: day)
         .orderBy('order', descending: true)
         .limit(1)
