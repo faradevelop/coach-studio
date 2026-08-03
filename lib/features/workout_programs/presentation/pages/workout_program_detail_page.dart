@@ -367,17 +367,22 @@ class _WorkoutProgramDetailView extends StatelessWidget {
             child: Material(
               color: Colors.transparent,
               child: Theme(
-                data: Theme.of(
-                  context,
-                ).copyWith(dividerColor: Colors.transparent),
+                data: Theme.of(context).copyWith(
+                  dividerColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                ),
                 child: ExpansionTile(
                   tilePadding: EdgeInsets.zero,
                   childrenPadding: const EdgeInsets.only(top: 8),
                   initiallyExpanded: true,
+                  iconColor: _charcoal,
                   title: Row(
                     children: [
                       Container(
-                        width: 32,
+                        width: 44,
                         height: 32,
                         decoration: BoxDecoration(
                           color: _orange.withOpacity(0.15),
@@ -385,7 +390,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            '$day',
+                            'روز $day',
                             style: const TextStyle(
                               color: _orange,
                               fontWeight: FontWeight.w700,
@@ -394,15 +399,15 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Text(
-                        'روز $day',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: _charcoal,
-                        ),
-                      ),
+                      // const SizedBox(width: 12),
+                      // Text(
+                      //   'روز $day',
+                      //   style: const TextStyle(
+                      //     fontSize: 16,
+                      //     fontWeight: FontWeight.w700,
+                      //     color: _charcoal,
+                      //   ),
+                      // ),
                     ],
                   ),
                   children: dayExercises.map((details) {
@@ -426,7 +431,8 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Text(
-                                  pe.trainingSystem.name,
+                                  //pe.trainingSystem.name,
+                                  pe.order.toString(),
                                   style: const TextStyle(
                                     fontSize: 14.5,
                                     fontWeight: FontWeight.w600,
