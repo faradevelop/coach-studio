@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
+import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/features/workout_programs/data/services/workout_program_pdf_generator.dart';
@@ -411,7 +412,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 10),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.45),
+                        color: AppColors.dirtyCream.withOpacity(0.45),
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
                           color: Colors.white.withOpacity(0.5),
@@ -522,7 +523,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                             final exercise = itemDetails.exercise;
 
                             return Container(
-                              margin: const EdgeInsets.only(bottom: 6),
+                              margin: const EdgeInsets.only(bottom: 8),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 10,
                                 vertical: 8,
@@ -531,32 +532,64 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                                 color: Colors.white.withOpacity(0.5),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Row(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Expanded(
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          exercise.name,
+                                          style: const TextStyle(
+                                            fontSize: 13.5,
+                                            fontWeight: FontWeight.w500,
+                                            color: _charcoal,
+                                          ),
+                                          maxLines: 2,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${item.reps} تکرار •',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: _charcoal,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        '${item.tempo}  تمپو ',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: _charcoal,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Visibility(
+                                    visible:
+                                        item.description != null &&
+                                        item.description!.isNotEmpty,
+                                    child: Divider(
+                                      color: AppColors.orange.withOpacity(0.5),
+                                      height: 12,
+                                      thickness: 1,
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible:
+                                        item.description != null &&
+                                        item.description!.isNotEmpty,
                                     child: Text(
-                                      exercise.name,
+                                      item.description ?? '',
                                       style: const TextStyle(
                                         fontSize: 13.5,
                                         fontWeight: FontWeight.w500,
                                         color: _charcoal,
                                       ),
-                                    ),
-                                  ),
-                                  Text(
-                                    '${item.reps} تکرار •',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: _charcoal,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    'تمپو ${item.tempo}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: _charcoal,
-                                      fontWeight: FontWeight.w500,
+                                      maxLines: 3,
                                     ),
                                   ),
                                 ],

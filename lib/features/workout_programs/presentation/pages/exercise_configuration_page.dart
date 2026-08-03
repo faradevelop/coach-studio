@@ -61,6 +61,7 @@ class _ExerciseConfigurationViewState
 
   final Map<String, TextEditingController> _repsControllers = {};
   final Map<String, TextEditingController> _tempoControllers = {};
+  final Map<String, TextEditingController> _descriptionControllers = {};
 
   static const Color _orange = Color(0xFFFF6B35);
   static const Color _cream = Color(0xFFFFF8F0);
@@ -97,6 +98,10 @@ class _ExerciseConfigurationViewState
       _tempoControllers[exercise.id] = TextEditingController(
         text: existingItem?.tempo ?? '3-1-1',
       );
+
+      _descriptionControllers[exercise.id] = TextEditingController(
+        text: existingItem?.description ?? '',
+      );
     }
   }
 
@@ -130,6 +135,9 @@ class _ExerciseConfigurationViewState
         order: index + 1,
         reps: _repsControllers[exercise.id]!.text,
         tempo: _tempoControllers[exercise.id]!.text,
+        description: _descriptionControllers[exercise.id]!.text.isEmpty
+            ? ''
+            : _descriptionControllers[exercise.id]!.text,
       );
     }).toList();
 
@@ -324,6 +332,12 @@ class _ExerciseConfigurationViewState
                                 AppTextField(
                                   controller: _tempoControllers[exercise.id]!,
                                   label: 'تمپو',
+                                ),
+                                const SizedBox(height: 14),
+                                AppTextField(
+                                  controller:
+                                      _descriptionControllers[exercise.id]!,
+                                  label: 'توضیح',
                                 ),
                               ],
                             ),
