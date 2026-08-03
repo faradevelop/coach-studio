@@ -472,14 +472,13 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                                       );
                                       break;
                                     case 'delete':
-                                      //_showDeleteDialog(context, pe.id);
                                       () async {
                                         final result = await showDialog<bool>(
                                           context: context,
 
                                           builder: (_) => DeleteDialog(
                                             itemName: '',
-                                            title: 'نمرین',
+                                            title: 'تمرین',
                                           ),
                                         );
 
@@ -488,7 +487,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                                               .read<ProgramExerciseCubit>()
                                               .deleteExercise(pe.id);
                                         }
-                                      };
+                                      }.call();
 
                                       break;
                                   }

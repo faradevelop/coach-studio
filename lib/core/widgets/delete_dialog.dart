@@ -64,7 +64,7 @@ class DeleteDialog extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsetsDirectional.only(start: 6),
                   child: Text(
-                    'آیا از حذف $title "$itemName" مطمئن هستید؟',
+                    'آیا از حذف $title ${itemName.isNotEmpty ? "\"$itemName\"" : ""} مطمئن هستید؟',
                     textAlign: TextAlign.end,
                     style: TextStyle(
                       fontSize: 15,
