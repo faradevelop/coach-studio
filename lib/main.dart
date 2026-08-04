@@ -46,6 +46,22 @@ class MyApp extends StatelessWidget {
         title: 'Coach Studio',
         theme: AppTheme.light,
         routerConfig: AppRouter.router,
+        builder: (context, child) {
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final isDesktop = constraints.maxWidth >= 1000;
+
+              return Align(
+                alignment: Alignment.topCenter,
+                child: SizedBox(
+                  width: isDesktop ? 1000 : double.infinity,
+                  height: double.infinity,
+                  child: child,
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
