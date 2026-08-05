@@ -12,21 +12,47 @@ import 'package:coach_studio/features/workout_programs/domain/entities/workout_p
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_details.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_state.dart';
+import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
+import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/athlete_info_form_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:printing/printing.dart';
 
-class WorkoutProgramDetailPage extends StatelessWidget {
+class WorkoutProgramDetailPage extends StatefulWidget {
   final WorkoutProgram program;
 
   const WorkoutProgramDetailPage({super.key, required this.program});
 
   @override
+  State<WorkoutProgramDetailPage> createState() =>
+      _WorkoutProgramDetailPageState();
+}
+
+class _WorkoutProgramDetailPageState extends State<WorkoutProgramDetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ProgramExerciseCubit>().loadExercises(widget.program.id);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    context.read<ProgramExerciseCubit>().loadExercises(program.id);
-    return _WorkoutProgramDetailView(program: program);
+    return BlocBuilder<WorkoutProgramCubit, WorkoutProgramState>(
+      builder: (context, state) {
+        WorkoutProgram currentProgram = widget.program;
+
+        if (state case WorkoutProgramLoaded(:final programs)) {
+          currentProgram = programs.firstWhere(
+            (item) => item.id == widget.program.id,
+            orElse: () => widget.program,
+          );
+        }
+
+        return _WorkoutProgramDetailView(program: currentProgram);
+      },
+    );
   }
 }
 
