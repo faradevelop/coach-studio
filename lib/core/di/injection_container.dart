@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coach_studio/core/constants/api_config.dart';
+import 'package:coach_studio/core/network/api_client.dart';
 import 'package:coach_studio/features/exercises/data/datasources/exercise_firestore_datasource.dart';
 import 'package:coach_studio/features/exercises/data/repositories/exercise_repository_impl.dart';
 import 'package:coach_studio/features/exercises/domain/repositories/exercise_repository.dart';
@@ -19,6 +21,10 @@ Future<void> initDependencies() async {
   // External
 
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
+
+  sl.registerLazySingleton<ApiClient>(
+    () => ApiClient(baseUrl: ApiConfig.baseUrl),
+  );
 
   // Data sources
 
