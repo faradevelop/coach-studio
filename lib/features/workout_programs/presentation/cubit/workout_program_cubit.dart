@@ -29,9 +29,17 @@ class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
     );
   }
 
+  Future<void> _refreshPrograms() async {
+    final programs = await repository.watchPrograms().first;
+
+    emit(WorkoutProgramLoaded(programs));
+  }
+
   Future<WorkoutProgram?> addProgram(WorkoutProgram program) async {
     try {
-      return await repository.addProgram(program);
+      final createdProgram = await repository.addProgram(program);
+      await _refreshPrograms();
+      return createdProgram;
     } catch (e) {
       emit(WorkoutProgramError(e.toString()));
       return null;
@@ -41,6 +49,7 @@ class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
   Future<void> updateProgram(WorkoutProgram program) async {
     try {
       await repository.updateProgram(program);
+      await _refreshPrograms();
     } catch (e) {
       emit(WorkoutProgramError(e.toString()));
     }
@@ -49,6 +58,7 @@ class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
   Future<void> deleteProgram(String id) async {
     try {
       await repository.deleteProgram(id);
+      await _refreshPrograms();
     } catch (e) {
       emit(WorkoutProgramError(e.toString()));
     }

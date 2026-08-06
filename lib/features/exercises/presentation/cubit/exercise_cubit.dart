@@ -27,6 +27,12 @@ class ExerciseCubit extends Cubit<ExerciseState> {
     );
   }
 
+  Future<void> _refreshExercises() async {
+    final exercises = await repository.watchExercises().first;
+
+    emit(ExerciseLoaded(exercises: exercises, isSubmitting: false));
+  }
+
   Future<void> addExercise(Exercise exercise) async {
     final currentState = state;
 
@@ -34,7 +40,8 @@ class ExerciseCubit extends Cubit<ExerciseState> {
       emit(currentState.copyWith(isSubmitting: true));
       try {
         await repository.addExercise(exercise);
-        emit(currentState.copyWith(isSubmitting: false));
+        //emit(currentState.copyWith(isSubmitting: false));
+        await _refreshExercises();
       } catch (e) {
         emit(ExerciseError(e.toString()));
       }
@@ -48,7 +55,8 @@ class ExerciseCubit extends Cubit<ExerciseState> {
       emit(currentState.copyWith(isSubmitting: true));
       try {
         await repository.updateExercise(exercise);
-        emit(currentState.copyWith(isSubmitting: false));
+        //emit(currentState.copyWith(isSubmitting: false));
+        await _refreshExercises();
       } catch (e) {
         emit(ExerciseError(e.toString()));
       }
@@ -58,6 +66,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
   Future<void> deleteExercise(String id) async {
     try {
       await repository.deleteExercise(id);
+      await _refreshExercises();
     } catch (e) {
       emit(ExerciseError(e.toString()));
     }

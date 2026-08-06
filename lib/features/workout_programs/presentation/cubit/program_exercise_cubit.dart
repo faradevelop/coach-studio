@@ -10,17 +10,19 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
   final ProgramExerciseRepository repository;
 
   StreamSubscription? _subscription;
+  String? _workoutId;
 
   ProgramExerciseCubit({required this.repository})
     : super(const ProgramExerciseInitial());
 
-  void loadExercises(String programId) {
+  void loadExercises(String workoutId) {
+    _workoutId = workoutId;
     emit(const ProgramExerciseLoading());
 
     _subscription?.cancel();
 
     _subscription = repository
-        .watchProgramExercises(programId)
+        .watchProgramExercises(workoutId)
         .listen(
           (exercises) {
             emit(ProgramExerciseLoaded(exercises: exercises));
@@ -32,6 +34,14 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
         );
   }
 
+  Future<void> _refreshExercises() async {
+    final workoutId = _workoutId;
+    if (workoutId == null) return;
+
+    final exercises = await repository.watchProgramExercises(workoutId).first;
+    emit(ProgramExerciseLoaded(exercises: exercises, isSubmitting: false));
+  }
+
   Future<void> addProgramExercise(ProgramExercise exercise) async {
     final current = state;
 
@@ -41,6 +51,7 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
 
     try {
       await repository.addProgramExercise(exercise);
+      await _refreshExercises();
     } catch (e) {
       emit(ProgramExerciseError(e.toString()));
     }
@@ -55,6 +66,7 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
 
     try {
       await repository.updateProgramExercise(exercise);
+      await _refreshExercises();
     } catch (e) {
       emit(ProgramExerciseError(e.toString()));
     }
@@ -63,6 +75,7 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
   Future<void> deleteExercise(String id) async {
     try {
       await repository.deleteProgramExercise(id);
+      await _refreshExercises();
     } catch (e) {
       emit(ProgramExerciseError(e.toString()));
     }
