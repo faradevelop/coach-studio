@@ -15,10 +15,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # ─────────────── Firebase ───────────────
-  cloud_firestore: ^6.7.1
-  firebase_core: ^4.12.1
-
   # ─────────────── State Management ───────────────
   flutter_bloc: ^9.1.1
 

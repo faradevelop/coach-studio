@@ -19,32 +19,6 @@ class ProgramExerciseItemModel {
     this.description,
   });
 
-  // factory ProgramExerciseItemModel.fromFirestore(
-  //   DocumentSnapshot<Map<String, dynamic>> doc,
-  // ) {
-  //   final data = doc.data()!;
-
-  //   return ProgramExerciseItemModel(
-  //     id: doc.id,
-  //     programExerciseId: data['programExerciseId'],
-  //     exerciseId: data['exerciseId'],
-  //     order: data['order'],
-  //     reps: data['reps'],
-  //     tempo: data['tempo'],
-  //   );
-  // }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      'programExerciseId': programExerciseId,
-      'exerciseId': exerciseId,
-      'order': order,
-      'reps': reps,
-      'tempo': tempo,
-      'description': description,
-    };
-  }
-
   factory ProgramExerciseItemModel.fromEntity(ProgramExerciseItem entity) {
     return ProgramExerciseItemModel(
       id: entity.id,
@@ -66,18 +40,6 @@ class ProgramExerciseItemModel {
       reps: reps,
       tempo: tempo,
       description: description,
-    );
-  }
-
-  factory ProgramExerciseItemModel.fromMap(Map<String, dynamic> data) {
-    return ProgramExerciseItemModel(
-      id: data['id'] ?? '',
-      programExerciseId: data['programExerciseId'] ?? '',
-      exerciseId: data['exerciseId'],
-      order: data['order'],
-      reps: data['reps'],
-      tempo: data['tempo'],
-      description: data['description'],
     );
   }
 

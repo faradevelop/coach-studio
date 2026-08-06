@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
@@ -21,33 +20,6 @@ class WorkoutProgramModel {
     this.notes,
     required this.isTemplate,
   });
-
-  factory WorkoutProgramModel.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> doc,
-  ) {
-    final data = doc.data()!;
-
-    return WorkoutProgramModel(
-      id: doc.id,
-      title: data['title'],
-      goal: ProgramGoal.values.byName(data['goal']),
-      level: ProgramLevel.values.byName(data['level']),
-      daysPerWeek: data['daysPerWeek'],
-      notes: data['notes'],
-      isTemplate: data['isTemplate'],
-    );
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      'title': title,
-      'goal': goal.name,
-      'level': level.name,
-      'daysPerWeek': daysPerWeek,
-      'notes': notes,
-      'isTemplate': isTemplate,
-    };
-  }
 
   WorkoutProgramModel copyWith({
     String? id,
