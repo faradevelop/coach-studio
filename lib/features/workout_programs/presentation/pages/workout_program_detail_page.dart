@@ -144,10 +144,10 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.35),
+                          color: Colors.white.withValues(alpha: 0.35),
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.4),
+                            color: Colors.white.withValues(alpha: 0.4),
                           ),
                         ),
                         child: const Icon(
@@ -189,10 +189,10 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.35),
+                          color: Colors.white.withValues(alpha: 0.35),
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.4),
+                            color: Colors.white.withValues(alpha: 0.4),
                           ),
                         ),
                         child: Directionality(
@@ -232,7 +232,9 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                                 ),
                                 Spacer(),
                                 MiniButton(
-                                  color: Colors.blueAccent.withOpacity(0.38),
+                                  color: Colors.blueAccent.withValues(
+                                    alpha: 0.38,
+                                  ),
                                   icon: Icon(
                                     Icons.edit,
                                     size: 14,
@@ -307,7 +309,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(14),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: _orange.withOpacity(0.35),
+                                    color: _orange.withValues(alpha: 0.35),
                                     blurRadius: 10,
                                     offset: const Offset(0, 4),
                                   ),
@@ -411,7 +413,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                         width: 44,
                         height: 32,
                         decoration: BoxDecoration(
-                          color: _orange.withOpacity(0.15),
+                          color: _orange.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(
@@ -443,10 +445,10 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 10),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.dirtyCream.withOpacity(0.45),
+                        color: AppColors.dirtyCream.withValues(alpha: 0.45),
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.5),
+                          color: Colors.white.withValues(alpha: 0.5),
                         ),
                       ),
                       child: Column(
@@ -561,7 +563,7 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                                 vertical: 8,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.5),
+                                color: Colors.white.withValues(alpha: 0.5),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Column(
@@ -605,7 +607,9 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                                         item.description != null &&
                                         item.description!.isNotEmpty,
                                     child: Divider(
-                                      color: AppColors.orange.withOpacity(0.5),
+                                      color: AppColors.orange.withValues(
+                                        alpha: 0.5,
+                                      ),
                                       height: 12,
                                       thickness: 1,
                                     ),
@@ -658,10 +662,10 @@ class _GlassCard extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.38),
+            color: Colors.white.withValues(alpha: 0.38),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Colors.white.withOpacity(0.55),
+              color: Colors.white.withValues(alpha: 0.55),
               width: 1.1,
             ),
           ),
@@ -686,7 +690,7 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: _orange.withOpacity(0.12),
+        color: _orange.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -725,7 +729,7 @@ class _EmptyExercisesState extends StatelessWidget {
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.4),
+                color: Colors.white.withValues(alpha: 0.4),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -746,7 +750,10 @@ class _EmptyExercisesState extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               'اولین تمرین را اضافه کنید',
-              style: TextStyle(fontSize: 13, color: _charcoal.withOpacity(0.6)),
+              style: TextStyle(
+                fontSize: 13,
+                color: _charcoal.withValues(alpha: 0.6),
+              ),
             ),
           ],
         ),

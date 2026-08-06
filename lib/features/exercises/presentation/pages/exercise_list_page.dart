@@ -81,8 +81,8 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                                     child: Text(
                                       'تمرینی یافت نشد!',
                                       style: TextStyle(
-                                        color: AppColors.charcoal.withOpacity(
-                                          0.6,
+                                        color: AppColors.charcoal.withValues(
+                                          alpha: 0.6,
                                         ),
                                         fontSize: 15,
                                       ),

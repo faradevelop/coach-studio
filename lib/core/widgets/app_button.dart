@@ -67,7 +67,7 @@ class MiniButton extends StatelessWidget {
               color: color,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: Colors.white.withOpacity(0.55),
+                color: Colors.white.withValues(alpha: 0.55),
                 width: 1.2,
               ),
             ),

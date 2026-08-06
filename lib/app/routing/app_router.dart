@@ -56,7 +56,7 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.workoutProgramsList,
                 name: AppRouteNames.workoutProgramsList,
-                builder: (_, __) => const WorkoutProgramListPage(),
+                builder: (_, _) => const WorkoutProgramListPage(),
               ),
             ],
           ),
@@ -68,7 +68,7 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.exercises,
                 name: AppRouteNames.exercises,
-                builder: (_, __) => const ExerciseListPage(),
+                builder: (_, _) => const ExerciseListPage(),
                 // Note: There are no child routes defined here.
                 // Create/Edit routes are defined as top-level routes with parentNavigatorKey
                 // so they are pushed onto the root Navigator and do not cover the BottomNav.
@@ -87,7 +87,7 @@ class AppRouter {
         path: AppRoutes.createExercise,
         name: AppRouteNames.createExercise,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (_, __) => const AddExercisePage(),
+        builder: (_, _) => const AddExercisePage(),
       ),
 
       GoRoute(

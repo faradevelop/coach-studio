@@ -96,7 +96,7 @@ class _AddProgramExerciseItemPageState
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: _cream.withOpacity(0.70),
+                        color: _cream.withValues(alpha: 0.70),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -137,10 +137,10 @@ class _AddProgramExerciseItemPageState
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.35),
+                          color: Colors.white.withValues(alpha: 0.35),
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.4),
+                            color: Colors.white.withValues(alpha: 0.4),
                           ),
                         ),
                         child: Directionality(
@@ -191,7 +191,7 @@ class _AddProgramExerciseItemPageState
                               child: Text(
                                 'تمرینی پیدا نشد!',
                                 style: TextStyle(
-                                  color: _charcoal.withOpacity(0.6),
+                                  color: _charcoal.withValues(alpha: 0.6),
                                   fontSize: 15,
                                 ),
                               ),
@@ -249,16 +249,18 @@ class _AddProgramExerciseItemPageState
                                         ),
                                         decoration: BoxDecoration(
                                           color: isSelected
-                                              ? _orange.withOpacity(0.18)
-                                              : Colors.white.withOpacity(0.40),
+                                              ? _orange.withValues(alpha: 0.18)
+                                              : Colors.white.withValues(
+                                                  alpha: 0.40,
+                                                ),
                                           borderRadius: BorderRadius.circular(
                                             16,
                                           ),
                                           border: Border.all(
                                             color: isSelected
-                                                ? _orange.withOpacity(0.6)
-                                                : Colors.white.withOpacity(
-                                                    0.55,
+                                                ? _orange.withValues(alpha: 0.6)
+                                                : Colors.white.withValues(
+                                                    alpha: 0.55,
                                                   ),
                                             width: isSelected ? 1.5 : 1.1,
                                           ),
@@ -273,14 +275,14 @@ class _AddProgramExerciseItemPageState
                                                 shape: BoxShape.circle,
                                                 color: isSelected
                                                     ? _orange
-                                                    : Colors.white.withOpacity(
-                                                        0.5,
+                                                    : Colors.white.withValues(
+                                                        alpha: 0.5,
                                                       ),
                                                 border: Border.all(
                                                   color: isSelected
                                                       ? _orange
-                                                      : _charcoal.withOpacity(
-                                                          0.3,
+                                                      : _charcoal.withValues(
+                                                          alpha: 0.3,
                                                         ),
                                                 ),
                                               ),
@@ -313,7 +315,9 @@ class _AddProgramExerciseItemPageState
                                                     style: TextStyle(
                                                       fontSize: 12.5,
                                                       color: _charcoal
-                                                          .withOpacity(0.6),
+                                                          .withValues(
+                                                            alpha: 0.6,
+                                                          ),
                                                     ),
                                                   ),
                                                 ],

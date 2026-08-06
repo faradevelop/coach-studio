@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -33,10 +32,10 @@ class ExerciseCard extends StatelessWidget {
             //width: 50,
             height: 105,
             decoration: BoxDecoration(
-              color: AppColors.dirtyCream.withOpacity(0.40),
+              color: AppColors.dirtyCream.withValues(alpha: 0.40),
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: AppColors.dirtyCream.withOpacity(0.55),
+                color: AppColors.dirtyCream.withValues(alpha: 0.55),
                 width: 1.1,
               ),
             ),
@@ -66,7 +65,9 @@ class ExerciseCard extends StatelessWidget {
 
                               //Spacer(),
                               MiniButton(
-                                color: Colors.blueAccent.withOpacity(0.38),
+                                color: Colors.blueAccent.withValues(
+                                  alpha: 0.38,
+                                ),
                                 icon: Icon(
                                   Icons.edit,
                                   size: 14,
@@ -76,7 +77,7 @@ class ExerciseCard extends StatelessWidget {
                               ),
                               SizedBox(width: 6),
                               MiniButton(
-                                color: Colors.red.withOpacity(0.38),
+                                color: Colors.red.withValues(alpha: 0.38),
                                 icon: FaIcon(
                                   FontAwesomeIcons.trash,
                                   size: 12,
@@ -174,10 +175,10 @@ class _ExerciseImage extends StatelessWidget {
           width: 72,
           height: 72,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.38),
+            color: Colors.white.withValues(alpha: 0.38),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Colors.white.withOpacity(0.55),
+              color: Colors.white.withValues(alpha: 0.55),
               width: 1.2,
             ),
           ),

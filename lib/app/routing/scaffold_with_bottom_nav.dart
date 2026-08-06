@@ -35,7 +35,7 @@ class ScaffoldWithBottomNav extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFFF9A5A).withOpacity(0.55),
+                  color: const Color(0xFFFF9A5A).withValues(alpha: 0.55),
                   blurRadius: 140,
                   spreadRadius: 40,
                 ),
@@ -113,7 +113,7 @@ class GlassBottomNav extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border(
               top: BorderSide(
-                color: Colors.white.withOpacity(0.55),
+                color: Colors.white.withValues(alpha: 0.55),
                 width: 1.2,
               ),
             ),
@@ -121,9 +121,9 @@ class GlassBottomNav extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Colors.white.withOpacity(0.0),
-                Colors.white.withOpacity(0.25),
-                Colors.white.withOpacity(0.45),
+                Colors.white.withValues(alpha: 0.0),
+                Colors.white.withValues(alpha: 0.25),
+                Colors.white.withValues(alpha: 0.45),
               ],
               stops: const [0.0, 0.45, 1.0],
             ),

@@ -33,10 +33,10 @@ class WorkoutProgramCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.40),
+              color: Colors.white.withValues(alpha: 0.40),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: Colors.white.withOpacity(0.55),
+                color: Colors.white.withValues(alpha: 0.55),
                 width: 1.1,
               ),
             ),
@@ -61,7 +61,7 @@ class WorkoutProgramCard extends StatelessWidget {
                     ),
 
                     MiniButton(
-                      color: Colors.red.withOpacity(0.38),
+                      color: Colors.red.withValues(alpha: 0.38),
                       icon: FaIcon(
                         FontAwesomeIcons.trash,
                         size: 12,
@@ -145,7 +145,7 @@ class WorkoutProgramCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w500,
-                        color: _charcoal.withOpacity(0.75),
+                        color: _charcoal.withValues(alpha: 0.75),
                       ),
                     ),
                   ],
@@ -173,7 +173,7 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
-        color: _orange.withOpacity(0.12),
+        color: _orange.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(

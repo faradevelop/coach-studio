@@ -20,10 +20,10 @@ class DeleteDialog extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.70),
+              color: Colors.white.withValues(alpha: 0.70),
               borderRadius: BorderRadius.circular(30),
               border: Border.all(
-                color: Colors.white.withOpacity(0.55),
+                color: Colors.white.withValues(alpha: 0.55),
                 width: 1.2,
               ),
             ),
@@ -38,7 +38,7 @@ class DeleteDialog extends StatelessWidget {
                       width: 42,
                       height: 42,
                       decoration: BoxDecoration(
-                        color: AppColors.orange.withOpacity(0.2),
+                        color: AppColors.orange.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -69,7 +69,7 @@ class DeleteDialog extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       height: 1.4,
-                      color: AppColors.charcoal.withOpacity(0.90),
+                      color: AppColors.charcoal.withValues(alpha: 0.90),
                     ),
                   ),
                 ),
@@ -83,10 +83,10 @@ class DeleteDialog extends StatelessWidget {
                           height: 42,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.5),
+                            color: Colors.white.withValues(alpha: 0.5),
                             borderRadius: BorderRadius.circular(40),
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.6),
+                              color: Colors.white.withValues(alpha: 0.6),
                             ),
                           ),
                           child: const Text(
@@ -113,7 +113,7 @@ class DeleteDialog extends StatelessWidget {
                             borderRadius: BorderRadius.circular(40),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.orange.withOpacity(0.35),
+                                color: AppColors.orange.withValues(alpha: 0.35),
                                 blurRadius: 12,
                                 offset: const Offset(0, 4),
                               ),

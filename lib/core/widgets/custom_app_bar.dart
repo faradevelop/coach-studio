@@ -47,7 +47,7 @@ class CustomAppBar extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.orange,
                 borderRadius: BorderRadius.circular(50),
-                border: Border.all(color: Colors.white.withOpacity(0.4)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
               ),
               child: const Icon(
                 Icons.add_rounded,

@@ -17,7 +17,7 @@ class EmptyExercises extends StatelessWidget {
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.4),
+                color: Colors.white.withValues(alpha: 0.4),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -38,7 +38,10 @@ class EmptyExercises extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               'با کلیک دکمه  +  تمرین ایجاد کنید',
-              style: TextStyle(fontSize: 13, color: _charcoal.withOpacity(0.6)),
+              style: TextStyle(
+                fontSize: 13,
+                color: _charcoal.withValues(alpha: 0.6),
+              ),
             ),
           ],
         ),

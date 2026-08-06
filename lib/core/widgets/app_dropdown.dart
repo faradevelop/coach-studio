@@ -26,9 +26,9 @@ class AppDropdown<T> extends StatelessWidget {
       data: Theme.of(context).copyWith(
         // Drop down menu style
         canvasColor: _cream,
-        highlightColor: _orange.withOpacity(0.12),
-        hoverColor: _orange.withOpacity(0.08),
-        focusColor: _orange.withOpacity(0.15),
+        highlightColor: _orange.withValues(alpha: 0.12),
+        hoverColor: _orange.withValues(alpha: 0.08),
+        focusColor: _orange.withValues(alpha: 0.15),
       ),
       child: DropdownButtonFormField<T>(
         initialValue: items.contains(value) ? value : null,
@@ -39,7 +39,7 @@ class AppDropdown<T> extends StatelessWidget {
         ),
         icon: Icon(
           Icons.keyboard_arrow_down_rounded,
-          color: _charcoal.withOpacity(0.6),
+          color: _charcoal.withValues(alpha: 0.6),
         ),
         dropdownColor: _cream,
         borderRadius: BorderRadius.circular(20),
@@ -47,7 +47,7 @@ class AppDropdown<T> extends StatelessWidget {
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
-            color: _charcoal.withOpacity(0.7),
+            color: _charcoal.withValues(alpha: 0.7),
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
@@ -57,18 +57,18 @@ class AppDropdown<T> extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
           filled: true,
-          fillColor: Colors.white.withOpacity(0.55),
+          fillColor: Colors.white.withValues(alpha: 0.55),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
             vertical: 16,
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0.6)),
+            borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.6)),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0.6)),
+            borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.6)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),

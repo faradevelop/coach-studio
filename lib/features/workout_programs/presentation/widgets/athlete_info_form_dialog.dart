@@ -52,10 +52,10 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
           child: Container(
             padding: const EdgeInsets.fromLTRB(22, 26, 22, 20),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.70),
+              color: Colors.white.withValues(alpha: 0.70),
               borderRadius: BorderRadius.circular(28),
               border: Border.all(
-                color: Colors.white.withOpacity(0.55),
+                color: Colors.white.withValues(alpha: 0.55),
                 width: 1.2,
               ),
             ),
@@ -69,7 +69,7 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
                     width: 50,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: _orange.withOpacity(0.20),
+                      color: _orange.withValues(alpha: 0.20),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -124,10 +124,10 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
                             height: 44,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.5),
+                              color: Colors.white.withValues(alpha: 0.5),
                               borderRadius: BorderRadius.circular(50),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.6),
+                                color: Colors.white.withValues(alpha: 0.6),
                               ),
                             ),
                             child: const Text(
@@ -153,7 +153,7 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
                               borderRadius: BorderRadius.circular(50),
                               boxShadow: [
                                 BoxShadow(
-                                  color: _orange.withOpacity(0.35),
+                                  color: _orange.withValues(alpha: 0.35),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),

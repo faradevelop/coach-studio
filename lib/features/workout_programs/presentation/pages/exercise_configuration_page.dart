@@ -222,10 +222,10 @@ class _ExerciseConfigurationViewState
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.35),
+                          color: Colors.white.withValues(alpha: 0.35),
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.4),
+                            color: Colors.white.withValues(alpha: 0.4),
                           ),
                         ),
                         child: Directionality(
@@ -260,7 +260,7 @@ class _ExerciseConfigurationViewState
                                     vertical: 5,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: _orange.withOpacity(0.15),
+                                    color: _orange.withValues(alpha: 0.15),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
@@ -276,7 +276,7 @@ class _ExerciseConfigurationViewState
                                 Text(
                                   'روز ${widget.draft.day}',
                                   style: TextStyle(
-                                    color: _charcoal.withOpacity(0.7),
+                                    color: _charcoal.withValues(alpha: 0.7),
                                     fontSize: 13,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -320,7 +320,7 @@ class _ExerciseConfigurationViewState
                                   '${exercise.targetMuscle} • ${exercise.equipment}',
                                   style: TextStyle(
                                     fontSize: 12.5,
-                                    color: _charcoal.withOpacity(0.6),
+                                    color: _charcoal.withValues(alpha: 0.6),
                                   ),
                                 ),
                                 const SizedBox(height: 16),
@@ -377,10 +377,10 @@ class _GlassCard extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.38),
+            color: Colors.white.withValues(alpha: 0.38),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Colors.white.withOpacity(0.55),
+              color: Colors.white.withValues(alpha: 0.55),
               width: 1.1,
             ),
           ),

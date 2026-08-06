@@ -153,7 +153,7 @@ class _EmptyProgramsState extends StatelessWidget {
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.4),
+                color: Colors.white.withValues(alpha: 0.4),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -174,7 +174,10 @@ class _EmptyProgramsState extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               'با کلیک روی  +  اولین برنامه را ایجاد کنید',
-              style: TextStyle(fontSize: 13, color: _charcoal.withOpacity(0.6)),
+              style: TextStyle(
+                fontSize: 13,
+                color: _charcoal.withValues(alpha: 0.6),
+              ),
             ),
           ],
         ),

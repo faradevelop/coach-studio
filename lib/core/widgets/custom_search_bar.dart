@@ -17,9 +17,9 @@ class CustomSearchBar extends StatelessWidget {
     return Container(
       height: 48,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.7),
+        color: Colors.white.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(50),
-        border: Border.all(color: Colors.white.withOpacity(0.6)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.6)),
       ),
       child: TextField(
         controller: controller,
@@ -28,7 +28,7 @@ class CustomSearchBar extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(
-            color: AppColors.charcoal.withOpacity(0.45),
+            color: AppColors.charcoal.withValues(alpha: 0.45),
             fontSize: 15,
           ),
           suffixIcon: Icon(
