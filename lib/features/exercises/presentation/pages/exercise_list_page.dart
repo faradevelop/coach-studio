@@ -11,6 +11,7 @@ import 'package:coach_studio/features/exercises/presentation/widgets/exercise_ca
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ExerciseListPage extends StatefulWidget {
   const ExerciseListPage({super.key});
@@ -65,8 +66,11 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
               child: BlocBuilder<ExerciseCubit, ExerciseState>(
                 builder: (context, state) {
                   return switch (state) {
-                    ExerciseLoading() => const Center(
-                      child: CircularProgressIndicator(color: AppColors.orange),
+                    ExerciseLoading() => Center(
+                      child: LoadingAnimationWidget.hexagonDots(
+                        color: AppColors.orange,
+                        size: 40,
+                      ),
                     ),
 
                     ExerciseLoaded(:final exercises) =>

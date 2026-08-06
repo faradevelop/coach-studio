@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class AppButton extends StatelessWidget {
   final String text;
@@ -30,10 +31,13 @@ class AppButton extends StatelessWidget {
               : WidgetStatePropertyAll(AppColors.orange),
         ),
         child: isLoading
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
+            ? SizedBox(
+                width: 30,
+                height: 34,
+                child: LoadingAnimationWidget.waveDots(
+                  color: AppColors.charcoal,
+                  size: 24,
+                ),
               )
             : Text(text),
       ),

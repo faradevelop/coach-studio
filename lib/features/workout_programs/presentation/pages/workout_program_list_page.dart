@@ -1,4 +1,5 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
+import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
@@ -7,6 +8,7 @@ import 'package:coach_studio/features/workout_programs/presentation/widgets/work
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class WorkoutProgramListPage extends StatelessWidget {
   const WorkoutProgramListPage({super.key});
@@ -41,8 +43,11 @@ class _WorkoutProgramListView extends StatelessWidget {
                 return switch (state) {
                   WorkoutProgramInitial() => const SizedBox(),
 
-                  WorkoutProgramLoading() => const Center(
-                    child: CircularProgressIndicator(),
+                  WorkoutProgramLoading() => Center(
+                    child: LoadingAnimationWidget.hexagonDots(
+                      color: AppColors.orange,
+                      size: 40,
+                    ),
                   ),
                   WorkoutProgramLoaded(:final programs) =>
                     programs.isEmpty

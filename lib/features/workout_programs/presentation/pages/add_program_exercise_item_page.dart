@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
+import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/custom_search_bar.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
@@ -12,6 +13,7 @@ import 'package:coach_studio/features/workout_programs/domain/enums/training_sys
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class AddProgramExerciseItemPage extends StatefulWidget {
   final WorkoutProgram program;
@@ -173,8 +175,11 @@ class _AddProgramExerciseItemPageState
                 child: BlocBuilder<ExerciseCubit, ExerciseState>(
                   builder: (context, state) {
                     return switch (state) {
-                      ExerciseLoading() => const Center(
-                        child: CircularProgressIndicator(color: _orange),
+                      ExerciseLoading() => Center(
+                        child: LoadingAnimationWidget.hexagonDots(
+                          color: AppColors.orange,
+                          size: 40,
+                        ),
                       ),
                       ExerciseError(:final message) => Center(
                         child: Text(

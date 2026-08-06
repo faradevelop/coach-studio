@@ -18,6 +18,7 @@ import 'package:coach_studio/features/workout_programs/presentation/widgets/athl
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:printing/printing.dart';
 
 class WorkoutProgramDetailPage extends StatefulWidget {
@@ -345,11 +346,12 @@ class _WorkoutProgramDetailView extends StatelessWidget {
                       BlocBuilder<ProgramExerciseCubit, ProgramExerciseState>(
                         builder: (context, state) {
                           return switch (state) {
-                            ProgramExerciseLoading() => const Padding(
+                            ProgramExerciseLoading() => Padding(
                               padding: EdgeInsets.only(top: 40),
                               child: Center(
-                                child: CircularProgressIndicator(
-                                  color: _orange,
+                                child: LoadingAnimationWidget.hexagonDots(
+                                  color: AppColors.orange,
+                                  size: 40,
                                 ),
                               ),
                             ),
