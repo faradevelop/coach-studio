@@ -80,4 +80,28 @@ class ProgramExerciseItemModel {
       description: data['description'],
     );
   }
+
+  factory ProgramExerciseItemModel.fromJson(Map<String, dynamic> json) {
+    return ProgramExerciseItemModel(
+      id: json['id'] as String,
+      programExerciseId: json['programExerciseId'] as String,
+      exerciseId: json['exerciseId'] as String,
+      order: json['order'] as int,
+      reps: json['reps'] as String,
+      tempo: json['tempo'] as String,
+      description: json['description'] as String?,
+    );
+  }
+
+  //id, programExerciseId, and order are deliberately excluded from toRequestJson()
+  //the API's StoreProgramExerciseRequest/UpdateProgramExerciseRequest only accept:
+  //exerciseId, reps, tempo, description per item; id and order_index are server-assigned.
+  Map<String, dynamic> toRequestJson() {
+    return {
+      'exerciseId': exerciseId,
+      'reps': reps,
+      'tempo': tempo,
+      'description': description,
+    };
+  }
 }

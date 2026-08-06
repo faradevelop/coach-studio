@@ -92,4 +92,27 @@ class WorkoutProgramModel {
       isTemplate: isTemplate,
     );
   }
+
+  factory WorkoutProgramModel.fromJson(Map<String, dynamic> json) {
+    return WorkoutProgramModel(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      goal: ProgramGoal.values.byName(json['goal'] as String),
+      level: ProgramLevel.values.byName(json['level'] as String),
+      daysPerWeek: json['daysPerWeek'] as int,
+      notes: json['notes'] as String?,
+      isTemplate: json['isTemplate'] as bool,
+    );
+  }
+
+  Map<String, dynamic> toRequestJson() {
+    return {
+      'title': title,
+      'goal': goal.name,
+      'level': level.name,
+      'daysPerWeek': daysPerWeek,
+      'notes': notes,
+      'isTemplate': isTemplate,
+    };
+  }
 }

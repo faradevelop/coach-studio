@@ -110,4 +110,36 @@ class ProgramExerciseModel {
       items: items.map((item) => item.toEntity()).toList(),
     );
   }
+
+  factory ProgramExerciseModel.fromJson(Map<String, dynamic> json) {
+    return ProgramExerciseModel(
+      id: json['id'] as String,
+      workoutId: json['workoutId'] as String,
+      day: json['day'] as int,
+      order: json['order'] as int,
+      sets: json['sets'] as String,
+      rest: json['rest'] as String,
+      trainingSystem: TrainingSystem.values.byName(
+        json['trainingSystem'] as String,
+      ),
+      items: (json['items'] as List<dynamic>? ?? [])
+          .map(
+            (e) => ProgramExerciseItemModel.fromJson(e as Map<String, dynamic>),
+          )
+          .toList(),
+    );
+  }
+
+  //order is likewise excluded from the request body
+  // order is fully computed server-side by ProgramExerciseService now
+  Map<String, dynamic> toRequestJson() {
+    return {
+      'workoutId': workoutId,
+      'day': day,
+      'sets': sets,
+      'rest': rest,
+      'trainingSystem': trainingSystem.name,
+      'items': items.map((item) => item.toRequestJson()).toList(),
+    };
+  }
 }

@@ -140,4 +140,41 @@ class ExerciseModel {
       updatedAt: updatedAt,
     );
   }
+
+  factory ExerciseModel.fromJson(Map<String, dynamic> json) {
+    return ExerciseModel(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      targetMuscle: json['targetMuscle'] as String,
+      difficulty: json['difficulty'] as String,
+      equipment: json['equipment'] as String,
+      imageUrl: json['imageUrl'] as String?,
+      videoUrl: json['videoUrl'] as String?,
+      description: json['description'] as String?,
+      instructions: json['instructions'] as String?,
+      mistakes: json['mistakes'] as String?,
+      isActive: json['isActive'] as bool? ?? true,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toRequestJson() {
+    return {
+      'name': name,
+      'targetMuscle': targetMuscle,
+      'difficulty': difficulty,
+      'equipment': equipment,
+      'imageUrl': imageUrl,
+      'videoUrl': videoUrl,
+      'description': description,
+      'instructions': instructions,
+      'mistakes': mistakes,
+      'isActive': isActive,
+    };
+  }
 }
