@@ -1,5 +1,7 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomAppBar extends StatelessWidget {
   final VoidCallback onPressed;
@@ -56,6 +58,55 @@ class CustomAppBar extends StatelessWidget {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class InnerPagesAppBar extends StatelessWidget {
+  final Widget rightButton;
+  final String title;
+
+  const InnerPagesAppBar({
+    super.key,
+    required this.rightButton,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+      child: Row(
+        children: [
+          rightButton,
+          const Spacer(),
+          Column(
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.charcoal,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 4),
+              Container(
+                height: 3,
+                width: 60,
+                decoration: BoxDecoration(
+                  color: AppColors.orange,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          GlassyBackButton(onTap: () => context.pop()),
         ],
       ),
     );

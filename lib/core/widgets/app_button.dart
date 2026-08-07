@@ -82,3 +82,33 @@ class MiniButton extends StatelessWidget {
     );
   }
 }
+
+class GlassyBackButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const GlassyBackButton({super.key, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.35),
+          borderRadius: BorderRadius.circular(50),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
+        ),
+        child: const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: 18,
+            color: AppColors.charcoal,
+          ),
+        ),
+      ),
+    );
+  }
+}
