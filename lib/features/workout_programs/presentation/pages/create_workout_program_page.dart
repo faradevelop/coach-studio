@@ -19,38 +19,50 @@ class CreateWorkoutProgramPage extends StatelessWidget {
   }
 }
 
-class _CreateWorkoutProgramView extends StatelessWidget {
+class _CreateWorkoutProgramView extends StatefulWidget {
   final WorkoutProgram? existingProgram;
   const _CreateWorkoutProgramView({this.existingProgram});
+
+  @override
+  State<_CreateWorkoutProgramView> createState() =>
+      _CreateWorkoutProgramViewState();
+}
+
+class _CreateWorkoutProgramViewState extends State<_CreateWorkoutProgramView> {
+  bool isSubmitting = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: WorkoutProgramForm(
-        initialProgram: existingProgram,
+        initialProgram: widget.existingProgram,
+        isLoading: isSubmitting,
         onSubmit: (program) async {
-          if (existingProgram == null) {
-            final createdProgram = await context
-                .read<WorkoutProgramCubit>()
-                .addProgram(program);
+          setState(() => isSubmitting = true);
 
-            if (createdProgram != null && context.mounted) {
-              // context.goNamed(
-              //   AppRouteNames.workoutProgramDetail,
-              //   pathParameters: {'programId': createdProgram.id},
-              //   extra: createdProgram,
-              // );
-              context.pushReplacementNamed(
-                AppRouteNames.workoutProgramDetail,
-                pathParameters: {'programId': createdProgram.id},
-                extra: createdProgram,
-              );
+          try {
+            if (widget.existingProgram == null) {
+              final createdProgram = await context
+                  .read<WorkoutProgramCubit>()
+                  .addProgram(program);
+
+              if (createdProgram != null && context.mounted) {
+                context.pushReplacementNamed(
+                  AppRouteNames.workoutProgramDetail,
+                  pathParameters: {'programId': createdProgram.id},
+                  extra: createdProgram,
+                );
+              }
+            } else {
+              await context.read<WorkoutProgramCubit>().updateProgram(program);
+
+              if (context.mounted) {
+                context.pop();
+              }
             }
-          } else {
-            await context.read<WorkoutProgramCubit>().updateProgram(program);
-
-            if (context.mounted) {
-              context.pop();
+          } finally {
+            if (mounted) {
+              setState(() => isSubmitting = false);
             }
           }
         },

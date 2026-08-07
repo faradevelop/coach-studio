@@ -243,7 +243,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                             AppButton(
                               text: isEdit ? 'ویرایش' : 'تایید',
                               isLoading: widget.isLoading,
-                              onPressed: _submit,
+                              onPressed: widget.isLoading ? null : _submit,
                             ),
                           ],
                         ),

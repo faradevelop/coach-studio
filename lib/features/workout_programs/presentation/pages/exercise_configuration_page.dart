@@ -120,48 +120,58 @@ class _ExerciseConfigurationViewState
     super.dispose();
   }
 
+  bool _isSubmitting = false;
+
   Future<void> _save() async {
-    final existing = widget.existingExercise;
+    setState(() => _isSubmitting = true);
 
-    final items = widget.exercises.asMap().entries.map((entry) {
-      final index = entry.key;
-      final exercise = entry.value;
-      final existingItem = _existingItemFor(exercise.id);
+    try {
+      final existing = widget.existingExercise;
 
-      return ProgramExerciseItem(
-        id: existingItem?.id ?? '',
-        programExerciseId: existing?.id ?? '',
-        exerciseId: exercise.id,
-        order: index + 1,
-        reps: _repsControllers[exercise.id]!.text,
-        tempo: _tempoControllers[exercise.id]!.text,
-        description: _descriptionControllers[exercise.id]!.text.isEmpty
-            ? ''
-            : _descriptionControllers[exercise.id]!.text,
+      final items = widget.exercises.asMap().entries.map((entry) {
+        final index = entry.key;
+        final exercise = entry.value;
+        final existingItem = _existingItemFor(exercise.id);
+
+        return ProgramExerciseItem(
+          id: existingItem?.id ?? '',
+          programExerciseId: existing?.id ?? '',
+          exerciseId: exercise.id,
+          order: index + 1,
+          reps: _repsControllers[exercise.id]!.text,
+          tempo: _tempoControllers[exercise.id]!.text,
+          description: _descriptionControllers[exercise.id]!.text.isEmpty
+              ? ''
+              : _descriptionControllers[exercise.id]!.text,
+        );
+      }).toList();
+
+      final programExercise = ProgramExercise(
+        id: existing?.id ?? '',
+        workoutId: widget.program.id,
+        day: widget.draft.day,
+        order: existing?.order ?? 0,
+        sets: _setsController.text,
+        rest: _restController.text,
+        trainingSystem: widget.draft.trainingSystem,
+        items: items,
       );
-    }).toList();
 
-    final programExercise = ProgramExercise(
-      id: existing?.id ?? '',
-      workoutId: widget.program.id,
-      day: widget.draft.day,
-      order: existing?.order ?? 0,
-      sets: _setsController.text,
-      rest: _restController.text,
-      trainingSystem: widget.draft.trainingSystem,
-      items: items,
-    );
+      final cubit = context.read<ProgramExerciseCubit>();
 
-    final cubit = context.read<ProgramExerciseCubit>();
+      if (_isEditMode) {
+        await cubit.updateProgramExercise(programExercise);
+      } else {
+        await cubit.addProgramExercise(programExercise);
+      }
 
-    if (_isEditMode) {
-      await cubit.updateProgramExercise(programExercise);
-    } else {
-      await cubit.addProgramExercise(programExercise);
-    }
-
-    if (mounted) {
-      context.pop();
+      if (mounted) {
+        context.pop();
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+      }
     }
   }
 
@@ -349,7 +359,8 @@ class _ExerciseConfigurationViewState
 
                       AppButton(
                         text: _isEditMode ? 'ویرایش' : 'تایید',
-                        onPressed: _save,
+                        isLoading: _isSubmitting,
+                        onPressed: _isSubmitting ? null : _save,
                       ),
                     ],
                   ),
