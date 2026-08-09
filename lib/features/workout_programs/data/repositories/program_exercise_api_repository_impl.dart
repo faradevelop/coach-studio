@@ -40,4 +40,9 @@ class ProgramExerciseApiRepositoryImpl implements ProgramExerciseRepository {
   Future<void> deleteProgramExercise(String id) {
     return datasource.deleteProgramExercise(id);
   }
+
+  @override
+  Future<void> reorderProgramExercise(String exerciseId, int targetOrder) {
+    return datasource.reorderProgramExercise(exerciseId, targetOrder);
+  }
 }

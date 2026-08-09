@@ -9,4 +9,6 @@ abstract class ProgramExerciseRepository {
   Future<void> updateProgramExercise(ProgramExercise exercise);
 
   Future<void> deleteProgramExercise(String id);
+
+  Future<void> reorderProgramExercise(String exerciseId, int targetOrder);
 }

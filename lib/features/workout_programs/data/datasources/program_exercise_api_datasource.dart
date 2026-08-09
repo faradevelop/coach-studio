@@ -52,6 +52,15 @@ class ProgramExerciseApiDatasource {
     await client.delete('/program-exercises/$id');
   }
 
+  Future<void> reorderProgramExercise(
+    String exerciseId,
+    int targetOrder,
+  ) async {
+    await client.patch('/program-exercises/$exerciseId/reorder', {
+      'order': targetOrder,
+    });
+  }
+
   ProgramExerciseDetails _detailsFromJson(Map<String, dynamic> json) {
     final programExercise = ProgramExerciseModel.fromJson(
       json['programExercise'] as Map<String, dynamic>,
