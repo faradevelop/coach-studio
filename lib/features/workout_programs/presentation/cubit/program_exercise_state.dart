@@ -15,19 +15,23 @@ class ProgramExerciseLoading extends ProgramExerciseState {
 class ProgramExerciseLoaded extends ProgramExerciseState {
   final List<ProgramExerciseDetails> exercises;
   final bool isSubmitting;
+  final String? errorMessage;
 
   const ProgramExerciseLoaded({
     required this.exercises,
     this.isSubmitting = false,
+    this.errorMessage,
   });
 
   ProgramExerciseLoaded copyWith({
     List<ProgramExerciseDetails>? exercises,
     bool? isSubmitting,
+    String? errorMessage,
   }) {
     return ProgramExerciseLoaded(
       exercises: exercises ?? this.exercises,
       isSubmitting: isSubmitting ?? this.isSubmitting,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }

@@ -34,12 +34,18 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
         );
   }
 
-  Future<void> _refreshExercises() async {
+  Future<void> _refreshExercises({String? errorMessage}) async {
     final workoutId = _workoutId;
     if (workoutId == null) return;
 
     final exercises = await repository.watchProgramExercises(workoutId).first;
-    emit(ProgramExerciseLoaded(exercises: exercises, isSubmitting: false));
+    emit(
+      ProgramExerciseLoaded(
+        exercises: exercises,
+        isSubmitting: false,
+        errorMessage: errorMessage,
+      ),
+    );
   }
 
   Future<void> addProgramExercise(ProgramExercise exercise) async {
@@ -78,6 +84,31 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
       await _refreshExercises();
     } catch (e) {
       emit(ProgramExerciseError(e.toString()));
+    }
+  }
+
+  Future<void> reorderProgramExercise(
+    String exerciseId,
+    int targetOrder,
+  ) async {
+    final current = state;
+
+    if (current is! ProgramExerciseLoaded || current.isSubmitting) {
+      return;
+    }
+
+    emit(current.copyWith(isSubmitting: true));
+
+    try {
+      await repository.reorderProgramExercise(exerciseId, targetOrder);
+
+      await _refreshExercises();
+    } catch (e) {
+      try {
+        await _refreshExercises(errorMessage: 'تغییر ترتیب تمرین انجام نشد');
+      } catch (_) {
+        emit(ProgramExerciseError('دریافت اطلاعات تمرین‌ها با خطا مواجه شد'));
+      }
     }
   }
 
