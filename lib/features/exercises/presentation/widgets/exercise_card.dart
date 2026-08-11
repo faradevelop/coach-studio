@@ -1,6 +1,9 @@
 import 'dart:ui';
 
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_spacing.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +11,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ExerciseCard extends StatelessWidget {
   final Exercise exercise;
-
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
@@ -22,25 +24,27 @@ class ExerciseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
           child: Container(
-            // margin: const EdgeInsets.symmetric(vertical: 6),
-            //width: 50,
-            height: 105,
+            height: 108,
             decoration: BoxDecoration(
-              color: AppColors.dirtyCream.withValues(alpha: 0.40),
-              borderRadius: BorderRadius.circular(24),
+              color: AppColors.surfaceGlass,
+              borderRadius: BorderRadius.circular(AppRadius.xl),
               border: Border.all(
-                color: AppColors.dirtyCream.withValues(alpha: 0.55),
+                color: AppColors.surfaceGlassBorder,
                 width: 1.1,
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: AppSpacing.md,
+              ),
+
               child: Row(
                 children: [
                   _ExerciseImage(imageUrl: exercise.imageUrl ?? ''),
@@ -48,85 +52,53 @@ class ExerciseCard extends StatelessWidget {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 6),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  exercise.name,
-                                  style: Theme.of(context).textTheme.titleMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                  overflow: TextOverflow.fade,
-                                  maxLines: 1,
-                                ),
-                              ),
-
-                              //Spacer(),
-                              MiniButton(
-                                color: Colors.blueAccent.withValues(
-                                  alpha: 0.38,
-                                ),
-                                icon: Icon(
-                                  Icons.edit,
-                                  size: 14,
-                                  color: const Color.fromARGB(255, 3, 29, 157),
-                                ),
-                                onPressed: onEdit,
-                              ),
-                              SizedBox(width: 6),
-                              MiniButton(
-                                color: Colors.red.withValues(alpha: 0.38),
-                                icon: FaIcon(
-                                  FontAwesomeIcons.trash,
-                                  size: 12,
-                                  color: const Color.fromARGB(255, 186, 10, 10),
-                                ),
-                                onPressed: onDelete,
-                              ),
-                            ],
+                        Text(
+                          exercise.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.titleMedium.copyWith(
+                            fontSize: 16,
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 4),
+                        Text(
+                          exercise.targetMuscle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.orange,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
                         Row(
                           children: [
                             FaIcon(
                               FontAwesomeIcons.fireFlameCurved,
                               size: 14,
-                              color: const Color.fromARGB(255, 186, 10, 10),
+                              color: AppColors.orange.withValues(alpha: 0.8),
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              exercise.targetMuscle,
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              exercise.equipment,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.bodySmall,
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            // FaIcon(
-                            //   FontAwesomeIcons.dumbbell,
-                            //   size: 14,
-                            //   color: const Color.fromARGB(255, 27, 5, 195),
-                            // ),
-                            // const SizedBox(width: 4),
-                            // Text(
-                            //   exercise.equipment,
-                            //   style: Theme.of(context).textTheme.bodySmall,
-                            // ),
-                            // const SizedBox(width: 6),
+                            const SizedBox(width: 10),
                             Icon(
-                              Icons.bar_chart_rounded,
-                              size: 14,
-                              color: const Color.fromARGB(255, 84, 53, 237),
+                              Icons.bar_chart,
+                              size: 15,
+                              color: AppColors.orange.withValues(alpha: 0.8),
                             ),
 
-                            const SizedBox(width: 4),
                             Text(
                               exercise.difficulty,
-                              style: Theme.of(context).textTheme.bodySmall,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.bodySmall,
                             ),
                           ],
                         ),
@@ -134,23 +106,31 @@ class ExerciseCard extends StatelessWidget {
                     ),
                   ),
 
-                  // PopupMenuButton<String>(
-                  //   onSelected: (value) {
-                  //     switch (value) {
-                  //       case 'edit':
-                  //         onEdit?.call();
-
-                  //       case 'delete':
-                  //         onDelete?.call();
-                  //     }
-                  //   },
-
-                  //   itemBuilder: (_) => const [
-                  //     PopupMenuItem(value: 'edit', child: Text('Edit')),
-
-                  //     PopupMenuItem(value: 'delete', child: Text('Delete')),
-                  //   ],
-                  // ),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: MiniButton(
+                      color: AppColors.charcoalSoft.withValues(alpha: 0.4),
+                      icon: Icon(
+                        Icons.edit_rounded,
+                        size: 18,
+                        color: AppColors.charcoal,
+                      ),
+                      onPressed: onEdit,
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: MiniButton(
+                      color: AppColors.error.withValues(alpha: 0.4),
+                      icon: Icon(
+                        Icons.delete_rounded,
+                        size: 18,
+                        color: AppColors.error,
+                      ),
+                      onPressed: onDelete,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -163,30 +143,43 @@ class ExerciseCard extends StatelessWidget {
 
 class _ExerciseImage extends StatelessWidget {
   final String imageUrl;
+
   const _ExerciseImage({required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(18),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: Container(
           width: 72,
           height: 72,
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.38),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: Colors.white.withValues(alpha: 0.55),
               width: 1.2,
             ),
           ),
           child: imageUrl.isEmpty
-              ? const Icon(Icons.fitness_center_rounded, size: 32)
+              ? const Icon(
+                  Icons.fitness_center_rounded,
+                  size: 30,
+                  color: AppColors.orange,
+                )
               : ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.network(imageUrl, fit: BoxFit.cover),
+                  borderRadius: BorderRadius.circular(17),
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.fitness_center_rounded,
+                      size: 30,
+                      color: AppColors.orange,
+                    ),
+                  ),
                 ),
         ),
       ),

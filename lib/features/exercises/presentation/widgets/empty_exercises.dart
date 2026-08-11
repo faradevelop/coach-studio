@@ -1,47 +1,55 @@
+import 'dart:ui';
+
+import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_spacing.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class EmptyExercises extends StatelessWidget {
   const EmptyExercises({super.key});
 
-  static const Color _charcoal = Color(0xFF2D2D2D);
-  static const Color _orange = Color(0xFFFF6B35);
-
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 40),
+      padding: const EdgeInsets.only(top: AppSpacing.xxl),
       child: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.4),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.fitness_center_rounded,
-                size: 32,
-                color: _orange,
+            // Glass circle icon
+            ClipOval(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                child: Container(
+                  width: 88,
+                  height: 88,
+                  decoration: BoxDecoration(
+                    color: AppColors.glass,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.glassBorder,
+                      width: 1.2,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.fitness_center_rounded,
+                    size: 36,
+                    color: AppColors.orange,
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'تمرینی وجود ندارد!',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: _charcoal,
-              ),
-            ),
-            const SizedBox(height: 6),
+
+            const SizedBox(height: AppSpacing.lg),
+
+            Text('تمرینی وجود ندارد!', style: AppTextStyles.titleMedium),
+
+            const SizedBox(height: AppSpacing.sm),
+
             Text(
-              'با کلیک دکمه  +  تمرین ایجاد کنید',
-              style: TextStyle(
-                fontSize: 13,
-                color: _charcoal.withValues(alpha: 0.6),
-              ),
+              'با کلیک دکمه  +  اولین تمرین را بسازید',
+              style: AppTextStyles.subtitle,
+              textAlign: TextAlign.center,
             ),
           ],
         ),

@@ -1,5 +1,9 @@
 import 'dart:ui';
+
 import 'package:coach_studio/core/constants/app_options.dart';
+import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_dropdown.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
@@ -31,11 +35,6 @@ class _ExerciseFormState extends State<ExerciseForm> {
   String? _selectedMuscle;
   String? _selectedDifficulty;
   String? _selectedEquipment;
-
-  // رنگ‌های مشترک با صفحه لیست
-  static const Color _orange = Color(0xFFFF6B35);
-  static const Color _cream = Color(0xFFFFF8F0);
-  static const Color _charcoal = Color(0xFF2D2D2D);
 
   @override
   void initState() {
@@ -81,19 +80,18 @@ class _ExerciseFormState extends State<ExerciseForm> {
 
   @override
   Widget build(BuildContext context) {
-    final oldExercise = widget.initialExercise;
-    final isEdit = oldExercise != null;
+    final isEdit = widget.initialExercise != null;
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color(0xFFFF9A5A), // نارنجی قوی بالا
+            AppColors.orangeGlow,
             Color(0xFFFFC9A0),
             Color(0xFFFFF0E0),
-            _cream,
+            AppColors.cream,
           ],
           stops: [0.0, 0.18, 0.45, 1.0],
         ),
@@ -101,7 +99,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
       child: SafeArea(
         child: Column(
           children: [
-            // AppBar سفارشی
+            // Custom AppBar
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
               child: Row(
@@ -112,64 +110,38 @@ class _ExerciseFormState extends State<ExerciseForm> {
                     children: [
                       Text(
                         isEdit ? 'ویرایش تمرین' : 'ایجاد تمرین',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: _charcoal,
-                          letterSpacing: -0.3,
-                        ),
+                        style: AppTextStyles.title,
                       ),
                       const SizedBox(height: 4),
                       Container(
                         height: 3,
                         width: isEdit ? 92 : 88,
                         decoration: BoxDecoration(
-                          color: _orange,
+                          color: AppColors.orange,
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
                     ],
                   ),
                   const Spacer(),
-                  GestureDetector(
-                    onTap: () => context.pop(),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.35),
-                        borderRadius: BorderRadius.circular(50),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.4),
-                        ),
-                      ),
-                      child: Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: const Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          size: 18,
-                          color: _charcoal,
-                        ),
-                      ),
-                    ),
-                  ),
+                  GlassyBackButton(onTap: () => context.pop()),
                 ],
               ),
             ),
 
-            // فرم داخل کارت شیشه‌ای
+            // Glass form card
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(AppRadius.xl),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                     child: Container(
                       padding: const EdgeInsets.all(22),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.38),
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(AppRadius.xl),
                         border: Border.all(
                           color: Colors.white.withValues(alpha: 0.55),
                           width: 1.2,
