@@ -1,4 +1,5 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +7,7 @@ import 'package:go_router/go_router.dart';
 class CustomAppBar extends StatelessWidget {
   final VoidCallback onPressed;
   final String title;
+
   const CustomAppBar({super.key, required this.onPressed, required this.title});
 
   @override
@@ -21,11 +23,9 @@ class CustomAppBar extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
+                  style: AppTextStyles.title.copyWith(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.charcoal,
-                    letterSpacing: -0.3,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -44,17 +44,27 @@ class CustomAppBar extends StatelessWidget {
           GestureDetector(
             onTap: onPressed,
             child: Container(
-              width: 40,
-              height: 40,
+              width: 46,
+              height: 46,
               decoration: BoxDecoration(
                 color: AppColors.orange,
                 borderRadius: BorderRadius.circular(50),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
+                border: Border.all(
+                  color: AppColors.orangeSoft.withValues(alpha: 0.35),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.orangeGlow.withValues(alpha: 0.35),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: const Icon(
                 Icons.add_rounded,
                 color: Colors.white,
-                size: 30,
+                size: 28,
               ),
             ),
           ),
@@ -86,11 +96,7 @@ class InnerPagesAppBar extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.charcoal,
-                ),
+                style: AppTextStyles.titleMedium,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

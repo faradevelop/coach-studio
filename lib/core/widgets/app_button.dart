@@ -1,14 +1,13 @@
 import 'dart:ui';
 
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class AppButton extends StatelessWidget {
   final String text;
-
   final VoidCallback? onPressed;
-
   final bool isLoading;
 
   const AppButton({
@@ -20,26 +19,28 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDisabled = onPressed == null || isLoading;
+
     return SizedBox(
       width: double.infinity,
-      height: 36,
+      height: 48,
       child: FilledButton(
-        onPressed: isLoading ? null : onPressed,
-        style: ButtonStyle(
-          backgroundColor: onPressed == null
-              ? WidgetStatePropertyAll(AppColors.grey)
-              : WidgetStatePropertyAll(AppColors.orange),
+        onPressed: isDisabled ? null : onPressed,
+        style: FilledButton.styleFrom(
+          backgroundColor: isDisabled ? AppColors.grey : AppColors.orange,
+          foregroundColor: AppColors.onOrange,
+          disabledBackgroundColor: AppColors.grey,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
         ),
         child: isLoading
-            ? SizedBox(
-                width: 30,
-                height: 34,
-                child: LoadingAnimationWidget.waveDots(
-                  color: AppColors.charcoal,
-                  size: 24,
-                ),
+            ? LoadingAnimationWidget.waveDots(
+                color: AppColors.charcoal,
+                size: 24,
               )
-            : Text(text),
+            : Text(text, style: AppTextStyles.button),
       ),
     );
   }
@@ -49,6 +50,7 @@ class MiniButton extends StatelessWidget {
   final Color color;
   final Widget icon;
   final VoidCallback onPressed;
+
   const MiniButton({
     super.key,
     required this.color,
@@ -66,7 +68,7 @@ class MiniButton extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
           child: Container(
             width: 40,
-            height: 25,
+            height: 28,
             decoration: BoxDecoration(
               color: color,
               borderRadius: BorderRadius.circular(20),

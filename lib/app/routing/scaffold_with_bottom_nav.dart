@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,18 +14,23 @@ class ScaffoldWithBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Background
+        // Background — uses theme tokens
         Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topLeft,
+              begin: Alignment.topRight,
               end: Alignment.bottomRight,
-              colors: [Color(0xFFF8F4EE), Color(0xFFF5F0E8), Color(0xFFF2ECE5)],
+              colors: [
+                // AppColors.orangeGlow,
+                Color(0xFFFFC9A0).withValues(alpha: 0.5),
+                Color(0xFFFFF0E0),
+                AppColors.cream,
+              ],
             ),
           ),
         ),
 
-        // Glow
+        // Soft orange glow (top-start)
         PositionedDirectional(
           top: -80,
           start: -50,
@@ -35,7 +41,7 @@ class ScaffoldWithBottomNav extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFFF9A5A).withValues(alpha: 0.55),
+                  color: AppColors.orangeGlow,
                   blurRadius: 140,
                   spreadRadius: 40,
                 ),
@@ -47,8 +53,9 @@ class ScaffoldWithBottomNav extends StatelessWidget {
         Scaffold(
           backgroundColor: Colors.transparent,
           body: navigationShell,
-          bottomNavigationBar: null, // use custom bottom nav bar instead
+          bottomNavigationBar: null, // custom glass bottom nav below
         ),
+
         // Floating Glass Navbar
         PositionedDirectional(
           start: 0,
@@ -112,10 +119,7 @@ class GlassBottomNav extends StatelessWidget {
           height: height,
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(
-                color: Colors.white.withValues(alpha: 0.55),
-                width: 1.2,
-              ),
+              top: BorderSide(color: AppColors.glassBorder, width: 1.2),
             ),
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -146,7 +150,7 @@ class GlassBottomNav extends StatelessWidget {
                         scale: selected ? 1.12 : 1.0,
                         child: selected ? item.activeIcon : item.icon,
                       ),
-                      SizedBox(height: 6),
+                      const SizedBox(height: 6),
                       Text(
                         item.name,
                         style: TextStyle(

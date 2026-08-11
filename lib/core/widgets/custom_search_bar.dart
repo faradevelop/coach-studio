@@ -5,6 +5,7 @@ class CustomSearchBar extends StatelessWidget {
   final String hint;
   final TextEditingController controller;
   final Function(String) onChanged;
+
   const CustomSearchBar({
     super.key,
     required this.hint,
@@ -17,14 +18,25 @@ class CustomSearchBar extends StatelessWidget {
     return Container(
       height: 48,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.7),
+        color: AppColors.glassStrong,
         borderRadius: BorderRadius.circular(50),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.6)),
+        border: Border.all(color: AppColors.glassBorder),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.charcoal.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: TextField(
         controller: controller,
         cursorColor: AppColors.orange,
-        style: const TextStyle(color: AppColors.charcoal, fontSize: 15),
+        style: const TextStyle(
+          color: AppColors.charcoal,
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        ),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(
@@ -33,10 +45,15 @@ class CustomSearchBar extends StatelessWidget {
           ),
           suffixIcon: Icon(
             Icons.search_rounded,
-            color: AppColors.orange,
+            color: AppColors.orange.withValues(alpha: 0.9),
             size: 22,
           ),
           border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          fillColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          hoverColor: Colors.transparent,
           contentPadding: const EdgeInsets.symmetric(
             vertical: 14,
             horizontal: 12,

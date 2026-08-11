@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AppTextField extends StatelessWidget {
@@ -16,62 +17,59 @@ class AppTextField extends StatelessWidget {
     this.maxLines = 1,
   });
 
-  static const Color _orange = Color(0xFFFF6B35);
-  static const Color _charcoal = Color(0xFF2D2D2D);
-
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
       style: const TextStyle(
-        color: _charcoal,
+        color: AppColors.charcoal,
         fontSize: 15,
         fontWeight: FontWeight.w500,
       ),
-      cursorColor: _orange,
+      cursorColor: AppColors.orange,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         labelStyle: TextStyle(
-          color: _charcoal.withValues(alpha: 0.7),
+          color: AppColors.charcoal.withValues(alpha: 0.7),
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
         floatingLabelStyle: const TextStyle(
-          color: _orange,
+          color: AppColors.orange,
           fontSize: 14,
           fontWeight: FontWeight.w600,
         ),
         hintStyle: TextStyle(
-          color: _charcoal.withValues(alpha: 0.4),
+          color: AppColors.charcoal.withValues(alpha: 0.4),
           fontSize: 14,
         ),
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.55),
+        fillColor: AppColors.glass,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.6)),
+          borderSide: BorderSide(color: AppColors.glassBorder),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.6)),
+          borderSide: BorderSide(color: AppColors.glassBorder),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: _orange, width: 1.6),
+          borderSide: const BorderSide(color: AppColors.orange, width: 1.6),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.2),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.6),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.6),
         ),
       ),
       validator: validator,
