@@ -78,7 +78,7 @@ class ExerciseCard extends StatelessWidget {
                             FaIcon(
                               FontAwesomeIcons.fireFlameCurved,
                               size: 14,
-                              color: AppColors.orange.withValues(alpha: 0.8),
+                              color: AppColors.orange,
                             ),
                             const SizedBox(width: 4),
                             Text(
@@ -91,7 +91,7 @@ class ExerciseCard extends StatelessWidget {
                             Icon(
                               Icons.bar_chart,
                               size: 15,
-                              color: AppColors.orange.withValues(alpha: 0.8),
+                              color: AppColors.orange,
                             ),
 
                             Text(
@@ -109,11 +109,11 @@ class ExerciseCard extends StatelessWidget {
                   Align(
                     alignment: Alignment.topRight,
                     child: MiniButton(
-                      color: AppColors.charcoalSoft.withValues(alpha: 0.4),
+                      color: AppColors.charcoalSoft.withValues(alpha: 0.18),
                       icon: Icon(
                         Icons.edit_rounded,
                         size: 18,
-                        color: AppColors.charcoal,
+                        color: AppColors.charcoal.withValues(alpha: 0.9),
                       ),
                       onPressed: onEdit,
                     ),
@@ -122,11 +122,11 @@ class ExerciseCard extends StatelessWidget {
                   Align(
                     alignment: Alignment.topRight,
                     child: MiniButton(
-                      color: AppColors.error.withValues(alpha: 0.4),
+                      color: AppColors.error.withValues(alpha: 0.18),
                       icon: Icon(
                         Icons.delete_rounded,
-                        size: 18,
-                        color: AppColors.error,
+                        size: 16,
+                        color: AppColors.error.withValues(alpha: 0.9),
                       ),
                       onPressed: onDelete,
                     ),
