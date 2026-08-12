@@ -1,4 +1,8 @@
 import 'dart:ui';
+
+import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_dropdown.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
@@ -33,10 +37,6 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
   ProgramGoal? _goal;
   ProgramLevel? _level;
 
-  static const Color _orange = Color(0xFFFF6B35);
-  static const Color _cream = Color(0xFFFFF8F0);
-  static const Color _charcoal = Color(0xFF2D2D2D);
-
   @override
   void initState() {
     super.initState();
@@ -56,6 +56,24 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
     _daysController.dispose();
     _notesController.dispose();
     super.dispose();
+  }
+
+  String _goalLabel(ProgramGoal goal) {
+    return switch (goal) {
+      ProgramGoal.hypertrophy => 'هایپرتروفی',
+      ProgramGoal.strength => 'قدرتی',
+      ProgramGoal.fatLoss => 'چربی‌سوزی',
+      ProgramGoal.endurance => 'استقامتی',
+      ProgramGoal.rehabilitation => 'توان‌بخشی',
+    };
+  }
+
+  String _levelLabel(ProgramLevel level) {
+    return switch (level) {
+      ProgramLevel.beginner => 'مبتدی',
+      ProgramLevel.intermediate => 'متوسط',
+      ProgramLevel.advanced => 'پیشرفته',
+    };
   }
 
   void _submit() {
@@ -86,10 +104,10 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color(0xFFFF9A5A),
+            AppColors.orangeGlow,
             Color(0xFFFFC9A0),
             Color(0xFFFFF0E0),
-            _cream,
+            AppColors.cream,
           ],
           stops: [0.0, 0.18, 0.45, 1.0],
         ),
@@ -97,78 +115,51 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
       child: SafeArea(
         child: Column(
           children: [
-            // AppBar سفارشی
+            // Custom AppBar
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
               child: Row(
                 children: [
+                  const SizedBox(width: 40),
                   const Spacer(),
                   Column(
                     children: [
-                      const SizedBox(width: 40),
-
                       Text(
                         isEdit ? 'ویرایش برنامه' : 'ایجاد برنامه',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: _charcoal,
-                          letterSpacing: -0.3,
-                        ),
+                        style: AppTextStyles.title,
                       ),
                       const SizedBox(height: 4),
                       Container(
                         height: 3,
                         width: isEdit ? 92 : 110,
                         decoration: BoxDecoration(
-                          color: _orange,
+                          color: AppColors.orange,
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
                     ],
                   ),
                   const Spacer(),
-                  GestureDetector(
-                    onTap: () => context.pop(),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.35),
-                        borderRadius: BorderRadius.circular(50),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.4),
-                        ),
-                      ),
-                      child: Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: const Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          size: 18,
-                          color: _charcoal,
-                        ),
-                      ),
-                    ),
-                  ),
+                  GlassyBackButton(onTap: () => context.pop()),
                 ],
               ),
             ),
 
-            // فرم داخل کارت شیشه‌ای
+            // Glass form card
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(AppRadius.xl),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                     child: Container(
                       padding: const EdgeInsets.all(22),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.38),
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(AppRadius.xl),
                         border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.55),
+                          color: AppColors.glassBorder,
                           width: 1.2,
                         ),
                       ),
@@ -193,7 +184,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                               label: 'هدف',
                               value: _goal,
                               items: ProgramGoal.values,
-                              itemLabel: (item) => item.name,
+                              itemLabel: _goalLabel,
                               onChanged: widget.isLoading
                                   ? null
                                   : (value) {
@@ -206,7 +197,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                               label: 'سطح',
                               value: _level,
                               items: ProgramLevel.values,
-                              itemLabel: (item) => item.name,
+                              itemLabel: _levelLabel,
                               onChanged: widget.isLoading
                                   ? null
                                   : (value) {

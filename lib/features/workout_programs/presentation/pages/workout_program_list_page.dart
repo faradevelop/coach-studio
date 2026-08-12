@@ -1,5 +1,9 @@
+import 'dart:ui';
+
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_spacing.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
@@ -36,7 +40,7 @@ class _WorkoutProgramListView extends StatelessWidget {
               title: 'برنامه‌های تمرینی',
             ),
           ),
-          SizedBox(height: 28),
+          const SizedBox(height: AppSpacing.lg + 4),
           Expanded(
             child: BlocBuilder<WorkoutProgramCubit, WorkoutProgramState>(
               builder: (context, state) {
@@ -49,28 +53,36 @@ class _WorkoutProgramListView extends StatelessWidget {
                       size: 40,
                     ),
                   ),
+
                   WorkoutProgramLoaded(:final programs) =>
                     programs.isEmpty
-                        ? _EmptyProgramsState()
+                        ? const _EmptyProgramsState()
                         : LayoutBuilder(
                             builder: (context, constraints) {
                               final width = constraints.maxWidth;
-                              int crossAxisCount;
-                              double childAspectRatio;
+                              final int crossAxisCount;
+                              final double childAspectRatio;
 
-                              if (width >= 1100) {
-                                // desktop
+                              if (width >= 1000) {
+                                crossAxisCount = 5;
+                                childAspectRatio = 0.9;
+                              } else if (width >= 800) {
                                 crossAxisCount = 4;
-                                childAspectRatio = 2;
-                              } else if (width >= 700) {
-                                // tablet
+                                childAspectRatio = 0.9;
+                              } else if (width >= 650) {
                                 crossAxisCount = 3;
-                                childAspectRatio = 1.5;
-                              } else {
-                                // mobile
+                                childAspectRatio = 0.9;
+                              } else if (width >= 550) {
                                 crossAxisCount = 2;
                                 childAspectRatio = 1.3;
+                              } else if (width >= 420) {
+                                crossAxisCount = 2;
+                                childAspectRatio = 0.9;
+                              } else {
+                                crossAxisCount = 1;
+                                childAspectRatio = 1.8;
                               }
+
                               return GridView.builder(
                                 padding: const EdgeInsets.fromLTRB(
                                   14,
@@ -80,27 +92,19 @@ class _WorkoutProgramListView extends StatelessWidget {
                                 ),
                                 gridDelegate:
                                     SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: crossAxisCount, //2,
+                                      crossAxisCount: crossAxisCount,
                                       mainAxisSpacing: 14,
                                       crossAxisSpacing: 14,
-                                      childAspectRatio: childAspectRatio, //1.5,
+                                      childAspectRatio: childAspectRatio,
                                     ),
                                 itemCount: programs.length,
                                 itemBuilder: (context, index) {
                                   final program = programs[index];
                                   return WorkoutProgramCard(
                                     program: program,
-                                    // onEdit: () {
-                                    //   context.pushNamed(
-                                    //     AppRouteNames.workoutProgramDetail,
-                                    //     pathParameters: {'programId': program.id},
-                                    //     extra: program,
-                                    //   );
-                                    // },
                                     onDelete: () async {
                                       final result = await showDialog<bool>(
                                         context: context,
-
                                         builder: (_) => DeleteDialog(
                                           itemName: program.title,
                                           title: 'برنامه',
@@ -129,7 +133,12 @@ class _WorkoutProgramListView extends StatelessWidget {
                           ),
 
                   WorkoutProgramError(:final message) => Center(
-                    child: Text(message),
+                    child: Text(
+                      message,
+                      style: AppTextStyles.body.copyWith(
+                        color: AppColors.error,
+                      ),
+                    ),
                   ),
                 };
               },
@@ -144,45 +153,43 @@ class _WorkoutProgramListView extends StatelessWidget {
 class _EmptyProgramsState extends StatelessWidget {
   const _EmptyProgramsState();
 
-  static const Color _charcoal = Color(0xFF2D2D2D);
-  static const Color _orange = Color(0xFFFF6B35);
-
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 40),
+      padding: const EdgeInsets.only(top: AppSpacing.xxl),
       child: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.4),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.fitness_center_rounded,
-                size: 32,
-                color: _orange,
+            ClipOval(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                child: Container(
+                  width: 88,
+                  height: 88,
+                  decoration: BoxDecoration(
+                    color: AppColors.glass,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.glassBorder,
+                      width: 1.2,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.fitness_center_rounded,
+                    size: 36,
+                    color: AppColors.orange,
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'برنامه ای وجود ندارد!',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: _charcoal,
-              ),
-            ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpacing.lg),
+            Text('برنامه‌ای وجود ندارد!', style: AppTextStyles.titleMedium),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'با کلیک روی  +  اولین برنامه را ایجاد کنید',
-              style: TextStyle(
-                fontSize: 13,
-                color: _charcoal.withValues(alpha: 0.6),
-              ),
+              style: AppTextStyles.subtitle,
+              textAlign: TextAlign.center,
             ),
           ],
         ),

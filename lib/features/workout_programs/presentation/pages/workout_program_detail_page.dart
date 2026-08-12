@@ -3,6 +3,9 @@ import 'dart:ui';
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_spacing.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
@@ -12,6 +15,8 @@ import 'package:coach_studio/features/workout_programs/domain/entities/program_e
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_draft.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_details.dart';
+import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
+import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
@@ -38,7 +43,6 @@ class _WorkoutProgramDetailPageState extends State<WorkoutProgramDetailPage> {
   @override
   void initState() {
     super.initState();
-
     context.read<ProgramExerciseCubit>().loadExercises(widget.program.id);
   }
 
@@ -74,6 +78,7 @@ class _WorkoutProgramDetailView extends StatefulWidget {
 class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
   bool _isGeneratingPdf = false;
   int _selectedDay = 1;
+
   @override
   void didUpdateWidget(covariant _WorkoutProgramDetailView oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -83,6 +88,24 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
     if (_selectedDay > widget.program.daysPerWeek) {
       _selectedDay = widget.program.daysPerWeek;
     }
+  }
+
+  String get _goalLabel {
+    return switch (widget.program.goal) {
+      ProgramGoal.hypertrophy => 'هایپرتروفی',
+      ProgramGoal.strength => 'قدرتی',
+      ProgramGoal.fatLoss => 'چربی‌سوزی',
+      ProgramGoal.endurance => 'استقامتی',
+      ProgramGoal.rehabilitation => 'توان‌بخشی',
+    };
+  }
+
+  String get _levelLabel {
+    return switch (widget.program.level) {
+      ProgramLevel.beginner => 'مبتدی',
+      ProgramLevel.intermediate => 'متوسط',
+      ProgramLevel.advanced => 'پیشرفته',
+    };
   }
 
   Map<int, List<ProgramExerciseDetails>> _groupByDay(
@@ -95,12 +118,11 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
 
     for (final exercise in exercises) {
       final day = exercise.programExercise.day;
-
       groupedExercises.putIfAbsent(day, () => []).add(exercise);
     }
 
-    for (final exercises in groupedExercises.values) {
-      exercises.sort(
+    for (final list in groupedExercises.values) {
+      list.sort(
         (a, b) => a.programExercise.order.compareTo(b.programExercise.order),
       );
     }
@@ -131,13 +153,9 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
       builder: (_) => const AthleteInfoFormDialog(),
     );
 
-    if (athlete == null || !context.mounted) {
-      return;
-    }
+    if (athlete == null || !context.mounted) return;
 
-    setState(() {
-      _isGeneratingPdf = true;
-    });
+    setState(() => _isGeneratingPdf = true);
 
     showDialog<void>(
       context: context,
@@ -162,23 +180,16 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
         filename: '${widget.program.title}.pdf',
       );
 
+      if (context.mounted) context.pop();
+    } catch (_) {
       if (context.mounted) {
         context.pop();
-      }
-    } catch (e) {
-      if (context.mounted) {
-        context.pop();
-
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('ساخت PDF با خطا مواجه شد')),
         );
       }
     } finally {
-      if (mounted) {
-        setState(() {
-          _isGeneratingPdf = false;
-        });
-      }
+      if (mounted) setState(() => _isGeneratingPdf = false);
     }
   }
 
@@ -192,7 +203,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFFF9A5A),
+              AppColors.orangeGlow,
               Color(0xFFFFC9A0),
               Color(0xFFFFF0E0),
               AppColors.cream,
@@ -217,15 +228,15 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: _buildProgramInfoCard(context),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.lg),
                       Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: _buildExercisesHeader(context),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       _buildExercisesList(context),
                     ],
                   ),
@@ -245,21 +256,20 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
         children: [
           Row(
             children: [
-              Text(
-                widget.program.title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.charcoal,
+              Expanded(
+                child: Text(
+                  widget.program.title,
+                  style: AppTextStyles.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const Spacer(),
               MiniButton(
-                color: Colors.blueAccent.withValues(alpha: 0.38),
-                icon: const Icon(
-                  Icons.edit,
-                  size: 14,
-                  color: Color.fromARGB(255, 3, 29, 157),
+                color: AppColors.charcoalSoft.withValues(alpha: 0.18),
+                icon: Icon(
+                  Icons.edit_rounded,
+                  size: 18,
+                  color: AppColors.charcoal.withValues(alpha: 0.9),
                 ),
                 onPressed: () {
                   context.pushNamed(
@@ -275,14 +285,8 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _InfoChip(
-                icon: Icons.flag_rounded,
-                text: widget.program.goal.name,
-              ),
-              _InfoChip(
-                icon: Icons.bar_chart_rounded,
-                text: widget.program.level.name,
-              ),
+              _InfoChip(icon: Icons.flag_rounded, text: _goalLabel),
+              _InfoChip(icon: Icons.bar_chart_rounded, text: _levelLabel),
               _InfoChip(
                 icon: Icons.calendar_today_rounded,
                 text: '${widget.program.daysPerWeek} روز در هفته',
@@ -297,14 +301,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
   Widget _buildExercisesHeader(BuildContext context) {
     return Row(
       children: [
-        const Text(
-          'تمرین‌ها',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.charcoal,
-          ),
-        ),
+        Text('تمرین‌ها', style: AppTextStyles.titleMedium),
         const Spacer(),
         GestureDetector(
           onTap: _addExercise,
@@ -351,7 +348,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
             ProgramExerciseError(:final message) => Center(
               child: Text(
                 message,
-                style: const TextStyle(color: AppColors.charcoal),
+                style: AppTextStyles.body.copyWith(color: AppColors.error),
               ),
             ),
 
@@ -382,16 +379,14 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
       days: groupedExercises.keys.toList()..sort(),
       exercisesByDay: groupedExercises,
       selectedDay: _selectedDay,
-      onDayChanged: (day) {
-        setState(() {
-          _selectedDay = day;
-        });
-      },
+      onDayChanged: (day) => setState(() => _selectedDay = day),
       program: widget.program,
       isSubmitting: isSubmitting,
     );
   }
 }
+
+// ── Day tabs + list ──────────────────────────────────────────
 
 class _DayExercisesTabs extends StatelessWidget {
   final List<int> days;
@@ -412,9 +407,7 @@ class _DayExercisesTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (days.isEmpty) {
-      return const SizedBox();
-    }
+    if (days.isEmpty) return const SizedBox();
 
     final exercises = exercisesByDay[selectedDay] ?? const [];
 
@@ -424,7 +417,7 @@ class _DayExercisesTabs extends StatelessWidget {
         _buildDayTabs(),
         const SizedBox(height: 18),
         Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 400),
             switchInCurve: Curves.easeOutCubic,
@@ -460,9 +453,8 @@ class _DayExercisesTabs extends StatelessWidget {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 6),
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 6),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             for (int i = 0; i < days.length; i++) ...[
               if (i > 0) const SizedBox(width: 8),
@@ -487,6 +479,15 @@ class _DayExercisesTabs extends StatelessWidget {
       ignorePrimaryScrollController: true,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       needsLongPressDraggable: !isSubmitting,
+      onReorder: (oldIndex, newIndex) {
+        if (isSubmitting || oldIndex == newIndex) return;
+
+        final exercise = exercises[oldIndex].programExercise;
+        context.read<ProgramExerciseCubit>().reorderProgramExercise(
+          exercise.id,
+          newIndex + 1,
+        );
+      },
       children: exercises.map((details) {
         return _ProgramExerciseCard(
           key: ValueKey(details.programExercise.id),
@@ -494,18 +495,6 @@ class _DayExercisesTabs extends StatelessWidget {
           program: program,
         );
       }).toList(),
-      onReorder: (oldIndex, newIndex) {
-        if (isSubmitting || oldIndex == newIndex) {
-          return;
-        }
-
-        final exercise = exercises[oldIndex].programExercise;
-
-        context.read<ProgramExerciseCubit>().reorderProgramExercise(
-          exercise.id,
-          newIndex + 1,
-        );
-      },
     );
   }
 }
@@ -536,16 +525,14 @@ class _DayTab extends StatelessWidget {
               : Colors.white.withValues(alpha: 0.55),
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
-            color: isSelected
-                ? AppColors.orange
-                : Colors.white.withValues(alpha: 0.7),
+            color: isSelected ? AppColors.orange : AppColors.glassBorder,
             width: 1.1,
           ),
           boxShadow: isSelected
               ? null
               : [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
+                    color: AppColors.charcoal.withValues(alpha: 0.04),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -558,7 +545,7 @@ class _DayTab extends StatelessWidget {
             fontWeight: FontWeight.w700,
             letterSpacing: 0.2,
             color: isSelected
-                ? Colors.white
+                ? AppColors.onOrange
                 : AppColors.charcoal.withValues(alpha: 0.78),
           ),
           child: Text('روز $day'),
@@ -567,6 +554,8 @@ class _DayTab extends StatelessWidget {
     );
   }
 }
+
+// ── Exercise cards ───────────────────────────────────────────
 
 class _ProgramExerciseCard extends StatelessWidget {
   final ProgramExerciseDetails details;
@@ -586,9 +575,9 @@ class _ProgramExerciseCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.dirtyCream.withValues(alpha: 0.45),
+        color: AppColors.surfaceGlass,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
+        border: Border.all(color: AppColors.surfaceGlassBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -609,16 +598,14 @@ class _ProgramExerciseCard extends StatelessWidget {
         Expanded(
           child: Text(
             programExercise.order.toString(),
-            style: const TextStyle(
-              fontSize: 14.5,
-              fontWeight: FontWeight.w600,
-              color: AppColors.charcoal,
-            ),
+            style: AppTextStyles.label.copyWith(fontSize: 14.5),
           ),
         ),
         Text(
           '${programExercise.sets} ست • ${programExercise.rest} استراحت',
-          style: const TextStyle(fontSize: 12, color: AppColors.charcoal),
+          style: AppTextStyles.bodySmall.copyWith(
+            color: AppColors.charcoal.withValues(alpha: 0.75),
+          ),
         ),
         const SizedBox(width: 12),
         _ExercisePopupMenu(program: program, details: details),
@@ -654,7 +641,7 @@ class _ExercisePopupMenu extends StatelessWidget {
         PopupMenuItem(value: 'edit', child: Text('ویرایش')),
         PopupMenuItem(
           value: 'delete',
-          child: Text('حذف', style: TextStyle(color: AppColors.orange)),
+          child: Text('حذف', style: TextStyle(color: AppColors.error)),
         ),
       ],
       child: const Icon(
@@ -709,7 +696,6 @@ class _ExerciseItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final item = itemDetails.item;
     final exercise = itemDetails.exercise;
-
     final hasDescription =
         item.description != null && item.description!.isNotEmpty;
 
@@ -729,42 +715,32 @@ class _ExerciseItemCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   exercise.name,
-                  style: const TextStyle(
+                  style: AppTextStyles.body.copyWith(
                     fontSize: 13.5,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.charcoal,
                   ),
                   maxLines: 2,
                 ),
               ),
-              Text(
-                '${item.reps} تکرار •',
-                style: const TextStyle(fontSize: 12, color: AppColors.charcoal),
-              ),
+              Text('${item.reps} تکرار •', style: AppTextStyles.bodySmall),
               const SizedBox(width: 10),
               Text(
                 '${item.tempo} تمپو',
-                style: const TextStyle(
-                  fontSize: 12,
+                style: AppTextStyles.bodySmall.copyWith(
                   fontWeight: FontWeight.w500,
-                  color: AppColors.charcoal,
                 ),
               ),
             ],
           ),
           if (hasDescription) ...[
             Divider(
-              color: AppColors.orange.withValues(alpha: 0.5),
+              color: AppColors.orange.withValues(alpha: 0.35),
               height: 12,
               thickness: 1,
             ),
             Text(
               item.description ?? '',
-              style: const TextStyle(
-                fontSize: 13.5,
-                fontWeight: FontWeight.w500,
-                color: AppColors.charcoal,
-              ),
+              style: AppTextStyles.body.copyWith(fontSize: 13.5),
               maxLines: 3,
             ),
           ],
@@ -773,6 +749,8 @@ class _ExerciseItemCard extends StatelessWidget {
     );
   }
 }
+
+// ── Shared small widgets ─────────────────────────────────────
 
 class _PdfButton extends StatelessWidget {
   final bool enabled;
@@ -790,7 +768,7 @@ class _PdfButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.35),
           borderRadius: BorderRadius.circular(50),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
+          border: Border.all(color: AppColors.glassBorderSoft),
         ),
         child: const Icon(
           Icons.picture_as_pdf_rounded,
@@ -814,8 +792,6 @@ class _ExercisesLoadingIndicator extends StatelessWidget {
   }
 }
 
-// -------------------- Widgets --------------------
-
 class _GlassCard extends StatelessWidget {
   final Widget child;
 
@@ -824,7 +800,7 @@ class _GlassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(AppRadius.xl),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
         child: Container(
@@ -832,11 +808,8 @@ class _GlassCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.38),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.55),
-              width: 1.1,
-            ),
+            borderRadius: BorderRadius.circular(AppRadius.xl),
+            border: Border.all(color: AppColors.glassBorder, width: 1.1),
           ),
           child: child,
         ),
@@ -866,7 +839,7 @@ class _InfoChip extends StatelessWidget {
           const SizedBox(width: 5),
           Text(
             text,
-            style: const TextStyle(
+            style: AppTextStyles.bodySmall.copyWith(
               fontSize: 12.5,
               fontWeight: FontWeight.w500,
               color: AppColors.charcoal,
@@ -881,9 +854,6 @@ class _InfoChip extends StatelessWidget {
 class _EmptyDayExercisesState extends StatelessWidget {
   const _EmptyDayExercisesState({super.key});
 
-  static const Color _charcoal = Color(0xFF2D2D2D);
-  static const Color _orange = Color(0xFFFF6B35);
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -891,36 +861,35 @@ class _EmptyDayExercisesState extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.4),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.fitness_center_rounded,
-                size: 28,
-                color: _orange,
+            ClipOval(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: AppColors.glass,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.glassBorder,
+                      width: 1.2,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.fitness_center_rounded,
+                    size: 30,
+                    color: AppColors.orange,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 14),
-            const Text(
+            Text(
               'برای این روز تمرینی ثبت نشده است',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: _charcoal,
-              ),
+              style: AppTextStyles.titleMedium.copyWith(fontSize: 15),
             ),
             const SizedBox(height: 6),
-            Text(
-              'با دکمه + تمرین اضافه کنید',
-              style: TextStyle(
-                fontSize: 13,
-                color: _charcoal.withValues(alpha: 0.6),
-              ),
-            ),
+            Text('با دکمه + تمرین اضافه کنید', style: AppTextStyles.subtitle),
           ],
         ),
       ),
@@ -931,10 +900,6 @@ class _EmptyDayExercisesState extends StatelessWidget {
 class _PdfLoadingDialog extends StatelessWidget {
   const _PdfLoadingDialog();
 
-  static const Color _orange = Color(0xFFFF6B35);
-  static const Color _charcoal = Color(0xFF2D2D2D);
-  static const Color _cream = Color(0xFFFFF8F0);
-
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -944,11 +909,11 @@ class _PdfLoadingDialog extends StatelessWidget {
         width: 260,
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
         decoration: BoxDecoration(
-          color: _cream,
-          borderRadius: BorderRadius.circular(24),
+          color: AppColors.cream,
+          borderRadius: BorderRadius.circular(AppRadius.xl),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
+              color: AppColors.charcoal.withValues(alpha: 0.12),
               blurRadius: 30,
               offset: const Offset(0, 10),
             ),
@@ -958,27 +923,17 @@ class _PdfLoadingDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             LoadingAnimationWidget.flickr(
-              leftDotColor: _orange,
-              rightDotColor: _charcoal,
+              leftDotColor: AppColors.orange,
+              rightDotColor: AppColors.charcoal,
               size: 42,
             ),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'در حال ساخت PDF',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: _charcoal,
-              ),
+              style: AppTextStyles.titleMedium.copyWith(fontSize: 16),
             ),
             const SizedBox(height: 8),
-            Text(
-              'لطفاً کمی صبر کنید...',
-              style: TextStyle(
-                fontSize: 13,
-                color: _charcoal.withValues(alpha: 0.6),
-              ),
-            ),
+            Text('لطفاً کمی صبر کنید...', style: AppTextStyles.subtitle),
           ],
         ),
       ),

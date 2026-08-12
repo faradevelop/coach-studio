@@ -1,155 +1,152 @@
 import 'dart:ui';
 
+import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_spacing.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
+import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
+import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class WorkoutProgramCard extends StatelessWidget {
   final WorkoutProgram program;
-  //final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onTap;
 
   const WorkoutProgramCard({
     super.key,
     required this.program,
-    //required this.onEdit,
     required this.onDelete,
     required this.onTap,
   });
 
-  static const Color _orange = Color(0xFFFF6B35);
-  static const Color _charcoal = Color(0xFF2D2D2D);
+  String get _goalLabel {
+    return switch (program.goal) {
+      ProgramGoal.hypertrophy => 'هایپرتروفی',
+      ProgramGoal.strength => 'قدرتی',
+      ProgramGoal.fatLoss => 'چربی‌سوزی',
+      ProgramGoal.endurance => 'استقامتی',
+      ProgramGoal.rehabilitation => 'توان‌بخشی',
+    };
+  }
+
+  String get _levelLabel {
+    return switch (program.level) {
+      ProgramLevel.beginner => 'مبتدی',
+      ProgramLevel.intermediate => 'متوسط',
+      ProgramLevel.advanced => 'پیشرفته',
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
           child: Container(
-            padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.40),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.55),
-                width: 1.1,
-              ),
+              color: Colors.white.withValues(alpha: 0.42),
+              borderRadius: BorderRadius.circular(AppRadius.xl),
+              border: Border.all(color: AppColors.glassBorder, width: 1.1),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        program.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: _charcoal,
-                          height: 1.25,
+                // Image header
+                Container(
+                  height: 85,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppColors.dirtyCream.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
+                    border: Border.all(
+                      color: AppColors.cream.withValues(alpha: 0.5),
+                      width: 0.5,
+                    ),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Image.asset(
+                    'assets/images/athlete_woman.png',
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => Center(
+                      child: Icon(
+                        Icons.fitness_center_rounded,
+                        size: 36,
+                        color: AppColors.orange.withValues(alpha: 0.45),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: AppSpacing.md - 2),
+
+                // Title + delete
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          program.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.titleMedium.copyWith(
+                            fontSize: 15,
+                            height: 1.25,
+                          ),
                         ),
                       ),
-                    ),
-
-                    MiniButton(
-                      color: Colors.red.withValues(alpha: 0.38),
-                      icon: FaIcon(
-                        FontAwesomeIcons.trash,
-                        size: 12,
-                        color: const Color.fromARGB(255, 186, 10, 10),
+                      MiniButton(
+                        color: AppColors.error.withValues(alpha: 0.18),
+                        icon: Icon(
+                          Icons.delete_rounded,
+                          size: 16,
+                          color: AppColors.error.withValues(alpha: 0.9),
+                        ),
+                        onPressed: onDelete,
                       ),
-                      onPressed: onDelete,
-                    ),
-                    // PopupMenuButton<String>(
-                    //   padding: EdgeInsets.zero,
-                    //   iconSize: 20,
-                    //   color: const Color(0xFFFFF8F0),
-                    //   shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.circular(12),
-                    //   ),
-                    //   onSelected: (value) {
-                    //     switch (value) {
-                    //       case 'edit':
-                    //         onEdit.call();
-                    //         // context.pushNamed(
-                    //         //   AppRouteNames.createWorkoutProgram,
-                    //         //   extra: program,
-                    //         // );
-                    //         break;
-                    //       case 'delete':
-                    //         onDelete.call();
-                    //         //DeleteDialog(itemName: program.title);
-                    //         break;
-                    //     }
-                    //   },
-                    //   itemBuilder: (_) => [
-                    //     const PopupMenuItem(
-                    //       value: 'edit',
-                    //       child: Text(
-                    //         'Edit',
-                    //         style: TextStyle(color: _charcoal),
-                    //       ),
-                    //     ),
-                    //     const PopupMenuItem(
-                    //       value: 'delete',
-                    //       child: Text(
-                    //         'Delete',
-                    //         style: TextStyle(color: _orange),
-                    //       ),
-                    //     ),
-                    //   ],
-                    //   child: Icon(
-                    //     Icons.more_horiz_rounded,
-                    //     size: 20,
-                    //     color: _charcoal.withOpacity(0.6),
-                    //   ),
-                    // ),
-                  ],
+                    ],
+                  ),
                 ),
+
+                // Days per week
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 2, 10, 6),
+                  child: Text(
+                    '${program.daysPerWeek} روز در هفته',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      fontSize: 11,
+                      color: AppColors.charcoal.withValues(alpha: 0.65),
+                    ),
+                  ),
+                ),
+
                 const Spacer(),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [
-                    _InfoChip(
-                      icon: Icons.flag_rounded,
-                      text: program.goal.name,
-                    ),
-                    _InfoChip(
-                      icon: Icons.bar_chart_rounded,
-                      text: program.level.name,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
+
+                // Stats row
                 Row(
                   children: [
-                    SizedBox(width: 4),
-                    Icon(
-                      Icons.calendar_today_rounded,
-                      size: 12,
-                      color: _orange,
+                    _StatItem(
+                      icon: Icons.flag_rounded,
+                      value: _goalLabel,
+                      label: 'هدف',
                     ),
-                    const SizedBox(width: 5),
-                    Text(
-                      '${program.daysPerWeek} روز در هفته',
-                      style: TextStyle(
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w500,
-                        color: _charcoal.withValues(alpha: 0.75),
-                      ),
+                    const _VerticalDivider(),
+                    _StatItem(
+                      icon: Icons.bar_chart_rounded,
+                      value: _levelLabel,
+                      label: 'سطح',
                     ),
                   ],
                 ),
+
+                const SizedBox(height: AppSpacing.md - 2),
               ],
             ),
           ),
@@ -159,38 +156,72 @@ class WorkoutProgramCard extends StatelessWidget {
   }
 }
 
-class _InfoChip extends StatelessWidget {
+class _StatItem extends StatelessWidget {
   final IconData icon;
-  final String text;
+  final String value;
+  final String label;
 
-  const _InfoChip({required this.icon, required this.text});
-
-  static const Color _orange = Color(0xFFFF6B35);
-  static const Color _charcoal = Color(0xFF2D2D2D);
+  const _StatItem({
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-      decoration: BoxDecoration(
-        color: _orange.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(20),
-      ),
+    return Expanded(
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 13, color: _orange),
-          const SizedBox(width: 4),
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 11.5,
-              fontWeight: FontWeight.w500,
-              color: _charcoal,
+          Icon(icon, size: 18, color: AppColors.orange),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.charcoal.withValues(alpha: 0.5),
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.charcoal,
+                    height: 1.1,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _VerticalDivider extends StatelessWidget {
+  const _VerticalDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 0.8,
+      height: 28,
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      color: AppColors.charcoal.withValues(alpha: 0.12),
     );
   }
 }
