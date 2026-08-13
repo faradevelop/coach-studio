@@ -7,7 +7,6 @@ import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ExerciseCard extends StatelessWidget {
   final Exercise exercise;
@@ -75,25 +74,25 @@ class ExerciseCard extends StatelessWidget {
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            FaIcon(
-                              FontAwesomeIcons.fireFlameCurved,
-                              size: 14,
+                            //   FaIcon(
+                            //     FontAwesomeIcons.fireFlameCurved,
+                            //     size: 14,
+                            //     color: AppColors.orange,
+                            //   ),
+                            //   const SizedBox(width: 4),
+                            //   Text(
+                            //     exercise.equipment,
+                            //     maxLines: 1,
+                            //     overflow: TextOverflow.ellipsis,
+                            //     style: AppTextStyles.bodySmall,
+                            //   ),
+                            //   const SizedBox(width: 10),
+                            Icon(
+                              Icons.bar_chart_rounded,
+                              size: 18,
                               color: AppColors.orange,
                             ),
                             const SizedBox(width: 4),
-                            Text(
-                              exercise.equipment,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.bodySmall,
-                            ),
-                            const SizedBox(width: 10),
-                            Icon(
-                              Icons.bar_chart,
-                              size: 15,
-                              color: AppColors.orange,
-                            ),
-
                             Text(
                               exercise.difficulty,
                               maxLines: 1,
