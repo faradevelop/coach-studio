@@ -174,7 +174,7 @@ class _ExerciseImage extends StatelessWidget {
                   child: Image.network(
                     imageUrl,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const Icon(
+                    errorBuilder: (_, _, _) => const Icon(
                       Icons.fitness_center_rounded,
                       size: 30,
                       color: AppColors.orange,

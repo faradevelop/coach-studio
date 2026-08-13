@@ -74,7 +74,7 @@ class WorkoutProgramCard extends StatelessWidget {
                   child: Image.asset(
                     'assets/images/athlete_woman.png',
                     fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => Center(
+                    errorBuilder: (_, _, _) => Center(
                       child: Icon(
                         Icons.fitness_center_rounded,
                         size: 36,
