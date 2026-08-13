@@ -1,6 +1,10 @@
 import 'dart:ui';
+
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_selection_args.dart';
+import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_dropdown.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_draft.dart';
@@ -22,10 +26,12 @@ class CreateProgramExercisePage extends StatelessWidget {
 
 class _CreateProgramExerciseView extends StatefulWidget {
   final WorkoutProgram program;
+
   const _CreateProgramExerciseView({required this.program});
 
   @override
-  State<StatefulWidget> createState() => _CreateProgramExerciseViewState();
+  State<_CreateProgramExerciseView> createState() =>
+      _CreateProgramExerciseViewState();
 }
 
 class _CreateProgramExerciseViewState
@@ -33,24 +39,20 @@ class _CreateProgramExerciseViewState
   int _day = 1;
   TrainingSystem _trainingSystem = TrainingSystem.normal;
 
-  static const Color _orange = Color(0xFFFF6B35);
-  static const Color _cream = Color(0xFFFFF8F0);
-  static const Color _charcoal = Color(0xFF2D2D2D);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _cream,
+      backgroundColor: AppColors.cream,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFFF9A5A),
+              AppColors.orangeGlow,
               Color(0xFFFFC9A0),
               Color(0xFFFFF0E0),
-              _cream,
+              AppColors.cream,
             ],
             stops: [0.0, 0.18, 0.45, 1.0],
           ),
@@ -58,85 +60,54 @@ class _CreateProgramExerciseViewState
         child: SafeArea(
           child: Column(
             children: [
-              // AppBar سفارشی
+              // Custom AppBar
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
                 child: Row(
                   children: [
                     const SizedBox(width: 40),
-
                     const Spacer(),
                     Column(
                       children: [
-                        const Text(
-                          'تمرین جدید',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: _charcoal,
-                            letterSpacing: -0.3,
-                          ),
-                        ),
+                        Text('تمرین جدید', style: AppTextStyles.titleMedium),
                         const SizedBox(height: 4),
                         Container(
                           height: 3,
                           width: 130,
                           decoration: BoxDecoration(
-                            color: _orange,
+                            color: AppColors.orange,
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
                       ],
                     ),
                     const Spacer(),
-                    GestureDetector(
-                      onTap: () => context.pop(),
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.35),
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.4),
-                          ),
-                        ),
-                        child: Directionality(
-                          textDirection: TextDirection.ltr,
-                          child: const Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            size: 18,
-                            color: _charcoal,
-                          ),
-                        ),
-                      ),
-                    ),
+                    GlassyBackButton(onTap: () => context.pop()),
                   ],
                 ),
               ),
 
-              // محتوا
+              // Glass form card
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(AppRadius.xl),
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                       child: Container(
                         padding: const EdgeInsets.all(22),
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.38),
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(AppRadius.xl),
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.55),
+                            color: AppColors.glassBorder,
                             width: 1.2,
                           ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Day Dropdown
                             AppDropdown<int>(
                               label: 'روز تمرین',
                               value: _day,
@@ -152,7 +123,6 @@ class _CreateProgramExerciseViewState
                             ),
                             const SizedBox(height: 20),
 
-                            // Training System Dropdown
                             AppDropdown<TrainingSystem>(
                               label: 'سیستم تمرینی',
                               value: _trainingSystem,
@@ -165,7 +135,6 @@ class _CreateProgramExerciseViewState
                             ),
                             const SizedBox(height: 36),
 
-                            // دکمه ادامه
                             AppButton(
                               text: 'تایید و مرحله بعد',
                               onPressed: () {

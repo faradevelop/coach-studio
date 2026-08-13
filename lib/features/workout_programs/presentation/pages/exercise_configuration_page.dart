@@ -1,4 +1,9 @@
 import 'dart:ui';
+
+import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_spacing.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
@@ -63,10 +68,6 @@ class _ExerciseConfigurationViewState
   final Map<String, TextEditingController> _tempoControllers = {};
   final Map<String, TextEditingController> _descriptionControllers = {};
 
-  static const Color _orange = Color(0xFFFF6B35);
-  static const Color _cream = Color(0xFFFFF8F0);
-  static const Color _charcoal = Color(0xFF2D2D2D);
-
   bool get _isEditMode => widget.existingExercise != null;
 
   ProgramExerciseItem? _existingItemFor(String exerciseId) {
@@ -85,20 +86,18 @@ class _ExerciseConfigurationViewState
 
     final existing = widget.existingExercise;
 
-    _setsController.text = existing?.sets ?? '4';
-    _restController.text = existing?.rest ?? '90';
+    _setsController.text = existing?.sets ?? '3';
+    _restController.text = existing?.rest ?? '30';
 
     for (final exercise in widget.exercises) {
       final existingItem = _existingItemFor(exercise.id);
 
       _repsControllers[exercise.id] = TextEditingController(
-        text: existingItem?.reps ?? '10-12',
+        text: existingItem?.reps ?? '',
       );
-
       _tempoControllers[exercise.id] = TextEditingController(
-        text: existingItem?.tempo ?? '3-1-1',
+        text: existingItem?.tempo ?? '',
       );
-
       _descriptionControllers[exercise.id] = TextEditingController(
         text: existingItem?.description ?? '',
       );
@@ -114,6 +113,9 @@ class _ExerciseConfigurationViewState
       controller.dispose();
     }
     for (final controller in _tempoControllers.values) {
+      controller.dispose();
+    }
+    for (final controller in _descriptionControllers.values) {
       controller.dispose();
     }
 
@@ -165,30 +167,26 @@ class _ExerciseConfigurationViewState
         await cubit.addProgramExercise(programExercise);
       }
 
-      if (mounted) {
-        context.pop();
-      }
+      if (mounted) context.pop();
     } finally {
-      if (mounted) {
-        setState(() => _isSubmitting = false);
-      }
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _cream,
+      backgroundColor: AppColors.cream,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFFF9A5A),
+              AppColors.orangeGlow,
               Color(0xFFFFC9A0),
               Color(0xFFFFF0E0),
-              _cream,
+              AppColors.cream,
             ],
             stops: [0.0, 0.18, 0.45, 1.0],
           ),
@@ -202,52 +200,26 @@ class _ExerciseConfigurationViewState
                 child: Row(
                   children: [
                     const SizedBox(width: 40),
-
                     const Spacer(),
                     Column(
                       children: [
                         Text(
                           _isEditMode ? 'ویرایش تمرین' : 'تنظیم تمرین',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: _charcoal,
-                          ),
+                          style: AppTextStyles.titleMedium,
                         ),
                         const SizedBox(height: 4),
                         Container(
                           height: 3,
                           width: _isEditMode ? 90 : 120,
                           decoration: BoxDecoration(
-                            color: _orange,
+                            color: AppColors.orange,
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
                       ],
                     ),
                     const Spacer(),
-                    GestureDetector(
-                      onTap: () => context.pop(),
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.35),
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.4),
-                          ),
-                        ),
-                        child: Directionality(
-                          textDirection: TextDirection.ltr,
-                          child: const Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            size: 18,
-                            color: _charcoal,
-                          ),
-                        ),
-                      ),
-                    ),
+                    GlassyBackButton(onTap: () => context.pop()),
                   ],
                 ),
               ),
@@ -257,7 +229,7 @@ class _ExerciseConfigurationViewState
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
                   child: Column(
                     children: [
-                      // کارت اطلاعات کلی
+                      // General info card
                       _GlassCard(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,13 +242,15 @@ class _ExerciseConfigurationViewState
                                     vertical: 5,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: _orange.withValues(alpha: 0.15),
+                                    color: AppColors.orange.withValues(
+                                      alpha: 0.15,
+                                    ),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
                                     widget.draft.trainingSystem.name,
                                     style: const TextStyle(
-                                      color: _orange,
+                                      color: AppColors.orange,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 13,
                                     ),
@@ -285,9 +259,10 @@ class _ExerciseConfigurationViewState
                                 const SizedBox(width: 8),
                                 Text(
                                   'روز ${widget.draft.day}',
-                                  style: TextStyle(
-                                    color: _charcoal.withValues(alpha: 0.7),
-                                    fontSize: 13,
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    color: AppColors.charcoal.withValues(
+                                      alpha: 0.7,
+                                    ),
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -307,9 +282,9 @@ class _ExerciseConfigurationViewState
                         ),
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: AppSpacing.lg - 4),
 
-                      // کارت‌های هر تمرین
+                      // Per-exercise cards
                       ...widget.exercises.map((exercise) {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 14),
@@ -319,18 +294,17 @@ class _ExerciseConfigurationViewState
                               children: [
                                 Text(
                                   exercise.name,
-                                  style: const TextStyle(
+                                  style: AppTextStyles.titleMedium.copyWith(
                                     fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                    color: _charcoal,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   '${exercise.targetMuscle} • ${exercise.equipment}',
-                                  style: TextStyle(
-                                    fontSize: 12.5,
-                                    color: _charcoal.withValues(alpha: 0.6),
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    color: AppColors.charcoal.withValues(
+                                      alpha: 0.6,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 16),
@@ -376,12 +350,13 @@ class _ExerciseConfigurationViewState
 
 class _GlassCard extends StatelessWidget {
   final Widget child;
+
   const _GlassCard({required this.child});
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(AppRadius.xl),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
         child: Container(
@@ -389,11 +364,8 @@ class _GlassCard extends StatelessWidget {
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.38),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.55),
-              width: 1.1,
-            ),
+            borderRadius: BorderRadius.circular(AppRadius.xl),
+            border: Border.all(color: AppColors.glassBorder, width: 1.1),
           ),
           child: child,
         ),

@@ -1,7 +1,10 @@
 import 'dart:ui';
+
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/custom_search_bar.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
@@ -36,10 +39,6 @@ class _AddProgramExerciseItemPageState
   final TextEditingController _searchController = TextEditingController();
   String _query = '';
 
-  static const Color _orange = Color(0xFFFF6B35);
-  static const Color _cream = Color(0xFFFFF8F0);
-  static const Color _charcoal = Color(0xFF2D2D2D);
-
   @override
   void dispose() {
     _searchController.dispose();
@@ -69,17 +68,17 @@ class _AddProgramExerciseItemPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _cream,
+      backgroundColor: AppColors.cream,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFFF9A5A),
+              AppColors.orangeGlow,
               Color(0xFFFFC9A0),
               Color(0xFFFFF0E0),
-              _cream,
+              AppColors.cream,
             ],
             stops: [0.0, 0.18, 0.45, 1.0],
           ),
@@ -98,13 +97,13 @@ class _AddProgramExerciseItemPageState
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: _cream.withValues(alpha: 0.70),
+                        color: AppColors.cream.withValues(alpha: 0.70),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         '${_selectedExercises.length}/$_maxSelection',
                         style: const TextStyle(
-                          color: _orange,
+                          color: AppColors.orange,
                           fontWeight: FontWeight.w700,
                           fontSize: 13,
                         ),
@@ -113,48 +112,20 @@ class _AddProgramExerciseItemPageState
                     const Spacer(),
                     Column(
                       children: [
-                        const Text(
-                          'انتخاب تمرین',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: _charcoal,
-                          ),
-                        ),
+                        Text('انتخاب تمرین', style: AppTextStyles.titleMedium),
                         const SizedBox(height: 4),
                         Container(
                           height: 3,
                           width: 100,
                           decoration: BoxDecoration(
-                            color: _orange,
+                            color: AppColors.orange,
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
                       ],
                     ),
                     const Spacer(),
-                    GestureDetector(
-                      onTap: () => context.pop(),
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.35),
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.4),
-                          ),
-                        ),
-                        child: Directionality(
-                          textDirection: TextDirection.ltr,
-                          child: const Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            size: 18,
-                            color: _charcoal,
-                          ),
-                        ),
-                      ),
-                    ),
+                    GlassyBackButton(onTap: () => context.pop()),
                   ],
                 ),
               ),
@@ -170,7 +141,7 @@ class _AddProgramExerciseItemPageState
                 ),
               ),
 
-              // لیست تمرین‌ها
+              // Exercise list
               Expanded(
                 child: BlocBuilder<ExerciseCubit, ExerciseState>(
                   builder: (context, state) {
@@ -184,7 +155,9 @@ class _AddProgramExerciseItemPageState
                       ExerciseError(:final message) => Center(
                         child: Text(
                           message,
-                          style: const TextStyle(color: _charcoal),
+                          style: AppTextStyles.body.copyWith(
+                            color: AppColors.error,
+                          ),
                         ),
                       ),
                       ExerciseLoaded(:final exercises) => Builder(
@@ -195,10 +168,7 @@ class _AddProgramExerciseItemPageState
                             return Center(
                               child: Text(
                                 'تمرینی پیدا نشد!',
-                                style: TextStyle(
-                                  color: _charcoal.withValues(alpha: 0.6),
-                                  fontSize: 15,
-                                ),
+                                style: AppTextStyles.subtitle,
                               ),
                             );
                           }
@@ -229,7 +199,7 @@ class _AddProgramExerciseItemPageState
                                         ).showSnackBar(
                                           SnackBar(
                                             content: Text(
-                                              'فقط $_maxSelection تمرین میتوانید انتخاب کنید.',
+                                              'فقط $_maxSelection تمرین می‌توانید انتخاب کنید.',
                                             ),
                                             behavior: SnackBarBehavior.floating,
                                           ),
@@ -241,7 +211,9 @@ class _AddProgramExerciseItemPageState
                                     });
                                   },
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: BorderRadius.circular(
+                                      AppRadius.lg - 4,
+                                    ),
                                     child: BackdropFilter(
                                       filter: ImageFilter.blur(
                                         sigmaX: 12,
@@ -254,41 +226,44 @@ class _AddProgramExerciseItemPageState
                                         ),
                                         decoration: BoxDecoration(
                                           color: isSelected
-                                              ? _orange.withValues(alpha: 0.18)
+                                              ? AppColors.orange.withValues(
+                                                  alpha: 0.18,
+                                                )
                                               : Colors.white.withValues(
                                                   alpha: 0.40,
                                                 ),
                                           borderRadius: BorderRadius.circular(
-                                            16,
+                                            AppRadius.lg - 4,
                                           ),
                                           border: Border.all(
                                             color: isSelected
-                                                ? _orange.withValues(alpha: 0.6)
-                                                : Colors.white.withValues(
-                                                    alpha: 0.55,
-                                                  ),
+                                                ? AppColors.orange.withValues(
+                                                    alpha: 0.6,
+                                                  )
+                                                : AppColors.glassBorder,
                                             width: isSelected ? 1.5 : 1.1,
                                           ),
                                         ),
                                         child: Row(
                                           children: [
-                                            // آیکون انتخاب
+                                            // Selection indicator
                                             Container(
                                               width: 24,
                                               height: 24,
                                               decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
                                                 color: isSelected
-                                                    ? _orange
+                                                    ? AppColors.orange
                                                     : Colors.white.withValues(
                                                         alpha: 0.5,
                                                       ),
                                                 border: Border.all(
                                                   color: isSelected
-                                                      ? _orange
-                                                      : _charcoal.withValues(
-                                                          alpha: 0.3,
-                                                        ),
+                                                      ? AppColors.orange
+                                                      : AppColors.charcoal
+                                                            .withValues(
+                                                              alpha: 0.3,
+                                                            ),
                                                 ),
                                               ),
                                               child: isSelected
@@ -307,23 +282,22 @@ class _AddProgramExerciseItemPageState
                                                 children: [
                                                   Text(
                                                     exercise.name,
-                                                    style: const TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: _charcoal,
-                                                    ),
+                                                    style: AppTextStyles
+                                                        .titleMedium
+                                                        .copyWith(fontSize: 15),
                                                   ),
                                                   const SizedBox(height: 3),
                                                   Text(
                                                     '${exercise.targetMuscle} • ${exercise.equipment}',
-                                                    style: TextStyle(
-                                                      fontSize: 12.5,
-                                                      color: _charcoal
-                                                          .withValues(
-                                                            alpha: 0.6,
-                                                          ),
-                                                    ),
+                                                    style: AppTextStyles
+                                                        .bodySmall
+                                                        .copyWith(
+                                                          color: AppColors
+                                                              .charcoal
+                                                              .withValues(
+                                                                alpha: 0.6,
+                                                              ),
+                                                        ),
                                                   ),
                                                 ],
                                               ),
@@ -345,7 +319,7 @@ class _AddProgramExerciseItemPageState
                 ),
               ),
 
-              // دکمه Configure
+              // Continue button
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
                 child: AppButton(
