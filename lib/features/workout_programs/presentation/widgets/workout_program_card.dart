@@ -8,6 +8,7 @@ import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutProgramCard extends StatelessWidget {
@@ -130,20 +131,31 @@ class WorkoutProgramCard extends StatelessWidget {
                 const Spacer(),
 
                 // Stats row
-                Row(
-                  children: [
-                    _StatItem(
-                      icon: Icons.flag_rounded,
-                      value: _goalLabel,
-                      label: 'هدف',
-                    ),
-                    const _VerticalDivider(),
-                    _StatItem(
-                      icon: Icons.bar_chart_rounded,
-                      value: _levelLabel,
-                      label: 'سطح',
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    children: [
+                      _StatItem(
+                        icon: Icon(
+                          CupertinoIcons.flag_fill,
+                          size: 16,
+                          color: AppColors.orange,
+                        ),
+                        value: _goalLabel,
+                        label: 'هدف',
+                      ),
+                      const _VerticalDivider(),
+                      _StatItem(
+                        icon: Icon(
+                          Icons.bar_chart_rounded,
+                          size: 20,
+                          color: AppColors.orange,
+                        ),
+                        value: _levelLabel,
+                        label: 'سطح',
+                      ),
+                    ],
+                  ),
                 ),
 
                 const SizedBox(height: AppSpacing.md - 2),
@@ -157,7 +169,7 @@ class WorkoutProgramCard extends StatelessWidget {
 }
 
 class _StatItem extends StatelessWidget {
-  final IconData icon;
+  final Icon icon;
   final String value;
   final String label;
 
@@ -173,8 +185,8 @@ class _StatItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 18, color: AppColors.orange),
-          const SizedBox(width: 6),
+          icon,
+          const SizedBox(width: 10),
           Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,8 +231,8 @@ class _VerticalDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 0.8,
-      height: 28,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
+      height: 30,
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       color: AppColors.charcoal.withValues(alpha: 0.12),
     );
   }
