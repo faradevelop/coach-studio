@@ -20,36 +20,30 @@ class ScaffoldWithBottomNav extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topRight,
               end: Alignment.bottomRight,
-              colors: [
-                // AppColors.orangeGlow,
-                Color(0xFFFFC9A0).withValues(alpha: 0.5),
-                Color(0xFFFFF0E0),
-                AppColors.cream,
-              ],
+              colors: AppColors.bgColors,
             ),
           ),
         ),
 
         // Soft orange glow (top-start)
-        PositionedDirectional(
-          top: -80,
-          start: -50,
-          child: Container(
-            width: 220,
-            height: 220,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.orangeGlow,
-                  blurRadius: 140,
-                  spreadRadius: 40,
-                ),
-              ],
-            ),
-          ),
-        ),
-
+        // PositionedDirectional(
+        //   top: -80,
+        //   start: -50,
+        //   child: Container(
+        //     width: 220,
+        //     height: 220,
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       boxShadow: [
+        //         BoxShadow(
+        //           color: AppColors.orangeGlow.withValues(alpha: 0.5),
+        //           blurRadius: 140,
+        //           spreadRadius: 40,
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
         Scaffold(
           backgroundColor: Colors.transparent,
           body: navigationShell,

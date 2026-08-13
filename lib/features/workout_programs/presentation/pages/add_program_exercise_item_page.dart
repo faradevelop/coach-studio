@@ -74,13 +74,8 @@ class _AddProgramExerciseItemPageState
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              AppColors.orangeGlow,
-              Color(0xFFFFC9A0),
-              Color(0xFFFFF0E0),
-              AppColors.cream,
-            ],
-            stops: [0.0, 0.18, 0.45, 1.0],
+            colors: AppColors.bgColors,
+            stops: AppColors.bgStops,
           ),
         ),
         child: SafeArea(

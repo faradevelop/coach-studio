@@ -38,4 +38,11 @@ class AppColors {
   static const Color bgStart = Color(0xFFF8F4EE);
   static const Color bgMid = Color(0xFFF5F0E8);
   static const Color bgEnd = Color(0xFFF2ECE5);
+
+  static const List<Color> bgColors = [
+    Color(0xFFFFC9A0),
+    Color(0xFFFFF0E0),
+    cream,
+  ];
+  static const List<double> bgStops = [0.0, 0.45, 1.0];
 }
