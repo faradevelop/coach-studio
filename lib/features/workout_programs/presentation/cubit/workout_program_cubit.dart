@@ -64,6 +64,15 @@ class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
     }
   }
 
+  Future<void> duplicateProgram(String id, String title) async {
+    try {
+      await repository.duplicateProgram(id, title);
+      await _refreshPrograms();
+    } catch (e) {
+      emit(WorkoutProgramError(e.toString()));
+    }
+  }
+
   @override
   Future<void> close() {
     _subscription?.cancel();
