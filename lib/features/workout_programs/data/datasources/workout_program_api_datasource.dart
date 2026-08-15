@@ -32,4 +32,11 @@ class WorkoutProgramApiDatasource {
   Future<void> deleteProgram(String id) async {
     await client.delete('/workout-programs/$id');
   }
+
+  Future<void> duplicateProgram(String id, String? title) async {
+    await client.post(
+      '/workout-programs/$id/duplicate',
+      title != null ? {'title': title} : {},
+    );
+  }
 }

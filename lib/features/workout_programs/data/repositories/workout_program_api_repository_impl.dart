@@ -31,4 +31,9 @@ class WorkoutProgramApiRepositoryImpl implements WorkoutProgramRepository {
   Future<void> deleteProgram(String id) {
     return datasource.deleteProgram(id);
   }
+
+  @override
+  Future<void> duplicateProgram(String id, String title) {
+    return datasource.duplicateProgram(id, title);
+  }
 }

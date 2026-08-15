@@ -8,4 +8,6 @@ abstract class WorkoutProgramRepository {
   Future<void> updateProgram(WorkoutProgram program);
 
   Future<void> deleteProgram(String id);
+
+  Future<void> duplicateProgram(String id, String title);
 }
