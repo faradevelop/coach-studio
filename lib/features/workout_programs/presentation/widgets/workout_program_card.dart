@@ -4,7 +4,6 @@ import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
@@ -14,6 +13,7 @@ import 'package:flutter/material.dart';
 class WorkoutProgramCard extends StatelessWidget {
   final WorkoutProgram program;
   final VoidCallback onDelete;
+  final VoidCallback onCopy;
   final VoidCallback onTap;
 
   const WorkoutProgramCard({
@@ -21,6 +21,7 @@ class WorkoutProgramCard extends StatelessWidget {
     required this.program,
     required this.onDelete,
     required this.onTap,
+    required this.onCopy,
   });
 
   String get _goalLabel {
@@ -103,14 +104,10 @@ class WorkoutProgramCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      MiniButton(
-                        color: AppColors.error.withValues(alpha: 0.18),
-                        icon: Icon(
-                          Icons.delete_rounded,
-                          size: 16,
-                          color: AppColors.error.withValues(alpha: 0.9),
-                        ),
-                        onPressed: onDelete,
+                      CustomPopupMenu(
+                        program: program,
+                        onDelete: onDelete,
+                        onCopy: onCopy,
                       ),
                     ],
                   ),
@@ -118,11 +115,11 @@ class WorkoutProgramCard extends StatelessWidget {
 
                 // Days per week
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 2, 10, 6),
+                  padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
                   child: Text(
                     '${program.daysPerWeek} روز در هفته',
                     style: AppTextStyles.bodySmall.copyWith(
-                      fontSize: 11,
+                      fontSize: 10,
                       color: AppColors.charcoal.withValues(alpha: 0.65),
                     ),
                   ),
@@ -234,6 +231,50 @@ class _VerticalDivider extends StatelessWidget {
       height: 30,
       margin: const EdgeInsets.symmetric(horizontal: 8),
       color: AppColors.charcoal.withValues(alpha: 0.12),
+    );
+  }
+}
+
+class CustomPopupMenu extends StatelessWidget {
+  final WorkoutProgram program;
+  final VoidCallback onDelete;
+  final VoidCallback onCopy;
+
+  const CustomPopupMenu({
+    super.key,
+    required this.program,
+    required this.onDelete,
+    required this.onCopy,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      padding: EdgeInsets.zero,
+      iconSize: 18,
+      color: AppColors.cream,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      onSelected: (value) async {
+        switch (value) {
+          case 'copy':
+            onCopy();
+            break;
+          case 'delete':
+            onDelete();
+        }
+      },
+      itemBuilder: (_) => const [
+        PopupMenuItem(value: 'copy', child: Text('کپی')),
+        PopupMenuItem(
+          value: 'delete',
+          child: Text('حذف', style: TextStyle(color: AppColors.error)),
+        ),
+      ],
+      child: const Icon(
+        Icons.more_horiz_rounded,
+        size: 20,
+        color: AppColors.charcoal,
+      ),
     );
   }
 }

@@ -6,8 +6,10 @@ import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
+import 'package:coach_studio/features/workout_programs/presentation/widgets/info_dialog.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/workout_program_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -115,6 +117,22 @@ class _WorkoutProgramListView extends StatelessWidget {
                                         await context
                                             .read<WorkoutProgramCubit>()
                                             .deleteProgram(program.id);
+                                      }
+                                    },
+                                    onCopy: () async {
+                                      final result = await showDialog<bool>(
+                                        context: context,
+                                        builder: (_) => InfoDialog(
+                                          title: program.title,
+                                          message:
+                                              'برنامه "${program.title}" با نام "${program.title} (copy)" ذخیره خواهد شد.',
+                                        ),
+                                      );
+
+                                      if (result == true && context.mounted) {
+                                        await context
+                                            .read<WorkoutProgramCubit>()
+                                            .duplicateProgram(program.id, '');
                                       }
                                     },
                                     onTap: () {
