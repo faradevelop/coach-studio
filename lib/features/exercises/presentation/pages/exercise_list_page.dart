@@ -1,4 +1,6 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
+import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/custom_search_bar.dart';
@@ -126,9 +128,20 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                                         );
 
                                         if (result == true && context.mounted) {
-                                          context
+                                          final success = await context
                                               .read<ExerciseCubit>()
                                               .deleteExercise(exercise.id);
+
+                                          if (!success) {
+                                            sl<AppNotification>().error(
+                                              'حذف تمرین ناموفق بود.',
+                                            );
+                                            return;
+                                          }
+
+                                          sl<AppNotification>().success(
+                                            'تمرین با موفقیت حذف شد.',
+                                          );
                                         }
                                       },
                                     );

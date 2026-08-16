@@ -1,3 +1,5 @@
+import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
@@ -21,13 +23,18 @@ class EditExercisePage extends StatelessWidget {
             initialExercise: exercise,
             isLoading: isLoading,
             onSubmit: (updatedExercise) async {
-              await context.read<ExerciseCubit>().updateExercise(
-                updatedExercise,
-              );
+              final success = await context
+                  .read<ExerciseCubit>()
+                  .updateExercise(updatedExercise);
+              if (!context.mounted) return;
 
-              if (context.mounted) {
-                context.pop();
+              if (!success) {
+                sl<AppNotification>().error('ویرایش تمرین ناموفق بود.');
+                return;
               }
+
+              sl<AppNotification>().success('تمرین با موفقیت ویرایش شد.');
+              context.pop();
             },
           );
         },
