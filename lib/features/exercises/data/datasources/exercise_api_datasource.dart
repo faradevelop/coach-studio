@@ -7,11 +7,18 @@ class ExerciseApiDatasource {
 
   ExerciseApiDatasource({required this.client});
 
-  Future<List<ExerciseModel>> getExercises() async {
-    final data = await client.get('/exercises') as List<dynamic>;
-    return data
-        .map((json) => ExerciseModel.fromJson(json as Map<String, dynamic>))
-        .toList();
+  Future<List<ExerciseModel>?> getExercises() async {
+    try {
+      final data = await client.get('/exercises') as List<dynamic>;
+      return data
+          .map((json) => ExerciseModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } on ApiException catch (e) {
+      if (e.statusCode == 422) {
+        return null;
+      }
+      rethrow;
+    }
   }
 
   Future<ExerciseModel?> getExerciseById(String id) async {
@@ -24,18 +31,43 @@ class ExerciseApiDatasource {
     }
   }
 
-  Future<ExerciseModel> createExercise(ExerciseModel exercise) async {
-    final data =
-        await client.post('/exercises', exercise.toRequestJson())
-            as Map<String, dynamic>;
-    return ExerciseModel.fromJson(data);
+  Future<ExerciseModel?> createExercise(ExerciseModel exercise) async {
+    try {
+      final data =
+          await client.post('/exercises', exercise.toRequestJson())
+              as Map<String, dynamic>;
+
+      return ExerciseModel.fromJson(data);
+    } on ApiException catch (e) {
+      if (e.statusCode == 422) {
+        //Validation failed
+        return null;
+      }
+      rethrow;
+    }
   }
 
-  Future<void> updateExercise(ExerciseModel exercise) async {
-    await client.put('/exercises/${exercise.id}', exercise.toRequestJson());
+  Future<bool> updateExercise(ExerciseModel exercise) async {
+    try {
+      await client.put('/exercises/${exercise.id}', exercise.toRequestJson());
+      return true;
+    } on ApiException catch (e) {
+      if (e.statusCode == 422) {
+        return false;
+      }
+      rethrow;
+    }
   }
 
-  Future<void> deleteExercise(String id) async {
-    await client.delete('/exercises/$id');
+  Future<bool> deleteExercise(String id) async {
+    try {
+      await client.delete('/exercises/$id');
+      return true;
+    } on ApiException catch (e) {
+      if (e.statusCode == 404) {
+        return false;
+      }
+      rethrow;
+    }
   }
 }
