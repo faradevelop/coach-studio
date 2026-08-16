@@ -25,7 +25,7 @@ class AppRouter {
 
   // Root Navigator — internal pages are pushed onto this Navigator
   // instead of the branch Navigator.
-  static final GlobalKey<NavigatorState> _rootNavigatorKey =
+  static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'root');
 
   // Navigator dedicated to each Branch (optional, but recommended by go_router).
@@ -36,7 +36,7 @@ class AppRouter {
       GlobalKey<NavigatorState>(debugLabel: 'programBranch');
 
   static final GoRouter router = GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: navigatorKey,
     initialLocation: AppRoutes.workoutProgramsList,
 
     routes: [
@@ -86,14 +86,14 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.createExercise,
         name: AppRouteNames.createExercise,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: navigatorKey,
         builder: (_, _) => const AddExercisePage(),
       ),
 
       GoRoute(
         path: AppRoutes.editExercise,
         name: AppRouteNames.editExercise,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: navigatorKey,
         builder: (_, state) {
           final exercise = state.extra as Exercise;
           return EditExercisePage(exercise: exercise);
@@ -107,7 +107,7 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.createWorkoutProgram,
         name: AppRouteNames.createWorkoutProgram,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: navigatorKey,
         builder: (_, state) {
           final program = state.extra as WorkoutProgram?;
           return CreateWorkoutProgramPage(existingProgram: program);
@@ -120,7 +120,7 @@ class AppRouter {
       // to this subtree. When the entire flow is popped, the Cubit is disposed
       // (according to the rule: state persistence across tabs is not required).
       ShellRoute(
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: navigatorKey,
         builder: (context, state, child) {
           return BlocProvider(
             create: (_) => sl<ProgramExerciseCubit>(),

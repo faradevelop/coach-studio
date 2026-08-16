@@ -1,5 +1,8 @@
+import 'package:coach_studio/app/routing/app_router.dart';
 import 'package:coach_studio/core/constants/api_config.dart';
 import 'package:coach_studio/core/network/api_client.dart';
+import 'package:coach_studio/core/notifications/data/floating_snackbar_notification.dart';
+import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/features/exercises/data/datasources/exercise_api_datasource.dart';
 import 'package:coach_studio/features/exercises/data/repositories/exercise_api_repository_impl.dart';
 import 'package:coach_studio/features/exercises/domain/repositories/exercise_repository.dart';
@@ -21,6 +24,12 @@ Future<void> initDependencies() async {
 
   sl.registerLazySingleton<ApiClient>(
     () => ApiClient(baseUrl: ApiConfig.baseUrl),
+  );
+
+  // Notification
+
+  sl.registerLazySingleton<AppNotification>(
+    () => FloatingSnackbarNotification(navigatorKey: AppRouter.navigatorKey),
   );
 
   // Data sources
