@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/network/api_exception.dart';
 import 'package:coach_studio/features/workout_programs/data/datasources/workout_program_api_datasource.dart';
 import 'package:coach_studio/features/workout_programs/data/models/workout_program_model.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
@@ -10,30 +11,55 @@ class WorkoutProgramApiRepositoryImpl implements WorkoutProgramRepository {
 
   @override
   Stream<List<WorkoutProgram>> watchPrograms() async* {
-    final models = await datasource.getPrograms();
-    yield models.map((m) => m.toEntity()).toList();
+    try {
+      final models = await datasource.getPrograms();
+      if (models != null) {
+        yield models.map((m) => m.toEntity()).toList();
+      }
+    } on ApiException catch (e) {
+      throw ApiException.mapApiException(e);
+    }
   }
 
   @override
-  Future<WorkoutProgram> addProgram(WorkoutProgram program) async {
-    final created = await datasource.createProgram(
-      WorkoutProgramModel.fromEntity(program),
-    );
-    return created.toEntity();
+  Future<WorkoutProgram?> addProgram(WorkoutProgram program) async {
+    try {
+      final created = await datasource.createProgram(
+        WorkoutProgramModel.fromEntity(program),
+      );
+      if (created != null) {
+        return created.toEntity();
+      }
+      return null;
+    } on ApiException catch (e) {
+      throw ApiException.mapApiException(e);
+    }
   }
 
   @override
-  Future<void> updateProgram(WorkoutProgram program) {
-    return datasource.updateProgram(WorkoutProgramModel.fromEntity(program));
+  Future<bool> updateProgram(WorkoutProgram program) {
+    try {
+      return datasource.updateProgram(WorkoutProgramModel.fromEntity(program));
+    } on ApiException catch (e) {
+      throw ApiException.mapApiException(e);
+    }
   }
 
   @override
-  Future<void> deleteProgram(String id) {
-    return datasource.deleteProgram(id);
+  Future<bool> deleteProgram(String id) {
+    try {
+      return datasource.deleteProgram(id);
+    } on ApiException catch (e) {
+      throw ApiException.mapApiException(e);
+    }
   }
 
   @override
-  Future<void> duplicateProgram(String id, String title) {
-    return datasource.duplicateProgram(id, title);
+  Future<bool> duplicateProgram(String id, String title) {
+    try {
+      return datasource.duplicateProgram(id, title);
+    } on ApiException catch (e) {
+      throw ApiException.mapApiException(e);
+    }
   }
 }
