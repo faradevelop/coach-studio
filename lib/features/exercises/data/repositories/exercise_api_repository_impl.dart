@@ -1,4 +1,3 @@
-import 'package:coach_studio/core/error/app_exception.dart';
 import 'package:coach_studio/core/network/api_exception.dart';
 import 'package:coach_studio/features/exercises/data/datasources/exercise_api_datasource.dart';
 import 'package:coach_studio/features/exercises/data/models/exercise_model.dart';
@@ -20,7 +19,7 @@ class ExerciseApiRepositoryImpl implements ExerciseRepository {
         yield models.map((model) => model.toEntity()).toList();
       }
     } on ApiException catch (e) {
-      throw _mapApiException(e);
+      throw ApiException.mapApiException(e);
     }
   }
 
@@ -32,7 +31,7 @@ class ExerciseApiRepositoryImpl implements ExerciseRepository {
       );
       return result != null;
     } on ApiException catch (e) {
-      throw _mapApiException(e);
+      throw ApiException.mapApiException(e);
     }
   }
 
@@ -43,7 +42,7 @@ class ExerciseApiRepositoryImpl implements ExerciseRepository {
         ExerciseModel.fromEntity(exercise),
       );
     } on ApiException catch (e) {
-      throw _mapApiException(e);
+      throw ApiException.mapApiException(e);
     }
   }
 
@@ -52,7 +51,7 @@ class ExerciseApiRepositoryImpl implements ExerciseRepository {
     try {
       return await datasource.deleteExercise(id);
     } on ApiException catch (e) {
-      throw _mapApiException(e);
+      throw ApiException.mapApiException(e);
     }
   }
 
@@ -62,20 +61,7 @@ class ExerciseApiRepositoryImpl implements ExerciseRepository {
       final model = await datasource.getExerciseById(id);
       return model?.toEntity();
     } on ApiException catch (e) {
-      throw _mapApiException(e);
-    }
-  }
-
-  AppException _mapApiException(ApiException exception) {
-    switch (exception.statusCode) {
-      case 404:
-        return NotFoundException(exception.message);
-      case 422:
-        return ValidationException(exception.message);
-      case 500:
-        return ServerException(exception.message);
-      default:
-        return ServerException(exception.message);
+      throw ApiException.mapApiException(e);
     }
   }
 }
