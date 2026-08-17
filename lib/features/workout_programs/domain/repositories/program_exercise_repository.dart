@@ -4,11 +4,11 @@ import 'package:coach_studio/features/workout_programs/domain/entities/program_e
 abstract class ProgramExerciseRepository {
   Stream<List<ProgramExerciseDetails>> watchProgramExercises(String workoutId);
 
-  Future<void> addProgramExercise(ProgramExercise exercise);
+  Future<bool> addProgramExercise(ProgramExercise exercise);
 
-  Future<void> updateProgramExercise(ProgramExercise exercise);
+  Future<bool> updateProgramExercise(ProgramExercise exercise);
 
-  Future<void> deleteProgramExercise(String id);
+  Future<bool> deleteProgramExercise(String id);
 
-  Future<void> reorderProgramExercise(String exerciseId, int targetOrder);
+  Future<bool> reorderProgramExercise(String exerciseId, int targetOrder);
 }
