@@ -1,12 +1,13 @@
 import 'dart:ui';
 
 import 'package:coach_studio/app/routing/app_route_names.dart';
+import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
-import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/info_dialog.dart';
@@ -114,9 +115,19 @@ class _WorkoutProgramListView extends StatelessWidget {
                                       );
 
                                       if (result == true && context.mounted) {
-                                        await context
+                                        final success = await context
                                             .read<WorkoutProgramCubit>()
                                             .deleteProgram(program.id);
+
+                                        if (!success) {
+                                          sl<AppNotification>().error(
+                                            'حذف برنامه ناموفق بود.',
+                                          );
+                                          return;
+                                        }
+                                        sl<AppNotification>().success(
+                                          'برنامه با موفقیت حذف شد.',
+                                        );
                                       }
                                     },
                                     onCopy: () async {
@@ -130,9 +141,19 @@ class _WorkoutProgramListView extends StatelessWidget {
                                       );
 
                                       if (result == true && context.mounted) {
-                                        await context
+                                        final success = await context
                                             .read<WorkoutProgramCubit>()
                                             .duplicateProgram(program.id, '');
+
+                                        if (!success) {
+                                          sl<AppNotification>().error(
+                                            'کپی برنامه ناموفق بود.',
+                                          );
+                                          return;
+                                        }
+                                        sl<AppNotification>().success(
+                                          'برنامه با موفقیت کپی شد.',
+                                        );
                                       }
                                     },
                                     onTap: () {

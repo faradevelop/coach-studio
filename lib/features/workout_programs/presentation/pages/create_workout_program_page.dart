@@ -1,4 +1,6 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
+import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/workout_program_form.dart';
@@ -45,20 +47,32 @@ class _CreateWorkoutProgramViewState extends State<_CreateWorkoutProgramView> {
               final createdProgram = await context
                   .read<WorkoutProgramCubit>()
                   .addProgram(program);
+              if (!context.mounted) return;
 
-              if (createdProgram != null && context.mounted) {
-                context.pushReplacementNamed(
-                  AppRouteNames.workoutProgramDetail,
-                  pathParameters: {'programId': createdProgram.id},
-                  extra: createdProgram,
-                );
+              if (createdProgram == null) {
+                sl<AppNotification>().error('افزودن برنامه ناموفق بود.');
+                return;
               }
+
+              sl<AppNotification>().success('برنامه با موفقیت اضافه شد.');
+              context.pushReplacementNamed(
+                AppRouteNames.workoutProgramDetail,
+                pathParameters: {'programId': createdProgram.id},
+                extra: createdProgram,
+              );
             } else {
-              await context.read<WorkoutProgramCubit>().updateProgram(program);
+              final success = await context
+                  .read<WorkoutProgramCubit>()
+                  .updateProgram(program);
+              if (!context.mounted) return;
 
-              if (context.mounted) {
-                context.pop();
+              if (!success) {
+                sl<AppNotification>().error('ویرایش برنامه ناموفق بود.');
+                return;
               }
+
+              sl<AppNotification>().success('برنامه با موفقیت ویرایش شد.');
+              context.pop();
             }
           } finally {
             if (mounted) {

@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
+import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
@@ -142,9 +144,8 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
     final state = context.read<ProgramExerciseCubit>().state;
 
     if (state is! ProgramExerciseLoaded || state.exercises.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('ابتدا تمرین اضافه کنید')));
+      sl<AppNotification>().warning('ابتدا تمرین ایجاد کنید!');
+
       return;
     }
 
@@ -180,13 +181,14 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
         filename: '${widget.program.title}.pdf',
       );
 
-      if (context.mounted) context.pop();
+      if (context.mounted) {
+        sl<AppNotification>().success('PDF برنامه ایجاد شد!');
+        context.pop();
+      }
     } catch (_) {
       if (context.mounted) {
         context.pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ساخت PDF با خطا مواجه شد')),
-        );
+        sl<AppNotification>().error('ساخت PDF با خطا مواجه شد');
       }
     } finally {
       if (mounted) setState(() => _isGeneratingPdf = false);
@@ -677,7 +679,15 @@ class _ExercisePopupMenu extends StatelessWidget {
     );
 
     if (result == true && context.mounted) {
-      context.read<ProgramExerciseCubit>().deleteExercise(programExercise.id);
+      final success = await context.read<ProgramExerciseCubit>().deleteExercise(
+        programExercise.id,
+      );
+      if (!success) {
+        sl<AppNotification>().error('حذف تمرین ناموفق بود.');
+        return;
+      }
+
+      sl<AppNotification>().success('تمرین با موفقیت حذف شد.');
     }
   }
 }

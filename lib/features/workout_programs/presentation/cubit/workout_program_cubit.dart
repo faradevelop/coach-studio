@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:coach_studio/core/error/app_exception.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/repositories/workout_program_repository.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
   final WorkoutProgramRepository repository;
 
-  StreamSubscription? _subscription;
+  StreamSubscription<List<WorkoutProgram>>? _subscription;
 
   WorkoutProgramCubit({required this.repository})
     : super(WorkoutProgramInitial());
@@ -18,15 +19,9 @@ class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
 
     _subscription?.cancel();
 
-    _subscription = repository.watchPrograms().listen(
-      (programs) {
-        emit(WorkoutProgramLoaded(programs));
-      },
-
-      onError: (error) {
-        emit(WorkoutProgramError(error.toString()));
-      },
-    );
+    _subscription = repository.watchPrograms().listen((programs) {
+      emit(WorkoutProgramLoaded(programs));
+    }, onError: _handleError);
   }
 
   Future<void> _refreshPrograms() async {
@@ -36,41 +31,126 @@ class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
   }
 
   Future<WorkoutProgram?> addProgram(WorkoutProgram program) async {
+    WorkoutProgram? createdProgram;
+
+    // Mutation
     try {
-      final createdProgram = await repository.addProgram(program);
-      await _refreshPrograms();
-      return createdProgram;
+      createdProgram = await repository.addProgram(program);
+
+      if (createdProgram == null) {
+        return null;
+      }
+    } on AppException catch (e) {
+      emit(WorkoutProgramError(e.message));
+      return null;
     } catch (e) {
       emit(WorkoutProgramError(e.toString()));
       return null;
     }
+
+    // Refresh
+    try {
+      await _refreshPrograms();
+    } on AppException catch (e) {
+      emit(WorkoutProgramError(e.message));
+    } catch (_) {
+      emit(WorkoutProgramError('Refresh Failed!'));
+    }
+
+    return createdProgram;
   }
 
-  Future<void> updateProgram(WorkoutProgram program) async {
+  Future<bool> updateProgram(WorkoutProgram program) async {
+    // Mutation
     try {
-      await repository.updateProgram(program);
-      await _refreshPrograms();
+      final success = await repository.updateProgram(program);
+
+      if (!success) {
+        return false;
+      }
+    } on AppException catch (e) {
+      emit(WorkoutProgramError(e.message));
+      return false;
     } catch (e) {
       emit(WorkoutProgramError(e.toString()));
+      return false;
     }
+
+    // Refresh
+    try {
+      await _refreshPrograms();
+    } on AppException catch (e) {
+      emit(WorkoutProgramError(e.message));
+    } catch (_) {
+      emit(WorkoutProgramError('Refresh Failed!'));
+    }
+
+    return true;
   }
 
-  Future<void> deleteProgram(String id) async {
+  Future<bool> deleteProgram(String id) async {
+    // Mutation
     try {
-      await repository.deleteProgram(id);
-      await _refreshPrograms();
+      final success = await repository.deleteProgram(id);
+
+      if (!success) {
+        return false;
+      }
+    } on AppException catch (e) {
+      emit(WorkoutProgramError(e.message));
+      return false;
     } catch (e) {
       emit(WorkoutProgramError(e.toString()));
+      return false;
     }
+
+    // Refresh
+    try {
+      await _refreshPrograms();
+    } on AppException catch (e) {
+      emit(WorkoutProgramError(e.message));
+    } catch (_) {
+      emit(WorkoutProgramError('Refresh Failed!'));
+    }
+
+    return true;
   }
 
-  Future<void> duplicateProgram(String id, String title) async {
+  Future<bool> duplicateProgram(String id, String title) async {
+    // Mutation
     try {
-      await repository.duplicateProgram(id, title);
-      await _refreshPrograms();
+      final success = await repository.duplicateProgram(id, title);
+
+      if (!success) {
+        return false;
+      }
+    } on AppException catch (e) {
+      emit(WorkoutProgramError(e.message));
+      return false;
     } catch (e) {
       emit(WorkoutProgramError(e.toString()));
+      return false;
     }
+
+    // Refresh
+    try {
+      await _refreshPrograms();
+    } on AppException catch (e) {
+      emit(WorkoutProgramError(e.message));
+    } catch (_) {
+      emit(WorkoutProgramError('Refresh Failed!'));
+    }
+
+    return true;
+  }
+
+  void _handleError(Object error) {
+    if (error is AppException) {
+      emit(WorkoutProgramError(error.message));
+      return;
+    }
+
+    emit(WorkoutProgramError(error.toString()));
   }
 
   @override
