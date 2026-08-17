@@ -32,6 +32,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
 
     emit(currentState.copyWith(isSubmitting: true));
 
+    // Mutation
     try {
       final success = await repository.addExercise(exercise);
 
@@ -39,10 +40,6 @@ class ExerciseCubit extends Cubit<ExerciseState> {
         _restoreState(currentState);
         return false;
       }
-
-      await _refreshExercises();
-
-      return true;
     } on AppException catch (e) {
       emit(ExerciseError(e.message));
       return false;
@@ -50,6 +47,17 @@ class ExerciseCubit extends Cubit<ExerciseState> {
       emit(ExerciseError(e.toString()));
       return false;
     }
+
+    // Refresh
+    try {
+      await _refreshExercises();
+    } on AppException catch (e) {
+      emit(ExerciseError(e.message));
+    } catch (_) {
+      emit(ExerciseError('Refresh failed!'));
+    }
+
+    return true;
   }
 
   Future<bool> updateExercise(Exercise exercise) async {
@@ -61,6 +69,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
 
     emit(currentState.copyWith(isSubmitting: true));
 
+    // Mutation
     try {
       final success = await repository.updateExercise(exercise);
 
@@ -68,10 +77,6 @@ class ExerciseCubit extends Cubit<ExerciseState> {
         _restoreState(currentState);
         return false;
       }
-
-      await _refreshExercises();
-
-      return true;
     } on AppException catch (e) {
       emit(ExerciseError(e.message));
       return false;
@@ -79,6 +84,17 @@ class ExerciseCubit extends Cubit<ExerciseState> {
       emit(ExerciseError(e.toString()));
       return false;
     }
+
+    // Refresh
+    try {
+      await _refreshExercises();
+    } on AppException catch (e) {
+      emit(ExerciseError(e.message));
+    } catch (_) {
+      emit(ExerciseError('Refresh failed!'));
+    }
+
+    return true;
   }
 
   Future<bool> deleteExercise(String id) async {
@@ -90,6 +106,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
 
     emit(currentState.copyWith(isSubmitting: true));
 
+    // Mutation
     try {
       final success = await repository.deleteExercise(id);
 
@@ -97,10 +114,6 @@ class ExerciseCubit extends Cubit<ExerciseState> {
         _restoreState(currentState);
         return false;
       }
-
-      await _refreshExercises();
-
-      return true;
     } on AppException catch (e) {
       emit(ExerciseError(e.message));
       return false;
@@ -108,18 +121,23 @@ class ExerciseCubit extends Cubit<ExerciseState> {
       emit(ExerciseError(e.toString()));
       return false;
     }
+
+    // Refresh
+    try {
+      await _refreshExercises();
+    } on AppException catch (e) {
+      emit(ExerciseError(e.message));
+    } catch (_) {
+      emit(ExerciseError('Refresh failed!'));
+    }
+
+    return true;
   }
 
   Future<void> _refreshExercises() async {
-    try {
-      final exercises = await repository.watchExercises().first;
+    final exercises = await repository.watchExercises().first;
 
-      emit(ExerciseLoaded(exercises: exercises, isSubmitting: false));
-    } on AppException catch (e) {
-      emit(ExerciseError(e.message));
-    } catch (e) {
-      emit(ExerciseError(e.toString()));
-    }
+    emit(ExerciseLoaded(exercises: exercises, isSubmitting: false));
   }
 
   void _restoreState(ExerciseLoaded previousState) {
