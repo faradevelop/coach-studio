@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
@@ -162,9 +164,21 @@ class _ExerciseConfigurationViewState
       final cubit = context.read<ProgramExerciseCubit>();
 
       if (_isEditMode) {
-        await cubit.updateProgramExercise(programExercise);
+        final success = await cubit.updateProgramExercise(programExercise);
+        if (!success) {
+          sl<AppNotification>().error('ویرایش تمرین ناموفق بود.');
+          return;
+        }
+
+        sl<AppNotification>().success('تمرین با موفقیت ویرایش شد.');
       } else {
-        await cubit.addProgramExercise(programExercise);
+        final success = await cubit.addProgramExercise(programExercise);
+        if (!success) {
+          sl<AppNotification>().error('ایجاد تمرین ناموفق بود.');
+          return;
+        }
+
+        sl<AppNotification>().success('تمرین با موفقیت ایجاد شد.');
       }
 
       if (mounted) context.pop();
