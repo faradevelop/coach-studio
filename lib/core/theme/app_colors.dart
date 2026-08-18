@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 
-/// Central color palette — Glass + Orange + Charcoal
-/// Keep existing names for backward compatibility and add new semantic tokens.
 class AppColors {
-  // ── Primary ──────────────────────────────────────────────
-  static const Color orange = Color(0xFFFF6B35);
-  static const Color orangeDark = Color(0xFFE85A2A);
+  // ── Primary (CTA only) ───────────────────────────────────
+  static const Color orange = Color(0xFFFF7A00);
+  static const Color orangeDark = Color(0xFFFF5B00);
   static const Color orangeSoft = Color(0xFFFFF0E8);
   static const Color orangeGlow = Color(0xFFFF9A5A);
+
+  // ── Secondary (new) ──────────────────────────────────────
+  static const Color teal = Color(0xFF2A9D8F);
+  static const Color tealDark = Color(0xFF1F7A6F);
+  static const Color tealSoft = Color(0xFFE6F5F2);
+  static const Color tealMuted = Color(0xFF5BB8AA);
 
   // ── Neutrals ─────────────────────────────────────────────
   static const Color charcoal = Color(0xFF1C1C1E);
@@ -28,10 +32,9 @@ class AppColors {
 
   // ── Semantic ─────────────────────────────────────────────
   static const Color error = Color(0xFFE53935);
-  static const Color warning = Color(0xFFFDD835);
-  static const Color info = Color(0xFF1E88E5);
   static const Color success = Color(0xFF43A047);
   static const Color onOrange = Colors.white;
+  static const Color onTeal = Colors.white;
   static const Color onCharcoal = Colors.white;
 
   // ── Background gradient stops (used in ScaffoldWithBottomNav) ──
@@ -39,10 +42,6 @@ class AppColors {
   static const Color bgMid = Color(0xFFF5F0E8);
   static const Color bgEnd = Color(0xFFF2ECE5);
 
-  static const List<Color> bgColors = [
-    Color(0xFFFFC9A0),
-    Color(0xFFFFF0E0),
-    cream,
-  ];
-  static const List<double> bgStops = [0.0, 0.45, 1.0];
+  static const List<Color> bgColors = [Color(0xFFfdf1e3), Color(0xFFfbf2e3)];
+  static const List<double> bgStops = [0.0, 1.0];
 }
