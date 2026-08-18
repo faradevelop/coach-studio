@@ -18,14 +18,20 @@ class CustomSearchBar extends StatelessWidget {
     return Container(
       height: 48,
       decoration: BoxDecoration(
-        color: AppColors.glassStrong,
+        color: AppColors.cream,
         borderRadius: BorderRadius.circular(50),
         border: Border.all(color: AppColors.glassBorder),
         boxShadow: [
           BoxShadow(
-            color: AppColors.charcoal.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: AppColors.charcoal.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+            spreadRadius: -2,
+          ),
+          BoxShadow(
+            color: AppColors.charcoal.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -40,13 +46,13 @@ class CustomSearchBar extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(
-            color: AppColors.charcoal.withValues(alpha: 0.45),
+            color: AppColors.charcoal.withValues(alpha: 0.6),
             fontSize: 15,
           ),
           suffixIcon: Icon(
             Icons.search_rounded,
-            color: AppColors.orange.withValues(alpha: 0.9),
-            size: 22,
+            color: AppColors.orange,
+            size: 24,
           ),
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
@@ -56,7 +62,7 @@ class CustomSearchBar extends StatelessWidget {
           hoverColor: Colors.transparent,
           contentPadding: const EdgeInsets.symmetric(
             vertical: 14,
-            horizontal: 12,
+            horizontal: 14,
           ),
         ),
         onChanged: onChanged,

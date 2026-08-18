@@ -32,7 +32,7 @@ class AppButton extends StatelessWidget {
           disabledBackgroundColor: AppColors.grey,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(50),
           ),
         ),
         child: isLoading
@@ -101,6 +101,19 @@ class GlassyBackButton extends StatelessWidget {
           color: Colors.white.withValues(alpha: 0.35),
           borderRadius: BorderRadius.circular(50),
           border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.charcoal.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+              spreadRadius: -2,
+            ),
+            BoxShadow(
+              color: AppColors.charcoal.withValues(alpha: 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: const Directionality(
           textDirection: TextDirection.ltr,
