@@ -2,6 +2,7 @@ import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/widgets/app_error_state.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/custom_search_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
@@ -150,9 +151,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                               },
                             ),
 
-                    ExerciseError(:final message) => Center(
-                      child: Text(message),
-                    ),
+                    ExerciseError(:final message) => AppErrorState(),
 
                     ExerciseInitial() => const SizedBox(),
                   };

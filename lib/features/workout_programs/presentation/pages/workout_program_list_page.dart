@@ -6,6 +6,7 @@ import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
+import 'package:coach_studio/core/widgets/app_error_state.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
@@ -80,7 +81,7 @@ class _WorkoutProgramListView extends StatelessWidget {
                                 childAspectRatio = 1.3;
                               } else if (width >= 420) {
                                 crossAxisCount = 2;
-                                childAspectRatio = 0.9;
+                                childAspectRatio = 1.1;
                               } else {
                                 crossAxisCount = 1;
                                 childAspectRatio = 1.8;
@@ -171,14 +172,7 @@ class _WorkoutProgramListView extends StatelessWidget {
                             },
                           ),
 
-                  WorkoutProgramError(:final message) => Center(
-                    child: Text(
-                      message,
-                      style: AppTextStyles.body.copyWith(
-                        color: AppColors.error,
-                      ),
-                    ),
-                  ),
+                  WorkoutProgramError(:final message) => AppErrorState(),
                 };
               },
             ),
