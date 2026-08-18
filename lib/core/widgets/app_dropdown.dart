@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AppDropdown<T> extends StatelessWidget {
@@ -16,43 +17,39 @@ class AppDropdown<T> extends StatelessWidget {
     this.value,
   });
 
-  static const Color _orange = Color(0xFFFF6B35);
-  static const Color _charcoal = Color(0xFF2D2D2D);
-  static const Color _cream = Color(0xFFFFF8F0);
-
   @override
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
         // Drop down menu style
-        canvasColor: _cream,
-        highlightColor: _orange.withValues(alpha: 0.12),
-        hoverColor: _orange.withValues(alpha: 0.08),
-        focusColor: _orange.withValues(alpha: 0.15),
+        canvasColor: AppColors.cream,
+        highlightColor: AppColors.orange.withValues(alpha: 0.12),
+        hoverColor: AppColors.orange.withValues(alpha: 0.08),
+        focusColor: AppColors.orange.withValues(alpha: 0.15),
       ),
       child: DropdownButtonFormField<T>(
         initialValue: items.contains(value) ? value : null,
         style: const TextStyle(
-          color: _charcoal,
+          color: AppColors.charcoal,
           fontSize: 15,
           fontWeight: FontWeight.w500,
         ),
         icon: Icon(
           Icons.keyboard_arrow_down_rounded,
-          color: _charcoal.withValues(alpha: 0.6),
+          color: AppColors.charcoal.withValues(alpha: 0.6),
         ),
-        dropdownColor: _cream,
+        dropdownColor: AppColors.cream,
         borderRadius: BorderRadius.circular(20),
         menuMaxHeight: 280,
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
-            color: _charcoal.withValues(alpha: 0.7),
+            color: AppColors.charcoal.withValues(alpha: 0.7),
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
           floatingLabelStyle: const TextStyle(
-            color: _orange,
+            color: AppColors.orange,
             fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
@@ -72,7 +69,7 @@ class AppDropdown<T> extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: _orange, width: 1.6),
+            borderSide: const BorderSide(color: AppColors.orange, width: 1.6),
           ),
         ),
         items: items.map((item) {
@@ -81,7 +78,7 @@ class AppDropdown<T> extends StatelessWidget {
             child: Text(
               itemLabel(item),
               style: const TextStyle(
-                color: _charcoal,
+                color: AppColors.charcoal,
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
               ),
@@ -96,7 +93,7 @@ class AppDropdown<T> extends StatelessWidget {
               child: Text(
                 itemLabel(item),
                 style: const TextStyle(
-                  color: _charcoal,
+                  color: AppColors.charcoal,
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
                 ),

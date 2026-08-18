@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +16,6 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
   final _nameController = TextEditingController();
   final _heightController = TextEditingController();
   final _weightController = TextEditingController();
-
-  static const Color _orange = Color(0xFFFF6B35);
-  static const Color _charcoal = Color(0xFF2D2D2D);
 
   @override
   void dispose() {
@@ -69,12 +67,12 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
                     width: 50,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: _orange.withValues(alpha: 0.20),
+                      color: AppColors.orange.withValues(alpha: 0.20),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.person_outline_rounded,
-                      color: _orange,
+                      color: AppColors.orange,
                       size: 28,
                     ),
                   ),
@@ -86,7 +84,7 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
                     style: TextStyle(
                       fontSize: 19,
                       fontWeight: FontWeight.w700,
-                      color: _charcoal,
+                      color: AppColors.charcoal,
                     ),
                   ),
                   const SizedBox(height: 22),
@@ -135,7 +133,7 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
-                                color: _charcoal,
+                                color: AppColors.charcoal,
                               ),
                             ),
                           ),
@@ -149,11 +147,13 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
                             height: 44,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: _orange,
+                              color: AppColors.orange,
                               borderRadius: BorderRadius.circular(50),
                               boxShadow: [
                                 BoxShadow(
-                                  color: _orange.withValues(alpha: 0.35),
+                                  color: AppColors.orange.withValues(
+                                    alpha: 0.35,
+                                  ),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
