@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
+import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
@@ -92,13 +94,13 @@ class _AddProgramExerciseItemPageState
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.cream.withValues(alpha: 0.70),
+                        color: AppColors.teal.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         '${_selectedExercises.length}/$_maxSelection',
                         style: const TextStyle(
-                          color: AppColors.orange,
+                          color: AppColors.teal,
                           fontWeight: FontWeight.w700,
                           fontSize: 13,
                         ),
@@ -189,16 +191,10 @@ class _AddProgramExerciseItemPageState
 
                                       if (_selectedExercises.length >=
                                           _maxSelection) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'فقط $_maxSelection تمرین می‌توانید انتخاب کنید.',
-                                            ),
-                                            behavior: SnackBarBehavior.floating,
-                                          ),
+                                        sl<AppNotification>().warning(
+                                          'فقط $_maxSelection تمرین می‌توانید انتخاب کنید.',
                                         );
+
                                         return;
                                       }
 
