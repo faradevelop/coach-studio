@@ -24,113 +24,130 @@ class ExerciseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            height: 108,
-            decoration: BoxDecoration(
-              color: AppColors.surfaceGlass,
-              borderRadius: BorderRadius.circular(AppRadius.xl),
-              border: Border.all(
-                color: AppColors.surfaceGlassBorder,
-                width: 1.1,
-              ),
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.charcoal.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+              spreadRadius: -2,
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: AppSpacing.md,
+            BoxShadow(
+              color: AppColors.charcoal.withValues(alpha: 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.xl),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            child: Container(
+              height: 108,
+              decoration: BoxDecoration(
+                color: AppColors.dirtyCream,
+                borderRadius: BorderRadius.circular(AppRadius.xl),
+                border: Border.all(
+                  color: AppColors.dirtyCream.withValues(alpha: 0.03),
+                  width: 1.1,
+                ),
               ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: AppSpacing.md,
+                ),
 
-              child: Row(
-                children: [
-                  _ExerciseImage(imageUrl: exercise.imageUrl ?? ''),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          exercise.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.titleMedium.copyWith(
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          exercise.targetMuscle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.orange,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            //   FaIcon(
-                            //     FontAwesomeIcons.fireFlameCurved,
-                            //     size: 14,
-                            //     color: AppColors.orange,
-                            //   ),
-                            //   const SizedBox(width: 4),
-                            //   Text(
-                            //     exercise.equipment,
-                            //     maxLines: 1,
-                            //     overflow: TextOverflow.ellipsis,
-                            //     style: AppTextStyles.bodySmall,
-                            //   ),
-                            //   const SizedBox(width: 10),
-                            Icon(
-                              Icons.bar_chart_rounded,
-                              size: 18,
-                              color: AppColors.orange,
+                child: Row(
+                  children: [
+                    _ExerciseImage(imageUrl: exercise.imageUrl ?? ''),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            exercise.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.titleMedium.copyWith(
+                              fontSize: 16,
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              exercise.difficulty,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.bodySmall,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            exercise.targetMuscle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: AppColors.teal,
+                              fontWeight: FontWeight.w600,
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              //   FaIcon(
+                              //     FontAwesomeIcons.fireFlameCurved,
+                              //     size: 14,
+                              //     color: AppColors.orange,
+                              //   ),
+                              //   const SizedBox(width: 4),
+                              //   Text(
+                              //     exercise.equipment,
+                              //     maxLines: 1,
+                              //     overflow: TextOverflow.ellipsis,
+                              //     style: AppTextStyles.bodySmall,
+                              //   ),
+                              //   const SizedBox(width: 10),
+                              Icon(
+                                Icons.bar_chart_rounded,
+                                size: 18,
+                                color: AppColors.teal,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                exercise.difficulty,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTextStyles.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
 
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: MiniButton(
-                      color: AppColors.charcoalSoft.withValues(alpha: 0.18),
-                      icon: Icon(
-                        Icons.edit_rounded,
-                        size: 18,
-                        color: AppColors.charcoal.withValues(alpha: 0.9),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: MiniButton(
+                        color: AppColors.charcoalSoft.withValues(alpha: 0.18),
+                        icon: Icon(
+                          Icons.edit_rounded,
+                          size: 18,
+                          color: AppColors.charcoal.withValues(alpha: 0.9),
+                        ),
+                        onPressed: onEdit,
                       ),
-                      onPressed: onEdit,
                     ),
-                  ),
-                  SizedBox(width: 4),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: MiniButton(
-                      color: AppColors.error.withValues(alpha: 0.18),
-                      icon: Icon(
-                        Icons.delete_rounded,
-                        size: 16,
-                        color: AppColors.error.withValues(alpha: 0.9),
+                    SizedBox(width: 4),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: MiniButton(
+                        color: AppColors.error.withValues(alpha: 0.18),
+                        icon: Icon(
+                          Icons.delete_rounded,
+                          size: 16,
+                          color: AppColors.error.withValues(alpha: 0.9),
+                        ),
+                        onPressed: onDelete,
                       ),
-                      onPressed: onDelete,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
