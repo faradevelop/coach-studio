@@ -31,8 +31,10 @@ class AppColors {
   static Color get surfaceGlassBorder => dirtyCream.withValues(alpha: 0.55);
 
   // ── Semantic ─────────────────────────────────────────────
-  static const Color error = Color(0xFFE53935);
-  static const Color success = Color(0xFF43A047);
+  static const Color error = Color.fromARGB(255, 237, 30, 27);
+  static const Color success = Color(0xFF62dc32);
+  static const Color warning = Color(0xFFF59E0B);
+  static const Color info = Colors.lightBlue;
   static const Color onOrange = Colors.white;
   static const Color onTeal = Colors.white;
   static const Color onCharcoal = Colors.white;
