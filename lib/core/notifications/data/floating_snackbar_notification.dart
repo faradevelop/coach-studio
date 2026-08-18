@@ -1,6 +1,7 @@
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification_message.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification_type.dart';
+import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:floating_snackbar/floating_snackbar.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,8 @@ class FloatingSnackbarNotification implements AppNotification {
       title: notification.title,
       position: FloatingSnackBarPosition.top,
       type: _mapType(notification.type),
+      backgroundColor:
+          notification.backgroundColor ?? _defaultColor(notification.type),
       action: _buildAction(notification),
     );
   }
@@ -120,5 +123,21 @@ class FloatingSnackbarNotification implements AppNotification {
       label: notification.actionLabel!,
       onPressed: notification.onAction!,
     );
+  }
+
+  Color _defaultColor(AppNotificationType type) {
+    switch (type) {
+      case AppNotificationType.success:
+        return AppColors.success;
+
+      case AppNotificationType.error:
+        return AppColors.error;
+
+      case AppNotificationType.info:
+        return AppColors.info;
+
+      case AppNotificationType.warning:
+        return AppColors.warning;
+    }
   }
 }
