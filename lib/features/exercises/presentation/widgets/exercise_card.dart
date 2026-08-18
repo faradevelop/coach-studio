@@ -28,13 +28,13 @@ class ExerciseCard extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: AppColors.charcoal.withValues(alpha: 0.05),
+              color: AppColors.charcoal.withValues(alpha: 0.03),
               blurRadius: 20,
               offset: const Offset(0, 8),
               spreadRadius: -2,
             ),
             BoxShadow(
-              color: AppColors.charcoal.withValues(alpha: 0.03),
+              color: AppColors.charcoal.withValues(alpha: 0.01),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
