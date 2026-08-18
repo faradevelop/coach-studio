@@ -30,6 +30,22 @@ class WorkoutProgramListPage extends StatelessWidget {
 class _WorkoutProgramListView extends StatelessWidget {
   const _WorkoutProgramListView();
 
+  ({int crossAxisCount, double childAspectRatio}) _getGridLayout(double width) {
+    if (width >= 1000) {
+      return (crossAxisCount: 5, childAspectRatio: 0.9);
+    } else if (width >= 800) {
+      return (crossAxisCount: 4, childAspectRatio: 0.9);
+    } else if (width >= 650) {
+      return (crossAxisCount: 3, childAspectRatio: 0.85);
+    } else if (width >= 550) {
+      return (crossAxisCount: 2, childAspectRatio: 1.1);
+    } else if (width >= 420) {
+      return (crossAxisCount: 2, childAspectRatio: 0.95);
+    } else {
+      return (crossAxisCount: 1, childAspectRatio: 1.5);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -63,29 +79,9 @@ class _WorkoutProgramListView extends StatelessWidget {
                         ? const _EmptyProgramsState()
                         : LayoutBuilder(
                             builder: (context, constraints) {
-                              final width = constraints.maxWidth;
-                              final int crossAxisCount;
-                              final double childAspectRatio;
-
-                              if (width >= 1000) {
-                                crossAxisCount = 5;
-                                childAspectRatio = 0.9;
-                              } else if (width >= 800) {
-                                crossAxisCount = 4;
-                                childAspectRatio = 0.9;
-                              } else if (width >= 650) {
-                                crossAxisCount = 3;
-                                childAspectRatio = 0.9;
-                              } else if (width >= 550) {
-                                crossAxisCount = 2;
-                                childAspectRatio = 1.3;
-                              } else if (width >= 420) {
-                                crossAxisCount = 2;
-                                childAspectRatio = 1.1;
-                              } else {
-                                crossAxisCount = 1;
-                                childAspectRatio = 1.8;
-                              }
+                              final layout = _getGridLayout(
+                                constraints.maxWidth,
+                              );
 
                               return GridView.builder(
                                 padding: const EdgeInsets.fromLTRB(
@@ -96,10 +92,11 @@ class _WorkoutProgramListView extends StatelessWidget {
                                 ),
                                 gridDelegate:
                                     SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: crossAxisCount,
+                                      crossAxisCount: layout.crossAxisCount,
                                       mainAxisSpacing: 14,
                                       crossAxisSpacing: 14,
-                                      childAspectRatio: childAspectRatio,
+                                      childAspectRatio: layout.childAspectRatio,
+                                      mainAxisExtent: 210,
                                     ),
                                 itemCount: programs.length,
                                 itemBuilder: (context, index) {

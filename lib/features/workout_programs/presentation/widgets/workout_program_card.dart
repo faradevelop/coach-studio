@@ -151,14 +151,18 @@ class WorkoutProgramCard extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        _InfoChip(
-                          icon: CupertinoIcons.flag_fill,
-                          text: _goalLabel,
+                        Expanded(
+                          child: _InfoChip(
+                            icon: CupertinoIcons.flag_fill,
+                            text: _goalLabel,
+                          ),
                         ),
                         SizedBox(width: 6),
-                        _InfoChip(
-                          icon: Icons.bar_chart_rounded,
-                          text: _levelLabel,
+                        Expanded(
+                          child: _InfoChip(
+                            icon: Icons.bar_chart_rounded,
+                            text: _levelLabel,
+                          ),
                         ),
                       ],
                     ),
@@ -182,7 +186,7 @@ class _InfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         color: AppColors.teal.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
@@ -192,12 +196,16 @@ class _InfoChip extends StatelessWidget {
         children: [
           Icon(icon, size: 14, color: AppColors.teal),
           const SizedBox(width: 5),
-          Text(
-            text,
-            style: AppTextStyles.bodySmall.copyWith(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w500,
-              color: AppColors.charcoal,
+          Flexible(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.bodySmall.copyWith(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w500,
+                color: AppColors.charcoal,
+              ),
             ),
           ),
         ],
