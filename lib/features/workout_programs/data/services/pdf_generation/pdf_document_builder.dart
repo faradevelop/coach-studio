@@ -12,6 +12,7 @@ import 'package:coach_studio/core/constants/club_info.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_item.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
@@ -24,8 +25,8 @@ import 'pdf_build_input.dart';
 
 // نسبت عرض ستون‌ها
 const _numberFlex = 1;
-const _imageFlex = 2;
-const _nameFlex = 5;
+//const _imageFlex = 2;
+const _nameFlex = 7; //+2 from image flex
 const _setsFlex = 1;
 const _repsFlex = 3;
 const _tempoFlex = 2;
@@ -453,7 +454,7 @@ pw.Widget _buildTableHeaderRow(pw.Font boldFont) {
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
       children: [
         _headerCell('شماره', _numberFlex, boldFont),
-        _headerCell('تصویر', _imageFlex, boldFont),
+        //_headerCell('تصویر', _imageFlex, boldFont),
         _headerCell('تمرین', _nameFlex, boldFont),
         _headerCell('ست', _setsFlex, boldFont),
         _headerCell('تکرارها', _repsFlex, boldFont),
@@ -533,6 +534,36 @@ pw.Widget _buildExerciseBlockRow(
   }
 }
 
+pw.Widget _exerciseNameWithDescription(
+  ProgramExerciseItem item,
+  Exercise exercise,
+  pw.Font boldFont,
+  pw.Font regularFont,
+) {
+  final description = item.description?.trim();
+
+  return pw.RichText(
+    textAlign: pw.TextAlign.center,
+    text: pw.TextSpan(
+      children: [
+        pw.TextSpan(
+          text: exercise.name,
+          style: pw.TextStyle(font: boldFont, fontSize: 9, color: _black),
+        ),
+        if (description != null && description.isNotEmpty)
+          pw.TextSpan(
+            text: '  $description',
+            style: pw.TextStyle(
+              font: regularFont,
+              fontSize: 7,
+              color: PdfColors.grey600,
+            ),
+          ),
+      ],
+    ),
+  );
+}
+
 // normal row
 pw.Widget _buildNormalRow(
   ProgramExerciseDetails block,
@@ -576,6 +607,7 @@ pw.Widget _buildNormalRow(
     );
   }
 
+  //number
   return pw.Container(
     height: totalHeight,
     decoration: pw.BoxDecoration(
@@ -605,41 +637,91 @@ pw.Widget _buildNormalRow(
             ),
           ),
         ),
+
         // image
-        pw.Expanded(
-          flex: _imageFlex,
-          child: pw.Container(
-            alignment: pw.Alignment.center,
-            padding: const pw.EdgeInsets.symmetric(vertical: 4),
-            decoration: pw.BoxDecoration(
-              border: pw.Border(
-                left: pw.BorderSide(color: _darkGrey, width: 0.5),
-              ),
-            ),
-            child: pw.Image(
-              muscle,
-              width: 15,
-            ), //_exerciseThumbnail(primaryExercise, imageCache, muscle),
-          ),
-        ),
+        // pw.Expanded(
+        //   flex: _imageFlex,
+        //   child: pw.Container(
+        //     alignment: pw.Alignment.center,
+        //     padding: const pw.EdgeInsets.symmetric(vertical: 4),
+        //     decoration: pw.BoxDecoration(
+        //       border: pw.Border(
+        //         left: pw.BorderSide(color: _darkGrey, width: 0.5),
+        //       ),
+        //     ),
+        //     child: pw.Image(
+        //       muscle,
+        //       width: 15,
+        //     ), //_exerciseThumbnail(primaryExercise, imageCache, muscle),
+        //   ),
+        // ),
         // name
+        // pw.Expanded(
+        //   flex: _nameFlex,
+        //   child: pw.Container(
+        //     alignment: pw.Alignment.center,
+        //     padding: const pw.EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+        //     decoration: pw.BoxDecoration(
+        //       border: pw.Border(
+        //         left: pw.BorderSide(color: _darkGrey, width: 0.5),
+        //       ),
+        //     ),
+        //     child: pw.Text(
+        //       exerciseNames.join(' + '),
+        //       textAlign: pw.TextAlign.center,
+        //       style: pw.TextStyle(font: boldFont, fontSize: 9),
+        //     ),
+        //   ),
+        // ),
+
+        // name + description
         pw.Expanded(
           flex: _nameFlex,
           child: pw.Container(
             alignment: pw.Alignment.center,
-            padding: const pw.EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+            padding: const pw.EdgeInsets.symmetric(vertical: 4, horizontal: 6),
             decoration: pw.BoxDecoration(
               border: pw.Border(
                 left: pw.BorderSide(color: _darkGrey, width: 0.5),
               ),
             ),
-            child: pw.Text(
-              exerciseNames.join(' + '),
-              textAlign: pw.TextAlign.center,
-              style: pw.TextStyle(font: boldFont, fontSize: 9),
-            ),
+            child: block.items.length == 1
+                ? _exerciseNameWithDescription(
+                    block.items.first.item,
+                    block.items.first.exercise,
+                    boldFont,
+                    regularFont,
+                  )
+                : pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.center,
+                    children: [
+                      for (var i = 0; i < block.items.length; i++) ...[
+                        if (i > 0)
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.symmetric(
+                              horizontal: 4,
+                            ),
+                            child: pw.Text(
+                              '+',
+                              style: pw.TextStyle(
+                                font: regularFont,
+                                fontSize: 7,
+                                color: _darkGrey,
+                              ),
+                            ),
+                          ),
+                        _exerciseNameWithDescription(
+                          block.items[i].item,
+                          block.items[i].exercise,
+                          boldFont,
+                          regularFont,
+                        ),
+                      ],
+                    ],
+                  ),
           ),
         ),
+
         // set
         pw.Expanded(
           flex: _setsFlex,
@@ -698,6 +780,8 @@ pw.Widget _buildSuperSetRow(
             : pw.BorderSide(color: _darkGrey, width: 0.5),
       ),
     ),
+
+    //number
     child: pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
       children: [
@@ -719,22 +803,54 @@ pw.Widget _buildSuperSetRow(
           ),
         ),
         // image
-        pw.Expanded(
-          flex: _imageFlex,
-          child: pw.Container(
-            alignment: pw.Alignment.center,
-            padding: const pw.EdgeInsets.symmetric(vertical: 4),
-            decoration: pw.BoxDecoration(
-              border: pw.Border(
-                left: pw.BorderSide(color: _darkGrey, width: 0.5),
-              ),
-            ),
-            child: pw.Image(
-              muscle,
-              width: 15,
-            ), //_exerciseThumbnail(primaryExercise, imageCache, muscle),
-          ),
-        ),
+        // pw.Expanded(
+        //   flex: _imageFlex,
+        //   child: pw.Container(
+        //     alignment: pw.Alignment.center,
+        //     padding: const pw.EdgeInsets.symmetric(vertical: 4),
+        //     decoration: pw.BoxDecoration(
+        //       border: pw.Border(
+        //         left: pw.BorderSide(color: _darkGrey, width: 0.5),
+        //       ),
+        //     ),
+        //     child: pw.Image(
+        //       muscle,
+        //       width: 15,
+        //     ), //_exerciseThumbnail(primaryExercise, imageCache, muscle),
+        //   ),
+        // ),
+        // name with 2 rows
+        // pw.Expanded(
+        //   flex: _nameFlex,
+        //   child: pw.Container(
+        //     alignment: pw.Alignment.center,
+        //     padding: const pw.EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+        //     decoration: pw.BoxDecoration(
+        //       border: pw.Border(
+        //         left: pw.BorderSide(color: _darkGrey, width: 0.5),
+        //       ),
+        //     ),
+        //     child: pw.Column(
+        //       mainAxisAlignment: pw.MainAxisAlignment.center,
+        //       children: [
+        //         pw.Text(
+        //           exerciseNames[0],
+        //           textAlign: pw.TextAlign.center,
+        //           style: pw.TextStyle(font: boldFont, fontSize: 9),
+        //         ),
+        //         pw.SizedBox(height: 4),
+        //         pw.Text('+'),
+        //         pw.SizedBox(height: 4),
+        //         pw.Text(
+        //           exerciseNames[1],
+        //           textAlign: pw.TextAlign.center,
+        //           style: pw.TextStyle(font: boldFont, fontSize: 9),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+
         // name with 2 rows
         pw.Expanded(
           flex: _nameFlex,
@@ -748,19 +864,34 @@ pw.Widget _buildSuperSetRow(
             ),
             child: pw.Column(
               mainAxisAlignment: pw.MainAxisAlignment.center,
+              crossAxisAlignment: pw.CrossAxisAlignment.center,
               children: [
-                pw.Text(
-                  exerciseNames[0],
-                  textAlign: pw.TextAlign.center,
-                  style: pw.TextStyle(font: boldFont, fontSize: 9),
+                // First exercise
+                _exerciseNameWithDescription(
+                  block.items[0].item,
+                  block.items[0].exercise,
+                  boldFont,
+                  regularFont,
                 ),
-                pw.SizedBox(height: 4),
-                pw.Text('+'),
-                pw.SizedBox(height: 4),
+
+                // +
+                pw.SizedBox(height: 3),
                 pw.Text(
-                  exerciseNames[1],
-                  textAlign: pw.TextAlign.center,
-                  style: pw.TextStyle(font: boldFont, fontSize: 9),
+                  '+',
+                  style: pw.TextStyle(
+                    font: boldFont,
+                    fontSize: 7,
+                    color: _darkGrey,
+                  ),
+                ),
+                pw.SizedBox(height: 3),
+
+                // Second exercise
+                _exerciseNameWithDescription(
+                  block.items[1].item,
+                  block.items[1].exercise,
+                  boldFont,
+                  regularFont,
                 ),
               ],
             ),
