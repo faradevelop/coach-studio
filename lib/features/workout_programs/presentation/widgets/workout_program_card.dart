@@ -46,117 +46,125 @@ class WorkoutProgramCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.42),
-              borderRadius: BorderRadius.circular(AppRadius.xl),
-              border: Border.all(color: AppColors.glassBorder, width: 1.1),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppRadius.xl),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.charcoal.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+              spreadRadius: -2,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Image header
-                Container(
-                  height: 85,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.dirtyCream.withValues(alpha: 0.4),
-                    borderRadius: BorderRadius.circular(AppRadius.lg),
-                    border: Border.all(
-                      color: AppColors.cream.withValues(alpha: 0.5),
-                      width: 0.5,
+            BoxShadow(
+              color: AppColors.charcoal.withValues(alpha: 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.xl),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.42),
+                borderRadius: BorderRadius.circular(AppRadius.xl),
+                border: Border.all(color: AppColors.glassBorder, width: 1.3),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Image header
+                  Container(
+                    height: 85,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColors.dirtyCream.withValues(alpha: 0.4),
+                      borderRadius: BorderRadius.circular(AppRadius.lg + 2),
+                      border: Border.all(
+                        color: AppColors.cream.withValues(alpha: 0.5),
+                        width: 0.5,
+                      ),
                     ),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Image.asset(
-                    'assets/images/athlete_woman.png',
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, _, _) => Center(
-                      child: Icon(
-                        Icons.fitness_center_rounded,
-                        size: 36,
-                        color: AppColors.orange.withValues(alpha: 0.45),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.asset(
+                      'assets/images/athlete_woman.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, _, _) => Center(
+                        child: Icon(
+                          Icons.fitness_center_rounded,
+                          size: 36,
+                          color: AppColors.orange.withValues(alpha: 0.45),
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: AppSpacing.md - 2),
+                  const SizedBox(height: AppSpacing.md - 2),
 
-                // Title + delete
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          program.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.titleMedium.copyWith(
-                            fontSize: 15,
-                            height: 1.25,
+                  // Title + delete
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            program.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.titleMedium.copyWith(
+                              fontSize: 15,
+                              height: 1.25,
+                            ),
                           ),
                         ),
-                      ),
-                      CustomPopupMenu(
-                        program: program,
-                        onDelete: onDelete,
-                        onCopy: onCopy,
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Days per week
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
-                  child: Text(
-                    '${program.daysPerWeek} روز در هفته',
-                    style: AppTextStyles.bodySmall.copyWith(
-                      fontSize: 10,
-                      color: AppColors.charcoal.withValues(alpha: 0.65),
+                        CustomPopupMenu(
+                          program: program,
+                          onDelete: onDelete,
+                          onCopy: onCopy,
+                        ),
+                      ],
                     ),
                   ),
-                ),
 
-                const Spacer(),
-
-                // Stats row
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Row(
-                    children: [
-                      _StatItem(
-                        icon: Icon(
-                          CupertinoIcons.flag_fill,
-                          size: 16,
-                          color: AppColors.orange,
-                        ),
-                        value: _goalLabel,
-                        label: 'هدف',
+                  // Days per week
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
+                    child: Text(
+                      '${program.daysPerWeek} روز در هفته',
+                      style: AppTextStyles.bodySmall.copyWith(
+                        fontSize: 10,
+                        color: AppColors.charcoal.withValues(alpha: 0.65),
                       ),
-                      const _VerticalDivider(),
-                      _StatItem(
-                        icon: Icon(
-                          Icons.bar_chart_rounded,
-                          size: 20,
-                          color: AppColors.orange,
-                        ),
-                        value: _levelLabel,
-                        label: 'سطح',
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  Divider(thickness: 1, indent: 10, endIndent: 8),
 
-                const SizedBox(height: AppSpacing.md - 2),
-              ],
+                  // Stats row
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    child: Row(
+                      children: [
+                        _InfoChip(
+                          icon: CupertinoIcons.flag_fill,
+                          text: _goalLabel,
+                        ),
+                        SizedBox(width: 6),
+                        _InfoChip(
+                          icon: Icons.bar_chart_rounded,
+                          text: _levelLabel,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -165,72 +173,35 @@ class WorkoutProgramCard extends StatelessWidget {
   }
 }
 
-class _StatItem extends StatelessWidget {
-  final Icon icon;
-  final String value;
-  final String label;
+class _InfoChip extends StatelessWidget {
+  final IconData icon;
+  final String text;
 
-  const _StatItem({
-    required this.icon,
-    required this.value,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          icon,
-          const SizedBox(width: 10),
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.charcoal.withValues(alpha: 0.5),
-                    height: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.charcoal,
-                    height: 1.1,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _VerticalDivider extends StatelessWidget {
-  const _VerticalDivider();
+  const _InfoChip({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 0.8,
-      height: 30,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      color: AppColors.charcoal.withValues(alpha: 0.12),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.teal.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: AppColors.teal),
+          const SizedBox(width: 5),
+          Text(
+            text,
+            style: AppTextStyles.bodySmall.copyWith(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w500,
+              color: AppColors.charcoal,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

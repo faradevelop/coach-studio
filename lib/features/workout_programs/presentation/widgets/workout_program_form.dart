@@ -144,94 +144,111 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadius.xl),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                    child: Container(
-                      padding: const EdgeInsets.all(22),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.38),
-                        borderRadius: BorderRadius.circular(AppRadius.xl),
-                        border: Border.all(
-                          color: AppColors.glassBorder,
-                          width: 1.2,
-                        ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.charcoal.withValues(alpha: 0.05),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                        spreadRadius: -2,
                       ),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            AppTextField(
-                              controller: _titleController,
-                              label: 'نام برنامه',
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'Required';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-
-                            AppDropdown<ProgramGoal>(
-                              label: 'هدف',
-                              value: _goal,
-                              items: ProgramGoal.values,
-                              itemLabel: _goalLabel,
-                              onChanged: widget.isLoading
-                                  ? null
-                                  : (value) {
-                                      setState(() => _goal = value);
-                                    },
-                            ),
-                            const SizedBox(height: 20),
-
-                            AppDropdown<ProgramLevel>(
-                              label: 'سطح',
-                              value: _level,
-                              items: ProgramLevel.values,
-                              itemLabel: _levelLabel,
-                              onChanged: widget.isLoading
-                                  ? null
-                                  : (value) {
-                                      setState(() => _level = value);
-                                    },
-                            ),
-                            const SizedBox(height: 20),
-
-                            Visibility(
-                              visible: widget.initialProgram == null,
-                              child: AppTextField(
-                                controller: _daysController,
-                                label: 'روز در هفته',
+                      BoxShadow(
+                        color: AppColors.charcoal.withValues(alpha: 0.03),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(AppRadius.xl),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                      child: Container(
+                        padding: const EdgeInsets.all(22),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.38),
+                          borderRadius: BorderRadius.circular(AppRadius.xl),
+                          border: Border.all(
+                            color: AppColors.glassBorder,
+                            width: 1.2,
+                          ),
+                        ),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              AppTextField(
+                                controller: _titleController,
+                                label: 'نام برنامه',
                                 validator: (value) {
-                                  if (value == null || value.isEmpty) {
+                                  if (value == null || value.trim().isEmpty) {
                                     return 'Required';
-                                  }
-                                  if (int.tryParse(value) == null) {
-                                    return 'Enter number';
                                   }
                                   return null;
                                 },
                               ),
-                            ),
-                            const SizedBox(height: 20),
+                              const SizedBox(height: 20),
 
-                            AppTextField(
-                              controller: _notesController,
-                              label: 'توضیح',
-                              maxLines: 3,
-                            ),
-                            const SizedBox(height: 32),
+                              AppDropdown<ProgramGoal>(
+                                label: 'هدف',
+                                value: _goal,
+                                items: ProgramGoal.values,
+                                itemLabel: _goalLabel,
+                                onChanged: widget.isLoading
+                                    ? null
+                                    : (value) {
+                                        setState(() => _goal = value);
+                                      },
+                              ),
+                              const SizedBox(height: 20),
 
-                            AppButton(
-                              text: isEdit ? 'ویرایش' : 'تایید',
-                              isLoading: widget.isLoading,
-                              onPressed: widget.isLoading ? null : _submit,
-                            ),
-                          ],
+                              AppDropdown<ProgramLevel>(
+                                label: 'سطح',
+                                value: _level,
+                                items: ProgramLevel.values,
+                                itemLabel: _levelLabel,
+                                onChanged: widget.isLoading
+                                    ? null
+                                    : (value) {
+                                        setState(() => _level = value);
+                                      },
+                              ),
+                              const SizedBox(height: 20),
+
+                              Visibility(
+                                visible: widget.initialProgram == null,
+                                child: AppTextField(
+                                  controller: _daysController,
+                                  label: 'روز در هفته',
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Required';
+                                    }
+                                    if (int.tryParse(value) == null) {
+                                      return 'Enter number';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+
+                              AppTextField(
+                                controller: _notesController,
+                                label: 'توضیح',
+                                maxLines: 3,
+                              ),
+                              const SizedBox(height: 32),
+
+                              AppButton(
+                                text: isEdit ? 'ویرایش' : 'تایید',
+                                isLoading: widget.isLoading,
+                                onPressed: widget.isLoading ? null : _submit,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

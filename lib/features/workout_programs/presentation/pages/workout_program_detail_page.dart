@@ -9,6 +9,7 @@ import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/app_error_state.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/features/workout_programs/data/services/workout_program_pdf_generator.dart';
@@ -24,6 +25,7 @@ import 'package:coach_studio/features/workout_programs/presentation/cubit/progra
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/athlete_info_form_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -303,19 +305,24 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
         GestureDetector(
           onTap: _addExercise,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
               color: AppColors.orange,
-              borderRadius: BorderRadius.circular(14),
-              boxShadow: [
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: const [
                 BoxShadow(
-                  color: AppColors.orange.withValues(alpha: 0.35),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
+                  color: Color(0x30FF6500),
+                  blurRadius: 20,
+                  spreadRadius: 2,
+                  offset: Offset(0, 10),
                 ),
               ],
             ),
-            child: const Icon(Icons.add_rounded, color: Colors.white, size: 18),
+            child: const Icon(
+              CupertinoIcons.add,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
         ),
       ],
@@ -342,12 +349,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
               child: Center(child: _ExercisesLoadingIndicator()),
             ),
 
-            ProgramExerciseError(:final message) => Center(
-              child: Text(
-                message,
-                style: AppTextStyles.body.copyWith(color: AppColors.error),
-              ),
-            ),
+            ProgramExerciseError(:final message) => AppErrorState(),
 
             ProgramExerciseLoaded(:final exercises, :final isSubmitting) =>
               _buildExercisesByDay(
@@ -515,15 +517,15 @@ class _DayTab extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 260),
         curve: Curves.easeOutCubic,
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 3),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.orange
+              ? AppColors.teal
               : Colors.white.withValues(alpha: 0.55),
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
-            color: isSelected ? AppColors.orange : AppColors.glassBorder,
-            width: 1.1,
+            color: isSelected ? AppColors.tealMuted : AppColors.glassBorder,
+            width: 1.4,
           ),
           boxShadow: isSelected
               ? null
@@ -538,8 +540,8 @@ class _DayTab extends StatelessWidget {
         child: AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 200),
           style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
             letterSpacing: 0.2,
             color: isSelected
                 ? AppColors.onOrange
@@ -574,7 +576,7 @@ class _ProgramExerciseCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surfaceGlass,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.surfaceGlassBorder),
+        border: Border.all(color: AppColors.glass),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -706,7 +708,7 @@ class _ExerciseItemCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(10),
@@ -768,12 +770,25 @@ class _PdfButton extends StatelessWidget {
     return GestureDetector(
       onTap: enabled ? onTap : null,
       child: Container(
-        width: 40,
-        height: 40,
+        width: 42,
+        height: 42,
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.35),
           borderRadius: BorderRadius.circular(50),
           border: Border.all(color: AppColors.glassBorderSoft),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.charcoal.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+              spreadRadius: -2,
+            ),
+            BoxShadow(
+              color: AppColors.charcoal.withValues(alpha: 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: const Icon(
           Icons.picture_as_pdf_rounded,
@@ -804,19 +819,36 @@ class _GlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadius.xl),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.38),
-            borderRadius: BorderRadius.circular(AppRadius.xl),
-            border: Border.all(color: AppColors.glassBorder, width: 1.1),
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.charcoal.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+            spreadRadius: -2,
           ),
-          child: child,
+          BoxShadow(
+            color: AppColors.charcoal.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.38),
+              borderRadius: BorderRadius.circular(AppRadius.xl),
+              border: Border.all(color: AppColors.glassBorder, width: 1.1),
+            ),
+            child: child,
+          ),
         ),
       ),
     );
@@ -834,13 +866,13 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.orange.withValues(alpha: 0.12),
+        color: AppColors.teal.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: AppColors.orange),
+          Icon(icon, size: 14, color: AppColors.teal),
           const SizedBox(width: 5),
           Text(
             text,
