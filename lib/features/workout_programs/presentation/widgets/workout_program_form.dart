@@ -58,24 +58,6 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
     super.dispose();
   }
 
-  String _goalLabel(ProgramGoal goal) {
-    return switch (goal) {
-      ProgramGoal.hypertrophy => 'هایپرتروفی',
-      ProgramGoal.strength => 'قدرتی',
-      ProgramGoal.fatLoss => 'چربی‌سوزی',
-      ProgramGoal.endurance => 'استقامتی',
-      ProgramGoal.rehabilitation => 'توان‌بخشی',
-    };
-  }
-
-  String _levelLabel(ProgramLevel level) {
-    return switch (level) {
-      ProgramLevel.beginner => 'مبتدی',
-      ProgramLevel.intermediate => 'متوسط',
-      ProgramLevel.advanced => 'پیشرفته',
-    };
-  }
-
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
 
@@ -195,7 +177,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                                 label: 'هدف',
                                 value: _goal,
                                 items: ProgramGoal.values,
-                                itemLabel: _goalLabel,
+                                itemLabel: (goal) => goal.label,
                                 onChanged: widget.isLoading
                                     ? null
                                     : (value) {
@@ -208,7 +190,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                                 label: 'سطح',
                                 value: _level,
                                 items: ProgramLevel.values,
-                                itemLabel: _levelLabel,
+                                itemLabel: (level) => level.label,
                                 onChanged: widget.isLoading
                                     ? null
                                     : (value) {

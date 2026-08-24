@@ -14,8 +14,6 @@ import 'package:coach_studio/features/workout_programs/domain/entities/athlete_i
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_item.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_details.dart';
-import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
-import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/training_system.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -280,7 +278,7 @@ pw.Widget _buildHeader(
 
                 _headerStatCell(
                   'سطح برنامه',
-                  _levelLabel(program.level),
+                  program.level.label,
                   boldFont,
                   regularFont,
                   pw.BorderRadius.only(
@@ -290,7 +288,7 @@ pw.Widget _buildHeader(
                 ),
                 _headerStatCell(
                   'هدف برنامه',
-                  _goalLabel(program.goal),
+                  program.goal.label,
                   boldFont,
                   regularFont,
                   pw.BorderRadius.zero,
@@ -1121,20 +1119,6 @@ pw.Widget _buildFooter(
     ),
   );
 }
-
-String _goalLabel(ProgramGoal goal) => switch (goal) {
-  ProgramGoal.hypertrophy => 'عضله سازی',
-  ProgramGoal.strength => 'قدرتی',
-  ProgramGoal.fatLoss => 'چربی سوزی',
-  ProgramGoal.endurance => 'استقامتی',
-  ProgramGoal.rehabilitation => 'توانبخشی',
-};
-
-String _levelLabel(ProgramLevel level) => switch (level) {
-  ProgramLevel.beginner => 'مبتدی تا متوسط',
-  ProgramLevel.intermediate => 'متوسط',
-  ProgramLevel.advanced => 'پیشرفته',
-};
 
 String _convertToPersianDate(DateTime date) {
   try {

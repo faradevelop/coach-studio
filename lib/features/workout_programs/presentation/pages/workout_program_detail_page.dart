@@ -94,24 +94,6 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
     }
   }
 
-  String get _goalLabel {
-    return switch (widget.program.goal) {
-      ProgramGoal.hypertrophy => 'هایپرتروفی',
-      ProgramGoal.strength => 'قدرتی',
-      ProgramGoal.fatLoss => 'چربی‌سوزی',
-      ProgramGoal.endurance => 'استقامتی',
-      ProgramGoal.rehabilitation => 'توان‌بخشی',
-    };
-  }
-
-  String get _levelLabel {
-    return switch (widget.program.level) {
-      ProgramLevel.beginner => 'مبتدی',
-      ProgramLevel.intermediate => 'متوسط',
-      ProgramLevel.advanced => 'پیشرفته',
-    };
-  }
-
   Map<int, List<ProgramExerciseDetails>> _groupByDay(
     int days,
     List<ProgramExerciseDetails> exercises,
@@ -284,8 +266,14 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _InfoChip(icon: Icons.flag_rounded, text: _goalLabel),
-              _InfoChip(icon: Icons.bar_chart_rounded, text: _levelLabel),
+              _InfoChip(
+                icon: Icons.flag_rounded,
+                text: widget.program.level.name,
+              ),
+              _InfoChip(
+                icon: Icons.bar_chart_rounded,
+                text: widget.program.level.name,
+              ),
               _InfoChip(
                 icon: Icons.calendar_today_rounded,
                 text: '${widget.program.daysPerWeek} روز در هفته',
