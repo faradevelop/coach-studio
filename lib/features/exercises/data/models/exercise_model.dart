@@ -1,11 +1,14 @@
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
+import 'package:coach_studio/features/exercises/domain/enums/difficulty.dart';
+import 'package:coach_studio/features/exercises/domain/enums/equipment.dart';
+import 'package:coach_studio/features/exercises/domain/enums/target_muscle.dart';
 
 class ExerciseModel {
   final String id;
   final String name;
-  final String targetMuscle;
-  final String difficulty;
-  final String equipment;
+  final TargetMuscle targetMuscle;
+  final Difficulty difficulty;
+  final Equipment equipment;
   final String? imageUrl;
   final String? videoUrl;
   final String? description;
@@ -33,9 +36,9 @@ class ExerciseModel {
 
   ExerciseModel copyWith({
     String? name,
-    String? targetMuscle,
-    String? difficulty,
-    String? equipment,
+    TargetMuscle? targetMuscle,
+    Difficulty? difficulty,
+    Equipment? equipment,
     String? description,
     String? imageUrl,
     String? videoUrl,
@@ -101,9 +104,9 @@ class ExerciseModel {
     return ExerciseModel(
       id: json['id'] as String,
       name: json['name'] as String,
-      targetMuscle: json['targetMuscle'] as String,
-      difficulty: json['difficulty'] as String,
-      equipment: json['equipment'] as String,
+      targetMuscle: TargetMuscle.values.byName(json['targetMuscle'] as String),
+      difficulty: Difficulty.values.byName(json['difficulty'] as String),
+      equipment: Equipment.values.byName(json['equipment'] as String),
       imageUrl: json['imageUrl'] as String?,
       videoUrl: json['videoUrl'] as String?,
       description: json['description'] as String?,
@@ -122,9 +125,9 @@ class ExerciseModel {
   Map<String, dynamic> toRequestJson() {
     return {
       'name': name,
-      'targetMuscle': targetMuscle,
-      'difficulty': difficulty,
-      'equipment': equipment,
+      'targetMuscle': targetMuscle.name,
+      'difficulty': difficulty.name,
+      'equipment': equipment.name,
       'imageUrl': imageUrl,
       'videoUrl': videoUrl,
       'description': description,

@@ -1,9 +1,13 @@
+import 'package:coach_studio/features/exercises/domain/enums/difficulty.dart';
+import 'package:coach_studio/features/exercises/domain/enums/equipment.dart';
+import 'package:coach_studio/features/exercises/domain/enums/target_muscle.dart';
+
 class Exercise {
   final String id;
   final String name;
-  final String targetMuscle;
-  final String difficulty;
-  final String equipment;
+  final TargetMuscle targetMuscle;
+  final Difficulty difficulty;
+  final Equipment equipment;
   final String? imageUrl;
   final String? videoUrl;
   final String? description;
@@ -32,9 +36,9 @@ class Exercise {
   Exercise copyWith({
     String? id,
     String? name,
-    String? targetMuscle,
-    String? difficulty,
-    String? equipment,
+    TargetMuscle? targetMuscle,
+    Difficulty? difficulty,
+    Equipment? equipment,
     String? imageUrl,
     String? videoUrl,
     String? description,
