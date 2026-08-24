@@ -280,7 +280,7 @@ pw.Widget _buildHeader(
 
                 _headerStatCell(
                   'سطح برنامه',
-                  _levelLabel(program.level),
+                  program.level.label,
                   boldFont,
                   regularFont,
                   pw.BorderRadius.only(
@@ -290,7 +290,7 @@ pw.Widget _buildHeader(
                 ),
                 _headerStatCell(
                   'هدف برنامه',
-                  _goalLabel(program.goal),
+                  program.goal.label,
                   boldFont,
                   regularFont,
                   pw.BorderRadius.zero,
@@ -1121,20 +1121,6 @@ pw.Widget _buildFooter(
     ),
   );
 }
-
-String _goalLabel(ProgramGoal goal) => switch (goal) {
-  ProgramGoal.hypertrophy => 'عضله سازی',
-  ProgramGoal.strength => 'قدرتی',
-  ProgramGoal.fatLoss => 'چربی سوزی',
-  ProgramGoal.endurance => 'استقامتی',
-  ProgramGoal.rehabilitation => 'توانبخشی',
-};
-
-String _levelLabel(ProgramLevel level) => switch (level) {
-  ProgramLevel.beginner => 'مبتدی تا متوسط',
-  ProgramLevel.intermediate => 'متوسط',
-  ProgramLevel.advanced => 'پیشرفته',
-};
 
 String _convertToPersianDate(DateTime date) {
   try {
