@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:coach_studio/core/constants/app_options.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
@@ -8,6 +7,9 @@ import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_dropdown.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
+import 'package:coach_studio/features/exercises/domain/enums/difficulty.dart';
+import 'package:coach_studio/features/exercises/domain/enums/equipment.dart';
+import 'package:coach_studio/features/exercises/domain/enums/target_muscle.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -32,9 +34,9 @@ class _ExerciseFormState extends State<ExerciseForm> {
 
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
-  String? _selectedMuscle;
-  String? _selectedDifficulty;
-  String? _selectedEquipment;
+  TargetMuscle? _selectedMuscle;
+  Difficulty? _selectedDifficulty;
+  Equipment? _selectedEquipment;
 
   @override
   void initState() {
@@ -66,9 +68,9 @@ class _ExerciseFormState extends State<ExerciseForm> {
     final exercise = Exercise(
       id: oldExercise?.id ?? '',
       name: _nameController.text.trim(),
-      targetMuscle: _selectedMuscle ?? '',
-      difficulty: _selectedDifficulty ?? '',
-      equipment: _selectedEquipment ?? '',
+      targetMuscle: _selectedMuscle ?? TargetMuscle.values.first,
+      difficulty: _selectedDifficulty ?? Difficulty.values.first,
+      equipment: _selectedEquipment ?? Equipment.values.first,
       imageUrl: oldExercise?.imageUrl ?? '',
       videoUrl: oldExercise?.videoUrl ?? '',
       description: _descriptionController.text.trim(),
@@ -172,31 +174,31 @@ class _ExerciseFormState extends State<ExerciseForm> {
                                     : null,
                               ),
                               const SizedBox(height: 20),
-                              AppDropdown<String>(
+                              AppDropdown<TargetMuscle>(
                                 label: 'عضله هدف',
                                 value: _selectedMuscle,
-                                items: AppOptions.muscles,
-                                itemLabel: (item) => item,
+                                items: TargetMuscle.values,
+                                itemLabel: (item) => item.label,
                                 onChanged: (value) {
                                   setState(() => _selectedMuscle = value);
                                 },
                               ),
                               const SizedBox(height: 20),
-                              AppDropdown<String>(
+                              AppDropdown<Difficulty>(
                                 label: 'سطح',
                                 value: _selectedDifficulty,
-                                items: AppOptions.difficulties,
-                                itemLabel: (item) => item,
+                                items: Difficulty.values,
+                                itemLabel: (item) => item.label,
                                 onChanged: (value) {
                                   setState(() => _selectedDifficulty = value);
                                 },
                               ),
                               const SizedBox(height: 20),
-                              AppDropdown<String>(
+                              AppDropdown<Equipment>(
                                 label: 'وسیله',
                                 value: _selectedEquipment,
-                                items: AppOptions.equipments,
-                                itemLabel: (item) => item,
+                                items: Equipment.values,
+                                itemLabel: (item) => item.label,
                                 onChanged: (value) {
                                   setState(() => _selectedEquipment = value);
                                 },

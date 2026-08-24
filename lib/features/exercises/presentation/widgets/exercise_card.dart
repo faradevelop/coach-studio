@@ -79,7 +79,7 @@ class ExerciseCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            exercise.targetMuscle,
+                            exercise.targetMuscle.label,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTextStyles.bodySmall.copyWith(
@@ -110,7 +110,7 @@ class ExerciseCard extends StatelessWidget {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                exercise.difficulty,
+                                exercise.difficulty.label,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: AppTextStyles.bodySmall,

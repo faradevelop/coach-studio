@@ -59,11 +59,11 @@ class _AddProgramExerciseItemPageState
   List<Exercise> _filterExercises(List<Exercise> exercises) {
     if (_query.trim().isEmpty) return exercises;
 
-    final query = _query.toLowerCase();
+    final query = _query.trim().toLowerCase();
     return exercises.where((exercise) {
-      return exercise.name.toLowerCase().contains(query) ||
-          exercise.targetMuscle.toLowerCase().contains(query) ||
-          exercise.equipment.toLowerCase().contains(query);
+      return exercise.name.contains(query) ||
+          exercise.targetMuscle.label.contains(query) ||
+          exercise.equipment.label.contains(query);
     }).toList();
   }
 
