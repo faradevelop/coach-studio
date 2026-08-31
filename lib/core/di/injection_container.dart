@@ -1,5 +1,7 @@
 import 'package:coach_studio/app/routing/app_router.dart';
 import 'package:coach_studio/core/constants/api_config.dart';
+import 'package:coach_studio/core/logger/app_logger.dart';
+import 'package:coach_studio/core/logger/app_logger_impl.dart';
 import 'package:coach_studio/core/network/api_client.dart';
 import 'package:coach_studio/core/notifications/data/floating_snackbar_notification.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
@@ -27,10 +29,14 @@ final sl = GetIt.instance;
 Future<void> initDependencies() async {
   // External / Core
 
+  // Logger must be registered first — used by other dependencies
+  sl.registerLazySingleton<AppLogger>(() => AppLoggerImpl());
+
   sl.registerLazySingleton<TokenStorage>(() => TokenStorage());
 
   sl.registerLazySingleton<ApiClient>(
-    () => ApiClient(baseUrl: ApiConfig.baseUrl, tokenStorage: sl()),
+    () =>
+        ApiClient(baseUrl: ApiConfig.baseUrl, tokenStorage: sl(), logger: sl()),
   );
 
   // Notification
@@ -42,37 +48,37 @@ Future<void> initDependencies() async {
   // Data sources
 
   sl.registerLazySingleton<AuthApiDatasource>(
-    () => AuthApiDatasource(client: sl()),
+    () => AuthApiDatasource(client: sl(), logger: sl()),
   );
 
   sl.registerLazySingleton<ExerciseApiDatasource>(
-    () => ExerciseApiDatasource(client: sl()),
+    () => ExerciseApiDatasource(client: sl(), logger: sl()),
   );
 
   sl.registerLazySingleton<WorkoutProgramApiDatasource>(
-    () => WorkoutProgramApiDatasource(client: sl()),
+    () => WorkoutProgramApiDatasource(client: sl(), logger: sl()),
   );
 
   sl.registerLazySingleton<ProgramExerciseApiDatasource>(
-    () => ProgramExerciseApiDatasource(client: sl()),
+    () => ProgramExerciseApiDatasource(client: sl(), logger: sl()),
   );
 
   // Repository
 
   sl.registerLazySingleton<AuthRepository>(
-    () => AuthApiRepositoryImpl(datasource: sl()),
+    () => AuthApiRepositoryImpl(datasource: sl(), logger: sl()),
   );
 
   sl.registerLazySingleton<ExerciseRepository>(
-    () => ExerciseApiRepositoryImpl(datasource: sl()),
+    () => ExerciseApiRepositoryImpl(datasource: sl(), logger: sl()),
   );
 
   sl.registerLazySingleton<WorkoutProgramRepository>(
-    () => WorkoutProgramApiRepositoryImpl(datasource: sl()),
+    () => WorkoutProgramApiRepositoryImpl(datasource: sl(), logger: sl()),
   );
 
   sl.registerLazySingleton<ProgramExerciseRepository>(
-    () => ProgramExerciseApiRepositoryImpl(datasource: sl()),
+    () => ProgramExerciseApiRepositoryImpl(datasource: sl(), logger: sl()),
   );
 
   // Bloc / Cubit
@@ -83,14 +89,18 @@ Future<void> initDependencies() async {
   // the same instance across navigation, and so AppRouter's `redirect` can
   // read AuthCubit's state directly via `sl<AuthCubit>()`.
   sl.registerLazySingleton(
-    () => AuthCubit(repository: sl(), tokenStorage: sl()),
+    () => AuthCubit(repository: sl(), tokenStorage: sl(), logger: sl()),
   );
-  sl.registerLazySingleton(() => ExerciseCubit(repository: sl()));
-  sl.registerLazySingleton(() => WorkoutProgramCubit(repository: sl()));
+  sl.registerLazySingleton(() => ExerciseCubit(repository: sl(), logger: sl()));
+  sl.registerLazySingleton(
+    () => WorkoutProgramCubit(repository: sl(), logger: sl()),
+  );
 
   // ProgramExerciseCubit remains a Factory: a new instance per Program Detail
   // flow, disposed on exit — no cross-tab persistence required.
-  sl.registerFactory(() => ProgramExerciseCubit(repository: sl()));
+  sl.registerFactory(
+    () => ProgramExerciseCubit(repository: sl(), logger: sl()),
+  );
 
   // Wire the network layer to the auth layer: any 401 response forces the
   // app back to the unauthenticated state (see ApiClient.onUnauthorized

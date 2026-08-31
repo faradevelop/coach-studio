@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:coach_studio/core/error/app_exception.dart';
+import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
 import 'package:coach_studio/features/workout_programs/domain/repositories/program_exercise_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,14 +10,23 @@ import 'program_exercise_state.dart';
 
 class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
   final ProgramExerciseRepository repository;
+  final AppLogger _logger;
 
   StreamSubscription? _subscription;
   String? _workoutId;
 
-  ProgramExerciseCubit({required this.repository})
-    : super(const ProgramExerciseInitial());
+  ProgramExerciseCubit({required this.repository, AppLogger? logger})
+    : _logger = logger ?? _createDefaultLogger(),
+      super(const ProgramExerciseInitial());
+
+  static AppLogger _createDefaultLogger() {
+    throw StateError('AppLogger must be provided to ProgramExerciseCubit');
+  }
 
   void loadExercises(String workoutId) {
+    _logger.debug(
+      'ProgramExerciseCubit: loading exercises for program $workoutId',
+    );
     _workoutId = workoutId;
 
     emit(const ProgramExerciseLoading());
@@ -26,6 +36,9 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
     _subscription = repository.watchProgramExercises(workoutId).listen((
       exercises,
     ) {
+      _logger.info(
+        'ProgramExerciseCubit: exercises loaded (${exercises.length} items)',
+      );
       emit(ProgramExerciseLoaded(exercises: exercises));
     }, onError: _handleError);
   }
@@ -41,9 +54,13 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
   }
 
   Future<bool> addProgramExercise(ProgramExercise exercise) async {
+    _logger.info('ProgramExerciseCubit: adding program exercise');
     final current = state;
 
     if (current is! ProgramExerciseLoaded) {
+      _logger.warning(
+        'ProgramExerciseCubit: cannot add exercise — not in loaded state',
+      );
       return false;
     }
 
@@ -54,13 +71,22 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
       final success = await repository.addProgramExercise(exercise);
 
       if (!success) {
+        _logger.error('ProgramExerciseCubit: failed to add program exercise');
         _restoreState(current);
         return false;
       }
     } on AppException catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: error adding exercise',
+        error: e.message,
+      );
       emit(ProgramExerciseError(e.message));
       return false;
     } catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: unexpected error adding exercise',
+        error: e,
+      );
       emit(ProgramExerciseError(e.toString()));
       return false;
     }
@@ -68,9 +94,17 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
     // Refresh
     try {
       await _refreshExercises();
+      _logger.info('ProgramExerciseCubit: program exercise added successfully');
     } on AppException catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: refresh failed after adding exercise',
+        error: e.message,
+      );
       emit(ProgramExerciseError(e.message));
     } catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: refresh failed after adding exercise',
+      );
       emit(ProgramExerciseError('Refresh failed!'));
     }
 
@@ -78,9 +112,15 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
   }
 
   Future<bool> updateProgramExercise(ProgramExercise exercise) async {
+    _logger.info(
+      'ProgramExerciseCubit: updating program exercise ${exercise.id}',
+    );
     final current = state;
 
     if (current is! ProgramExerciseLoaded) {
+      _logger.warning(
+        'ProgramExerciseCubit: cannot update exercise — not in loaded state',
+      );
       return false;
     }
 
@@ -91,13 +131,24 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
       final success = await repository.updateProgramExercise(exercise);
 
       if (!success) {
+        _logger.error(
+          'ProgramExerciseCubit: failed to update program exercise',
+        );
         _restoreState(current);
         return false;
       }
     } on AppException catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: error updating exercise',
+        error: e.message,
+      );
       emit(ProgramExerciseError(e.message));
       return false;
     } catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: unexpected error updating exercise',
+        error: e,
+      );
       emit(ProgramExerciseError(e.toString()));
       return false;
     }
@@ -105,9 +156,19 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
     // Refresh
     try {
       await _refreshExercises();
+      _logger.info(
+        'ProgramExerciseCubit: program exercise updated successfully',
+      );
     } on AppException catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: refresh failed after updating exercise',
+        error: e.message,
+      );
       emit(ProgramExerciseError(e.message));
     } catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: refresh failed after updating exercise',
+      );
       emit(ProgramExerciseError('Refresh failed!'));
     }
 
@@ -115,9 +176,13 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
   }
 
   Future<bool> deleteExercise(String id) async {
+    _logger.info('ProgramExerciseCubit: deleting program exercise $id');
     final current = state;
 
     if (current is! ProgramExerciseLoaded) {
+      _logger.warning(
+        'ProgramExerciseCubit: cannot delete exercise — not in loaded state',
+      );
       return false;
     }
 
@@ -128,13 +193,24 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
       final success = await repository.deleteProgramExercise(id);
 
       if (!success) {
+        _logger.error(
+          'ProgramExerciseCubit: failed to delete program exercise',
+        );
         _restoreState(current);
         return false;
       }
     } on AppException catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: error deleting exercise',
+        error: e.message,
+      );
       emit(ProgramExerciseError(e.message));
       return false;
     } catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: unexpected error deleting exercise',
+        error: e,
+      );
       emit(ProgramExerciseError(e.toString()));
       return false;
     }
@@ -142,9 +218,19 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
     // Refresh
     try {
       await _refreshExercises();
+      _logger.info(
+        'ProgramExerciseCubit: program exercise deleted successfully',
+      );
     } on AppException catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: refresh failed after deleting exercise',
+        error: e.message,
+      );
       emit(ProgramExerciseError(e.message));
     } catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: refresh failed after deleting exercise',
+      );
       emit(ProgramExerciseError('Refresh failed!'));
     }
 
@@ -155,9 +241,15 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
     String exerciseId,
     int targetOrder,
   ) async {
+    _logger.debug(
+      'ProgramExerciseCubit: reordering exercise $exerciseId to order $targetOrder',
+    );
     final current = state;
 
     if (current is! ProgramExerciseLoaded || current.isSubmitting) {
+      _logger.warning(
+        'ProgramExerciseCubit: cannot reorder exercise — invalid state',
+      );
       return false;
     }
 
@@ -171,13 +263,24 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
       );
 
       if (!success) {
+        _logger.error(
+          'ProgramExerciseCubit: failed to reorder program exercise',
+        );
         _restoreState(current);
         return false;
       }
     } on AppException catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: error reordering exercise',
+        error: e.message,
+      );
       emit(ProgramExerciseError(e.message));
       return false;
     } catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: unexpected error reordering exercise',
+        error: e,
+      );
       emit(ProgramExerciseError(e.toString()));
       return false;
     }
@@ -185,9 +288,19 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
     // Refresh
     try {
       await _refreshExercises();
+      _logger.debug(
+        'ProgramExerciseCubit: program exercise reordered successfully',
+      );
     } on AppException catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: refresh failed after reordering exercise',
+        error: e.message,
+      );
       emit(ProgramExerciseError(e.message));
     } catch (e) {
+      _logger.error(
+        'ProgramExerciseCubit: refresh failed after reordering exercise',
+      );
       emit(ProgramExerciseError('Refresh failed!'));
     }
 
@@ -200,10 +313,18 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
 
   void _handleError(Object error) {
     if (error is AppException) {
+      _logger.error(
+        'ProgramExerciseCubit: error in watch stream',
+        error: error.message,
+      );
       emit(ProgramExerciseError(error.message));
       return;
     }
 
+    _logger.error(
+      'ProgramExerciseCubit: unexpected error in watch stream',
+      error: error,
+    );
     emit(ProgramExerciseError(error.toString()));
   }
 

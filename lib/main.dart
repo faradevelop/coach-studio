@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:coach_studio/app/routing/app_router.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/core/storage/token_storage.dart';
 import 'package:coach_studio/core/theme/app_theme.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
@@ -14,8 +16,19 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Setup global error handling for Flutter errors and platform errors
+  _setupGlobalErrorHandling();
+
+  // Initialize dependencies and logger
   await initDependencies();
+  final logger = sl<AppLogger>();
+
+  logger.info('Application starting');
+  logger.debug('Initializing dependencies');
+
+  // Initialize token storage
   await sl<TokenStorage>().init();
+  logger.debug('Token storage initialized');
 
   // Kick off session restoration immediately. AppRouter's `redirect` reads
   // AuthCubit's state directly via get_it (independent of the widget
@@ -23,7 +36,29 @@ void main() async {
   // deferred to a (potentially lazy) BlocProvider.
   unawaited(sl<AuthCubit>().restoreSession());
 
+  logger.info('Application initialized');
+
   runApp(const MyApp());
+}
+
+/// Setup global error handling for Flutter and async errors.
+void _setupGlobalErrorHandling() {
+  // Capture Flutter framework errors
+  FlutterError.onError = (FlutterErrorDetails details) {
+    final logger = sl<AppLogger>();
+    logger.error(
+      'Flutter Error',
+      error: details.exception,
+      stackTrace: details.stack,
+    );
+  };
+
+  // Capture unhandled async errors
+  PlatformDispatcher.instance.onError = (error, stack) {
+    final logger = sl<AppLogger>();
+    logger.error('Platform Error', error: error, stackTrace: stack);
+    return true;
+  };
 }
 
 class MyApp extends StatelessWidget {
