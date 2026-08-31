@@ -874,14 +874,7 @@ pw.Widget _buildSuperSetRow(
 
                 // +
                 pw.SizedBox(height: 3),
-                pw.Text(
-                  '+',
-                  style: pw.TextStyle(
-                    font: boldFont,
-                    fontSize: 7,
-                    color: _darkGrey,
-                  ),
-                ),
+                pw.Text('+', style: pw.TextStyle(font: boldFont, fontSize: 7)),
                 pw.SizedBox(height: 3),
 
                 // Second exercise

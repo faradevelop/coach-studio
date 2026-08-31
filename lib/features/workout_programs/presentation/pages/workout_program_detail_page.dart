@@ -266,11 +266,11 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
             children: [
               _InfoChip(
                 icon: Icons.flag_rounded,
-                text: widget.program.level.name,
+                text: widget.program.goal.label,
               ),
               _InfoChip(
                 icon: Icons.bar_chart_rounded,
-                text: widget.program.level.name,
+                text: widget.program.level.label,
               ),
               _InfoChip(
                 icon: Icons.calendar_today_rounded,
