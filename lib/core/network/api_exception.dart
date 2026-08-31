@@ -12,6 +12,10 @@ class ApiException implements Exception {
 
   static AppException mapApiException(ApiException exception) {
     switch (exception.statusCode) {
+      case 401:
+        return UnauthenticatedException(exception.message);
+      case 403:
+        return ForbiddenException(exception.message);
       case 404:
         return NotFoundException(exception.message);
       case 422:
