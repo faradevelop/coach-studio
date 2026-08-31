@@ -18,8 +18,6 @@ import 'package:coach_studio/features/workout_programs/domain/entities/program_e
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_draft.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_details.dart';
-import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
-import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';

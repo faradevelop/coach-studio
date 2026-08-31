@@ -206,7 +206,7 @@ class _EmptyProgramsState extends StatelessWidget {
                     ),
                   ),
                   child: const Icon(
-                    Icons.fitness_center_rounded,
+                    Icons.view_list_rounded,
                     size: 36,
                     color: AppColors.orange,
                   ),

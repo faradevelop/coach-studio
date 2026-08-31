@@ -25,25 +25,6 @@ class ScaffoldWithBottomNav extends StatelessWidget {
           ),
         ),
 
-        // Soft orange glow (top-start)
-        // PositionedDirectional(
-        //   top: -80,
-        //   start: -50,
-        //   child: Container(
-        //     width: 220,
-        //     height: 220,
-        //     decoration: BoxDecoration(
-        //       shape: BoxShape.circle,
-        //       boxShadow: [
-        //         BoxShadow(
-        //           color: AppColors.orangeGlow.withValues(alpha: 0.5),
-        //           blurRadius: 140,
-        //           spreadRadius: 40,
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
         Scaffold(
           backgroundColor: Colors.transparent,
           body: navigationShell,
@@ -52,17 +33,19 @@ class ScaffoldWithBottomNav extends StatelessWidget {
 
         // Floating Glass Navbar
         PositionedDirectional(
-          start: 0,
-          end: 0,
-          bottom: 0,
-          child: GlassBottomNav(
-            currentIndex: navigationShell.currentIndex,
-            onTap: (index) {
-              navigationShell.goBranch(
-                index,
-                initialLocation: index == navigationShell.currentIndex,
-              );
-            },
+          start: 16,
+          end: 16,
+          bottom: 16,
+          child: Center(
+            child: GlassBottomNav(
+              currentIndex: navigationShell.currentIndex,
+              onTap: (index) {
+                navigationShell.goBranch(
+                  index,
+                  initialLocation: index == navigationShell.currentIndex,
+                );
+              },
+            ),
           ),
         ),
         const SizedBox(height: 6),
@@ -116,11 +99,13 @@ class GlassBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(100)),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: Container(
           height: height,
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(100)),
             border: Border(
               top: BorderSide(color: AppColors.glassBorder, width: 1.2),
             ),

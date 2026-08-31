@@ -49,26 +49,36 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14),
-        child: Column(
-          children: [
-            CustomAppBar(
-              onPressed: () {
-                context.pushNamed(AppRouteNames.createExercise);
-              },
-              title: 'تمرین‌ها',
-            ),
-            SizedBox(height: 28),
-            CustomSearchBar(
-              hint: 'جستجو...',
-              controller: _searchController,
-              onChanged: (String value) {
-                setState(() => _query = value);
-              },
-            ),
-            Expanded(
-              child: BlocBuilder<ExerciseCubit, ExerciseState>(
-                builder: (context, state) {
-                  return switch (state) {
+        child: BlocBuilder<ExerciseCubit, ExerciseState>(
+          builder: (context, state) {
+            if (state is ExerciseLoaded && state.exercises.isEmpty) {
+              if (_query.isNotEmpty || _searchController.text.isNotEmpty) {
+                _query = '';
+                _searchController.clear();
+              }
+            }
+
+            return Column(
+              children: [
+                CustomAppBar(
+                  onPressed: () {
+                    context.pushNamed(AppRouteNames.createExercise);
+                  },
+                  title: 'تمرین‌ها',
+                ),
+                const SizedBox(height: 28),
+                if (state is ExerciseLoaded && state.exercises.isNotEmpty) ...[
+                  CustomSearchBar(
+                    hint: 'جستجو...',
+                    controller: _searchController,
+                    onChanged: (String value) {
+                      setState(() => _query = value);
+                    },
+                  ),
+                ],
+
+                Expanded(
+                  child: switch (state) {
                     ExerciseLoading() => Center(
                       child: LoadingAnimationWidget.hexagonDots(
                         color: AppColors.orange,
@@ -96,6 +106,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                                     ),
                                   );
                                 }
+
                                 return ListView.builder(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 12,
@@ -103,9 +114,11 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                                   itemCount: filtered.length + 1,
                                   itemBuilder: (context, index) {
                                     if (index == filtered.length) {
-                                      return SizedBox(height: 60);
+                                      return const SizedBox(height: 60);
                                     }
+
                                     final exercise = filtered[index];
+
                                     return ExerciseCard(
                                       exercise: exercise,
                                       onEdit: () {
@@ -117,11 +130,9 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                                           extra: exercise,
                                         );
                                       },
-
                                       onDelete: () async {
                                         final result = await showDialog<bool>(
                                           context: context,
-
                                           builder: (_) => DeleteDialog(
                                             itemName: exercise.name,
                                             title: 'تمرین',
@@ -151,14 +162,14 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                               },
                             ),
 
-                    ExerciseError(:final message) => AppErrorState(),
+                    ExerciseError(:final message) => const AppErrorState(),
 
                     ExerciseInitial() => const SizedBox(),
-                  };
-                },
-              ),
-            ),
-          ],
+                  },
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
