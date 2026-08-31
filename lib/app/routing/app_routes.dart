@@ -1,6 +1,18 @@
 abstract final class AppRoutes {
   AppRoutes._();
 
+  // Authentication
+
+  static const splash = '/splash';
+
+  static const login = '/login';
+
+  static const forgotPassword = '/forgot-password';
+
+  static const resetPassword = '/reset-password';
+
+  static const settings = '/settings';
+
   // Workout Programs
 
   static const workoutProgramsList = '/programs';
