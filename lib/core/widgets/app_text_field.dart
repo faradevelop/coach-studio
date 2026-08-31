@@ -7,6 +7,7 @@ class AppTextField extends StatelessWidget {
   final String? hint;
   final String? Function(String?)? validator;
   final int maxLines;
+  final bool obscureText;
 
   const AppTextField({
     super.key,
@@ -15,13 +16,15 @@ class AppTextField extends StatelessWidget {
     this.hint,
     this.validator,
     this.maxLines = 1,
+    this.obscureText = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      maxLines: maxLines,
+      maxLines: obscureText ? 1 : maxLines,
+      obscureText: obscureText,
       style: const TextStyle(
         color: AppColors.charcoal,
         fontSize: 15,
