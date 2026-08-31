@@ -1,22 +1,44 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:coach_studio/core/network/api_exception.dart';
+import 'package:coach_studio/core/storage/token_storage.dart';
 
 /// Thin HTTP wrapper responsible for:
-/// - sending requests with JSON headers
+/// - sending requests with JSON headers (+ Authorization: Bearer <token>
+///   when a session is active)
 /// - unwrapping the backend's standard envelope: { success, message, data|errors }
 /// - throwing ApiException on failure so callers can handle it uniformly
+/// - reporting 401 responses via [onUnauthorized] so the app can clear the
+///   local session and redirect to login
 class ApiClient {
   final String baseUrl;
   final http.Client _client;
+  final TokenStorage tokenStorage;
 
-  ApiClient({required this.baseUrl, http.Client? client})
-    : _client = client ?? http.Client();
+  /// Invoked whenever ANY request comes back with 401 Unauthorized. Wired
+  /// up in `injection_container.dart` once `AuthCubit` exists, to avoid a
+  /// circular dependency between the network layer and the auth feature.
+  void Function()? onUnauthorized;
 
-  static const Map<String, String> _headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
+  ApiClient({
+    required this.baseUrl,
+    required this.tokenStorage,
+    http.Client? client,
+  }) : _client = client ?? http.Client();
+
+  Map<String, String> get _headers {
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    final token = tokenStorage.token;
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+
+    return headers;
+  }
 
   Future<dynamic> get(String path) async {
     final response = await _client.get(
@@ -68,6 +90,10 @@ class ApiClient {
 
     if (response.statusCode >= 200 && response.statusCode < 300 && success) {
       return decoded['data'];
+    }
+
+    if (response.statusCode == 401) {
+      onUnauthorized?.call();
     }
 
     throw ApiException(
