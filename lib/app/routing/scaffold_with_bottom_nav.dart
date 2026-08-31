@@ -102,6 +102,15 @@ class GlassBottomNav extends StatelessWidget {
         color: AppColors.orange,
       ),
     ),
+    _NavItemData(
+      name: 'تنظیمات',
+      icon: FaIcon(FontAwesomeIcons.gear, size: 20, color: AppColors.charcoal),
+      activeIcon: FaIcon(
+        FontAwesomeIcons.gear,
+        size: 22,
+        color: AppColors.orange,
+      ),
+    ),
   ];
 
   @override

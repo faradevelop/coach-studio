@@ -1,9 +1,17 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/app_routes.dart';
+import 'package:coach_studio/app/routing/go_router_refresh_stream.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
 import 'package:coach_studio/app/routing/route_args/program_exercise_selection_args.dart';
 import 'package:coach_studio/app/routing/scaffold_with_bottom_nav.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
+import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
+import 'package:coach_studio/features/authentication/presentation/pages/forgot_password_page.dart';
+import 'package:coach_studio/features/authentication/presentation/pages/login_page.dart';
+import 'package:coach_studio/features/authentication/presentation/pages/reset_password_page.dart';
+import 'package:coach_studio/features/authentication/presentation/pages/settings_page.dart';
+import 'package:coach_studio/features/authentication/presentation/pages/splash_page.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/add_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/edit_exercise_page.dart';
@@ -35,11 +43,83 @@ class AppRouter {
   static final GlobalKey<NavigatorState> _programBranchNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'programBranch');
 
+  static final GlobalKey<NavigatorState> _settingsBranchNavigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'settingsBranch');
+
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: AppRoutes.workoutProgramsList,
+    initialLocation: AppRoutes.splash,
+
+    // Re-evaluates `redirect` whenever AuthCubit emits a new state (login,
+    // logout, session restore finishing, or a forced sign-out from a 401).
+    refreshListenable: GoRouterRefreshStream(sl<AuthCubit>().stream),
+
+    redirect: (context, state) {
+      final authState = sl<AuthCubit>().state;
+      final location = state.matchedLocation;
+
+      final isSplash = location == AppRoutes.splash;
+      final isAuthRoute =
+          location == AppRoutes.login ||
+          location == AppRoutes.forgotPassword ||
+          location == AppRoutes.resetPassword;
+
+      // Still restoring the session on startup — keep the user on the
+      // splash screen until we know whether they're authenticated.
+      if (authState is AuthInitial || authState is AuthLoading) {
+        return isSplash ? null : AppRoutes.splash;
+      }
+
+      final isAuthenticated = authState is AuthAuthenticated;
+
+      if (!isAuthenticated) {
+        return isAuthRoute ? null : AppRoutes.login;
+      }
+
+      // Authenticated users shouldn't sit on the splash/auth screens.
+      if (isAuthRoute || isSplash) {
+        return AppRoutes.workoutProgramsList;
+      }
+
+      return null;
+    },
 
     routes: [
+      // -----------------------------------------------------------------
+      // Authentication — outside the bottom-nav shell.
+      // -----------------------------------------------------------------
+      GoRoute(
+        path: AppRoutes.splash,
+        name: AppRouteNames.splash,
+        parentNavigatorKey: navigatorKey,
+        builder: (_, _) => const SplashPage(),
+      ),
+
+      GoRoute(
+        path: AppRoutes.login,
+        name: AppRouteNames.login,
+        parentNavigatorKey: navigatorKey,
+        builder: (_, _) => const LoginPage(),
+      ),
+
+      GoRoute(
+        path: AppRoutes.forgotPassword,
+        name: AppRouteNames.forgotPassword,
+        parentNavigatorKey: navigatorKey,
+        builder: (_, _) => const ForgotPasswordPage(),
+      ),
+
+      GoRoute(
+        path: AppRoutes.resetPassword,
+        name: AppRouteNames.resetPassword,
+        parentNavigatorKey: navigatorKey,
+        builder: (_, state) {
+          final email = state.uri.queryParameters['email'];
+          final token = state.uri.queryParameters['token'];
+          return ResetPasswordPage(initialEmail: email, initialToken: token);
+        },
+      ),
+
       // -----------------------------------------------------------------
       // Main tabs
       // -----------------------------------------------------------------
@@ -72,6 +152,18 @@ class AppRouter {
                 // Note: There are no child routes defined here.
                 // Create/Edit routes are defined as top-level routes with parentNavigatorKey
                 // so they are pushed onto the root Navigator and do not cover the BottomNav.
+              ),
+            ],
+          ),
+
+          // ---------------- Settings Branch ----------------
+          StatefulShellBranch(
+            navigatorKey: _settingsBranchNavigatorKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.settings,
+                name: AppRouteNames.settings,
+                builder: (_, _) => const SettingsPage(),
               ),
             ],
           ),
