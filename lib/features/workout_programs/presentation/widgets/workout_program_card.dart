@@ -7,7 +7,6 @@ import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutProgramCard extends StatelessWidget {
@@ -153,7 +152,7 @@ class WorkoutProgramCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: _InfoChip(
-                            icon: CupertinoIcons.flag_fill,
+                            icon: Icons.flag_rounded,
                             text: _goalLabel,
                           ),
                         ),
@@ -193,8 +192,9 @@ class _InfoChip extends StatelessWidget {
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 14, color: AppColors.teal),
+          Icon(icon, size: 13, color: AppColors.teal),
           const SizedBox(width: 5),
           Flexible(
             child: Text(

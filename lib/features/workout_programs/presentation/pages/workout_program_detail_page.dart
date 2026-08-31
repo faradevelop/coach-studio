@@ -273,7 +273,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
                 text: widget.program.level.label,
               ),
               _InfoChip(
-                icon: Icons.calendar_today_rounded,
+                icon: Icons.calendar_month_rounded,
                 text: '${widget.program.daysPerWeek} روز در هفته',
               ),
             ],
@@ -868,6 +868,7 @@ class _InfoChip extends StatelessWidget {
               color: AppColors.charcoal,
             ),
           ),
+          const SizedBox(width: 3),
         ],
       ),
     );

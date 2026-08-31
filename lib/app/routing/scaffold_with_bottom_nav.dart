@@ -33,8 +33,8 @@ class ScaffoldWithBottomNav extends StatelessWidget {
 
         // Floating Glass Navbar
         PositionedDirectional(
-          start: 16,
-          end: 16,
+          start: 12,
+          end: 12,
           bottom: 16,
           child: Center(
             child: GlassBottomNav(

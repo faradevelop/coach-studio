@@ -87,7 +87,6 @@ class SettingsPage extends StatelessWidget {
                           icon: Icons.logout_rounded,
                           title: 'خروج از حساب',
                           iconColor: AppColors.error,
-                          titleColor: AppColors.error,
                           onTap: () => _confirmLogout(context),
                         ),
                       ],
@@ -161,19 +160,22 @@ class _ProfileCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            user.username,
-                            style: AppTextStyles.titleMedium.copyWith(
-                              fontSize: 16,
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Text(
+                              user.username,
+                              style: AppTextStyles.titleMedium.copyWith(
+                                fontSize: 16,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 3),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
+                              horizontal: 14,
+                              vertical: 3,
                             ),
                             decoration: BoxDecoration(
                               color: AppColors.teal.withValues(alpha: 0.14),

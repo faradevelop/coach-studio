@@ -32,9 +32,9 @@ class _WorkoutProgramListView extends StatelessWidget {
 
   ({int crossAxisCount, double childAspectRatio}) _getGridLayout(double width) {
     if (width >= 1000) {
-      return (crossAxisCount: 5, childAspectRatio: 0.9);
+      return (crossAxisCount: 4, childAspectRatio: 0.5);
     } else if (width >= 800) {
-      return (crossAxisCount: 4, childAspectRatio: 0.9);
+      return (crossAxisCount: 3, childAspectRatio: 0.7);
     } else if (width >= 650) {
       return (crossAxisCount: 3, childAspectRatio: 0.85);
     } else if (width >= 550) {
