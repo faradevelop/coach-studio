@@ -27,6 +27,9 @@ dependencies:
   # ─────────────── Networking ───────────────
   http: ^1.2.2
 
+  # ─────────────── Storage ───────────────
+  shared_preferences: ^2.3.3
+
   # ─────────────── PDF & Printing ───────────────
   pdf: ^3.13.0
   printing: ^5.15.0
