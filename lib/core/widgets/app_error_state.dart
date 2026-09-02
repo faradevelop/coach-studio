@@ -5,14 +5,13 @@ import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class AppErrorState extends StatelessWidget {
   final String title;
   final String message;
   final String retryLabel;
   final VoidCallback? onRetry;
-  final IconData icon;
 
   const AppErrorState({
     super.key,
@@ -20,7 +19,6 @@ class AppErrorState extends StatelessWidget {
     this.message = 'لطفاً دوباره تلاش کنید',
     this.retryLabel = 'تلاش مجدد',
     this.onRetry,
-    this.icon = Iconsax.danger,
   });
 
   @override
@@ -82,7 +80,11 @@ class AppErrorState extends StatelessWidget {
                           ],
                         ),
 
-                        child: Icon(icon, size: 40, color: AppColors.orange),
+                        child: HugeIcon(
+                          icon: HugeIcons.strokeRoundedAlert02,
+                          size: 40,
+                          color: AppColors.orange,
+                        ),
                       ),
                     ),
 

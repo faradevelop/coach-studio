@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/widgets/app_dialog.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:flutter/material.dart';
@@ -40,9 +41,7 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
+    return AppDialog(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(28),
         child: BackdropFilter(

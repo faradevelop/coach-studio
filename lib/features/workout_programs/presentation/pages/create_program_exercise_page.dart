@@ -138,7 +138,7 @@ class _CreateProgramExerciseViewState
                                 label: 'سیستم تمرینی',
                                 value: _trainingSystem,
                                 items: TrainingSystem.values,
-                                itemLabel: (system) => system.name,
+                                itemLabel: (item) => item.label,
                                 onChanged: (value) {
                                   if (value == null) return;
                                   setState(() => _trainingSystem = value);

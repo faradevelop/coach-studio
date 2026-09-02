@@ -1,15 +1,15 @@
 import 'dart:ui';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/widgets/app_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class LogoutConfirmationDialog extends StatelessWidget {
   const LogoutConfirmationDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
+    return AppDialog(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30),
         child: BackdropFilter(
@@ -33,14 +33,15 @@ class LogoutConfirmationDialog extends StatelessWidget {
                     Container(
                       width: 42,
                       height: 42,
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: AppColors.error.withValues(alpha: 0.15),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.logout_rounded,
+                      child: HugeIcon(
+                        icon: HugeIcons.strokeRoundedLogoutCircle02,
+                        size: 20,
                         color: AppColors.error,
-                        size: 24,
                       ),
                     ),
                     const SizedBox(width: 8),

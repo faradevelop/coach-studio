@@ -10,6 +10,7 @@ import 'package:coach_studio/features/authentication/presentation/widgets/change
 import 'package:coach_studio/features/authentication/presentation/widgets/logout_confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -75,7 +76,11 @@ class SettingsPage extends StatelessWidget {
                         _ProfileCard(user: state.user),
                         const SizedBox(height: AppSpacing.lg),
                         _SettingsActionTile(
-                          icon: Icons.lock_outline_rounded,
+                          icon: HugeIcon(
+                            icon: HugeIcons.strokeRoundedLockSync01,
+                            size: 20,
+                            color: AppColors.charcoal,
+                          ),
                           title: 'تغییر رمز عبور',
                           onTap: () => showDialog<void>(
                             context: context,
@@ -84,9 +89,12 @@ class SettingsPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         _SettingsActionTile(
-                          icon: Icons.logout_rounded,
+                          icon: HugeIcon(
+                            icon: HugeIcons.strokeRoundedLogoutCircle02,
+                            size: 20,
+                            color: AppColors.charcoal,
+                          ),
                           title: 'خروج از حساب',
-                          iconColor: AppColors.error,
                           onTap: () => _confirmLogout(context),
                         ),
                       ],
@@ -199,13 +207,21 @@ class _ProfileCard extends StatelessWidget {
                 Divider(color: AppColors.charcoal.withValues(alpha: 0.08)),
                 const SizedBox(height: 12),
                 _ProfileInfoRow(
-                  icon: Icons.badge_outlined,
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedUserAccount,
+                    size: 18,
+                    color: AppColors.charcoal.withValues(alpha: 0.55),
+                  ),
                   label: 'نام کاربری',
                   value: user.username,
                 ),
                 const SizedBox(height: 10),
                 _ProfileInfoRow(
-                  icon: Icons.email_outlined,
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedMail01,
+                    size: 18,
+                    color: AppColors.charcoal.withValues(alpha: 0.55),
+                  ),
                   label: 'ایمیل',
                   value: user.email,
                 ),
@@ -219,7 +235,7 @@ class _ProfileCard extends StatelessWidget {
 }
 
 class _ProfileInfoRow extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
   final String label;
   final String value;
 
@@ -233,7 +249,7 @@ class _ProfileInfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 18, color: AppColors.charcoal.withValues(alpha: 0.55)),
+        icon,
         const SizedBox(width: 10),
         Text(
           label,
@@ -257,7 +273,7 @@ class _ProfileInfoRow extends StatelessWidget {
 }
 
 class _SettingsActionTile extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
   final String title;
   final VoidCallback onTap;
   final Color? iconColor;
@@ -289,7 +305,7 @@ class _SettingsActionTile extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(icon, size: 20, color: iconColor ?? AppColors.charcoal),
+                  icon,
                   const SizedBox(width: 14),
                   Expanded(
                     child: Text(

@@ -23,10 +23,11 @@ import 'package:coach_studio/features/workout_programs/presentation/cubit/progra
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/athlete_info_form_dialog.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:coach_studio/features/workout_programs/presentation/widgets/info_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:printing/printing.dart';
 import 'package:reorderables/reorderables.dart';
@@ -245,11 +246,12 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
               ),
               MiniButton(
                 color: AppColors.charcoalSoft.withValues(alpha: 0.18),
-                icon: Icon(
-                  Icons.edit_rounded,
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedEdit03,
                   size: 18,
                   color: AppColors.charcoal.withValues(alpha: 0.9),
                 ),
+
                 onPressed: () {
                   context.pushNamed(
                     AppRouteNames.createWorkoutProgram,
@@ -264,16 +266,31 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _InfoChip(
-                icon: Icons.flag_rounded,
+              InfoChip(
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedTarget02,
+                  size: 15,
+                  color: AppColors.teal,
+                  strokeWidth: 2,
+                ),
                 text: widget.program.goal.label,
               ),
-              _InfoChip(
-                icon: Icons.bar_chart_rounded,
+              InfoChip(
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedLowSignal,
+                  size: 15,
+                  color: AppColors.teal,
+                  strokeWidth: 2,
+                ),
                 text: widget.program.level.label,
               ),
-              _InfoChip(
-                icon: Icons.calendar_month_rounded,
+              InfoChip(
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedCalendar03,
+                  size: 15,
+                  color: AppColors.teal,
+                  strokeWidth: 2,
+                ),
                 text: '${widget.program.daysPerWeek} روز در هفته',
               ),
             ],
@@ -291,7 +308,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
         GestureDetector(
           onTap: _addExercise,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: AppColors.orange,
               borderRadius: BorderRadius.circular(12),
@@ -304,10 +321,11 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
                 ),
               ],
             ),
-            child: const Icon(
-              CupertinoIcons.add,
-              color: Colors.white,
-              size: 22,
+            child: HugeIcon(
+              icon: HugeIcons.strokeRoundedTaskAdd01,
+              size: 18,
+              color: AppColors.cream,
+              strokeWidth: 1.5,
             ),
           ),
         ),
@@ -580,19 +598,19 @@ class _ProgramExerciseCard extends StatelessWidget {
   Widget _buildHeader(BuildContext context, dynamic programExercise) {
     return Row(
       children: [
+        Text(
+          "${programExercise.order.toString()} )",
+          style: AppTextStyles.label.copyWith(fontSize: 14.5),
+        ),
+        const SizedBox(width: 8),
         Expanded(
           child: Text(
-            programExercise.order.toString(),
-            style: AppTextStyles.label.copyWith(fontSize: 14.5),
+            '${programExercise.sets} ست • ${programExercise.rest} استراحت',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.charcoal.withValues(alpha: 0.75),
+            ),
           ),
         ),
-        Text(
-          '${programExercise.sets} ست • ${programExercise.rest} استراحت',
-          style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.charcoal.withValues(alpha: 0.75),
-          ),
-        ),
-        const SizedBox(width: 12),
         _ExercisePopupMenu(program: program, details: details),
       ],
     );
@@ -629,10 +647,10 @@ class _ExercisePopupMenu extends StatelessWidget {
           child: Text('حذف', style: TextStyle(color: AppColors.error)),
         ),
       ],
-      child: const Icon(
-        Icons.more_horiz_rounded,
+      child: HugeIcon(
+        icon: HugeIcons.strokeRoundedMoreHorizontalCircle01,
         size: 20,
-        color: AppColors.charcoal,
+        color: AppColors.orange,
       ),
     );
   }
@@ -758,6 +776,7 @@ class _PdfButton extends StatelessWidget {
       child: Container(
         width: 42,
         height: 42,
+        alignment: Alignment.center,
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.35),
           borderRadius: BorderRadius.circular(50),
@@ -776,10 +795,11 @@ class _PdfButton extends StatelessWidget {
             ),
           ],
         ),
-        child: const Icon(
-          Icons.picture_as_pdf_rounded,
+        child: HugeIcon(
+          icon: HugeIcons.strokeRoundedPdf02,
           size: 22,
           color: AppColors.charcoal,
+          strokeWidth: 1.5,
         ),
       ),
     );
@@ -836,40 +856,6 @@ class _GlassCard extends StatelessWidget {
             child: child,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const _InfoChip({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.teal.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: AppColors.teal),
-          const SizedBox(width: 5),
-          Text(
-            text,
-            style: AppTextStyles.bodySmall.copyWith(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w500,
-              color: AppColors.charcoal,
-            ),
-          ),
-          const SizedBox(width: 3),
-        ],
       ),
     );
   }

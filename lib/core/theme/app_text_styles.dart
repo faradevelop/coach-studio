@@ -41,11 +41,11 @@ class AppTextStyles {
   );
 
   static TextStyle get subtitle => TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.w500,
-        color: AppColors.charcoal.withValues(alpha: 0.65),
-        height: 1.35,
-      );
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+    color: AppColors.charcoal.withValues(alpha: 0.65),
+    height: 1.35,
+  );
 
   // Labels / Buttons
   static const TextStyle label = TextStyle(
@@ -56,8 +56,9 @@ class AppTextStyles {
 
   static const TextStyle button = TextStyle(
     fontSize: 15,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w600,
     color: AppColors.onOrange,
     letterSpacing: 0.2,
+    height: 1.3,
   );
 }

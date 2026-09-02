@@ -3,7 +3,7 @@ import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class CustomAppBar extends StatelessWidget {
   final VoidCallback onPressed;
@@ -68,7 +68,13 @@ class CustomAppBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(18),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Icon(Iconsax.add, color: Colors.white, size: 30)],
+                  children: [
+                    HugeIcon(
+                      icon: HugeIcons.strokeRoundedAdd01,
+                      size: 28,
+                      color: AppColors.cream,
+                    ),
+                  ],
                 ),
               ),
             ),

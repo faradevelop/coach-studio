@@ -1,7 +1,9 @@
 import 'dart:ui';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/widgets/app_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class InfoDialog extends StatelessWidget {
   const InfoDialog({super.key, required this.message, required this.title});
@@ -10,9 +12,7 @@ class InfoDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
+    return AppDialog(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30),
         child: BackdropFilter(
@@ -37,14 +37,16 @@ class InfoDialog extends StatelessWidget {
                     Container(
                       width: 42,
                       height: 42,
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: AppColors.orange.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.info_outlined,
+                      child: HugeIcon(
+                        icon: HugeIcons.strokeRoundedCopy02,
+                        size: 24,
                         color: AppColors.orange,
-                        size: 26,
+                        strokeWidth: 2,
                       ),
                     ),
                     const SizedBox(width: 8),

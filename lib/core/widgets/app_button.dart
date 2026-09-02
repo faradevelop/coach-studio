@@ -32,7 +32,7 @@ class AppButton extends StatelessWidget {
           disabledBackgroundColor: AppColors.grey,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
+            borderRadius: BorderRadius.circular(100),
           ),
         ),
         child: isLoading

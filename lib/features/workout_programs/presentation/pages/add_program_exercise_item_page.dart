@@ -279,7 +279,7 @@ class _AddProgramExerciseItemPageState
                                                   ),
                                                   const SizedBox(height: 3),
                                                   Text(
-                                                    '${exercise.targetMuscle} • ${exercise.equipment}',
+                                                    '${exercise.targetMuscle.label}  •  ${exercise.equipment.label}',
                                                     style: AppTextStyles
                                                         .bodySmall
                                                         .copyWith(

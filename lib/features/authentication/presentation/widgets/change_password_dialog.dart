@@ -3,10 +3,12 @@ import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/app_dialog.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
@@ -65,9 +67,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
+    return AppDialog(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(28),
         child: BackdropFilter(
@@ -90,14 +90,15 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                   Container(
                     width: 50,
                     height: 50,
+                    alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: AppColors.orange.withValues(alpha: 0.20),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
-                      Icons.lock_outline_rounded,
-                      color: AppColors.orange,
+                    child: HugeIcon(
+                      icon: HugeIcons.strokeRoundedLockSync01,
                       size: 28,
+                      color: AppColors.orange,
                     ),
                   ),
                   const SizedBox(height: 16),

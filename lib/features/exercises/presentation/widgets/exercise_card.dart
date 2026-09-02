@@ -7,6 +7,7 @@ import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ExerciseCard extends StatelessWidget {
   final Exercise exercise;
@@ -77,43 +78,41 @@ class ExerciseCard extends StatelessWidget {
                               fontSize: 16,
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            exercise.targetMuscle.label,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.teal,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 8),
                           Row(
                             children: [
-                              //   FaIcon(
-                              //     FontAwesomeIcons.fireFlameCurved,
-                              //     size: 14,
-                              //     color: AppColors.orange,
-                              //   ),
-                              //   const SizedBox(width: 4),
-                              //   Text(
-                              //     exercise.equipment,
-                              //     maxLines: 1,
-                              //     overflow: TextOverflow.ellipsis,
-                              //     style: AppTextStyles.bodySmall,
-                              //   ),
-                              //   const SizedBox(width: 10),
-                              Icon(
-                                Icons.bar_chart_rounded,
-                                size: 18,
+                              HugeIcon(
+                                icon: HugeIcons.strokeRoundedFire02,
+                                size: 15,
                                 color: AppColors.teal,
+                                strokeWidth: 2,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                exercise.targetMuscle.label,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  //color: AppColors.teal,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              HugeIcon(
+                                icon: HugeIcons.strokeRoundedLowSignal,
+                                size: 15,
+                                color: AppColors.teal,
+                                strokeWidth: 2,
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 exercise.difficulty.label,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: AppTextStyles.bodySmall,
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  //color: AppColors.teal,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ],
                           ),
@@ -125,8 +124,8 @@ class ExerciseCard extends StatelessWidget {
                       alignment: Alignment.topRight,
                       child: MiniButton(
                         color: AppColors.charcoalSoft.withValues(alpha: 0.18),
-                        icon: Icon(
-                          Icons.edit_rounded,
+                        icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedEdit03,
                           size: 18,
                           color: AppColors.charcoal.withValues(alpha: 0.9),
                         ),
@@ -138,9 +137,9 @@ class ExerciseCard extends StatelessWidget {
                       alignment: Alignment.topRight,
                       child: MiniButton(
                         color: AppColors.error.withValues(alpha: 0.18),
-                        icon: Icon(
-                          Icons.delete_rounded,
-                          size: 16,
+                        icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedDelete03,
+                          size: 18,
                           color: AppColors.error.withValues(alpha: 0.9),
                         ),
                         onPressed: onDelete,

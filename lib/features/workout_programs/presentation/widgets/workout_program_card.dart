@@ -5,9 +5,9 @@ import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
-import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
-import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
+import 'package:coach_studio/features/workout_programs/presentation/widgets/info_chip.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class WorkoutProgramCard extends StatelessWidget {
   final WorkoutProgram program;
@@ -22,24 +22,6 @@ class WorkoutProgramCard extends StatelessWidget {
     required this.onTap,
     required this.onCopy,
   });
-
-  String get _goalLabel {
-    return switch (program.goal) {
-      ProgramGoal.hypertrophy => 'هایپرتروفی',
-      ProgramGoal.strength => 'قدرتی',
-      ProgramGoal.fatLoss => 'چربی‌سوزی',
-      ProgramGoal.endurance => 'استقامتی',
-      ProgramGoal.rehabilitation => 'توان‌بخشی',
-    };
-  }
-
-  String get _levelLabel {
-    return switch (program.level) {
-      ProgramLevel.beginner => 'مبتدی',
-      ProgramLevel.intermediate => 'متوسط',
-      ProgramLevel.advanced => 'پیشرفته',
-    };
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +117,7 @@ class WorkoutProgramCard extends StatelessWidget {
                     child: Text(
                       '${program.daysPerWeek} روز در هفته',
                       style: AppTextStyles.bodySmall.copyWith(
-                        fontSize: 10,
+                        fontSize: 11,
                         color: AppColors.charcoal.withValues(alpha: 0.65),
                       ),
                     ),
@@ -151,16 +133,26 @@ class WorkoutProgramCard extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: _InfoChip(
-                            icon: Icons.flag_rounded,
-                            text: _goalLabel,
+                          child: InfoChip(
+                            icon: HugeIcon(
+                              icon: HugeIcons.strokeRoundedTarget02,
+                              size: 15,
+                              color: AppColors.teal,
+                              strokeWidth: 2,
+                            ),
+                            text: program.goal.label,
                           ),
                         ),
-                        SizedBox(width: 6),
+                        SizedBox(width: 8),
                         Expanded(
-                          child: _InfoChip(
-                            icon: Icons.bar_chart_rounded,
-                            text: _levelLabel,
+                          child: InfoChip(
+                            icon: HugeIcon(
+                              icon: HugeIcons.strokeRoundedLowSignal,
+                              size: 15,
+                              color: AppColors.teal,
+                              strokeWidth: 2,
+                            ),
+                            text: program.level.label,
                           ),
                         ),
                       ],
@@ -171,44 +163,6 @@ class WorkoutProgramCard extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const _InfoChip({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.teal.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 13, color: AppColors.teal),
-          const SizedBox(width: 5),
-          Flexible(
-            child: Text(
-              text,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w500,
-                color: AppColors.charcoal,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -249,10 +203,10 @@ class CustomPopupMenu extends StatelessWidget {
           child: Text('حذف', style: TextStyle(color: AppColors.error)),
         ),
       ],
-      child: const Icon(
-        Icons.more_horiz_rounded,
+      child: HugeIcon(
+        icon: HugeIcons.strokeRoundedMoreHorizontalCircle01,
         size: 20,
-        color: AppColors.charcoal,
+        color: AppColors.orange,
       ),
     );
   }

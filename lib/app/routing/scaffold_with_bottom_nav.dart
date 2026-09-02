@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ScaffoldWithBottomNav extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -65,32 +65,40 @@ class GlassBottomNav extends StatelessWidget {
   final List<_NavItemData> _items = [
     _NavItemData(
       name: 'برنامه',
-      icon: FaIcon(FontAwesomeIcons.list, size: 20, color: AppColors.charcoal),
-      activeIcon: FaIcon(
-        FontAwesomeIcons.list,
-        size: 22,
+      icon: HugeIcon(
+        icon: HugeIcons.strokeRoundedTask01,
+        size: 19,
+        color: AppColors.charcoal,
+      ),
+      activeIcon: HugeIcon(
+        icon: HugeIcons.strokeRoundedTask01,
+        size: 20,
         color: AppColors.orange,
       ),
     ),
     _NavItemData(
       name: 'تمرین',
-      icon: FaIcon(
-        FontAwesomeIcons.dumbbell,
-        size: 20,
+      icon: HugeIcon(
+        icon: HugeIcons.strokeRoundedDumbbell01,
+        size: 19,
         color: AppColors.charcoal,
       ),
-      activeIcon: FaIcon(
-        FontAwesomeIcons.dumbbell,
-        size: 22,
+      activeIcon: HugeIcon(
+        icon: HugeIcons.strokeRoundedDumbbell01,
+        size: 20,
         color: AppColors.orange,
       ),
     ),
     _NavItemData(
       name: 'تنظیمات',
-      icon: FaIcon(FontAwesomeIcons.gear, size: 20, color: AppColors.charcoal),
-      activeIcon: FaIcon(
-        FontAwesomeIcons.gear,
-        size: 22,
+      icon: HugeIcon(
+        icon: HugeIcons.strokeRoundedSettings01,
+        size: 17,
+        color: AppColors.charcoal,
+      ),
+      activeIcon: HugeIcon(
+        icon: HugeIcons.strokeRoundedSettings01,
+        size: 18,
         color: AppColors.orange,
       ),
     ),
@@ -138,7 +146,7 @@ class GlassBottomNav extends StatelessWidget {
                         scale: selected ? 1.12 : 1.0,
                         child: selected ? item.activeIcon : item.icon,
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 5),
                       Text(
                         item.name,
                         style: TextStyle(

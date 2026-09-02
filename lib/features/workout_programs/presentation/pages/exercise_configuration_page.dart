@@ -251,15 +251,15 @@ class _ExerciseConfigurationViewState
                                     vertical: 5,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: AppColors.orange.withValues(
+                                    color: AppColors.teal.withValues(
                                       alpha: 0.15,
                                     ),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
-                                    widget.draft.trainingSystem.name,
+                                    widget.draft.trainingSystem.label,
                                     style: const TextStyle(
-                                      color: AppColors.orange,
+                                      color: AppColors.teal,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 13,
                                     ),
@@ -307,15 +307,15 @@ class _ExerciseConfigurationViewState
                                     fontSize: 16,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '${exercise.targetMuscle} • ${exercise.equipment}',
-                                  style: AppTextStyles.bodySmall.copyWith(
-                                    color: AppColors.charcoal.withValues(
-                                      alpha: 0.6,
-                                    ),
-                                  ),
-                                ),
+                                //const SizedBox(height: 4),
+                                // Text(
+                                //   '${exercise.targetMuscle.label} • ${exercise.equipment.label}',
+                                //   style: AppTextStyles.bodySmall.copyWith(
+                                //     color: AppColors.charcoal.withValues(
+                                //       alpha: 0.6,
+                                //     ),
+                                //   ),
+                                // ),
                                 const SizedBox(height: 16),
                                 AppTextField(
                                   controller: _repsControllers[exercise.id]!,
