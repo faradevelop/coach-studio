@@ -42,8 +42,7 @@ dependencies:
 
   # ─────────────── UI ───────────────
   cupertino_icons: ^1.0.8
-  font_awesome_flutter: ^11.0.0
-  iconsax: ^0.0.8
+  hugeicons: ^1.1.7
   loading_animation_widget: ^1.3.0
   reorderables: ^0.6.0
   floating_snackbar: ^2.0.0
