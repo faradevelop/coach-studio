@@ -162,7 +162,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                               },
                             ),
 
-                    ExerciseError(:final message) => const AppErrorState(),
+                    ExerciseError() => const AppErrorState(),
 
                     ExerciseInitial() => const SizedBox(),
                   },

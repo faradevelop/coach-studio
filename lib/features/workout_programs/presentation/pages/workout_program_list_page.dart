@@ -169,7 +169,7 @@ class _WorkoutProgramListView extends StatelessWidget {
                             },
                           ),
 
-                  WorkoutProgramError(:final message) => AppErrorState(),
+                  WorkoutProgramError() => AppErrorState(),
                 };
               },
             ),

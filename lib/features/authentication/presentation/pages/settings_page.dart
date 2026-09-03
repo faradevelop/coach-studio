@@ -276,15 +276,11 @@ class _SettingsActionTile extends StatelessWidget {
   final Widget icon;
   final String title;
   final VoidCallback onTap;
-  final Color? iconColor;
-  final Color? titleColor;
 
   const _SettingsActionTile({
     required this.icon,
     required this.title,
     required this.onTap,
-    this.iconColor,
-    this.titleColor,
   });
 
   @override
@@ -311,7 +307,7 @@ class _SettingsActionTile extends StatelessWidget {
                     child: Text(
                       title,
                       style: AppTextStyles.label.copyWith(
-                        color: titleColor ?? AppColors.charcoal,
+                        color: AppColors.charcoal,
                       ),
                     ),
                   ),
