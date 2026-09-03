@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:coach_studio/app/routing/app_route_names.dart';
-import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
@@ -15,7 +14,6 @@ import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/features/workout_programs/data/services/workout_program_pdf_generator.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
-import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_draft.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_details.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
@@ -33,9 +31,14 @@ import 'package:printing/printing.dart';
 import 'package:reorderables/reorderables.dart';
 
 class WorkoutProgramDetailPage extends StatefulWidget {
-  final WorkoutProgram program;
+  final String programId;
+  final WorkoutProgram? seedProgram; // optional fast path only
 
-  const WorkoutProgramDetailPage({super.key, required this.program});
+  const WorkoutProgramDetailPage({
+    super.key,
+    required this.programId,
+    this.seedProgram,
+  });
 
   @override
   State<WorkoutProgramDetailPage> createState() =>
@@ -46,24 +49,61 @@ class _WorkoutProgramDetailPageState extends State<WorkoutProgramDetailPage> {
   @override
   void initState() {
     super.initState();
-    context.read<ProgramExerciseCubit>().loadExercises(widget.program.id);
+    context.read<ProgramExerciseCubit>().loadExercises(widget.programId);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<WorkoutProgramCubit, WorkoutProgramState>(
       builder: (context, state) {
-        var currentProgram = widget.program;
+        WorkoutProgram? currentProgram = widget.seedProgram;
 
         if (state case WorkoutProgramLoaded(:final programs)) {
-          currentProgram = programs.firstWhere(
-            (program) => program.id == widget.program.id,
-            orElse: () => widget.program,
-          );
+          for (final p in programs) {
+            if (p.id == widget.programId) {
+              currentProgram = p;
+              break;
+            }
+          }
+        }
+
+        if (currentProgram == null) {
+          // Distinguish "list still loading" from "genuinely not found"
+          // (e.g. deleted elsewhere, or a stale bookmark) instead of
+          // spinning forever either way.
+          if (state is WorkoutProgramLoaded) {
+            return _ProgramNotFoundState();
+          }
+          return const Scaffold(body: Center(child: _DetailLoadingIndicator()));
         }
 
         return _WorkoutProgramDetailView(program: currentProgram);
       },
+    );
+  }
+}
+
+class _DetailLoadingIndicator extends StatelessWidget {
+  const _DetailLoadingIndicator();
+  @override
+  Widget build(BuildContext context) =>
+      LoadingAnimationWidget.hexagonDots(color: AppColors.orange, size: 40);
+}
+
+class _ProgramNotFoundState extends StatelessWidget {
+  const _ProgramNotFoundState();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.cream,
+      body: Center(
+        child: AppErrorState(
+          title: 'برنامه‌ای یافت نشد',
+          message: 'این برنامه ممکن است حذف شده باشد.',
+          retryLabel: 'بازگشت به لیست برنامه‌ها',
+          onRetry: () => context.goNamed(AppRouteNames.workoutProgramsList),
+        ),
+      ),
     );
   }
 }
@@ -662,16 +702,7 @@ class _ExercisePopupMenu extends StatelessWidget {
         'programId': program.id,
         'programExerciseId': programExercise.id,
       },
-      extra: ProgramExerciseConfigurationArgs(
-        program: program,
-        draft: ProgramExerciseDraft(
-          programId: program.id,
-          day: programExercise.day,
-          trainingSystem: programExercise.trainingSystem,
-        ),
-        exercises: details.items.map((item) => item.exercise).toList(),
-        existingExercise: programExercise,
-      ),
+      extra: details,
     );
   }
 

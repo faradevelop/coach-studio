@@ -25,10 +25,6 @@ abstract final class AppRouteNames {
 
   static const createProgramExercise = 'createProgramExercise';
 
-  static const addProgramExerciseItems = 'addProgramExerciseItems';
-
-  static const configureProgramExercise = 'configureProgramExercise';
-
   static const editProgramExercise = 'editProgramExercise';
 
   // Exercises

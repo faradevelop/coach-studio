@@ -1,10 +1,10 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/app_routes.dart';
 import 'package:coach_studio/app/routing/go_router_refresh_stream.dart';
-import 'package:coach_studio/app/routing/route_args/program_exercise_configuration_args.dart';
-import 'package:coach_studio/app/routing/route_args/program_exercise_selection_args.dart';
 import 'package:coach_studio/app/routing/scaffold_with_bottom_nav.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/widgets/app_error_state.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
 import 'package:coach_studio/features/authentication/presentation/pages/forgot_password_page.dart';
@@ -16,12 +16,12 @@ import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/add_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/edit_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/exercise_list_page.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
-import 'package:coach_studio/features/workout_programs/presentation/pages/add_program_exercise_item_page.dart';
-import 'package:coach_studio/features/workout_programs/presentation/pages/create_program_exercise_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/create_workout_program_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/exercise_configuration_page.dart';
+import 'package:coach_studio/features/workout_programs/presentation/pages/program_exercise_wizard_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_detail_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_list_page.dart';
 import 'package:flutter/material.dart';
@@ -31,28 +31,38 @@ import 'package:go_router/go_router.dart';
 class AppRouter {
   AppRouter._();
 
-  // Root Navigator — internal pages are pushed onto this Navigator
-  // instead of the branch Navigator.
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'root');
-
-  // Navigator dedicated to each Branch (optional, but recommended by go_router).
   static final GlobalKey<NavigatorState> _exerciseBranchNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'exerciseBranch');
-
   static final GlobalKey<NavigatorState> _programBranchNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'programBranch');
-
   static final GlobalKey<NavigatorState> _settingsBranchNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'settingsBranch');
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
     initialLocation: AppRoutes.splash,
-
-    // Re-evaluates `redirect` whenever AuthCubit emits a new state (login,
-    // logout, session restore finishing, or a forced sign-out from a 401).
     refreshListenable: GoRouterRefreshStream(sl<AuthCubit>().stream),
+
+    // Defense in depth ONLY (see RCA). Every route below is designed to
+    // rebuild its required state from the URL + data layer alone, so
+    // this should rarely fire — but if something we haven't anticipated
+    // still slips through, this keeps it a recoverable screen instead
+    // of an uncontrolled white screen.
+    errorBuilder: (context, state) {
+      return Scaffold(
+        backgroundColor: AppColors.cream,
+        body: Center(
+          child: AppErrorState(
+            title: 'مشکلی پیش آمد',
+            message: 'این صفحه در دسترس نیست.',
+            retryLabel: 'بازگشت به صفحه اصلی',
+            onRetry: () => context.goNamed(AppRouteNames.workoutProgramsList),
+          ),
+        ),
+      );
+    },
 
     redirect: (context, state) {
       final authState = sl<AuthCubit>().state;
@@ -64,8 +74,6 @@ class AppRouter {
           location == AppRoutes.forgotPassword ||
           location == AppRoutes.resetPassword;
 
-      // Still restoring the session on startup — keep the user on the
-      // splash screen until we know whether they're authenticated.
       if (authState is AuthInitial || authState is AuthLoading) {
         return isSplash ? null : AppRoutes.splash;
       }
@@ -76,7 +84,6 @@ class AppRouter {
         return isAuthRoute ? null : AppRoutes.login;
       }
 
-      // Authenticated users shouldn't sit on the splash/auth screens.
       if (isAuthRoute || isSplash) {
         return AppRoutes.workoutProgramsList;
       }
@@ -85,30 +92,24 @@ class AppRouter {
     },
 
     routes: [
-      // -----------------------------------------------------------------
-      // Authentication — outside the bottom-nav shell.
-      // -----------------------------------------------------------------
       GoRoute(
         path: AppRoutes.splash,
         name: AppRouteNames.splash,
         parentNavigatorKey: navigatorKey,
         builder: (_, _) => const SplashPage(),
       ),
-
       GoRoute(
         path: AppRoutes.login,
         name: AppRouteNames.login,
         parentNavigatorKey: navigatorKey,
         builder: (_, _) => const LoginPage(),
       ),
-
       GoRoute(
         path: AppRoutes.forgotPassword,
         name: AppRouteNames.forgotPassword,
         parentNavigatorKey: navigatorKey,
         builder: (_, _) => const ForgotPasswordPage(),
       ),
-
       GoRoute(
         path: AppRoutes.resetPassword,
         name: AppRouteNames.resetPassword,
@@ -120,16 +121,10 @@ class AppRouter {
         },
       ),
 
-      // -----------------------------------------------------------------
-      // Main tabs
-      // -----------------------------------------------------------------
       StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) {
-          return ScaffoldWithBottomNav(navigationShell: navigationShell);
-        },
-
+        builder: (context, state, navigationShell) =>
+            ScaffoldWithBottomNav(navigationShell: navigationShell),
         branches: [
-          // ---------------- Programs Branch ----------------
           StatefulShellBranch(
             navigatorKey: _programBranchNavigatorKey,
             routes: [
@@ -140,8 +135,6 @@ class AppRouter {
               ),
             ],
           ),
-
-          // ---------------- Exercises Branch ----------------
           StatefulShellBranch(
             navigatorKey: _exerciseBranchNavigatorKey,
             routes: [
@@ -149,14 +142,9 @@ class AppRouter {
                 path: AppRoutes.exercises,
                 name: AppRouteNames.exercises,
                 builder: (_, _) => const ExerciseListPage(),
-                // Note: There are no child routes defined here.
-                // Create/Edit routes are defined as top-level routes with parentNavigatorKey
-                // so they are pushed onto the root Navigator and do not cover the BottomNav.
               ),
             ],
           ),
-
-          // ---------------- Settings Branch ----------------
           StatefulShellBranch(
             navigatorKey: _settingsBranchNavigatorKey,
             routes: [
@@ -170,11 +158,6 @@ class AppRouter {
         ],
       ),
 
-      // -----------------------------------------------------------------
-      // Exercises internal pages — pushed onto the root Navigator (without BottomNav).
-      // ExerciseCubit is provided globally in main.dart,
-      // so context.read<ExerciseCubit>() here accesses the same instance used by the list page.
-      // -----------------------------------------------------------------
       GoRoute(
         path: AppRoutes.createExercise,
         name: AppRouteNames.createExercise,
@@ -182,35 +165,41 @@ class AppRouter {
         builder: (_, _) => const AddExercisePage(),
       ),
 
+      // exerciseId is required routing state (path param). `extra` is
+      // read only as an optional seed.
       GoRoute(
         path: AppRoutes.editExercise,
         name: AppRouteNames.editExercise,
         parentNavigatorKey: navigatorKey,
         builder: (_, state) {
-          final exercise = state.extra as Exercise;
-          return EditExercisePage(exercise: exercise);
+          final exerciseId = state.pathParameters['exerciseId']!;
+          final seed = state.extra;
+          return EditExercisePage(
+            exerciseId: exerciseId,
+            seedExercise: seed is Exercise ? seed : null,
+          );
         },
       ),
 
-      // -----------------------------------------------------------------
-      // Programs internal pages — pushed onto the root Navigator
-      // instead of the Branch Navigator (without BottomNav).
-      // -----------------------------------------------------------------
       GoRoute(
         path: AppRoutes.createWorkoutProgram,
         name: AppRouteNames.createWorkoutProgram,
         parentNavigatorKey: navigatorKey,
         builder: (_, state) {
-          final program = state.extra as WorkoutProgram?;
-          return CreateWorkoutProgramPage(existingProgram: program);
+          // Edit mode is signalled by ?programId=... (URL-derivable),
+          // not by extra.
+          final programId = state.uri.queryParameters['programId'];
+          final seed = state.extra;
+          return CreateWorkoutProgramPage(
+            programId: programId,
+            seedProgram: seed is WorkoutProgram ? seed : null,
+          );
         },
       ),
 
-      // Program Detail + its entire internal flow (create/select/configure)
-      // uses a separate non-stateful ShellRoute on the root Navigator.
-      // It is only used to provide a fresh instance of ProgramExerciseCubit
-      // to this subtree. When the entire flow is popped, the Cubit is disposed
-      // (according to the rule: state persistence across tabs is not required).
+      // Program Detail + its entire internal flow. ProgramExerciseCubit
+      // is scoped to this ShellRoute subtree so the Detail page and the
+      // wizard share it.
       ShellRoute(
         parentNavigatorKey: navigatorKey,
         builder: (context, state, child) {
@@ -219,67 +208,51 @@ class AppRouter {
             child: child,
           );
         },
-
         routes: [
           GoRoute(
             path: AppRoutes.workoutProgramDetail,
             name: AppRouteNames.workoutProgramDetail,
             builder: (_, state) {
-              final program = state.extra as WorkoutProgram;
-              return WorkoutProgramDetailPage(program: program);
+              final programId = state.pathParameters['programId']!;
+              final seed = state.extra;
+              return WorkoutProgramDetailPage(
+                programId: programId,
+                seedProgram: seed is WorkoutProgram ? seed : null,
+              );
             },
-
             routes: [
+              // Editing an EXISTING program exercise — single step,
+              // keyed entirely by programExerciseId.
               GoRoute(
                 path: 'program-exercises/:programExerciseId/edit',
                 name: AppRouteNames.editProgramExercise,
                 builder: (_, state) {
-                  final args = state.extra as ProgramExerciseConfigurationArgs;
-
+                  final programExerciseId =
+                      state.pathParameters['programExerciseId']!;
+                  final seed = state.extra;
                   return ExerciseConfigurationPage(
-                    program: args.program,
-                    draft: args.draft,
-                    exercises: args.exercises,
-                    existingExercise: args.existingExercise,
+                    programExerciseId: programExerciseId,
+                    seedDetails: seed is ProgramExerciseDetails ? seed : null,
                   );
                 },
               ),
 
+              // The ENTIRE add-exercise wizard lives behind this ONE
+              // route/ONE URL. There is deliberately no nested GoRoute
+              // per step — see ProgramExerciseWizardCubit for step
+              // transitions — so there's nothing left for browser/system
+              // Back to desynchronize from.
               GoRoute(
                 path: 'program-exercises/create',
                 name: AppRouteNames.createProgramExercise,
                 builder: (_, state) {
-                  final program = state.extra as WorkoutProgram;
-                  return CreateProgramExercisePage(program: program);
+                  final programId = state.pathParameters['programId']!;
+                  final seed = state.extra;
+                  return ProgramExerciseWizardPage(
+                    programId: programId,
+                    seedProgram: seed is WorkoutProgram ? seed : null,
+                  );
                 },
-
-                routes: [
-                  GoRoute(
-                    path: 'select',
-                    name: AppRouteNames.addProgramExerciseItems,
-                    builder: (_, state) {
-                      final args = state.extra as ProgramExerciseSelectionArgs;
-                      return AddProgramExerciseItemPage(
-                        program: args.program,
-                        draft: args.draft,
-                      );
-                    },
-                  ),
-
-                  GoRoute(
-                    path: 'configure',
-                    name: AppRouteNames.configureProgramExercise,
-                    builder: (_, state) {
-                      final args =
-                          state.extra as ProgramExerciseConfigurationArgs;
-                      return ExerciseConfigurationPage(
-                        program: args.program,
-                        draft: args.draft,
-                        exercises: args.exercises,
-                      );
-                    },
-                  ),
-                ],
               ),
             ],
           ),

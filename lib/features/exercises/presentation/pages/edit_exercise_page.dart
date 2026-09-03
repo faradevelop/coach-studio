@@ -1,3 +1,4 @@
+// lib/features/exercises/presentation/pages/edit_exercise_page.dart
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
@@ -9,15 +10,34 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class EditExercisePage extends StatelessWidget {
-  final Exercise exercise;
+  final String exerciseId;
+  final Exercise? seedExercise;
 
-  const EditExercisePage({super.key, required this.exercise});
+  const EditExercisePage({
+    super.key,
+    required this.exerciseId,
+    this.seedExercise,
+  });
+
+  Exercise? _resolve(ExerciseState state) {
+    if (state is ExerciseLoaded) {
+      for (final e in state.exercises) {
+        if (e.id == exerciseId) return e;
+      }
+    }
+    return seedExercise;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocBuilder<ExerciseCubit, ExerciseState>(
         builder: (context, state) {
+          final exercise = _resolve(state);
+          if (exercise == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
           final isLoading = state is ExerciseLoaded && state.isSubmitting;
           return ExerciseForm(
             initialExercise: exercise,
@@ -27,12 +47,10 @@ class EditExercisePage extends StatelessWidget {
                   .read<ExerciseCubit>()
                   .updateExercise(updatedExercise);
               if (!context.mounted) return;
-
               if (!success) {
                 sl<AppNotification>().error('ویرایش تمرین ناموفق بود.');
                 return;
               }
-
               sl<AppNotification>().success('تمرین با موفقیت ویرایش شد.');
               context.pop();
             },
