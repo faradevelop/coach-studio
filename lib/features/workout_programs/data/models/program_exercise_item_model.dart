@@ -5,7 +5,7 @@ class ProgramExerciseItemModel {
   final String programExerciseId;
   final String exerciseId;
   final int order;
-  final String reps;
+  final List<String> reps;
   final String tempo;
   final String? description;
 
@@ -49,7 +49,7 @@ class ProgramExerciseItemModel {
       programExerciseId: json['programExerciseId'] as String,
       exerciseId: json['exerciseId'] as String,
       order: json['order'] as int,
-      reps: json['reps'] as String,
+      reps: (json['reps'] as List<dynamic>).map((e) => e.toString()).toList(),
       tempo: json['tempo'] as String,
       description: json['description'] as String?,
     );

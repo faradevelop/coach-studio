@@ -3,7 +3,7 @@ class ProgramExerciseItem {
   final String programExerciseId;
   final String exerciseId;
   final int order;
-  final String reps;
+  final List<String> reps;
   final String tempo;
   final String? description;
 
@@ -22,7 +22,7 @@ class ProgramExerciseItem {
     String? programExerciseId,
     String? exerciseId,
     int? order,
-    String? reps,
+    List<String>? reps,
     String? tempo,
     String? description,
   }) {
@@ -33,7 +33,7 @@ class ProgramExerciseItem {
       order: order ?? this.order,
       reps: reps ?? this.reps,
       tempo: tempo ?? this.tempo,
-      description: description ?? this.description,
+      description: description,
     );
   }
 }
