@@ -16,6 +16,7 @@ import 'package:coach_studio/features/workout_programs/presentation/widgets/work
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class WorkoutProgramListPage extends StatelessWidget {
@@ -197,6 +198,7 @@ class _EmptyProgramsState extends StatelessWidget {
                 child: Container(
                   width: 88,
                   height: 88,
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: AppColors.glass,
                     shape: BoxShape.circle,
@@ -205,9 +207,9 @@ class _EmptyProgramsState extends StatelessWidget {
                       width: 1.2,
                     ),
                   ),
-                  child: const Icon(
-                    Icons.view_list_rounded,
-                    size: 36,
+                  child: HugeIcon(
+                    icon: HugeIcons.strokeRoundedClipboard,
+                    size: 40,
                     color: AppColors.orange,
                   ),
                 ),

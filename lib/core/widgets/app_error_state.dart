@@ -64,6 +64,8 @@ class AppErrorState extends StatelessWidget {
                       child: Container(
                         width: 78,
                         height: 78,
+                        alignment: Alignment.center,
+
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.55),
                           shape: BoxShape.circle,
@@ -82,7 +84,7 @@ class AppErrorState extends StatelessWidget {
 
                         child: HugeIcon(
                           icon: HugeIcons.strokeRoundedAlert02,
-                          size: 40,
+                          size: 46,
                           color: AppColors.orange,
                         ),
                       ),
