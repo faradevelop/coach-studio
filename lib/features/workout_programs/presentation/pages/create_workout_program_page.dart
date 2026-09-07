@@ -2,6 +2,7 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
+import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
@@ -9,6 +10,7 @@ import 'package:coach_studio/features/workout_programs/presentation/widgets/work
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class CreateWorkoutProgramPage extends StatelessWidget {
   final String? programId; // present -> edit mode; absent -> create mode
@@ -55,7 +57,20 @@ class _CreateWorkoutProgramViewState extends State<_CreateWorkoutProgramView> {
   Widget build(BuildContext context) {
     return BlocBuilder<WorkoutProgramCubit, WorkoutProgramState>(
       builder: (context, state) {
+        final isEditMode = widget.programId != null;
         final existingProgram = _resolveExisting(state);
+
+        // Edit mode but data is not ready yet.
+        if (isEditMode && existingProgram == null) {
+          return Scaffold(
+            body: Center(
+              child: LoadingAnimationWidget.hexagonDots(
+                color: AppColors.orange,
+                size: 40,
+              ),
+            ),
+          );
+        }
 
         return Scaffold(
           body: WorkoutProgramForm(
@@ -63,17 +78,22 @@ class _CreateWorkoutProgramViewState extends State<_CreateWorkoutProgramView> {
             isLoading: isSubmitting,
             onSubmit: (program) async {
               setState(() => isSubmitting = true);
+
               try {
-                if (existingProgram == null) {
+                if (!isEditMode) {
                   final createdProgram = await context
                       .read<WorkoutProgramCubit>()
                       .addProgram(program);
+
                   if (!context.mounted) return;
+
                   if (createdProgram == null) {
                     sl<AppNotification>().error('افزودن برنامه ناموفق بود.');
                     return;
                   }
+
                   sl<AppNotification>().success('برنامه با موفقیت اضافه شد.');
+
                   context.pushReplacementNamed(
                     AppRouteNames.workoutProgramDetail,
                     pathParameters: {'programId': createdProgram.id},
@@ -83,16 +103,22 @@ class _CreateWorkoutProgramViewState extends State<_CreateWorkoutProgramView> {
                   final success = await context
                       .read<WorkoutProgramCubit>()
                       .updateProgram(program);
+
                   if (!context.mounted) return;
+
                   if (!success) {
                     sl<AppNotification>().error('ویرایش برنامه ناموفق بود.');
                     return;
                   }
+
                   sl<AppNotification>().success('برنامه با موفقیت ویرایش شد.');
+
                   context.pop();
                 }
               } finally {
-                if (mounted) setState(() => isSubmitting = false);
+                if (mounted) {
+                  setState(() => isSubmitting = false);
+                }
               }
             },
           ),

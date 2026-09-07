@@ -297,6 +297,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
                 onPressed: () {
                   context.pushNamed(
                     AppRouteNames.createWorkoutProgram,
+                    queryParameters: {'programId': widget.program.id},
                     extra: widget.program,
                   );
                 },
