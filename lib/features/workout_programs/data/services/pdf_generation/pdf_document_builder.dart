@@ -595,7 +595,7 @@ pw.Widget _buildNormalRow(
         child: pw.Row(
           crossAxisAlignment: pw.CrossAxisAlignment.stretch,
           children: [
-            _subCell(_repsFlex, item.reps, regularFont),
+            _subCell(_repsFlex, item.reps.join(' - '), regularFont),
             _subCell(_tempoFlex, item.tempo, regularFont),
             _subCell(_restFlex, pe.rest, regularFont),
             _subCell(_systemFlex, '-', regularFont),
@@ -929,7 +929,11 @@ pw.Widget _buildSuperSetRow(
                       child: pw.Row(
                         crossAxisAlignment: pw.CrossAxisAlignment.stretch,
                         children: [
-                          _subCell(_repsFlex, item1.reps, regularFont),
+                          _subCell(
+                            _repsFlex,
+                            item1.reps.join(' - '),
+                            regularFont,
+                          ),
                           _subCell(_tempoFlex, item1.tempo, regularFont),
                         ],
                       ),
@@ -945,7 +949,11 @@ pw.Widget _buildSuperSetRow(
                       child: pw.Row(
                         crossAxisAlignment: pw.CrossAxisAlignment.stretch,
                         children: [
-                          _subCell(_repsFlex, item2.reps, regularFont),
+                          _subCell(
+                            _repsFlex,
+                            item2.reps.join(' - '),
+                            regularFont,
+                          ),
                           _subCell(_tempoFlex, item2.tempo, regularFont),
                         ],
                       ),
