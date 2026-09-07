@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,7 @@ class AppStepper extends StatelessWidget {
           SizedBox(
             width: 36,
             child: Text(
-              '$value',
+              value.persianNumber,
               textAlign: TextAlign.center,
               style: AppTextStyles.titleMedium.copyWith(
                 fontSize: 18,

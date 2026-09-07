@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/cupertino.dart';
@@ -121,7 +122,7 @@ class _AppNumberPickerState extends State<AppNumberPicker> {
             for (var i = 0; i < itemCount; i++)
               Center(
                 child: Text(
-                  '${widget.min + i}',
+                  (widget.min + i).persianNumber,
                   style: AppTextStyles.titleMedium.copyWith(
                     fontSize: 17,
                     fontWeight: FontWeight.w600,

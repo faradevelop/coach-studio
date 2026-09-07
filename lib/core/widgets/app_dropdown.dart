@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -76,7 +77,7 @@ class AppDropdown<T> extends StatelessWidget {
           return DropdownMenuItem<T>(
             value: item,
             child: Text(
-              itemLabel(item),
+              itemLabel(item).persianNumber,
               style: const TextStyle(
                 color: AppColors.charcoal,
                 fontSize: 15,
@@ -91,7 +92,7 @@ class AppDropdown<T> extends StatelessWidget {
             return Align(
               alignment: AlignmentDirectional.centerStart,
               child: Text(
-                itemLabel(item),
+                itemLabel(item).persianNumber,
                 style: const TextStyle(
                   color: AppColors.charcoal,
                   fontSize: 15,
