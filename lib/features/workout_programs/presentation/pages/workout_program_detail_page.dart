@@ -645,7 +645,7 @@ class _ProgramExerciseCard extends StatelessWidget {
         const SizedBox(width: 8),
         Expanded(
           child: Text(
-            '${programExercise.sets} ست • ${programExercise.rest} استراحت',
+            '${programExercise.sets} ست  •   ${programExercise.rest} استراحت',
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.charcoal.withValues(alpha: 0.75),
             ),
@@ -751,41 +751,62 @@ class _ExerciseItemCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            exercise.name,
+            style: AppTextStyles.body.copyWith(
+              fontSize: 14.5,
+              fontWeight: FontWeight.w500,
+            ),
+            maxLines: 2,
+          ),
+          SizedBox(height: 8),
+          Visibility(
+            visible: hasDescription,
+            child: Text(
+              item.description ?? '',
+              style: AppTextStyles.body.copyWith(fontSize: 12.5),
+              maxLines: 3,
+            ),
+          ),
+          Divider(
+            color: AppColors.orange.withValues(alpha: 0.35),
+            height: 12,
+            thickness: 1,
+          ),
+          SizedBox(height: 12),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(
-                  exercise.name,
-                  style: AppTextStyles.body.copyWith(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 2,
+              InfoChip(
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedRepeat,
+                  color: AppColors.teal,
+                  size: 14,
+                  strokeWidth: 2,
                 ),
+                text: '${item.reps.join(' - ')} تکرار ',
               ),
-              Text('${item.reps} تکرار •', style: AppTextStyles.bodySmall),
-              const SizedBox(width: 10),
-              Text(
-                '${item.tempo} تمپو',
-                style: AppTextStyles.bodySmall.copyWith(
-                  fontWeight: FontWeight.w500,
+              SizedBox(width: 10),
+              Visibility(
+                visible: item.tempo != '-',
+                child: InfoChip(
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedPendulum,
+                    color: AppColors.teal,
+                    size: 14,
+                    strokeWidth: 2,
+                  ),
+                  text: '${item.tempo} تمپو ',
                 ),
               ),
             ],
           ),
-          if (hasDescription) ...[
-            Divider(
-              color: AppColors.orange.withValues(alpha: 0.35),
-              height: 12,
-              thickness: 1,
-            ),
-            Text(
-              item.description ?? '',
-              style: AppTextStyles.body.copyWith(fontSize: 13.5),
-              maxLines: 3,
-            ),
-          ],
+          // if (hasDescription) ...[
+          //   Text(
+          //     item.description ?? '',
+          //     style: AppTextStyles.body.copyWith(fontSize: 13.5),
+          //     maxLines: 3,
+          //   ),
+          // ],
         ],
       ),
     );
@@ -965,7 +986,7 @@ class _PdfLoadingDialog extends StatelessWidget {
           children: [
             LoadingAnimationWidget.flickr(
               leftDotColor: AppColors.orange,
-              rightDotColor: AppColors.charcoal,
+              rightDotColor: AppColors.teal,
               size: 42,
             ),
             const SizedBox(height: 20),

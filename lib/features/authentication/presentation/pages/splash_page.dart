@@ -22,8 +22,9 @@ class SplashPage extends StatelessWidget {
           ),
         ),
         child: Center(
-          child: LoadingAnimationWidget.hexagonDots(
-            color: AppColors.orange,
+          child: LoadingAnimationWidget.twistingDots(
+            leftDotColor: AppColors.orange,
+            rightDotColor: AppColors.tealDark,
             size: 46,
           ),
         ),
