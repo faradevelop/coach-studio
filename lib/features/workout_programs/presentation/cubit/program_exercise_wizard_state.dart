@@ -6,18 +6,18 @@ import 'package:coach_studio/features/workout_programs/domain/enums/training_sys
 enum WizardStep { day, selectExercises, configure }
 
 class ExerciseItemConfig {
-  final String reps;
+  final List<String> reps;
   final String tempo;
   final String description;
 
   const ExerciseItemConfig({
-    this.reps = '',
+    this.reps = const [],
     this.tempo = '',
     this.description = '',
   });
 
   ExerciseItemConfig copyWith({
-    String? reps,
+    List<String>? reps,
     String? tempo,
     String? description,
   }) {

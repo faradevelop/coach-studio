@@ -75,7 +75,7 @@ class ProgramExerciseWizardCubit extends Cubit<ProgramExerciseWizardState> {
 
   void updateItemConfig(
     String exerciseId, {
-    String? reps,
+    List<String>? reps,
     String? tempo,
     String? description,
   }) {
