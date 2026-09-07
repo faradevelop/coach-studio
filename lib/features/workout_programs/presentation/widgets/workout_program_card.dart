@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
@@ -115,7 +116,7 @@ class WorkoutProgramCard extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
                     child: Text(
-                      '${program.daysPerWeek} روز در هفته',
+                      '${program.daysPerWeek.persianNumber} روز در هفته',
                       style: AppTextStyles.bodySmall.copyWith(
                         fontSize: 11,
                         color: AppColors.charcoal.withValues(alpha: 0.65),

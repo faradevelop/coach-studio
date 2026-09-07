@@ -3,6 +3,7 @@
 import 'dart:ui';
 
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
@@ -347,7 +348,7 @@ class _EditProgramExerciseViewState extends State<_EditProgramExerciseView> {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'روز ${_existing.day}',
+                                  'روز ${_existing.day.persianNumber}',
                                   style: AppTextStyles.bodySmall,
                                 ),
                               ],

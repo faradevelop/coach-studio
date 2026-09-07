@@ -3,6 +3,7 @@
 import 'dart:ui';
 
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
@@ -387,7 +388,7 @@ class _SelectExercisesStep extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  '${wizardState.selectedExercises.length}/${wizardState.maxSelection}',
+                  '${wizardState.selectedExercises.length.persianNumber}/${wizardState.maxSelection.persianNumber}',
                   style: const TextStyle(
                     color: AppColors.teal,
                     fontWeight: FontWeight.w700,
@@ -903,7 +904,6 @@ class _ConfigureStepState extends State<_ConfigureStep> {
 
     _setsCount = _parseSets(state.sets);
     _restSeconds = _parseRest(state.rest);
-    _restController = TextEditingController(text: _restSeconds.toString());
 
     for (final exercise in state.selectedExercises) {
       final config =
@@ -976,7 +976,6 @@ class _ConfigureStepState extends State<_ConfigureStep> {
 
   @override
   void dispose() {
-    _restController.dispose();
     for (final c in _tempoControllers.values) {
       c.dispose();
     }
@@ -1122,7 +1121,7 @@ class _ConfigureStepState extends State<_ConfigureStep> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            '$_setsCount ست',
+                            '${_setsCount.persianNumber} ست',
                             style: const TextStyle(
                               color: AppColors.teal,
                               fontWeight: FontWeight.w700,

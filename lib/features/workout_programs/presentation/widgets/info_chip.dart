@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class InfoChip extends StatelessWidget {
           const SizedBox(width: 5),
           Flexible(
             child: Text(
-              text,
+              text.persianNumber,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: AppTextStyles.bodySmall.copyWith(

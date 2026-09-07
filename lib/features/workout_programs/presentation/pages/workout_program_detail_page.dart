@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
@@ -13,6 +14,7 @@ import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/features/workout_programs/data/services/workout_program_pdf_generator.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_details.dart';
@@ -591,7 +593,7 @@ class _DayTab extends StatelessWidget {
                 ? AppColors.onOrange
                 : AppColors.charcoal.withValues(alpha: 0.78),
           ),
-          child: Text('روز $day'),
+          child: Text('روز ${day.persianNumber}'),
         ),
       ),
     );
@@ -635,17 +637,17 @@ class _ProgramExerciseCard extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, dynamic programExercise) {
+  Widget _buildHeader(BuildContext context, ProgramExercise programExercise) {
     return Row(
       children: [
         Text(
-          "${programExercise.order.toString()} )",
+          "${programExercise.order.persianNumber} )",
           style: AppTextStyles.label.copyWith(fontSize: 14.5),
         ),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
-            '${programExercise.sets} ست  •   ${programExercise.rest} استراحت',
+            '${programExercise.sets.persianNumber} ست  •   ${programExercise.rest.persianNumber} استراحت',
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.charcoal.withValues(alpha: 0.75),
             ),
@@ -695,7 +697,7 @@ class _ExercisePopupMenu extends StatelessWidget {
     );
   }
 
-  void _editExercise(BuildContext context, dynamic programExercise) {
+  void _editExercise(BuildContext context, ProgramExercise programExercise) {
     context.pushNamed(
       AppRouteNames.editProgramExercise,
       pathParameters: {
@@ -708,7 +710,7 @@ class _ExercisePopupMenu extends StatelessWidget {
 
   Future<void> _deleteExercise(
     BuildContext context,
-    dynamic programExercise,
+    ProgramExercise programExercise,
   ) async {
     final result = await showDialog<bool>(
       context: context,
@@ -730,7 +732,7 @@ class _ExercisePopupMenu extends StatelessWidget {
 }
 
 class _ExerciseItemCard extends StatelessWidget {
-  final dynamic itemDetails;
+  final ProgramExerciseItemDetails itemDetails;
 
   const _ExerciseItemCard({required this.itemDetails});
 
