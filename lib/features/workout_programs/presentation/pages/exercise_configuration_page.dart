@@ -1,4 +1,5 @@
 // lib/features/workout_programs/presentation/pages/exercise_configuration_page.dart
+
 import 'dart:ui';
 
 import 'package:coach_studio/core/di/injection_container.dart';
@@ -8,6 +9,8 @@ import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/app_number_picker.dart';
+import 'package:coach_studio/core/widgets/app_stepper.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
@@ -21,9 +24,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 /// Edits an EXISTING ProgramExercise (create now lives entirely in
 /// ProgramExerciseWizardPage). All required data is resolved from
-/// [ProgramExerciseCubit]'s already-loaded state via [programExerciseId]
-/// — `ProgramExerciseDetails` already embeds the joined Exercise
-/// entities, so no separate lookup is needed. `extra` is optional.
+/// [ProgramExerciseCubit]'s already-loaded state via [programExerciseId].
 class ExerciseConfigurationPage extends StatelessWidget {
   final String programExerciseId;
   final ProgramExerciseDetails? seedDetails;
@@ -37,9 +38,12 @@ class ExerciseConfigurationPage extends StatelessWidget {
   ProgramExerciseDetails? _resolve(ProgramExerciseState state) {
     if (state is ProgramExerciseLoaded) {
       for (final details in state.exercises) {
-        if (details.programExercise.id == programExerciseId) return details;
+        if (details.programExercise.id == programExerciseId) {
+          return details;
+        }
       }
     }
+
     return seedDetails;
   }
 
@@ -69,6 +73,7 @@ class ExerciseConfigurationPage extends StatelessWidget {
 
 class _EditProgramExerciseView extends StatefulWidget {
   final ProgramExerciseDetails details;
+
   const _EditProgramExerciseView({required this.details});
 
   @override
@@ -77,64 +82,158 @@ class _EditProgramExerciseView extends StatefulWidget {
 }
 
 class _EditProgramExerciseViewState extends State<_EditProgramExerciseView> {
-  final _setsController = TextEditingController();
-  final _restController = TextEditingController();
-  final Map<String, TextEditingController> _repsControllers = {};
+  /// exerciseId -> reps for each set.
+  ///
+  /// Example:
+  ///
+  /// exercise-1 -> [12, 10, 10, 8]
+  ///
+  /// means this exercise has 4 sets with different reps.
+  final Map<String, List<int>> _repsValues = {};
+
   final Map<String, TextEditingController> _tempoControllers = {};
   final Map<String, TextEditingController> _descriptionControllers = {};
+
+  late int _setsCount;
+  late int _restSeconds;
+
+  bool _isSubmitting = false;
 
   ProgramExercise get _existing => widget.details.programExercise;
 
   @override
   void initState() {
     super.initState();
-    _setsController.text = _existing.sets;
-    _restController.text = _existing.rest;
+
+    _setsCount = _parseSets(_existing.sets);
+    _restSeconds = _parseRest(_existing.rest);
 
     for (final itemDetails in widget.details.items) {
-      final id = itemDetails.exercise.id;
-      _repsControllers[id] = TextEditingController(text: itemDetails.item.reps);
-      _tempoControllers[id] = TextEditingController(
+      final exerciseId = itemDetails.exercise.id;
+      final reps = itemDetails.item.reps;
+
+      _repsValues[exerciseId] = List.generate(_setsCount, (index) {
+        if (reps.length == 1) {
+          return _parseRep(reps.first);
+        }
+
+        if (index < reps.length) {
+          return _parseRep(reps[index]);
+        }
+
+        return 1;
+      });
+
+      _tempoControllers[exerciseId] = TextEditingController(
         text: itemDetails.item.tempo,
       );
-      _descriptionControllers[id] = TextEditingController(
+
+      _descriptionControllers[exerciseId] = TextEditingController(
         text: itemDetails.item.description ?? '',
       );
     }
   }
 
+  int _parseSets(String value) {
+    final count = int.tryParse(value.trim());
+
+    if (count == null) {
+      return 1;
+    }
+
+    return count.clamp(1, 100);
+  }
+
+  int _parseRest(String value) {
+    final seconds = int.tryParse(value.trim());
+
+    if (seconds == null) {
+      return 0;
+    }
+
+    return seconds.clamp(0, 600);
+  }
+
+  int _parseRep(String value) {
+    final reps = int.tryParse(value.trim());
+
+    if (reps == null) {
+      return 1;
+    }
+
+    return reps.clamp(1, 100);
+  }
+
+  void _onSetsChanged(int newCount) {
+    if (newCount == _setsCount) {
+      return;
+    }
+
+    setState(() {
+      _setsCount = newCount;
+      _syncRepsValues();
+    });
+  }
+
+  void _onRestChanged(int seconds) {
+    setState(() {
+      _restSeconds = seconds;
+    });
+  }
+
+  void _onRepChanged(String exerciseId, int setIndex, int reps) {
+    setState(() {
+      _repsValues[exerciseId]![setIndex] = reps;
+    });
+  }
+
+  void _syncRepsValues() {
+    for (final itemDetails in widget.details.items) {
+      final exerciseId = itemDetails.exercise.id;
+      final reps = _repsValues[exerciseId]!;
+
+      if (reps.length < _setsCount) {
+        reps.addAll(List.filled(_setsCount - reps.length, 1));
+      } else if (reps.length > _setsCount) {
+        reps.removeRange(_setsCount, reps.length);
+      }
+    }
+  }
+
   @override
   void dispose() {
-    _setsController.dispose();
-    _restController.dispose();
-    for (final c in _repsControllers.values) {
-      c.dispose();
+    for (final controller in _tempoControllers.values) {
+      controller.dispose();
     }
-    for (final c in _tempoControllers.values) {
-      c.dispose();
+
+    for (final controller in _descriptionControllers.values) {
+      controller.dispose();
     }
-    for (final c in _descriptionControllers.values) {
-      c.dispose();
-    }
+
     super.dispose();
   }
 
-  bool _isSubmitting = false;
-
   Future<void> _save() async {
-    setState(() => _isSubmitting = true);
+    setState(() {
+      _isSubmitting = true;
+    });
+
     try {
       final items = widget.details.items.asMap().entries.map((entry) {
         final index = entry.key;
-        final exerciseId = entry.value.exercise.id;
-        final existingItem = entry.value.item;
+        final itemDetails = entry.value;
+
+        final exerciseId = itemDetails.exercise.id;
+        final existingItem = itemDetails.item;
 
         return ProgramExerciseItem(
           id: existingItem.id,
           programExerciseId: _existing.id,
           exerciseId: exerciseId,
           order: index + 1,
-          reps: _repsControllers[exerciseId]!.text,
+          reps: _repsValues[exerciseId]!
+              .map((value) => value.toString())
+              .toList(),
           tempo: _tempoControllers[exerciseId]!.text,
           description: _descriptionControllers[exerciseId]!.text.isEmpty
               ? null
@@ -143,25 +242,34 @@ class _EditProgramExerciseViewState extends State<_EditProgramExerciseView> {
       }).toList();
 
       final updated = _existing.copyWith(
-        sets: _setsController.text,
-        rest: _restController.text,
+        sets: _setsCount.toString(),
+        rest: _restSeconds.toString(),
         items: items,
       );
 
       final success = await context
           .read<ProgramExerciseCubit>()
           .updateProgramExercise(updated);
+
       if (!success) {
-        if (mounted) sl<AppNotification>().error('ویرایش تمرین ناموفق بود.');
+        if (mounted) {
+          sl<AppNotification>().error('ویرایش تمرین ناموفق بود.');
+        }
+
         return;
       }
 
       if (mounted) {
         sl<AppNotification>().success('تمرین با موفقیت ویرایش شد.');
+
         context.pop();
       }
     } finally {
-      if (mounted) setState(() => _isSubmitting = false);
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
     }
   }
 
@@ -245,21 +353,32 @@ class _EditProgramExerciseViewState extends State<_EditProgramExerciseView> {
                               ],
                             ),
                             const SizedBox(height: 18),
-                            AppTextField(
-                              controller: _setsController,
+
+                            AppStepper(
                               label: 'ست',
+                              value: _setsCount,
+                              onChanged: _onSetsChanged,
                             ),
+
                             const SizedBox(height: 16),
-                            AppTextField(
-                              controller: _restController,
-                              label: 'استراحت',
+
+                            AppNumberPicker(
+                              label: 'استراحت (ثانیه)',
+                              value: _restSeconds,
+                              min: 0,
+                              max: 600,
+                              onChanged: _onRestChanged,
                             ),
                           ],
                         ),
                       ),
+
                       const SizedBox(height: AppSpacing.lg - 4),
+
                       ...widget.details.items.map((itemDetails) {
                         final exercise = itemDetails.exercise;
+                        final reps = _repsValues[exercise.id]!;
+
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 14),
                           child: _GlassCard(
@@ -272,17 +391,41 @@ class _EditProgramExerciseViewState extends State<_EditProgramExerciseView> {
                                     fontSize: 16,
                                   ),
                                 ),
+
                                 const SizedBox(height: 16),
-                                AppTextField(
-                                  controller: _repsControllers[exercise.id]!,
-                                  label: 'تکرار',
-                                ),
-                                const SizedBox(height: 14),
+
+                                Text('تکرار', style: AppTextStyles.bodySmall),
+
+                                const SizedBox(height: 8),
+
+                                ...List.generate(_setsCount, (index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: AppNumberPicker(
+                                      label: 'ست ${index + 1}',
+                                      value: reps[index],
+                                      min: 1,
+                                      max: 100,
+                                      onChanged: (value) {
+                                        _onRepChanged(
+                                          exercise.id,
+                                          index,
+                                          value,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }),
+
+                                const SizedBox(height: 4),
+
                                 AppTextField(
                                   controller: _tempoControllers[exercise.id]!,
                                   label: 'تمپو',
                                 ),
+
                                 const SizedBox(height: 14),
+
                                 AppTextField(
                                   controller:
                                       _descriptionControllers[exercise.id]!,
@@ -293,7 +436,9 @@ class _EditProgramExerciseViewState extends State<_EditProgramExerciseView> {
                           ),
                         );
                       }),
+
                       const SizedBox(height: 12),
+
                       AppButton(
                         text: 'ویرایش',
                         isLoading: _isSubmitting,
@@ -313,6 +458,7 @@ class _EditProgramExerciseViewState extends State<_EditProgramExerciseView> {
 
 class _GlassCard extends StatelessWidget {
   final Widget child;
+
   const _GlassCard({required this.child});
 
   @override

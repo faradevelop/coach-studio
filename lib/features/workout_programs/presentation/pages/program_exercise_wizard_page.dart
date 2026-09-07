@@ -1,4 +1,5 @@
 // lib/features/workout_programs/presentation/pages/program_exercise_wizard_page.dart
+
 import 'dart:ui';
 
 import 'package:coach_studio/core/di/injection_container.dart';
@@ -8,6 +9,8 @@ import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_dropdown.dart';
+import 'package:coach_studio/core/widgets/app_number_picker.dart';
+import 'package:coach_studio/core/widgets/app_stepper.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/core/widgets/custom_search_bar.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
@@ -20,6 +23,7 @@ import 'package:coach_studio/features/workout_programs/presentation/cubit/progra
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_wizard_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
+import 'package:coach_studio/features/workout_programs/presentation/widgets/info_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -27,14 +31,10 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 /// The SINGLE GoRoute destination for the whole "add program exercise"
 /// flow. It has 3 internal steps, but GoRouter only ever sees one
-/// route/one Navigator entry for all of them — step transitions are
-/// pure Cubit state changes, never navigation.
+/// route/one Navigator entry for all of them.
 class ProgramExerciseWizardPage extends StatelessWidget {
   final String programId;
 
-  /// Optional fast path only. If absent (browser refresh, deep link,
-  /// Back/Forward reconstruction) the page resolves the program from
-  /// [WorkoutProgramCubit]'s already-loaded state instead.
   final WorkoutProgram? seedProgram;
 
   const ProgramExerciseWizardPage({
@@ -68,6 +68,7 @@ class _WizardView extends StatefulWidget {
 
 class _WizardViewState extends State<_WizardView> {
   final _searchController = TextEditingController();
+
   String _query = '';
 
   @override
@@ -76,15 +77,15 @@ class _WizardViewState extends State<_WizardView> {
     super.dispose();
   }
 
-  /// Required state, resolved purely from `programId` + the already-
-  /// loaded WorkoutProgramCubit. `seedProgram` only avoids a flash on
-  /// the very first frame when it happens to be available.
   WorkoutProgram? _resolveProgram(WorkoutProgramState state) {
     if (state is WorkoutProgramLoaded) {
       for (final program in state.programs) {
-        if (program.id == widget.programId) return program;
+        if (program.id == widget.programId) {
+          return program;
+        }
       }
     }
+
     return widget.seedProgram;
   }
 
@@ -95,10 +96,6 @@ class _WizardViewState extends State<_WizardView> {
         final program = _resolveProgram(programState);
 
         if (program == null) {
-          // Not loaded yet (e.g. a hard refresh landed directly on this
-          // URL) — show a loading state, not a crash. WorkoutProgramCubit
-          // is a global singleton already loading from main.dart, so
-          // this resolves itself as soon as its stream emits.
           return const Scaffold(body: Center(child: _WizardLoadingIndicator()));
         }
 
@@ -108,21 +105,17 @@ class _WizardViewState extends State<_WizardView> {
         >(
           listenWhen: (p, c) =>
               p.errorMessage != c.errorMessage && c.errorMessage != null,
-          listener: (context, state) =>
-              sl<AppNotification>().error(state.errorMessage!),
+          listener: (context, state) {
+            sl<AppNotification>().error(state.errorMessage!);
+          },
           builder: (context, wizardState) {
             return PopScope(
-              // Only a real pop (back gesture, browser Back, hardware
-              // Back, AppBar arrow via maybePop) is allowed to leave the
-              // wizard when we're on the FIRST step. Otherwise it's
-              // intercepted and turned into a step-back. This single
-              // PopScope is what makes System Back, the back gesture,
-              // AND the browser Back button all behave identically —
-              // they all funnel through the same Navigator pop attempt
-              // that PopScope governs.
               canPop: wizardState.step == WizardStep.day,
               onPopInvokedWithResult: (didPop, _) {
-                if (didPop) return;
+                if (didPop) {
+                  return;
+                }
+
                 context.read<ProgramExerciseWizardCubit>().goToPreviousStep();
               },
               child: Scaffold(
@@ -143,11 +136,17 @@ class _WizardViewState extends State<_WizardView> {
                         Expanded(
                           child: switch (wizardState.step) {
                             WizardStep.day => _DayStep(program: program),
+
                             WizardStep.selectExercises => _SelectExercisesStep(
                               searchController: _searchController,
                               query: _query,
-                              onQueryChanged: (v) => setState(() => _query = v),
+                              onQueryChanged: (v) {
+                                setState(() {
+                                  _query = v;
+                                });
+                              },
                             ),
+
                             WizardStep.configure => const _ConfigureStep(),
                           },
                         ),
@@ -166,15 +165,23 @@ class _WizardViewState extends State<_WizardView> {
 
 class _WizardLoadingIndicator extends StatelessWidget {
   const _WizardLoadingIndicator();
+
   @override
-  Widget build(BuildContext context) =>
-      LoadingAnimationWidget.hexagonDots(color: AppColors.orange, size: 40);
+  Widget build(BuildContext context) {
+    return LoadingAnimationWidget.hexagonDots(
+      color: AppColors.orange,
+      size: 40,
+    );
+  }
 }
 
-// ── AppBar with step dots ────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// AppBar
+// ─────────────────────────────────────────────────────────────
 
 class _WizardAppBar extends StatelessWidget {
   final WizardStep step;
+
   const _WizardAppBar({required this.step});
 
   String get _title => switch (step) {
@@ -207,9 +214,6 @@ class _WizardAppBar extends StatelessWidget {
           ),
           const Spacer(),
           GestureDetector(
-            // Routed through maybePop() — the SAME mechanism System
-            // Back / the gesture / browser Back use — so the in-app
-            // arrow and external Back are always consistent.
             onTap: () => Navigator.of(context).maybePop(),
             child: Container(
               width: 40,
@@ -237,14 +241,17 @@ class _WizardAppBar extends StatelessWidget {
 
 class _StepDots extends StatelessWidget {
   final WizardStep currentStep;
+
   const _StepDots({required this.currentStep});
 
   @override
   Widget build(BuildContext context) {
     final index = WizardStep.values.indexOf(currentStep);
+
     return Row(
       children: List.generate(WizardStep.values.length, (i) {
         final active = i <= index;
+
         return Padding(
           padding: const EdgeInsets.only(left: 4),
           child: Container(
@@ -263,15 +270,19 @@ class _StepDots extends StatelessWidget {
   }
 }
 
-// ── Step 1 ────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// Step 1
+// ─────────────────────────────────────────────────────────────
 
 class _DayStep extends StatelessWidget {
   final WorkoutProgram program;
+
   const _DayStep({required this.program});
 
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<ProgramExerciseWizardCubit>();
+
     final state = context.watch<ProgramExerciseWizardCubit>().state;
 
     return SingleChildScrollView(
@@ -286,7 +297,9 @@ class _DayStep extends StatelessWidget {
               items: List.generate(program.daysPerWeek, (i) => i + 1),
               itemLabel: (day) => 'روز $day',
               onChanged: (value) {
-                if (value != null) cubit.setDay(value);
+                if (value != null) {
+                  cubit.setDay(value);
+                }
               },
             ),
             const SizedBox(height: 20),
@@ -296,7 +309,9 @@ class _DayStep extends StatelessWidget {
               items: TrainingSystem.values,
               itemLabel: (item) => item.label,
               onChanged: (value) {
-                if (value != null) cubit.setTrainingSystem(value);
+                if (value != null) {
+                  cubit.setTrainingSystem(value);
+                }
               },
             ),
             const SizedBox(height: 36),
@@ -311,7 +326,9 @@ class _DayStep extends StatelessWidget {
   }
 }
 
-// ── Step 2 ────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// Step 2
+// ─────────────────────────────────────────────────────────────
 
 class _SelectExercisesStep extends StatelessWidget {
   final TextEditingController searchController;
@@ -325,8 +342,12 @@ class _SelectExercisesStep extends StatelessWidget {
   });
 
   List<Exercise> _filter(List<Exercise> exercises) {
-    if (query.trim().isEmpty) return exercises;
+    if (query.trim().isEmpty) {
+      return exercises;
+    }
+
     final q = query.trim().toLowerCase();
+
     return exercises
         .where(
           (e) =>
@@ -340,6 +361,7 @@ class _SelectExercisesStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final wizardCubit = context.read<ProgramExerciseWizardCubit>();
+
     final wizardState = context.watch<ProgramExerciseWizardCubit>().state;
 
     return Column(
@@ -387,12 +409,15 @@ class _SelectExercisesStep extends StatelessWidget {
                     size: 40,
                   ),
                 ),
+
                 ExerciseError() => const Center(
                   child: Text('خطا در بارگذاری تمرین‌ها'),
                 ),
+
                 ExerciseLoaded(:final exercises) => Builder(
                   builder: (_) {
                     final filtered = _filter(exercises);
+
                     if (filtered.isEmpty) {
                       return Center(
                         child: Text(
@@ -401,19 +426,35 @@ class _SelectExercisesStep extends StatelessWidget {
                         ),
                       );
                     }
+
                     return ListView.builder(
                       padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
                       itemCount: filtered.length,
                       itemBuilder: (_, index) {
                         final exercise = filtered[index];
+
                         final isSelected = wizardState.selectedExercises.any(
                           (e) => e.id == exercise.id,
                         );
+
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: GestureDetector(
-                            onTap: () =>
-                                wizardCubit.toggleExerciseSelection(exercise),
+                            onTap: () {
+                              final isSelected = wizardState.selectedExercises
+                                  .any((e) => e.id == exercise.id);
+
+                              if (!isSelected &&
+                                  wizardState.selectedExercises.length >=
+                                      wizardState.maxSelection) {
+                                sl<AppNotification>().warning(
+                                  'حداکثر ${wizardState.maxSelection} تمرین می‌توانید انتخاب کنید.',
+                                );
+                                return;
+                              }
+
+                              wizardCubit.toggleExerciseSelection(exercise);
+                            },
                             child: _ExerciseSelectTile(
                               exercise: exercise,
                               isSelected: isSelected,
@@ -424,6 +465,7 @@ class _SelectExercisesStep extends StatelessWidget {
                     );
                   },
                 ),
+
                 _ => const SizedBox(),
               };
             },
@@ -446,6 +488,7 @@ class _SelectExercisesStep extends StatelessWidget {
 class _ExerciseSelectTile extends StatelessWidget {
   final Exercise exercise;
   final bool isSelected;
+
   const _ExerciseSelectTile({required this.exercise, required this.isSelected});
 
   @override
@@ -458,12 +501,12 @@ class _ExerciseSelectTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             color: isSelected
-                ? AppColors.orange.withValues(alpha: 0.18)
+                ? AppColors.teal.withValues(alpha: 0.18)
                 : Colors.white.withValues(alpha: 0.40),
             borderRadius: BorderRadius.circular(AppRadius.lg - 4),
             border: Border.all(
               color: isSelected
-                  ? AppColors.orange.withValues(alpha: 0.6)
+                  ? AppColors.teal.withValues(alpha: 0.6)
                   : AppColors.glassBorder,
               width: isSelected ? 1.5 : 1.1,
             ),
@@ -476,11 +519,11 @@ class _ExerciseSelectTile extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isSelected
-                      ? AppColors.orange
+                      ? AppColors.teal
                       : Colors.white.withValues(alpha: 0.5),
                   border: Border.all(
                     color: isSelected
-                        ? AppColors.orange
+                        ? AppColors.teal
                         : AppColors.charcoal.withValues(alpha: 0.3),
                   ),
                 ),
@@ -519,32 +562,364 @@ class _ExerciseSelectTile extends StatelessWidget {
   }
 }
 
-// ── Step 3 ────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// Step 3
+// ─────────────────────────────────────────────────────────────
+
+// class _ConfigureStep extends StatefulWidget {
+//   const _ConfigureStep();
+
+//   @override
+//   State<_ConfigureStep> createState() => _ConfigureStepState();
+// }
+
+// class _ConfigureStepState extends State<_ConfigureStep> {
+//   late int _setsCount;
+//   late int _restSeconds;
+
+//   /// exerciseId -> reps for each set.
+//   ///
+//   /// Example:
+//   ///
+//   /// exercise-1 -> [12, 10, 10, 8]
+//   final Map<String, List<int>> _repsValues = {};
+
+//   final Map<String, TextEditingController> _tempoControllers = {};
+
+//   final Map<String, TextEditingController> _descriptionControllers = {};
+
+//   late final TextEditingController _restController;
+
+//   @override
+//   void initState() {
+//     super.initState();
+
+//     final state = context.read<ProgramExerciseWizardCubit>().state;
+
+//     _setsCount = _parseSets(state.sets);
+//     _restSeconds = _parseRest(state.rest);
+
+//     _restController = TextEditingController(text: _restSeconds.toString());
+
+//     for (final exercise in state.selectedExercises) {
+//       final config =
+//           state.itemConfigs[exercise.id] ?? const ExerciseItemConfig();
+
+//       _repsValues[exercise.id] = List.generate(_setsCount, (index) {
+//         if (config.reps.length == 1) {
+//           return _parseRep(config.reps.first);
+//         }
+
+//         if (index < config.reps.length) {
+//           return _parseRep(config.reps[index]);
+//         }
+
+//         return 1;
+//       });
+
+//       _tempoControllers[exercise.id] = TextEditingController(
+//         text: config.tempo,
+//       );
+
+//       _descriptionControllers[exercise.id] = TextEditingController(
+//         text: config.description,
+//       );
+//     }
+//   }
+
+//   int _parseSets(String value) {
+//     final count = int.tryParse(value.trim());
+
+//     if (count == null) {
+//       return 1;
+//     }
+
+//     return count.clamp(1, 100);
+//   }
+
+//   int _parseRest(String value) {
+//     final seconds = int.tryParse(value.trim());
+
+//     if (seconds == null) {
+//       return 0;
+//     }
+
+//     return seconds.clamp(0, 600);
+//   }
+
+//   int _parseRep(String value) {
+//     final reps = int.tryParse(value.trim());
+
+//     if (reps == null) {
+//       return 1;
+//     }
+
+//     return reps.clamp(1, 100);
+//   }
+
+//   void _onSetsChanged(int newCount) {
+//     if (newCount == _setsCount) {
+//       return;
+//     }
+
+//     setState(() {
+//       _setsCount = newCount;
+//       _syncRepsValues();
+//     });
+//   }
+
+//   void _onRestChanged(int seconds) {
+//     setState(() {
+//       _restSeconds = seconds;
+//     });
+//   }
+
+//   void _onRepChanged(String exerciseId, int setIndex, int reps) {
+//     setState(() {
+//       _repsValues[exerciseId]![setIndex] = reps;
+//     });
+//   }
+
+//   void _syncRepsValues() {
+//     final state = context.read<ProgramExerciseWizardCubit>().state;
+
+//     for (final exercise in state.selectedExercises) {
+//       final reps = _repsValues[exercise.id]!;
+
+//       if (reps.length < _setsCount) {
+//         reps.addAll(List.filled(_setsCount - reps.length, 1));
+//       } else if (reps.length > _setsCount) {
+//         reps.removeRange(_setsCount, reps.length);
+//       }
+//     }
+//   }
+
+//   @override
+//   void dispose() {
+//     _restController.dispose();
+
+//     for (final controller in _tempoControllers.values) {
+//       controller.dispose();
+//     }
+
+//     for (final controller in _descriptionControllers.values) {
+//       controller.dispose();
+//     }
+
+//     super.dispose();
+//   }
+
+//   Future<void> _submit(BuildContext context) async {
+//     final cubit = context.read<ProgramExerciseWizardCubit>();
+
+//     cubit
+//       ..setSets(_setsCount.toString())
+//       ..setRest(_restSeconds.toString());
+
+//     for (final exercise in cubit.state.selectedExercises) {
+//       cubit.updateItemConfig(
+//         exercise.id,
+//         reps: _repsValues[exercise.id]!
+//             .map((value) => value.toString())
+//             .toList(),
+//         tempo: _tempoControllers[exercise.id]!.text,
+//         description: _descriptionControllers[exercise.id]!.text,
+//       );
+//     }
+
+//     final success = await cubit.submit();
+
+//     if (!context.mounted) {
+//       return;
+//     }
+
+//     if (!success) {
+//       sl<AppNotification>().error('ایجاد تمرین ناموفق بود.');
+//       return;
+//     }
+
+//     sl<AppNotification>().success('تمرین با موفقیت ایجاد شد.');
+
+//     context.pop();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final wizardState = context.watch<ProgramExerciseWizardCubit>().state;
+
+//     return SingleChildScrollView(
+//       padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+//       child: Column(
+//         children: [
+//           _GlassCard(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Row(
+//                   children: [
+//                     Container(
+//                       padding: const EdgeInsets.symmetric(
+//                         horizontal: 10,
+//                         vertical: 5,
+//                       ),
+//                       decoration: BoxDecoration(
+//                         color: AppColors.teal.withValues(alpha: 0.15),
+//                         borderRadius: BorderRadius.circular(20),
+//                       ),
+//                       child: Text(
+//                         wizardState.trainingSystem.label,
+//                         style: const TextStyle(
+//                           color: AppColors.teal,
+//                           fontWeight: FontWeight.w600,
+//                           fontSize: 13,
+//                         ),
+//                       ),
+//                     ),
+//                     const SizedBox(width: 8),
+//                     Text(
+//                       'روز ${wizardState.day}',
+//                       style: AppTextStyles.bodySmall,
+//                     ),
+//                   ],
+//                 ),
+
+//                 const SizedBox(height: 18),
+
+//                 AppStepper(
+//                   label: 'ست',
+//                   value: _setsCount,
+//                   onChanged: _onSetsChanged,
+//                 ),
+
+//                 const SizedBox(height: 16),
+
+//                 AppNumberPicker(
+//                   label: 'استراحت (ثانیه)',
+//                   value: _restSeconds,
+//                   min: 0,
+//                   max: 600,
+//                   onChanged: _onRestChanged,
+//                 ),
+//               ],
+//             ),
+//           ),
+
+//           const SizedBox(height: 14),
+
+//           ...wizardState.selectedExercises.map((exercise) {
+//             final reps = _repsValues[exercise.id]!;
+
+//             return Padding(
+//               padding: const EdgeInsets.only(bottom: 14),
+//               child: _GlassCard(
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Text(
+//                       exercise.name,
+//                       style: AppTextStyles.titleMedium.copyWith(fontSize: 16),
+//                     ),
+
+//                     const SizedBox(height: 16),
+
+//                     Text('تکرار', style: AppTextStyles.bodySmall),
+
+//                     const SizedBox(height: 8),
+
+//                     ...List.generate(_setsCount, (index) {
+//                       return Padding(
+//                         padding: const EdgeInsets.only(bottom: 10),
+//                         child: AppNumberPicker(
+//                           label: 'ست ${index + 1}',
+//                           value: reps[index],
+//                           min: 1,
+//                           max: 100,
+//                           onChanged: (value) {
+//                             _onRepChanged(exercise.id, index, value);
+//                           },
+//                         ),
+//                       );
+//                     }),
+
+//                     const SizedBox(height: 4),
+
+//                     AppTextField(
+//                       controller: _tempoControllers[exercise.id]!,
+//                       label: 'تمپو',
+//                     ),
+
+//                     const SizedBox(height: 14),
+
+//                     AppTextField(
+//                       controller: _descriptionControllers[exercise.id]!,
+//                       label: 'توضیح',
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             );
+//           }),
+
+//           const SizedBox(height: 12),
+
+//           AppButton(
+//             text: 'تایید',
+//             isLoading: wizardState.isSubmitting,
+//             onPressed: wizardState.isSubmitting ? null : () => _submit(context),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+// ─────────────────────────────────────────────────────────────
+// Step 3 — Configure (UI improved)
+// ─────────────────────────────────────────────────────────────
 
 class _ConfigureStep extends StatefulWidget {
   const _ConfigureStep();
+
   @override
   State<_ConfigureStep> createState() => _ConfigureStepState();
 }
 
 class _ConfigureStepState extends State<_ConfigureStep> {
-  late final TextEditingController _setsController;
-  late final TextEditingController _restController;
-  final Map<String, TextEditingController> _repsControllers = {};
+  late int _setsCount;
+  late int _restSeconds;
+
+  /// exerciseId -> reps for each set.
+  final Map<String, List<int>> _repsValues = {};
+
   final Map<String, TextEditingController> _tempoControllers = {};
   final Map<String, TextEditingController> _descriptionControllers = {};
+
+  late final TextEditingController _restController;
 
   @override
   void initState() {
     super.initState();
+
     final state = context.read<ProgramExerciseWizardCubit>().state;
-    _setsController = TextEditingController(text: state.sets);
-    _restController = TextEditingController(text: state.rest);
+
+    _setsCount = _parseSets(state.sets);
+    _restSeconds = _parseRest(state.rest);
+    _restController = TextEditingController(text: _restSeconds.toString());
 
     for (final exercise in state.selectedExercises) {
       final config =
           state.itemConfigs[exercise.id] ?? const ExerciseItemConfig();
-      _repsControllers[exercise.id] = TextEditingController(text: config.reps);
+
+      _repsValues[exercise.id] = List.generate(_setsCount, (index) {
+        if (config.reps.length == 1) {
+          return _parseRep(config.reps.first);
+        }
+        if (index < config.reps.length) {
+          return _parseRep(config.reps[index]);
+        }
+        return 1;
+      });
+
       _tempoControllers[exercise.id] = TextEditingController(
         text: config.tempo,
       );
@@ -554,13 +929,55 @@ class _ConfigureStepState extends State<_ConfigureStep> {
     }
   }
 
+  int _parseSets(String value) {
+    final count = int.tryParse(value.trim());
+    if (count == null) return 1;
+    return count.clamp(1, 100);
+  }
+
+  int _parseRest(String value) {
+    final seconds = int.tryParse(value.trim());
+    if (seconds == null) return 0;
+    return seconds.clamp(0, 600);
+  }
+
+  int _parseRep(String value) {
+    final reps = int.tryParse(value.trim());
+    if (reps == null) return 1;
+    return reps.clamp(1, 100);
+  }
+
+  void _onSetsChanged(int newCount) {
+    if (newCount == _setsCount) return;
+    setState(() {
+      _setsCount = newCount;
+      _syncRepsValues();
+    });
+  }
+
+  void _onRestChanged(int seconds) {
+    setState(() => _restSeconds = seconds);
+  }
+
+  void _onRepChanged(String exerciseId, int setIndex, int reps) {
+    setState(() => _repsValues[exerciseId]![setIndex] = reps);
+  }
+
+  void _syncRepsValues() {
+    final state = context.read<ProgramExerciseWizardCubit>().state;
+    for (final exercise in state.selectedExercises) {
+      final reps = _repsValues[exercise.id]!;
+      if (reps.length < _setsCount) {
+        reps.addAll(List.filled(_setsCount - reps.length, 1));
+      } else if (reps.length > _setsCount) {
+        reps.removeRange(_setsCount, reps.length);
+      }
+    }
+  }
+
   @override
   void dispose() {
-    _setsController.dispose();
     _restController.dispose();
-    for (final c in _repsControllers.values) {
-      c.dispose();
-    }
     for (final c in _tempoControllers.values) {
       c.dispose();
     }
@@ -574,19 +991,22 @@ class _ConfigureStepState extends State<_ConfigureStep> {
     final cubit = context.read<ProgramExerciseWizardCubit>();
 
     cubit
-      ..setSets(_setsController.text)
-      ..setRest(_restController.text);
+      ..setSets(_setsCount.toString())
+      ..setRest(_restSeconds.toString());
 
     for (final exercise in cubit.state.selectedExercises) {
       cubit.updateItemConfig(
         exercise.id,
-        reps: _repsControllers[exercise.id]!.text,
+        reps: _repsValues[exercise.id]!
+            .map((value) => value.toString())
+            .toList(),
         tempo: _tempoControllers[exercise.id]!.text,
         description: _descriptionControllers[exercise.id]!.text,
       );
     }
 
     final success = await cubit.submit();
+
     if (!context.mounted) return;
 
     if (!success) {
@@ -595,14 +1015,6 @@ class _ConfigureStepState extends State<_ConfigureStep> {
     }
 
     sl<AppNotification>().success('تمرین با موفقیت ایجاد شد.');
-    // NOTE: context.pop() -> Navigator.pop(), which is UNCONDITIONAL and
-    // bypasses PopScope entirely (PopScope only governs maybePop-style
-    // attempts: system back / gesture / browser back / the in-app arrow
-    // above). So this always leaves the wizard cleanly regardless of
-    // which internal step we were last on, landing on whatever's
-    // directly beneath on the Navigator stack — the Detail page —
-    // while leaving the rest of the back-history (e.g. the Programs
-    // list) fully intact.
     context.pop();
   }
 
@@ -611,82 +1023,170 @@ class _ConfigureStepState extends State<_ConfigureStep> {
     final wizardState = context.watch<ProgramExerciseWizardCubit>().state;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // ── Global settings ──────────────────────────────
           _GlassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Meta row
                 Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.teal.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        wizardState.trainingSystem.label,
-                        style: const TextStyle(
-                          color: AppColors.teal,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
-                        ),
-                      ),
+                    _MetaChip(
+                      label: wizardState.trainingSystem.label,
+                      color: AppColors.teal,
+                      softColor: AppColors.teal.withValues(alpha: 0.12),
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'روز ${wizardState.day}',
-                      style: AppTextStyles.bodySmall,
+                    const SizedBox(width: 6),
+                    _MetaChip(
+                      label: 'روز ${wizardState.day}',
+                      color: AppColors.charcoal.withValues(alpha: 0.65),
+                      softColor: AppColors.glass,
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
-                AppTextField(controller: _setsController, label: 'ست'),
+
+                const SizedBox(height: 24),
+
+                // Section title
+                _SectionLabel(text: 'تنظیمات کلی'),
+
                 const SizedBox(height: 16),
-                AppTextField(controller: _restController, label: 'استراحت'),
+
+                AppStepper(
+                  label: 'تعداد ست',
+                  value: _setsCount,
+                  onChanged: _onSetsChanged,
+                ),
+
+                const SizedBox(height: 14),
+
+                AppNumberPicker(
+                  label: 'استراحت (ثانیه)',
+                  value: _restSeconds,
+                  min: 0,
+                  max: 600,
+                  onChanged: _onRestChanged,
+                ),
               ],
             ),
           ),
-          const SizedBox(height: 14),
+
+          const SizedBox(height: 18),
+
+          // ── Per-exercise cards ───────────────────────────
           ...wizardState.selectedExercises.map((exercise) {
+            final reps = _repsValues[exercise.id]!;
+
             return Padding(
               padding: const EdgeInsets.only(bottom: 14),
               child: _GlassCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      exercise.name,
-                      style: AppTextStyles.titleMedium.copyWith(fontSize: 16),
+                    // Exercise header
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                exercise.name,
+                                style: AppTextStyles.titleMedium.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '${exercise.targetMuscle.label}  •  ${exercise.equipment.label}',
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  color: AppColors.muted,
+                                  fontSize: 12.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.teal.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '$_setsCount ست',
+                            style: const TextStyle(
+                              color: AppColors.teal,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+
+                    const SizedBox(height: 18),
+
+                    // Reps section
+                    _SectionLabel(text: 'تکرارها'),
+
                     const SizedBox(height: 16),
-                    AppTextField(
-                      controller: _repsControllers[exercise.id]!,
-                      label: 'تکرار',
-                    ),
-                    const SizedBox(height: 14),
+
+                    ...List.generate(_setsCount, (index) {
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: index == _setsCount - 1 ? 0 : 10,
+                        ),
+                        child: AppNumberPicker(
+                          label: 'ست ${index + 1}',
+                          value: reps[index],
+                          min: 1,
+                          max: 100,
+                          onChanged: (value) {
+                            _onRepChanged(exercise.id, index, value);
+                          },
+                        ),
+                      );
+                    }),
+
+                    const SizedBox(height: 22),
+
+                    // Extra fields
+                    _SectionLabel(text: 'جزئیات بیشتر'),
+
+                    const SizedBox(height: 16),
+
                     AppTextField(
                       controller: _tempoControllers[exercise.id]!,
                       label: 'تمپو',
                     ),
-                    const SizedBox(height: 14),
+
+                    const SizedBox(height: 12),
+
                     AppTextField(
                       controller: _descriptionControllers[exercise.id]!,
                       label: 'توضیح',
+                      maxLines: 2,
                     ),
                   ],
                 ),
               ),
             );
           }),
+
           const SizedBox(height: 12),
+
           AppButton(
-            text: 'تایید',
+            text: 'تأیید و ذخیره',
             isLoading: wizardState.isSubmitting,
             onPressed: wizardState.isSubmitting ? null : () => _submit(context),
           ),
@@ -696,8 +1196,79 @@ class _ConfigureStepState extends State<_ConfigureStep> {
   }
 }
 
+// ── Small UI helpers for Step 3 ──────────────────────────────
+
+class _SectionLabel extends StatelessWidget {
+  final String text;
+
+  const _SectionLabel({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 3,
+          height: 14,
+          decoration: BoxDecoration(
+            color: AppColors.orange,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          text,
+          style: AppTextStyles.bodySmall.copyWith(
+            color: AppColors.charcoal.withValues(alpha: 0.75),
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+            letterSpacing: 0.2,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MetaChip extends StatelessWidget {
+  final String label;
+  final Color color;
+  final Color softColor;
+
+  const _MetaChip({
+    required this.label,
+    required this.color,
+    required this.softColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: softColor,
+        borderRadius: BorderRadius.circular(20),
+        //border: Border.all(color: color.withValues(alpha: 0.18), width: 1),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.w600,
+          fontSize: 12.5,
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Glass Card
+// ─────────────────────────────────────────────────────────────
+
 class _GlassCard extends StatelessWidget {
   final Widget child;
+
   const _GlassCard({required this.child});
 
   @override
