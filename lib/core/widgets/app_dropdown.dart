@@ -23,9 +23,9 @@ class AppDropdown<T> extends StatelessWidget {
       data: Theme.of(context).copyWith(
         // Drop down menu style
         canvasColor: AppColors.cream,
-        highlightColor: AppColors.orange.withValues(alpha: 0.12),
-        hoverColor: AppColors.orange.withValues(alpha: 0.08),
-        focusColor: AppColors.orange.withValues(alpha: 0.15),
+        highlightColor: AppColors.teal.withValues(alpha: 0.12),
+        hoverColor: AppColors.teal.withValues(alpha: 0.08),
+        focusColor: AppColors.teal.withValues(alpha: 0.15),
       ),
       child: DropdownButtonFormField<T>(
         initialValue: items.contains(value) ? value : null,
@@ -49,7 +49,7 @@ class AppDropdown<T> extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
           floatingLabelStyle: const TextStyle(
-            color: AppColors.orange,
+            color: AppColors.teal,
             fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
@@ -69,7 +69,7 @@ class AppDropdown<T> extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: AppColors.orange, width: 1.6),
+            borderSide: const BorderSide(color: AppColors.teal, width: 1.6),
           ),
         ),
         items: items.map((item) {

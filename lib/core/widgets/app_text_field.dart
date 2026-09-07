@@ -30,7 +30,7 @@ class AppTextField extends StatelessWidget {
         fontSize: 15,
         fontWeight: FontWeight.w500,
       ),
-      cursorColor: AppColors.orange,
+      cursorColor: AppColors.tealDark,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
@@ -40,7 +40,7 @@ class AppTextField extends StatelessWidget {
           fontWeight: FontWeight.w500,
         ),
         floatingLabelStyle: const TextStyle(
-          color: AppColors.orange,
+          color: AppColors.teal,
           fontSize: 14,
           fontWeight: FontWeight.w600,
         ),
@@ -64,8 +64,9 @@ class AppTextField extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.orange, width: 1.6),
+          borderSide: const BorderSide(color: AppColors.teal, width: 1.6),
         ),
+        hoverColor: AppColors.teal.withValues(alpha: 0.08),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.error, width: 1.2),
