@@ -1,7 +1,8 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
-class AppTextField extends StatelessWidget {
+class AppTextField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final String? hint;
@@ -20,11 +21,24 @@ class AppTextField extends StatelessWidget {
   });
 
   @override
+  State<AppTextField> createState() => _AppTextFieldState();
+}
+
+class _AppTextFieldState extends State<AppTextField> {
+  late bool _isObscured;
+
+  @override
+  void initState() {
+    super.initState();
+    _isObscured = widget.obscureText;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      maxLines: obscureText ? 1 : maxLines,
-      obscureText: obscureText,
+      controller: widget.controller,
+      maxLines: _isObscured ? 1 : widget.maxLines,
+      obscureText: _isObscured,
       style: const TextStyle(
         color: AppColors.charcoal,
         fontSize: 15,
@@ -32,8 +46,8 @@ class AppTextField extends StatelessWidget {
       ),
       cursorColor: AppColors.tealDark,
       decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
+        labelText: widget.label,
+        hintText: widget.hint,
         labelStyle: TextStyle(
           color: AppColors.charcoal.withValues(alpha: 0.7),
           fontSize: 14,
@@ -75,8 +89,24 @@ class AppTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.error, width: 1.6),
         ),
+        suffixIcon: widget.obscureText
+            ? IconButton(
+                onPressed: () {
+                  setState(() {
+                    _isObscured = !_isObscured;
+                  });
+                },
+                icon: HugeIcon(
+                  icon: _isObscured
+                      ? HugeIcons.strokeRoundedView
+                      : HugeIcons.strokeRoundedViewOff,
+                  color: AppColors.charcoal.withValues(alpha: 0.3),
+                  size: 22,
+                ),
+              )
+            : null,
       ),
-      validator: validator,
+      validator: widget.validator,
     );
   }
 }
