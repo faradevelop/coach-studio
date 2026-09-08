@@ -74,9 +74,9 @@ flutter:
 
   # ─────────────── Fonts ───────────────
   fonts:
-    - family: Vazirmatn
+    - family: iranSans
       fonts:
-        - asset: assets/fonts/Vazirmatn-Regular.ttf
-        - asset: assets/fonts/Vazirmatn-Bold.ttf
+        - asset: assets/fonts/iranSans_Regular.ttf
+        - asset: assets/fonts/iranSans_Bold.ttf
           weight: 700
 

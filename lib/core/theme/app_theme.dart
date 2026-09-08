@@ -8,7 +8,7 @@ class AppTheme {
   static ThemeData get light {
     final base = ThemeData(
       useMaterial3: true,
-      fontFamily: 'Vazirmatn',
+      fontFamily: 'iranSans',
       brightness: Brightness.light,
     );
 
@@ -64,9 +64,7 @@ class AppTheme {
         backgroundColor: AppColors.charcoal,
         foregroundColor: AppColors.onCharcoal,
         elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
 
       // ── Buttons ──────────────────────────────────────────
@@ -96,7 +94,10 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.glass,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(color: AppColors.glassBorder),
@@ -148,9 +149,7 @@ class AppTheme {
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.cream.withValues(alpha: 0.95),
         elevation: 12,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       ),
 
       // ── Progress Indicator ───────────────────────────────
@@ -165,10 +164,7 @@ class AppTheme {
       ),
 
       // ── Icon ─────────────────────────────────────────────
-      iconTheme: const IconThemeData(
-        color: AppColors.charcoal,
-        size: 22,
-      ),
+      iconTheme: const IconThemeData(color: AppColors.charcoal, size: 22),
     );
   }
 }
