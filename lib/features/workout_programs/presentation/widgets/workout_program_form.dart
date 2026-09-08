@@ -5,6 +5,7 @@ import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_dropdown.dart';
+import 'package:coach_studio/core/widgets/app_number_picker.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
@@ -30,9 +31,8 @@ class WorkoutProgramForm extends StatefulWidget {
 
 class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
   final _formKey = GlobalKey<FormState>();
-
+  late int _daysPerWeak;
   late final TextEditingController _titleController;
-  late final TextEditingController _daysController;
   late final TextEditingController _notesController;
   ProgramGoal? _goal;
   ProgramLevel? _level;
@@ -42,9 +42,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
     super.initState();
     final program = widget.initialProgram;
     _titleController = TextEditingController(text: program?.title ?? '');
-    _daysController = TextEditingController(
-      text: program?.daysPerWeek.toString() ?? '',
-    );
+    _daysPerWeak = program?.daysPerWeek ?? 1;
     _notesController = TextEditingController(text: program?.notes ?? '');
     _goal = program?.goal;
     _level = program?.level;
@@ -53,7 +51,6 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
   @override
   void dispose() {
     _titleController.dispose();
-    _daysController.dispose();
     _notesController.dispose();
     super.dispose();
   }
@@ -68,7 +65,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
       title: _titleController.text.trim(),
       goal: _goal!,
       level: _level!,
-      daysPerWeek: int.parse(_daysController.text),
+      daysPerWeek: _daysPerWeak,
       notes: _notesController.text.trim(),
       isTemplate: oldProgram?.isTemplate ?? true,
     );
@@ -201,17 +198,13 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
 
                               Visibility(
                                 visible: widget.initialProgram == null,
-                                child: AppTextField(
-                                  controller: _daysController,
+                                child: AppNumberPicker(
                                   label: 'روز در هفته',
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Required';
-                                    }
-                                    if (int.tryParse(value) == null) {
-                                      return 'Enter number';
-                                    }
-                                    return null;
+                                  value: _daysPerWeak,
+                                  min: 1,
+                                  max: 7,
+                                  onChanged: (value) {
+                                    _daysPerWeak = value;
                                   },
                                 ),
                               ),
