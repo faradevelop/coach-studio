@@ -248,6 +248,7 @@ class _ProfileInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         icon,
         const SizedBox(width: 10),
@@ -257,14 +258,16 @@ class _ProfileInfoRow extends StatelessWidget {
             color: AppColors.charcoal.withValues(alpha: 0.6),
           ),
         ),
-        const Spacer(),
-        Flexible(
-          child: Text(
-            value,
-            textAlign: TextAlign.end,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
+        Expanded(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
+            ),
           ),
         ),
       ],
@@ -292,6 +295,9 @@ class _SettingsActionTile extends StatelessWidget {
         child: Material(
           color: Colors.white.withValues(alpha: 0.38),
           child: InkWell(
+            mouseCursor: MouseCursor.uncontrolled,
+            hoverColor: Colors.transparent,
+            splashColor: Colors.transparent,
             onTap: onTap,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
