@@ -5,7 +5,7 @@ import 'package:coach_studio/core/network/api_exception.dart';
 import 'package:coach_studio/core/storage/token_storage.dart';
 
 /// Thin HTTP wrapper responsible for:
-/// - sending requests with JSON headers (+ Authorization: Bearer <token>
+/// - sending requests with JSON headers (+ Authorization: Bearer `<token>`
 ///   when a session is active)
 /// - unwrapping the backend's standard envelope: { success, message, data|errors }
 /// - throwing ApiException on failure so callers can handle it uniformly
@@ -25,10 +25,9 @@ class ApiClient {
   ApiClient({
     required this.baseUrl,
     required this.tokenStorage,
-    required AppLogger logger,
+    required this._logger,
     http.Client? client,
-  }) : _logger = logger,
-       _client = client ?? http.Client();
+  }) : _client = client ?? http.Client();
 
   Map<String, String> get _headers {
     final headers = <String, String>{

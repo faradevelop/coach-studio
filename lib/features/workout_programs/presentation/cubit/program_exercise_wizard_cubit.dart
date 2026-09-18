@@ -22,9 +22,8 @@ class ProgramExerciseWizardCubit extends Cubit<ProgramExerciseWizardState> {
   ProgramExerciseWizardCubit({
     required this.programId,
     required this.programExerciseCubit,
-    required AppLogger logger,
-  }) : _logger = logger,
-       super(const ProgramExerciseWizardState());
+    required this._logger,
+  }) : super(const ProgramExerciseWizardState());
 
   // ── Step 1 ────────────────────────────────────────────────────
   void setDay(int day) => emit(state.copyWith(day: day));
