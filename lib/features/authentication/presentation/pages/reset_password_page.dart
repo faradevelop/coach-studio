@@ -2,11 +2,13 @@ import 'dart:ui';
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
+import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
+import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -125,70 +127,73 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-                  child: _GlassCard(
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          AppTextField(
-                            controller: _emailController,
-                            label: 'ایمیل',
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return 'الزامی';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          AppTextField(
-                            controller: _tokenController,
-                            label: 'کد بازیابی',
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return 'الزامی';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          AppTextField(
-                            controller: _passwordController,
-                            label: 'رمز عبور جدید',
-                            obscureText: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'الزامی';
-                              }
-                              if (value.length < 8) {
-                                return 'حداقل ۸ کاراکتر';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          AppTextField(
-                            controller: _confirmPasswordController,
-                            label: 'تکرار رمز عبور جدید',
-                            obscureText: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'الزامی';
-                              }
-                              if (value != _passwordController.text) {
-                                return 'رمز عبور مطابقت ندارد';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 24),
-                          AppButton(
-                            text: 'تغییر رمز عبور',
-                            isLoading: _isSubmitting,
-                            onPressed: _isSubmitting ? null : _submit,
-                          ),
-                        ],
+                  child: MaxWidthBox(
+                    maxWidth: AppContentWidth.form,
+                    child: _GlassCard(
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            AppTextField(
+                              controller: _emailController,
+                              label: 'ایمیل',
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'الزامی';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            AppTextField(
+                              controller: _tokenController,
+                              label: 'کد بازیابی',
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'الزامی';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            AppTextField(
+                              controller: _passwordController,
+                              label: 'رمز عبور جدید',
+                              obscureText: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'الزامی';
+                                }
+                                if (value.length < 8) {
+                                  return 'حداقل ۸ کاراکتر';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            AppTextField(
+                              controller: _confirmPasswordController,
+                              label: 'تکرار رمز عبور جدید',
+                              obscureText: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'الزامی';
+                                }
+                                if (value != _passwordController.text) {
+                                  return 'رمز عبور مطابقت ندارد';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 24),
+                            AppButton(
+                              text: 'تغییر رمز عبور',
+                              isLoading: _isSubmitting,
+                              onPressed: _isSubmitting ? null : _submit,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

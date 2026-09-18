@@ -4,6 +4,7 @@ import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
+import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
@@ -12,6 +13,7 @@ import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_error_state.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
+import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/workout_programs/data/services/workout_program_pdf_generator.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
@@ -236,31 +238,37 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
         child: SafeArea(
           child: Column(
             children: [
-              InnerPagesAppBar(
-                rightButton: _PdfButton(
-                  enabled: !_isGeneratingPdf,
-                  onTap: () => _generatePdf(context),
+              MaxWidthBox(
+                maxWidth: AppContentWidth.detail,
+                child: InnerPagesAppBar(
+                  rightButton: _PdfButton(
+                    enabled: !_isGeneratingPdf,
+                    onTap: () => _generatePdf(context),
+                  ),
+                  title: widget.program.title,
                 ),
-                title: widget.program.title,
               ),
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.only(top: 8, bottom: 32),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: _buildProgramInfoCard(context),
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: _buildExercisesHeader(context),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      _buildExercisesList(context),
-                    ],
+                  child: MaxWidthBox(
+                    maxWidth: AppContentWidth.detail,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: _buildProgramInfoCard(context),
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: _buildExercisesHeader(context),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        _buildExercisesList(context),
+                      ],
+                    ),
                   ),
                 ),
               ),

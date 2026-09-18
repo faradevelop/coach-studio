@@ -1,11 +1,14 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
+import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/app_error_state.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/custom_search_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
+import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
+import 'package:coach_studio/core/widgets/responsive/responsive_grid.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
@@ -60,11 +63,14 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
 
             return Column(
               children: [
-                CustomAppBar(
-                  onPressed: () {
-                    context.pushNamed(AppRouteNames.createExercise);
-                  },
-                  title: 'تمرین‌ها',
+                MaxWidthBox(
+                  maxWidth: AppContentWidth.shell,
+                  child: CustomAppBar(
+                    onPressed: () {
+                      context.pushNamed(AppRouteNames.createExercise);
+                    },
+                    title: 'تمرین‌ها',
+                  ),
                 ),
                 const SizedBox(height: 28),
                 if (state is ExerciseLoaded && state.exercises.isNotEmpty) ...[
@@ -107,18 +113,32 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                                   );
                                 }
 
-                                return ListView.builder(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
+                                return ResponsiveGrid(
+                                  breakpoints: const [
+                                    ResponsiveGridBreakpoint(
+                                      minWidth: 0,
+                                      columns: 1,
+                                    ),
+                                    ResponsiveGridBreakpoint(
+                                      minWidth: 650,
+                                      columns: 2,
+                                    ),
+                                    ResponsiveGridBreakpoint(
+                                      minWidth: 1000,
+                                      columns: 3,
+                                    ),
+                                  ],
+                                  itemExtent:
+                                      120, // ExerciseCard's fixed 108px + its own 6+6 vertical margin
+                                  padding: const EdgeInsets.fromLTRB(
+                                    0,
+                                    12,
+                                    0,
+                                    90,
                                   ),
-                                  itemCount: filtered.length + 1,
+                                  itemCount: filtered.length,
                                   itemBuilder: (context, index) {
-                                    if (index == filtered.length) {
-                                      return const SizedBox(height: 60);
-                                    }
-
                                     final exercise = filtered[index];
-
                                     return ExerciseCard(
                                       exercise: exercise,
                                       onEdit: () {

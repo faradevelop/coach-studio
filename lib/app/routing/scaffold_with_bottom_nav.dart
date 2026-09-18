@@ -1,6 +1,8 @@
 import 'dart:ui';
 
+import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -37,14 +39,17 @@ class ScaffoldWithBottomNav extends StatelessWidget {
           end: 12,
           bottom: 16,
           child: Center(
-            child: GlassBottomNav(
-              currentIndex: navigationShell.currentIndex,
-              onTap: (index) {
-                navigationShell.goBranch(
-                  index,
-                  initialLocation: index == navigationShell.currentIndex,
-                );
-              },
+            child: MaxWidthBox(
+              maxWidth: AppContentWidth.bottomNav,
+              child: GlassBottomNav(
+                currentIndex: navigationShell.currentIndex,
+                onTap: (index) {
+                  navigationShell.goBranch(
+                    index,
+                    initialLocation: index == navigationShell.currentIndex,
+                  );
+                },
+              ),
             ),
           ),
         ),

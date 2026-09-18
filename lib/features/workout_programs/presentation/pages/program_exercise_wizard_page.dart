@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
+import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
@@ -14,6 +15,7 @@ import 'package:coach_studio/core/widgets/app_number_picker.dart';
 import 'package:coach_studio/core/widgets/app_stepper.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/core/widgets/custom_search_bar.dart';
+import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
@@ -194,46 +196,51 @@ class _WizardAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-      child: Row(
-        children: [
-          _StepDots(currentStep: step),
-          const Spacer(),
-          Column(
-            children: [
-              Text(_title, style: AppTextStyles.titleMedium),
-              const SizedBox(height: 4),
-              Container(
-                height: 3,
-                width: 90,
-                decoration: BoxDecoration(
-                  color: AppColors.orange,
-                  borderRadius: BorderRadius.circular(2),
+      child: MaxWidthBox(
+        maxWidth: AppContentWidth.form,
+        child: Row(
+          children: [
+            _StepDots(currentStep: step),
+            const Spacer(),
+            Column(
+              children: [
+                Text(_title, style: AppTextStyles.titleMedium),
+                const SizedBox(height: 4),
+                Container(
+                  height: 3,
+                  width: 90,
+                  decoration: BoxDecoration(
+                    color: AppColors.orange,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          GestureDetector(
-            onTap: () => Navigator.of(context).maybePop(),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.35),
-                borderRadius: BorderRadius.circular(50),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
-              ),
-              child: const Directionality(
-                textDirection: TextDirection.ltr,
-                child: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: 18,
-                  color: AppColors.charcoal,
+              ],
+            ),
+            const Spacer(),
+            GestureDetector(
+              onTap: () => Navigator.of(context).maybePop(),
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.35),
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.4),
+                  ),
+                ),
+                child: const Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 18,
+                    color: AppColors.charcoal,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -287,39 +294,42 @@ class _DayStep extends StatelessWidget {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-      child: _GlassCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            AppDropdown<int>(
-              label: 'روز تمرین',
-              value: state.day,
-              items: List.generate(program.daysPerWeek, (i) => i + 1),
-              itemLabel: (day) => 'روز $day',
-              onChanged: (value) {
-                if (value != null) {
-                  cubit.setDay(value);
-                }
-              },
-            ),
-            const SizedBox(height: 20),
-            AppDropdown<TrainingSystem>(
-              label: 'سیستم تمرینی',
-              value: state.trainingSystem,
-              items: TrainingSystem.values,
-              itemLabel: (item) => item.label,
-              onChanged: (value) {
-                if (value != null) {
-                  cubit.setTrainingSystem(value);
-                }
-              },
-            ),
-            const SizedBox(height: 36),
-            AppButton(
-              text: 'تایید و مرحله بعد',
-              onPressed: cubit.goToSelectExercises,
-            ),
-          ],
+      child: MaxWidthBox(
+        maxWidth: AppContentWidth.form,
+        child: _GlassCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppDropdown<int>(
+                label: 'روز تمرین',
+                value: state.day,
+                items: List.generate(program.daysPerWeek, (i) => i + 1),
+                itemLabel: (day) => 'روز $day',
+                onChanged: (value) {
+                  if (value != null) {
+                    cubit.setDay(value);
+                  }
+                },
+              ),
+              const SizedBox(height: 20),
+              AppDropdown<TrainingSystem>(
+                label: 'سیستم تمرینی',
+                value: state.trainingSystem,
+                items: TrainingSystem.values,
+                itemLabel: (item) => item.label,
+                onChanged: (value) {
+                  if (value != null) {
+                    cubit.setTrainingSystem(value);
+                  }
+                },
+              ),
+              const SizedBox(height: 36),
+              AppButton(
+                text: 'تایید و مرحله بعد',
+                onPressed: cubit.goToSelectExercises,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -364,123 +374,129 @@ class _SelectExercisesStep extends StatelessWidget {
 
     final wizardState = context.watch<ProgramExerciseWizardCubit>().state;
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-          child: Row(
-            children: [
-              Expanded(
-                child: CustomSearchBar(
-                  hint: 'جستجو ...',
-                  controller: searchController,
-                  onChanged: onQueryChanged,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.teal.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  '${wizardState.selectedExercises.length.persianNumber}/${wizardState.maxSelection.persianNumber}',
-                  style: const TextStyle(
-                    color: AppColors.teal,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13,
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      child: MaxWidthBox(
+        maxWidth: AppContentWidth.form,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CustomSearchBar(
+                      hint: 'جستجو ...',
+                      controller: searchController,
+                      onChanged: onQueryChanged,
+                    ),
                   ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: BlocBuilder<ExerciseCubit, ExerciseState>(
-            builder: (context, state) {
-              return switch (state) {
-                ExerciseLoading() => Center(
-                  child: LoadingAnimationWidget.hexagonDots(
-                    color: AppColors.orange,
-                    size: 40,
+                  const SizedBox(width: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.teal.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      '${wizardState.selectedExercises.length.persianNumber}/${wizardState.maxSelection.persianNumber}',
+                      style: const TextStyle(
+                        color: AppColors.teal,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                      ),
+                    ),
                   ),
-                ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: BlocBuilder<ExerciseCubit, ExerciseState>(
+                builder: (context, state) {
+                  return switch (state) {
+                    ExerciseLoading() => Center(
+                      child: LoadingAnimationWidget.hexagonDots(
+                        color: AppColors.orange,
+                        size: 40,
+                      ),
+                    ),
 
-                ExerciseError() => const Center(
-                  child: Text('خطا در بارگذاری تمرین‌ها'),
-                ),
+                    ExerciseError() => const Center(
+                      child: Text('خطا در بارگذاری تمرین‌ها'),
+                    ),
 
-                ExerciseLoaded(:final exercises) => Builder(
-                  builder: (_) {
-                    final filtered = _filter(exercises);
+                    ExerciseLoaded(:final exercises) => Builder(
+                      builder: (_) {
+                        final filtered = _filter(exercises);
 
-                    if (filtered.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'تمرینی پیدا نشد!',
-                          style: AppTextStyles.subtitle,
-                        ),
-                      );
-                    }
-
-                    return ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
-                      itemCount: filtered.length,
-                      itemBuilder: (_, index) {
-                        final exercise = filtered[index];
-
-                        final isSelected = wizardState.selectedExercises.any(
-                          (e) => e.id == exercise.id,
-                        );
-
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: GestureDetector(
-                            onTap: () {
-                              final isSelected = wizardState.selectedExercises
-                                  .any((e) => e.id == exercise.id);
-
-                              if (!isSelected &&
-                                  wizardState.selectedExercises.length >=
-                                      wizardState.maxSelection) {
-                                sl<AppNotification>().warning(
-                                  'حداکثر ${wizardState.maxSelection} تمرین می‌توانید انتخاب کنید.',
-                                );
-                                return;
-                              }
-
-                              wizardCubit.toggleExerciseSelection(exercise);
-                            },
-                            child: _ExerciseSelectTile(
-                              exercise: exercise,
-                              isSelected: isSelected,
+                        if (filtered.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'تمرینی پیدا نشد!',
+                              style: AppTextStyles.subtitle,
                             ),
-                          ),
+                          );
+                        }
+
+                        return ListView.builder(
+                          padding: const EdgeInsets.fromLTRB(0, 4, 0, 20),
+                          itemCount: filtered.length,
+                          itemBuilder: (_, index) {
+                            final exercise = filtered[index];
+
+                            final isSelected = wizardState.selectedExercises
+                                .any((e) => e.id == exercise.id);
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  final isSelected = wizardState
+                                      .selectedExercises
+                                      .any((e) => e.id == exercise.id);
+
+                                  if (!isSelected &&
+                                      wizardState.selectedExercises.length >=
+                                          wizardState.maxSelection) {
+                                    sl<AppNotification>().warning(
+                                      'حداکثر ${wizardState.maxSelection} تمرین می‌توانید انتخاب کنید.',
+                                    );
+                                    return;
+                                  }
+
+                                  wizardCubit.toggleExerciseSelection(exercise);
+                                },
+                                child: _ExerciseSelectTile(
+                                  exercise: exercise,
+                                  isSelected: isSelected,
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                ),
+                    ),
 
-                _ => const SizedBox(),
-              };
-            },
-          ),
+                    _ => const SizedBox(),
+                  };
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 20),
+              child: AppButton(
+                text: 'تایید و مرحله بعد',
+                onPressed: wizardCubit.canProceedToConfigure
+                    ? wizardCubit.goToConfigure
+                    : null,
+              ),
+            ),
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-          child: AppButton(
-            text: 'تایید و مرحله بعد',
-            onPressed: wizardCubit.canProceedToConfigure
-                ? wizardCubit.goToConfigure
-                : null,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -561,6 +577,10 @@ class _ExerciseSelectTile extends StatelessWidget {
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────
+// Step 3
+// ─────────────────────────────────────────────────────────────
 
 class _ConfigureStep extends StatefulWidget {
   const _ConfigureStep();
@@ -705,173 +725,178 @@ class _ConfigureStepState extends State<_ConfigureStep> {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // ── Global settings ──────────────────────────────
-          _GlassCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Meta row
-                Row(
-                  children: [
-                    _MetaChip(
-                      label: wizardState.trainingSystem.label,
-                      color: AppColors.teal,
-                      softColor: AppColors.teal.withValues(alpha: 0.12),
-                    ),
-                    const SizedBox(width: 6),
-                    _MetaChip(
-                      label: 'روز ${wizardState.day}',
-                      color: AppColors.charcoal.withValues(alpha: 0.65),
-                      softColor: AppColors.glass,
-                    ),
-                  ],
-                ),
+      child: MaxWidthBox(
+        maxWidth: AppContentWidth.form,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // ── Global settings ──────────────────────────────
+            _GlassCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Meta row
+                  Row(
+                    children: [
+                      _MetaChip(
+                        label: wizardState.trainingSystem.label,
+                        color: AppColors.teal,
+                        softColor: AppColors.teal.withValues(alpha: 0.12),
+                      ),
+                      const SizedBox(width: 6),
+                      _MetaChip(
+                        label: 'روز ${wizardState.day}',
+                        color: AppColors.charcoal.withValues(alpha: 0.65),
+                        softColor: AppColors.glass,
+                      ),
+                    ],
+                  ),
 
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-                // Section title
-                _SectionLabel(text: 'تنظیمات کلی'),
+                  // Section title
+                  _SectionLabel(text: 'تنظیمات کلی'),
 
-                const SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
-                AppStepper(
-                  label: 'تعداد ست',
-                  value: _setsCount,
-                  onChanged: _onSetsChanged,
-                ),
+                  AppStepper(
+                    label: 'تعداد ست',
+                    value: _setsCount,
+                    onChanged: _onSetsChanged,
+                  ),
 
-                const SizedBox(height: 14),
+                  const SizedBox(height: 14),
 
-                AppNumberPicker(
-                  label: 'استراحت (ثانیه)',
-                  value: _restSeconds,
-                  min: 0,
-                  max: 600,
-                  onChanged: _onRestChanged,
-                ),
-              ],
+                  AppNumberPicker(
+                    label: 'استراحت (ثانیه)',
+                    value: _restSeconds,
+                    min: 0,
+                    max: 600,
+                    onChanged: _onRestChanged,
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          const SizedBox(height: 18),
+            const SizedBox(height: 18),
 
-          // ── Per-exercise cards ───────────────────────────
-          ...wizardState.selectedExercises.map((exercise) {
-            final reps = _repsValues[exercise.id]!;
+            // ── Per-exercise cards ───────────────────────────
+            ...wizardState.selectedExercises.map((exercise) {
+              final reps = _repsValues[exercise.id]!;
 
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 14),
-              child: _GlassCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Exercise header
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                exercise.name,
-                                style: AppTextStyles.titleMedium.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: _GlassCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Exercise header
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  exercise.name,
+                                  style: AppTextStyles.titleMedium.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${exercise.targetMuscle.label}  •  ${exercise.equipment.label}',
-                                style: AppTextStyles.bodySmall.copyWith(
-                                  color: AppColors.muted,
-                                  fontSize: 12.5,
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${exercise.targetMuscle.label}  •  ${exercise.equipment.label}',
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    color: AppColors.muted,
+                                    fontSize: 12.5,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.teal.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            '${_setsCount.persianNumber} ست',
-                            style: const TextStyle(
-                              color: AppColors.teal,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12,
+                              ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.teal.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              '${_setsCount.persianNumber} ست',
+                              style: const TextStyle(
+                                color: AppColors.teal,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
 
-                    const SizedBox(height: 18),
+                      const SizedBox(height: 18),
 
-                    // Reps section
-                    _SectionLabel(text: 'تکرارها'),
+                      // Reps section
+                      _SectionLabel(text: 'تکرارها'),
 
-                    const SizedBox(height: 16),
+                      const SizedBox(height: 16),
 
-                    ...List.generate(_setsCount, (index) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          bottom: index == _setsCount - 1 ? 0 : 10,
-                        ),
-                        child: AppNumberPicker(
-                          label: 'ست ${index + 1}',
-                          value: reps[index],
-                          min: 1,
-                          max: 100,
-                          onChanged: (value) {
-                            _onRepChanged(exercise.id, index, value);
-                          },
-                        ),
-                      );
-                    }),
+                      ...List.generate(_setsCount, (index) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: index == _setsCount - 1 ? 0 : 10,
+                          ),
+                          child: AppNumberPicker(
+                            label: 'ست ${index + 1}',
+                            value: reps[index],
+                            min: 1,
+                            max: 100,
+                            onChanged: (value) {
+                              _onRepChanged(exercise.id, index, value);
+                            },
+                          ),
+                        );
+                      }),
 
-                    const SizedBox(height: 22),
+                      const SizedBox(height: 22),
 
-                    // Extra fields
-                    _SectionLabel(text: 'جزئیات بیشتر'),
+                      // Extra fields
+                      _SectionLabel(text: 'جزئیات بیشتر'),
 
-                    const SizedBox(height: 16),
+                      const SizedBox(height: 16),
 
-                    AppTextField(
-                      controller: _tempoControllers[exercise.id]!,
-                      label: 'تمپو',
-                    ),
+                      AppTextField(
+                        controller: _tempoControllers[exercise.id]!,
+                        label: 'تمپو',
+                      ),
 
-                    const SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                    AppTextField(
-                      controller: _descriptionControllers[exercise.id]!,
-                      label: 'توضیح',
-                      maxLines: 2,
-                    ),
-                  ],
+                      AppTextField(
+                        controller: _descriptionControllers[exercise.id]!,
+                        label: 'توضیح',
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
 
-          const SizedBox(height: 12),
+            const SizedBox(height: 12),
 
-          AppButton(
-            text: 'تأیید و ذخیره',
-            isLoading: wizardState.isSubmitting,
-            onPressed: wizardState.isSubmitting ? null : () => _submit(context),
-          ),
-        ],
+            AppButton(
+              text: 'تأیید و ذخیره',
+              isLoading: wizardState.isSubmitting,
+              onPressed: wizardState.isSubmitting
+                  ? null
+                  : () => _submit(context),
+            ),
+          ],
+        ),
       ),
     );
   }

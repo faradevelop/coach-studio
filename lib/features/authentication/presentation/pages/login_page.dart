@@ -2,11 +2,13 @@ import 'dart:ui';
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
+import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
+import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,30 +74,33 @@ class _LoginPageState extends State<LoginPage> {
           child: Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Column(
-                    children: [
-                      Text('ورود به حساب', style: AppTextStyles.display),
-                      const SizedBox(height: 8),
-                      Text(
-                        'برای مدیریت برنامه‌های تمرینی وارد شوید',
-                        textAlign: TextAlign.center,
-                        style: AppTextStyles.subtitle,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
-                  _LoginFormCard(
-                    formKey: _formKey,
-                    identifierController: _identifierController,
-                    passwordController: _passwordController,
-                    isSubmitting: _isSubmitting,
-                    onSubmit: _submit,
-                  ),
-                ],
+              child: MaxWidthBox(
+                maxWidth: AppContentWidth.form,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Column(
+                      children: [
+                        Text('ورود به حساب', style: AppTextStyles.display),
+                        const SizedBox(height: 8),
+                        Text(
+                          'برای مدیریت برنامه‌های تمرینی وارد شوید',
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.subtitle,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    _LoginFormCard(
+                      formKey: _formKey,
+                      identifierController: _identifierController,
+                      passwordController: _passwordController,
+                      isSubmitting: _isSubmitting,
+                      onSubmit: _submit,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

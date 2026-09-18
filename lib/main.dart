@@ -5,7 +5,9 @@ import 'package:coach_studio/app/routing/app_router.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/core/storage/token_storage.dart';
+import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_theme.dart';
+import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
@@ -89,19 +91,11 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.light,
         routerConfig: AppRouter.router,
         builder: (context, child) {
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              final isDesktop = constraints.maxWidth >= 1000;
-
-              return Align(
-                alignment: Alignment.topCenter,
-                child: SizedBox(
-                  width: isDesktop ? 1000 : double.infinity,
-                  height: double.infinity,
-                  child: child,
-                ),
-              );
-            },
+          if (child == null) return const SizedBox.shrink();
+          return MaxWidthBox(
+            maxWidth: AppContentWidth.shell,
+            expandHeight: true,
+            child: child,
           );
         },
       ),

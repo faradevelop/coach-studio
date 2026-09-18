@@ -24,6 +24,7 @@ class CustomAppBar extends StatelessWidget {
               children: [
                 Text(
                   title,
+                  maxLines: 1,
                   style: AppTextStyles.title.copyWith(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
@@ -86,7 +87,7 @@ class CustomAppBar extends StatelessWidget {
 }
 
 class InnerPagesAppBar extends StatelessWidget {
-  final Widget rightButton;
+  final Widget? rightButton;
   final String title;
 
   const InnerPagesAppBar({
@@ -101,7 +102,7 @@ class InnerPagesAppBar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
       child: Row(
         children: [
-          rightButton,
+          rightButton ?? SizedBox(),
           const Spacer(),
           Column(
             children: [
