@@ -79,6 +79,7 @@ class AppRouter {
       }
 
       final isAuthenticated = authState is AuthAuthenticated;
+      final isAdmin = authState is AuthAuthenticated && authState.user.isAdmin;
 
       if (!isAuthenticated) {
         return isAuthRoute ? null : AppRoutes.login;
@@ -86,6 +87,11 @@ class AppRouter {
 
       if (isAuthRoute || isSplash) {
         return AppRoutes.workoutProgramsList;
+      }
+
+      if (isAdmin == false && location.startsWith('${AppRoutes.exercises}/')) {
+        // /exercises/create and /exercises/:id/edit are admin-only
+        return AppRoutes.exercises;
       }
 
       return null;
