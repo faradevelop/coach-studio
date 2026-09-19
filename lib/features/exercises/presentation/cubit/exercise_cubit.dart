@@ -74,6 +74,10 @@ class ExerciseCubit extends Cubit<ExerciseState> {
     try {
       await _refreshExercises();
       _logger.info('ExerciseCubit: exercise added successfully');
+    } on ForbiddenException catch (e) {
+      _logger.warning('ExerciseCubit: add forbidden', error: e.message);
+      _restoreState(currentState);
+      return false;
     } on AppException catch (e) {
       _logger.error(
         'ExerciseCubit: refresh failed after adding exercise',
@@ -110,6 +114,10 @@ class ExerciseCubit extends Cubit<ExerciseState> {
         _restoreState(currentState);
         return false;
       }
+    } on ForbiddenException catch (e) {
+      _logger.warning('ExerciseCubit: update forbidden', error: e.message);
+      _restoreState(currentState);
+      return false;
     } on AppException catch (e) {
       _logger.error('ExerciseCubit: error updating exercise', error: e.message);
       emit(ExerciseError(e.message));
@@ -163,6 +171,10 @@ class ExerciseCubit extends Cubit<ExerciseState> {
         _restoreState(currentState);
         return false;
       }
+    } on ForbiddenException catch (e) {
+      _logger.warning('ExerciseCubit: delete forbidden', error: e.message);
+      _restoreState(currentState);
+      return false;
     } on AppException catch (e) {
       _logger.error('ExerciseCubit: error deleting exercise', error: e.message);
       emit(ExerciseError(e.message));
