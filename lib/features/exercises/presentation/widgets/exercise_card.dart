@@ -13,12 +13,14 @@ class ExerciseCard extends StatelessWidget {
   final Exercise exercise;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final bool showActions;
 
   const ExerciseCard({
     super.key,
     required this.exercise,
     required this.onEdit,
     required this.onDelete,
+    this.showActions = true,
   });
 
   @override
@@ -119,32 +121,33 @@ class ExerciseCard extends StatelessWidget {
                         ],
                       ),
                     ),
-
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: MiniButton(
-                        color: AppColors.charcoalSoft.withValues(alpha: 0.18),
-                        icon: HugeIcon(
-                          icon: HugeIcons.strokeRoundedEdit03,
-                          size: 18,
-                          color: AppColors.charcoal.withValues(alpha: 0.9),
+                    if (showActions) ...[
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: MiniButton(
+                          color: AppColors.charcoalSoft.withValues(alpha: 0.18),
+                          icon: HugeIcon(
+                            icon: HugeIcons.strokeRoundedEdit03,
+                            size: 18,
+                            color: AppColors.charcoal.withValues(alpha: 0.9),
+                          ),
+                          onPressed: onEdit,
                         ),
-                        onPressed: onEdit,
                       ),
-                    ),
-                    SizedBox(width: 4),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: MiniButton(
-                        color: AppColors.error.withValues(alpha: 0.18),
-                        icon: HugeIcon(
-                          icon: HugeIcons.strokeRoundedDelete03,
-                          size: 18,
-                          color: AppColors.error.withValues(alpha: 0.9),
+                      SizedBox(width: 4),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: MiniButton(
+                          color: AppColors.error.withValues(alpha: 0.18),
+                          icon: HugeIcon(
+                            icon: HugeIcons.strokeRoundedDelete03,
+                            size: 18,
+                            color: AppColors.error.withValues(alpha: 0.9),
+                          ),
+                          onPressed: onDelete,
                         ),
-                        onPressed: onDelete,
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),

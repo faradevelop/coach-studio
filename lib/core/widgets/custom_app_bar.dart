@@ -8,8 +8,14 @@ import 'package:hugeicons/hugeicons.dart';
 class CustomAppBar extends StatelessWidget {
   final VoidCallback onPressed;
   final String title;
+  final bool showAddButton;
 
-  const CustomAppBar({super.key, required this.onPressed, required this.title});
+  const CustomAppBar({
+    super.key,
+    required this.onPressed,
+    required this.title,
+    this.showAddButton = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,43 +49,44 @@ class CustomAppBar extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          Container(
-            height: 46,
-            width: 46,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              gradient: const LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [AppColors.orange, AppColors.orangeDark],
-              ),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x30FF6500),
-                  blurRadius: 20,
-                  spreadRadius: 2,
-                  offset: Offset(0, 10),
+          if (showAddButton)
+            Container(
+              height: 46,
+              width: 46,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                gradient: const LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [AppColors.orange, AppColors.orangeDark],
                 ),
-              ],
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: onPressed,
-                borderRadius: BorderRadius.circular(18),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    HugeIcon(
-                      icon: HugeIcons.strokeRoundedAdd01,
-                      size: 28,
-                      color: AppColors.cream,
-                    ),
-                  ],
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x30FF6500),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                    offset: Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onPressed,
+                  borderRadius: BorderRadius.circular(18),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      HugeIcon(
+                        icon: HugeIcons.strokeRoundedAdd01,
+                        size: 28,
+                        color: AppColors.cream,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

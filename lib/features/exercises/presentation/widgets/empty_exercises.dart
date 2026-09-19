@@ -6,7 +6,8 @@ import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class EmptyExercises extends StatelessWidget {
-  const EmptyExercises({super.key});
+  final bool addMessage;
+  const EmptyExercises({super.key, this.addMessage = true});
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +46,12 @@ class EmptyExercises extends StatelessWidget {
             Text('تمرینی وجود ندارد!', style: AppTextStyles.titleMedium),
 
             const SizedBox(height: AppSpacing.sm),
-
-            Text(
-              'با کلیک دکمه  +  اولین تمرین را بسازید',
-              style: AppTextStyles.subtitle,
-              textAlign: TextAlign.center,
-            ),
+            if (addMessage)
+              Text(
+                'با کلیک دکمه  +  اولین تمرین را بسازید',
+                style: AppTextStyles.subtitle,
+                textAlign: TextAlign.center,
+              ),
           ],
         ),
       ),

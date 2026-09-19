@@ -9,6 +9,8 @@ import 'package:coach_studio/core/widgets/custom_search_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/core/widgets/responsive/responsive_grid.dart';
+import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
+import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
@@ -49,6 +51,12 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isAdmin = context.select<AuthCubit, bool>(
+      (cubit) => switch (cubit.state) {
+        AuthAuthenticated(:final user) => user.isAdmin,
+        _ => false,
+      },
+    );
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -66,6 +74,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                 MaxWidthBox(
                   maxWidth: AppContentWidth.shell,
                   child: CustomAppBar(
+                    showAddButton: isAdmin,
                     onPressed: () {
                       context.pushNamed(AppRouteNames.createExercise);
                     },
@@ -94,7 +103,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
 
                     ExerciseLoaded(:final exercises) =>
                       exercises.isEmpty
-                          ? const EmptyExercises()
+                          ? EmptyExercises(addMessage: isAdmin)
                           : Builder(
                               builder: (_) {
                                 final filtered = _filterExercises(exercises);
@@ -141,6 +150,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                                     final exercise = filtered[index];
                                     return ExerciseCard(
                                       exercise: exercise,
+                                      showActions: isAdmin,
                                       onEdit: () {
                                         context.pushNamed(
                                           AppRouteNames.editExercise,
