@@ -9,6 +9,7 @@ import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_theme.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
+import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:flutter/material.dart';
@@ -74,30 +75,41 @@ class MyApp extends StatelessWidget {
         // and are shared across tabs and internal pages (Add/Edit/Create).
         BlocProvider(create: (_) => sl<AuthCubit>()),
         BlocProvider(create: (_) => sl<ExerciseCubit>()..loadExercises()),
-        BlocProvider(create: (_) => sl<WorkoutProgramCubit>()..loadPrograms()),
+        BlocProvider(create: (_) => sl<WorkoutProgramCubit>()),
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
+      child: BlocListener<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is AuthAuthenticated) {
+            context.read<WorkoutProgramCubit>().loadPrograms();
+          }
 
-        locale: const Locale('fa'),
-        supportedLocales: const [Locale('fa'), Locale('en')],
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-
-        title: 'Coach Studio',
-        theme: AppTheme.light,
-        routerConfig: AppRouter.router,
-        builder: (context, child) {
-          if (child == null) return const SizedBox.shrink();
-          return MaxWidthBox(
-            maxWidth: AppContentWidth.shell,
-            expandHeight: true,
-            child: child,
-          );
+          if (state is AuthUnauthenticated) {
+            context.read<WorkoutProgramCubit>().reset();
+          }
         },
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+
+          locale: const Locale('fa'),
+          supportedLocales: const [Locale('fa'), Locale('en')],
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+
+          title: 'Coach Studio',
+          theme: AppTheme.light,
+          routerConfig: AppRouter.router,
+          builder: (context, child) {
+            if (child == null) return const SizedBox.shrink();
+            return MaxWidthBox(
+              maxWidth: AppContentWidth.shell,
+              expandHeight: true,
+              child: child,
+            );
+          },
+        ),
       ),
     );
   }

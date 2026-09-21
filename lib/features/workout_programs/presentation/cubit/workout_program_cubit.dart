@@ -242,6 +242,10 @@ class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
     emit(WorkoutProgramError(error.toString()));
   }
 
+  void reset() {
+    emit(WorkoutProgramInitial());
+  }
+
   @override
   Future<void> close() {
     _subscription?.cancel();
