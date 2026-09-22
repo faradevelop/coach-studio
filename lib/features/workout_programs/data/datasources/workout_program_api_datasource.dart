@@ -138,4 +138,86 @@ class WorkoutProgramApiDatasource {
       rethrow;
     }
   }
+
+  Future<WorkoutProgramModel?> addDay(String programId) async {
+    _logger.debug('WorkoutProgramDataSource: adding day to program $programId');
+
+    try {
+      final data =
+          await client.post('/workout-programs/$programId/days', const {})
+              as Map<String, dynamic>;
+
+      _logger.info('WorkoutProgramDataSource: day added successfully');
+      return WorkoutProgramModel.fromJson(data);
+    } on ApiException catch (e) {
+      if (e.statusCode == 422) {
+        _logger.warning(
+          'WorkoutProgramDataSource: validation error adding day',
+        );
+        return null;
+      }
+
+      _logger.error(
+        'WorkoutProgramDataSource: failed to add day to program $programId',
+        error: e,
+      );
+      rethrow;
+    }
+  }
+
+  Future<bool> deleteDay(String programId, int day) async {
+    _logger.debug(
+      'WorkoutProgramDataSource: deleting day $day of program $programId',
+    );
+
+    try {
+      await client.delete('/workout-programs/$programId/days/$day');
+
+      _logger.info('WorkoutProgramDataSource: day deleted successfully');
+      return true;
+    } on ApiException catch (e) {
+      if (e.statusCode == 422) {
+        _logger.warning(
+          'WorkoutProgramDataSource: validation error deleting day',
+        );
+        return false;
+      }
+
+      _logger.error(
+        'WorkoutProgramDataSource: failed to delete day $day of program $programId',
+        error: e,
+      );
+      rethrow;
+    }
+  }
+
+  Future<bool> reorderDay(String programId, int day, int targetDay) async {
+    _logger.debug(
+      'WorkoutProgramDataSource: moving day $day to $targetDay '
+      'in program $programId',
+    );
+
+    try {
+      await client.patch('/workout-programs/$programId/days/$day/reorder', {
+        'order': targetDay,
+      });
+
+      _logger.info('WorkoutProgramDataSource: day reordered successfully');
+      return true;
+    } on ApiException catch (e) {
+      if (e.statusCode == 422) {
+        _logger.warning(
+          'WorkoutProgramDataSource: validation error reordering day',
+        );
+        return false;
+      }
+
+      _logger.error(
+        'WorkoutProgramDataSource: failed to reorder day $day '
+        'in program $programId',
+        error: e,
+      );
+      rethrow;
+    }
+  }
 }

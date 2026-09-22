@@ -10,4 +10,10 @@ abstract class WorkoutProgramRepository {
   Future<bool> deleteProgram(String id);
 
   Future<bool> duplicateProgram(String id, String title);
+
+  Future<WorkoutProgram?> addDay(String programId);
+
+  Future<bool> deleteDay(String programId, int day);
+
+  Future<bool> reorderDay(String programId, int day, int targetOrder);
 }

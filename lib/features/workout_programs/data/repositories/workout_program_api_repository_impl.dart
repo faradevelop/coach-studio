@@ -156,4 +156,86 @@ class WorkoutProgramApiRepositoryImpl implements WorkoutProgramRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<WorkoutProgram?> addDay(String programId) async {
+    _logger.info('WorkoutProgramRepository: adding day to program $programId');
+    try {
+      final updated = await datasource.addDay(programId);
+      if (updated != null) {
+        _logger.info('WorkoutProgramRepository: day added successfully');
+        return updated.toEntity();
+      }
+      _logger.warning('WorkoutProgramRepository: failed to add day');
+      return null;
+    } on ApiException catch (e) {
+      _logger.error(
+        'WorkoutProgramRepository: error adding day',
+        error: e.message,
+      );
+      throw ApiException.mapApiException(e);
+    } catch (e) {
+      _logger.error(
+        'WorkoutProgramRepository: unexpected error adding day',
+        error: e,
+      );
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> deleteDay(String programId, int day) async {
+    _logger.info(
+      'WorkoutProgramRepository: deleting day $day of program $programId',
+    );
+    try {
+      final success = await datasource.deleteDay(programId, day);
+      if (success) {
+        _logger.info('WorkoutProgramRepository: day deleted successfully');
+      } else {
+        _logger.warning('WorkoutProgramRepository: failed to delete day');
+      }
+      return success;
+    } on ApiException catch (e) {
+      _logger.error(
+        'WorkoutProgramRepository: error deleting day',
+        error: e.message,
+      );
+      throw ApiException.mapApiException(e);
+    } catch (e) {
+      _logger.error(
+        'WorkoutProgramRepository: unexpected error deleting day',
+        error: e,
+      );
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> reorderDay(String programId, int day, int targetOrder) async {
+    _logger.info(
+      'WorkoutProgramRepository: moving day $day to $targetOrder in program $programId',
+    );
+    try {
+      final success = await datasource.reorderDay(programId, day, targetOrder);
+      if (success) {
+        _logger.info('WorkoutProgramRepository: day reordered successfully');
+      } else {
+        _logger.warning('WorkoutProgramRepository: failed to reorder day');
+      }
+      return success;
+    } on ApiException catch (e) {
+      _logger.error(
+        'WorkoutProgramRepository: error reordering day',
+        error: e.message,
+      );
+      throw ApiException.mapApiException(e);
+    } catch (e) {
+      _logger.error(
+        'WorkoutProgramRepository: unexpected error reordering day',
+        error: e,
+      );
+      rethrow;
+    }
+  }
 }
