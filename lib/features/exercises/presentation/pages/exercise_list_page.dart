@@ -192,7 +192,10 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                               },
                             ),
 
-                    ExerciseError() => const AppErrorState(),
+                    ExerciseError() => AppErrorState(
+                      onRetry: () =>
+                          context.read<ExerciseCubit>().loadExercises(),
+                    ),
 
                     ExerciseInitial() => const SizedBox(),
                   },

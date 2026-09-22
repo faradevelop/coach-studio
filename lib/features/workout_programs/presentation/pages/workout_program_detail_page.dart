@@ -404,7 +404,11 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
               child: Center(child: _ExercisesLoadingIndicator()),
             ),
 
-            ProgramExerciseError() => AppErrorState(),
+            ProgramExerciseError() => AppErrorState(
+              onRetry: () => context.read<ProgramExerciseCubit>().loadExercises(
+                widget.program.id,
+              ),
+            ),
 
             ProgramExerciseLoaded(:final exercises, :final isSubmitting) =>
               _buildExercisesByDay(

@@ -152,7 +152,10 @@ class _WorkoutProgramListView extends StatelessWidget {
                               );
                             },
                           ),
-                  WorkoutProgramError() => AppErrorState(),
+                  WorkoutProgramError() => AppErrorState(
+                    onRetry: () =>
+                        context.read<WorkoutProgramCubit>().loadPrograms(),
+                  ),
                 };
               },
             ),
