@@ -163,6 +163,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
     context.pushNamed(
       AppRouteNames.createProgramExercise,
       pathParameters: {'programId': widget.program.id},
+      queryParameters: {'day': _selectedDay.toString()},
       extra: widget.program,
     );
   }

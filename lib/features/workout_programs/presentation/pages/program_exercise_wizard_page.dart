@@ -39,9 +39,12 @@ class ProgramExerciseWizardPage extends StatelessWidget {
 
   final WorkoutProgram? seedProgram;
 
+  final int? day;
+
   const ProgramExerciseWizardPage({
     super.key,
     required this.programId,
+    this.day,
     this.seedProgram,
   });
 
@@ -53,7 +56,11 @@ class ProgramExerciseWizardPage extends StatelessWidget {
         programExerciseCubit: context.read<ProgramExerciseCubit>(),
         logger: sl(),
       ),
-      child: _WizardView(programId: programId, seedProgram: seedProgram),
+      child: _WizardView(
+        programId: programId,
+        seedProgram: seedProgram,
+        day: day,
+      ),
     );
   }
 }
@@ -61,8 +68,9 @@ class ProgramExerciseWizardPage extends StatelessWidget {
 class _WizardView extends StatefulWidget {
   final String programId;
   final WorkoutProgram? seedProgram;
+  final int? day;
 
-  const _WizardView({required this.programId, this.seedProgram});
+  const _WizardView({required this.programId, this.seedProgram, this.day});
 
   @override
   State<_WizardView> createState() => _WizardViewState();
@@ -137,7 +145,10 @@ class _WizardViewState extends State<_WizardView> {
                         _WizardAppBar(step: wizardState.step),
                         Expanded(
                           child: switch (wizardState.step) {
-                            WizardStep.day => _DayStep(program: program),
+                            WizardStep.day => _DayStep(
+                              program: program,
+                              programDay: widget.day,
+                            ),
 
                             WizardStep.selectExercises => _SelectExercisesStep(
                               searchController: _searchController,
@@ -283,8 +294,9 @@ class _StepDots extends StatelessWidget {
 
 class _DayStep extends StatelessWidget {
   final WorkoutProgram program;
+  final int? programDay;
 
-  const _DayStep({required this.program});
+  const _DayStep({required this.program, this.programDay});
 
   @override
   Widget build(BuildContext context) {
@@ -302,7 +314,7 @@ class _DayStep extends StatelessWidget {
             children: [
               AppDropdown<int>(
                 label: 'روز تمرین',
-                value: state.day,
+                value: programDay ?? state.day,
                 items: List.generate(program.daysPerWeek, (i) => i + 1),
                 itemLabel: (day) => 'روز $day',
                 onChanged: (value) {

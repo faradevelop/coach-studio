@@ -253,10 +253,14 @@ class AppRouter {
                 name: AppRouteNames.createProgramExercise,
                 builder: (_, state) {
                   final programId = state.pathParameters['programId']!;
+                  final day = int.tryParse(
+                    state.uri.queryParameters['day'] ?? '',
+                  );
                   final seed = state.extra;
                   return ProgramExerciseWizardPage(
                     programId: programId,
                     seedProgram: seed is WorkoutProgram ? seed : null,
+                    day: day,
                   );
                 },
               ),
