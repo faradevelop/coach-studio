@@ -442,7 +442,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
 
 // ── Day tabs + list ──────────────────────────────────────────
 
-class _DayExercisesTabs extends StatelessWidget {
+class _DayExercisesTabs extends StatefulWidget {
   final List<int> days;
   final Map<int, List<ProgramExerciseDetails>> exercisesByDay;
   final int selectedDay;
@@ -460,15 +460,118 @@ class _DayExercisesTabs extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    if (days.isEmpty) return const SizedBox();
+  State<_DayExercisesTabs> createState() => _DayExercisesTabsState();
+}
 
-    final exercises = exercisesByDay[selectedDay] ?? const [];
+class _DayExercisesTabsState extends State<_DayExercisesTabs> {
+  /// Local UI-only flag: whether the day tabs are currently in
+  /// drag/delete "management" mode. Entered via long-press on a day,
+  /// exited via the done (✓) button. This never touches Cubit state.
+  bool _isManagingDays = false;
+
+  void _enterEditMode() {
+    // Long-pressing a day while already managing must NOT re-trigger
+    // entering edit mode — it must be free for the drag gesture instead.
+    if (_isManagingDays) return;
+    setState(() => _isManagingDays = true);
+  }
+
+  void _exitEditMode() {
+    if (!_isManagingDays) return;
+    setState(() => _isManagingDays = false);
+  }
+
+  Future<void> _addDay(BuildContext context) async {
+    final cubit = context.read<WorkoutProgramCubit>();
+
+    final success = await cubit.addDay(widget.program.id);
+
+    if (!context.mounted) return;
+
+    if (!success) {
+      sl<AppNotification>().error('افزودن روز ناموفق بود.');
+      return;
+    }
+
+    sl<AppNotification>().success('روز جدید اضافه شد.');
+  }
+
+  Future<void> _confirmDeleteDay(BuildContext context, int day) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (_) => DeleteDialog(
+        itemName: '',
+        title: 'روز ${day.persianNumber}',
+        message:
+            'با حذف روز ${day.persianNumber}، تمام تمرین‌های ثبت‌ شده برای این روز نیز حذف خواهند شد. آیا مطمئن هستید؟',
+      ),
+    );
+
+    if (result != true || !context.mounted) return;
+
+    final workoutProgramCubit = context.read<WorkoutProgramCubit>();
+    final programExerciseCubit = context.read<ProgramExerciseCubit>();
+
+    final success = await workoutProgramCubit.deleteDay(widget.program.id, day);
+
+    if (!context.mounted) return;
+
+    if (!success) {
+      sl<AppNotification>().error('حذف روز ناموفق بود.');
+      return;
+    }
+
+    sl<AppNotification>().success('روز با موفقیت حذف شد.');
+
+    // The Backend cascaded-deleted this day's ProgramExercises and shifted
+    // later days down, so the exercise list must be resynced too.
+    programExerciseCubit.loadExercises(widget.program.id);
+  }
+
+  Future<void> _reorderDay(
+    BuildContext context,
+    int oldIndex,
+    int newIndex,
+  ) async {
+    if (oldIndex == newIndex) return;
+
+    final workoutProgramCubit = context.read<WorkoutProgramCubit>();
+    final state = workoutProgramCubit.state;
+
+    if (state is! WorkoutProgramLoaded || state.isSubmitting) return;
+
+    final day = widget.days[oldIndex];
+    // Backend expects a 1-based target position within the day sequence.
+    final targetPosition = newIndex + 1;
+
+    final success = await workoutProgramCubit.reorderDay(
+      widget.program.id,
+      day,
+      targetPosition,
+    );
+
+    if (!context.mounted) return;
+
+    if (!success) {
+      sl<AppNotification>().error('جابجایی روز ناموفق بود.');
+      return;
+    }
+
+    // Day <-> exercise mapping changed on the Backend; resync exercises so
+    // each tab shows the correct (post-reorder) content.
+    context.read<ProgramExerciseCubit>().loadExercises(widget.program.id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.days.isEmpty) return const SizedBox();
+
+    final exercises = widget.exercisesByDay[widget.selectedDay] ?? const [];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildDayTabs(),
+        _buildDayTabsRow(),
         const SizedBox(height: 18),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -495,32 +598,82 @@ class _DayExercisesTabs extends StatelessWidget {
     );
   }
 
-  Widget _buildDayTabs() {
-    return ScrollConfiguration(
-      behavior: const MaterialScrollBehavior().copyWith(
-        dragDevices: {
-          PointerDeviceKind.touch,
-          PointerDeviceKind.mouse,
-          PointerDeviceKind.trackpad,
-        },
-      ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 6),
-        child: Row(
-          children: [
-            for (int i = 0; i < days.length; i++) ...[
-              if (i > 0) const SizedBox(width: 8),
-              _DayTab(
-                day: days[i],
-                isSelected: days[i] == selectedDay,
-                onTap: () => onDayChanged(days[i]),
-              ),
-            ],
-          ],
-        ),
-      ),
+  Widget _buildDayTabsRow() {
+    return BlocBuilder<WorkoutProgramCubit, WorkoutProgramState>(
+      builder: (context, programState) {
+        final isDayOperationInProgress =
+            programState is WorkoutProgramLoaded && programState.isSubmitting;
+
+        return ScrollConfiguration(
+          behavior: const MaterialScrollBehavior().copyWith(
+            dragDevices: {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.trackpad,
+            },
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 6),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _isManagingDays
+                    ? ReorderableRow(
+                        needsLongPressDraggable: true,
+                        onReorder: (oldIndex, newIndex) =>
+                            _reorderDay(context, oldIndex, newIndex),
+                        children: [
+                          for (final day in widget.days)
+                            Padding(
+                              key: ValueKey('day-$day'),
+                              padding: const EdgeInsets.only(left: 8),
+                              child: _DayTab(
+                                day: day,
+                                isSelected: day == widget.selectedDay,
+                                isManaging: true,
+                                onTap: () => widget.onDayChanged(day),
+                                onLongPress: null,
+                                onDelete: isDayOperationInProgress
+                                    ? null
+                                    : () => _confirmDeleteDay(context, day),
+                              ),
+                            ),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          for (int i = 0; i < widget.days.length; i++) ...[
+                            if (i > 0) const SizedBox(width: 8),
+                            _DayTab(
+                              day: widget.days[i],
+                              isSelected: widget.days[i] == widget.selectedDay,
+                              isManaging: false,
+                              onTap: () => widget.onDayChanged(widget.days[i]),
+                              onLongPress: _enterEditMode,
+                              onDelete: null,
+                            ),
+                          ],
+                        ],
+                      ),
+                const SizedBox(width: 8),
+                if (!_isManagingDays)
+                  _AddDayButton(
+                    enabled: !isDayOperationInProgress,
+                    onTap: () => _addDay(context),
+                  ),
+                if (_isManagingDays) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10, right: 6),
+                    child: _DoneManagingDaysButton(onTap: _exitEditMode),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -529,12 +682,12 @@ class _DayExercisesTabs extends StatelessWidget {
     List<ProgramExerciseDetails> exercises,
   ) {
     return ReorderableColumn(
-      key: ValueKey(selectedDay),
+      key: ValueKey(widget.selectedDay),
       ignorePrimaryScrollController: true,
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      needsLongPressDraggable: !isSubmitting,
+      needsLongPressDraggable: !widget.isSubmitting,
       onReorder: (oldIndex, newIndex) {
-        if (isSubmitting || oldIndex == newIndex) return;
+        if (widget.isSubmitting || oldIndex == newIndex) return;
 
         final exercise = exercises[oldIndex].programExercise;
         context.read<ProgramExerciseCubit>().reorderProgramExercise(
@@ -546,7 +699,7 @@ class _DayExercisesTabs extends StatelessWidget {
         return _ProgramExerciseCard(
           key: ValueKey(details.programExercise.id),
           details: details,
-          program: program,
+          program: widget.program,
         );
       }).toList(),
     );
@@ -556,54 +709,172 @@ class _DayExercisesTabs extends StatelessWidget {
 class _DayTab extends StatelessWidget {
   final int day;
   final bool isSelected;
+  final bool isManaging;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
+  final VoidCallback? onDelete;
 
   const _DayTab({
     required this.day,
     required this.isSelected,
+    required this.isManaging,
     required this.onTap,
+    required this.onLongPress,
+    required this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      // Passing null when already managing frees the long-press gesture
+      // for the ReorderableRow's own LongPressDraggable to claim, instead
+      // of this GestureDetector consuming it to re-enter edit mode.
+      onLongPress: onLongPress,
       behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 260),
-        curve: Curves.easeOutCubic,
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 3),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.teal
-              : Colors.white.withValues(alpha: 0.55),
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(
-            color: isSelected ? AppColors.tealMuted : AppColors.glassBorder,
-            width: 1.4,
-          ),
-          boxShadow: isSelected
-              ? null
-              : [
-                  BoxShadow(
-                    color: AppColors.charcoal.withValues(alpha: 0.04),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+      child: Padding(
+        padding: EdgeInsets.only(top: isManaging ? 10 : 0),
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 260),
+              curve: Curves.easeOutCubic,
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 3),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppColors.teal
+                    : Colors.white.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(
+                  color: isSelected
+                      ? AppColors.tealMuted
+                      : AppColors.glassBorder,
+                  width: 1.4,
+                ),
+                boxShadow: isSelected
+                    ? null
+                    : [
+                        BoxShadow(
+                          color: AppColors.charcoal.withValues(alpha: 0.04),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+              ),
+              child: AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 200),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.2,
+                  color: isSelected
+                      ? AppColors.onOrange
+                      : AppColors.charcoal.withValues(alpha: 0.78),
+                ),
+                child: Text('روز ${day.persianNumber}'),
+              ),
+            ),
+            if (isManaging)
+              PositionedDirectional(
+                top: -10,
+                end: -4,
+                child: GestureDetector(
+                  onTap: onDelete,
+                  behavior: HitTestBehavior.opaque,
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AppColors.error,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 1.4),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.error.withValues(alpha: 0.4),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.close_rounded,
+                      size: 13,
+                      color: Colors.white,
+                    ),
                   ),
-                ],
+                ),
+              ),
+          ],
         ),
-        child: AnimatedDefaultTextStyle(
-          duration: const Duration(milliseconds: 200),
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.2,
-            color: isSelected
-                ? AppColors.onOrange
-                : AppColors.charcoal.withValues(alpha: 0.78),
+      ),
+    );
+  }
+}
+
+class _AddDayButton extends StatelessWidget {
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _AddDayButton({required this.enabled, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: enabled ? onTap : null,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 42,
+        height: 32,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: enabled
+                ? AppColors.charcoalSoft.withValues(alpha: 0.6)
+                : AppColors.charcoalSoft.withValues(alpha: 0.3),
           ),
-          child: Text('روز ${day.persianNumber}'),
+          borderRadius: BorderRadius.circular(50),
         ),
+        child: HugeIcon(
+          icon: HugeIcons.strokeRoundedAdd01,
+          size: 18,
+          color: enabled
+              ? AppColors.charcoalSoft.withValues(alpha: 0.6)
+              : AppColors.charcoalSoft.withValues(alpha: 0.3),
+        ),
+      ),
+    );
+  }
+}
+
+class _DoneManagingDaysButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _DoneManagingDaysButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 32,
+        height: 32,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.teal,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.teal.withValues(alpha: 0.35),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: const Icon(Icons.check_rounded, size: 18, color: Colors.white),
       ),
     );
   }
@@ -811,13 +1082,6 @@ class _ExerciseItemCard extends StatelessWidget {
               ),
             ],
           ),
-          // if (hasDescription) ...[
-          //   Text(
-          //     item.description ?? '',
-          //     style: AppTextStyles.body.copyWith(fontSize: 13.5),
-          //     maxLines: 3,
-          //   ),
-          // ],
         ],
       ),
     );
