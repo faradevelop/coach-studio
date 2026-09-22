@@ -200,10 +200,16 @@ class ApiClient {
       onUnauthorized?.call();
     }
 
+    final rawErrors = decoded['errors'];
+
+    final Map<String, dynamic> errors = rawErrors is Map<String, dynamic>
+        ? rawErrors
+        : {};
+
     throw ApiException(
       message: decoded['message'] as String? ?? 'Unexpected error',
       statusCode: response.statusCode,
-      errors: decoded['errors'] as Map<String, dynamic>?,
+      errors: errors,
     );
   }
 }
