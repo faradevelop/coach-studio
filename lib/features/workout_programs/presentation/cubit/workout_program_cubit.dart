@@ -225,6 +225,189 @@ class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
     return true;
   }
 
+  /// Appends a new day. Guarded by [WorkoutProgramLoaded.isSubmitting] so a
+  /// second Add/Delete/Reorder-day tap cannot fire while one is in flight.
+  Future<bool> addDay(String programId) async {
+    _logger.info('WorkoutProgramCubit: adding day to program $programId');
+    final currentState = state;
+
+    if (currentState is! WorkoutProgramLoaded || currentState.isSubmitting) {
+      _logger.warning(
+        'WorkoutProgramCubit: cannot add day — not loaded or already submitting',
+      );
+      return false;
+    }
+
+    emit(currentState.copyWith(isSubmitting: true));
+
+    // Mutation
+    try {
+      final updated = await repository.addDay(programId);
+
+      if (updated == null) {
+        _logger.error('WorkoutProgramCubit: failed to add day');
+        emit(currentState.copyWith(isSubmitting: false));
+        return false;
+      }
+    } on AppException catch (e) {
+      _logger.error('WorkoutProgramCubit: error adding day', error: e.message);
+      emit(WorkoutProgramError(e.message));
+      return false;
+    } catch (e) {
+      _logger.error(
+        'WorkoutProgramCubit: unexpected error adding day',
+        error: e,
+      );
+      emit(WorkoutProgramError(e.toString()));
+      return false;
+    }
+
+    // Refresh — picks up the new daysPerWeek from the Backend.
+    try {
+      await _refreshPrograms();
+      _logger.info('WorkoutProgramCubit: day added successfully');
+    } on AppException catch (e) {
+      _logger.error(
+        'WorkoutProgramCubit: refresh failed after adding day',
+        error: e.message,
+      );
+      emit(WorkoutProgramError(e.message));
+      return false;
+    } catch (_) {
+      _logger.error('WorkoutProgramCubit: refresh failed after adding day');
+      emit(WorkoutProgramError('Refresh Failed!'));
+      return false;
+    }
+
+    return true;
+  }
+
+  /// Deletes [day] (the Backend cascades ProgramExercise deletion and
+  /// shifts later days down). Guarded the same way as [addDay].
+  Future<bool> deleteDay(String programId, int day) async {
+    _logger.info(
+      'WorkoutProgramCubit: deleting day $day of program $programId',
+    );
+    final currentState = state;
+
+    if (currentState is! WorkoutProgramLoaded || currentState.isSubmitting) {
+      _logger.warning(
+        'WorkoutProgramCubit: cannot delete day — not loaded or already submitting',
+      );
+      return false;
+    }
+
+    emit(currentState.copyWith(isSubmitting: true));
+
+    // Mutation
+    try {
+      final updated = await repository.deleteDay(programId, day);
+
+      if (!updated) {
+        _logger.error('WorkoutProgramCubit: failed to delete day');
+        emit(currentState.copyWith(isSubmitting: false));
+        return false;
+      }
+    } on AppException catch (e) {
+      _logger.error(
+        'WorkoutProgramCubit: error deleting day',
+        error: e.message,
+      );
+      emit(WorkoutProgramError(e.message));
+      return false;
+    } catch (e) {
+      _logger.error(
+        'WorkoutProgramCubit: unexpected error deleting day',
+        error: e,
+      );
+      emit(WorkoutProgramError(e.toString()));
+      return false;
+    }
+
+    // Refresh — picks up the new daysPerWeek from the Backend.
+    try {
+      await _refreshPrograms();
+      _logger.info('WorkoutProgramCubit: day deleted successfully');
+    } on AppException catch (e) {
+      _logger.error(
+        'WorkoutProgramCubit: refresh failed after deleting day',
+        error: e.message,
+      );
+      emit(WorkoutProgramError(e.message));
+      return false;
+    } catch (_) {
+      _logger.error('WorkoutProgramCubit: refresh failed after deleting day');
+      emit(WorkoutProgramError('Refresh Failed!'));
+      return false;
+    }
+
+    return true;
+  }
+
+  /// Moves [day] to the 1-based [targetOrder] position. Guarded the same
+  /// way as [addDay]/[deleteDay].
+  Future<bool> reorderDay(String programId, int day, int targetOrder) async {
+    _logger.debug(
+      'WorkoutProgramCubit: reordering day $day of program $programId to $targetOrder',
+    );
+    final currentState = state;
+
+    if (currentState is! WorkoutProgramLoaded || currentState.isSubmitting) {
+      _logger.warning(
+        'WorkoutProgramCubit: cannot reorder day — not loaded or already submitting',
+      );
+      return false;
+    }
+
+    emit(currentState.copyWith(isSubmitting: true));
+
+    // Mutation
+    try {
+      final updated = await repository.reorderDay(programId, day, targetOrder);
+
+      if (!updated) {
+        _logger.error('WorkoutProgramCubit: failed to reorder day');
+        emit(currentState.copyWith(isSubmitting: false));
+        return false;
+      }
+    } on AppException catch (e) {
+      _logger.error(
+        'WorkoutProgramCubit: error reordering day',
+        error: e.message,
+      );
+      emit(WorkoutProgramError(e.message));
+      return false;
+    } catch (e) {
+      _logger.error(
+        'WorkoutProgramCubit: unexpected error reordering day',
+        error: e,
+      );
+      emit(WorkoutProgramError(e.toString()));
+      return false;
+    }
+
+    // Refresh — not strictly required (daysPerWeek doesn't change), but
+    // keeps `programs` consistent with the same pattern as every other
+    // mutation here.
+    try {
+      await _refreshPrograms();
+      _logger.debug('WorkoutProgramCubit: day reordered successfully');
+    } on AppException catch (e) {
+      _logger.error(
+        'WorkoutProgramCubit: refresh failed after reordering day',
+        error: e.message,
+      );
+      emit(WorkoutProgramError(e.message));
+      return false;
+    } catch (_) {
+      _logger.error('WorkoutProgramCubit: refresh failed after reordering day');
+      emit(WorkoutProgramError('Refresh Failed!'));
+      return false;
+    }
+
+    return true;
+  }
+
   void _handleError(Object error) {
     if (error is AppException) {
       _logger.error(

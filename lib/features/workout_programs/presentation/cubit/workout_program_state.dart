@@ -12,6 +12,16 @@ class WorkoutProgramLoaded extends WorkoutProgramState {
   final bool isSubmitting;
 
   WorkoutProgramLoaded(this.programs, {this.isSubmitting = false});
+
+  WorkoutProgramLoaded copyWith({
+    List<WorkoutProgram>? programs,
+    bool? isSubmitting,
+  }) {
+    return WorkoutProgramLoaded(
+      programs ?? this.programs,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+    );
+  }
 }
 
 class WorkoutProgramError extends WorkoutProgramState {
