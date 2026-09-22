@@ -6,9 +6,15 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class DeleteDialog extends StatelessWidget {
-  const DeleteDialog({super.key, required this.itemName, required this.title});
+  const DeleteDialog({
+    super.key,
+    required this.itemName,
+    required this.title,
+    this.message,
+  });
   final String title;
   final String itemName;
+  final String? message;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +72,8 @@ class DeleteDialog extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsetsDirectional.only(start: 6),
                   child: Text(
-                    'آیا از حذف $title ${itemName.isNotEmpty ? "\"$itemName\"" : ""} مطمئن هستید؟',
+                    message ??
+                        'آیا از حذف $title ${itemName.isNotEmpty ? "\"$itemName\"" : ""} مطمئن هستید؟',
                     textAlign: TextAlign.end,
                     style: TextStyle(
                       fontSize: 15,
