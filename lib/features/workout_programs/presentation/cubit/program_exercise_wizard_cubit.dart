@@ -22,8 +22,9 @@ class ProgramExerciseWizardCubit extends Cubit<ProgramExerciseWizardState> {
   ProgramExerciseWizardCubit({
     required this.programId,
     required this.programExerciseCubit,
+    required int? day,
     required this._logger,
-  }) : super(const ProgramExerciseWizardState());
+  }) : super(ProgramExerciseWizardState(day: day ?? 1));
 
   // ── Step 1 ────────────────────────────────────────────────────
   void setDay(int day) => emit(state.copyWith(day: day));
@@ -53,11 +54,8 @@ class ProgramExerciseWizardCubit extends Cubit<ProgramExerciseWizardState> {
     emit(state.copyWith(selectedExercises: current));
   }
 
-  bool get canProceedToConfigure =>
-      state.selectedExercises.length == state.maxSelection;
-
   void goToConfigure() {
-    if (!canProceedToConfigure) return;
+    if (!state.canProceedToConfigure) return;
 
     final configs = <String, ExerciseItemConfig>{};
     for (final exercise in state.selectedExercises) {

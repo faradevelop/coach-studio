@@ -12,7 +12,7 @@ class ExerciseItemConfig {
 
   const ExerciseItemConfig({
     this.reps = const [],
-    this.tempo = '',
+    this.tempo = '-',
     this.description = '',
   });
 
@@ -53,6 +53,8 @@ class ProgramExerciseWizardState {
   });
 
   int get maxSelection => trainingSystem == TrainingSystem.superSet ? 2 : 1;
+
+  bool get canProceedToConfigure => selectedExercises.length == maxSelection;
 
   ProgramExerciseWizardState copyWith({
     WizardStep? step,

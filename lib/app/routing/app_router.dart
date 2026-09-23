@@ -21,7 +21,7 @@ import 'package:coach_studio/features/workout_programs/domain/entities/workout_p
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/create_workout_program_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/exercise_configuration_page.dart';
-import 'package:coach_studio/features/workout_programs/presentation/pages/program_exercise_wizard_page.dart';
+import 'package:coach_studio/features/workout_programs/presentation/pages/program_exercise_wizard/program_exercise_wizard_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_detail_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_list_page.dart';
 import 'package:flutter/material.dart';
