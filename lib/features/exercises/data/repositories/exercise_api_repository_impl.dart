@@ -3,6 +3,7 @@ import 'package:coach_studio/core/network/api_exception.dart';
 import 'package:coach_studio/features/exercises/data/datasources/exercise_api_datasource.dart';
 import 'package:coach_studio/features/exercises/data/models/exercise_model.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
+import 'package:coach_studio/features/exercises/domain/entities/muscle.dart';
 import 'package:coach_studio/features/exercises/domain/repositories/exercise_repository.dart';
 
 class ExerciseApiRepositoryImpl implements ExerciseRepository {
@@ -39,6 +40,42 @@ class ExerciseApiRepositoryImpl implements ExerciseRepository {
     } catch (e) {
       _logger.error(
         'ExerciseRepository: unexpected error loading exercises',
+        error: e,
+      );
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Exercise>?> searchExercises({
+    String? search,
+    String? type,
+    String? difficulty,
+    String? equipment,
+    List<String>? muscleSlugs,
+  }) async {
+    _logger.debug('ExerciseRepository: searching exercises');
+    try {
+      final models = await datasource.searchExercises(
+        search: search,
+        type: type,
+        difficulty: difficulty,
+        equipment: equipment,
+        muscleSlugs: muscleSlugs,
+      );
+
+      if (models == null) return null;
+
+      return models.map((model) => model.toEntity()).toList();
+    } on ApiException catch (e) {
+      _logger.error(
+        'ExerciseRepository: failed to search exercises',
+        error: e.message,
+      );
+      throw ApiException.mapApiException(e);
+    } catch (e) {
+      _logger.error(
+        'ExerciseRepository: unexpected error searching exercises',
         error: e,
       );
       rethrow;
@@ -148,6 +185,27 @@ class ExerciseApiRepositoryImpl implements ExerciseRepository {
     } catch (e) {
       _logger.error(
         'ExerciseRepository: unexpected error fetching exercise',
+        error: e,
+      );
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Muscle>> getMuscles() async {
+    _logger.debug('ExerciseRepository: loading exercise types');
+    try {
+      final models = await datasource.getMuscles();
+      return models.map((m) => m.toEntity()).toList();
+    } on ApiException catch (e) {
+      _logger.error(
+        'ExerciseRepository: failed to load exercises types',
+        error: e.message,
+      );
+      throw ApiException.mapApiException(e);
+    } catch (e) {
+      _logger.error(
+        'ExerciseRepository: unexpected error loading exercises types',
         error: e,
       );
       rethrow;

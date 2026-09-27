@@ -2,6 +2,7 @@ import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/core/network/api_client.dart';
 import 'package:coach_studio/core/network/api_exception.dart';
 import 'package:coach_studio/features/exercises/data/models/exercise_model.dart';
+import 'package:coach_studio/features/exercises/data/models/muscle_model.dart';
 
 class ExerciseApiDatasource {
   final ApiClient client;
@@ -31,6 +32,58 @@ class ExerciseApiDatasource {
         return null;
       }
       _logger.error('ExerciseDataSource: failed to fetch exercises', error: e);
+      rethrow;
+    }
+  }
+
+  /// Server-side search/filter — mirrors [getExercises] but forwards
+  /// `search`, `type`, `difficulty`, `equipment` and a comma-separated
+  /// `muscles` query parameter to the existing `/exercises` endpoint.
+  /// Only parameters with a value are included.
+  Future<List<ExerciseModel>?> searchExercises({
+    String? search,
+    String? type,
+    String? difficulty,
+    String? equipment,
+    List<String>? muscleSlugs,
+  }) async {
+    final query = <String, String>{};
+    if (search != null && search.trim().isNotEmpty) {
+      query['search'] = search.trim();
+    }
+    if (type != null && type.isNotEmpty) query['type'] = type;
+    if (difficulty != null && difficulty.isNotEmpty) {
+      query['difficulty'] = difficulty;
+    }
+    if (equipment != null && equipment.isNotEmpty) {
+      query['equipment'] = equipment;
+    }
+    if (muscleSlugs != null && muscleSlugs.isNotEmpty) {
+      query['muscles'] = muscleSlugs.join(',');
+    }
+
+    final queryString = query.isEmpty
+        ? ''
+        : '?${query.entries.map((e) => '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(e.value)}').join('&')}';
+
+    _logger.debug('ExerciseDataSource: searching exercises ($queryString)');
+    try {
+      final data = await client.get('/exercises$queryString') as List<dynamic>;
+      final exercises = data
+          .map((json) => ExerciseModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+      _logger.info(
+        'ExerciseDataSource: search returned ${exercises.length} exercises',
+      );
+      return exercises;
+    } on ApiException catch (e) {
+      if (e.statusCode == 422) {
+        _logger.warning(
+          'ExerciseDataSource: validation error searching exercises',
+        );
+        return null;
+      }
+      _logger.error('ExerciseDataSource: failed to search exercises', error: e);
       rethrow;
     }
   }
@@ -114,5 +167,16 @@ class ExerciseApiDatasource {
       );
       rethrow;
     }
+  }
+
+  Future<List<MuscleModel>> getMuscles() async {
+    _logger.debug('ExerciseDataSource: fetching muscles');
+    final data = await client.get('/muscles') as List<dynamic>;
+    print(data);
+    final muscles = data
+        .map((json) => MuscleModel.fromJson(json as Map<String, dynamic>))
+        .toList();
+    _logger.debug('ExerciseMetaDataSource: loaded ${muscles.length} muscles');
+    return muscles;
   }
 }
