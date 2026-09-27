@@ -48,7 +48,7 @@ class ExerciseCard extends StatelessWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
             child: Container(
-              height: 108,
+              //height: 108,
               decoration: BoxDecoration(
                 color: AppColors.dirtyCream,
                 borderRadius: BorderRadius.circular(AppRadius.xl),
@@ -77,43 +77,42 @@ class ExerciseCard extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTextStyles.titleMedium.copyWith(
-                              fontSize: 16,
+                              fontSize: 14,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 7),
+                          Row(
+                            children: [
+                              HugeIcon(
+                                icon: HugeIcons.strokeRoundedLowSignal,
+                                size: 16,
+                                color: AppColors.teal,
+                                strokeWidth: 2,
+                              ),
+                              const SizedBox(width: 4),
+                              InfoChip(text: exercise.difficulty.label),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
                           Row(
                             children: [
                               HugeIcon(
                                 icon: HugeIcons.strokeRoundedFire02,
-                                size: 15,
+                                size: 16,
                                 color: AppColors.teal,
                                 strokeWidth: 2,
                               ),
                               const SizedBox(width: 4),
-                              Text(
-                                exercise.targetMuscle.label,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: AppTextStyles.bodySmall.copyWith(
-                                  //color: AppColors.teal,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              HugeIcon(
-                                icon: HugeIcons.strokeRoundedLowSignal,
-                                size: 15,
-                                color: AppColors.teal,
-                                strokeWidth: 2,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                exercise.difficulty.label,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: AppTextStyles.bodySmall.copyWith(
-                                  //color: AppColors.teal,
-                                  fontWeight: FontWeight.w500,
+
+                              Expanded(
+                                child: Wrap(
+                                  spacing: 6,
+                                  runSpacing: 4,
+                                  children: exercise.targetMuscles.map((
+                                    muscle,
+                                  ) {
+                                    return InfoChip(text: muscle.name);
+                                  }).toList(),
                                 ),
                               ),
                             ],
@@ -199,6 +198,33 @@ class _ExerciseImage extends StatelessWidget {
                     ),
                   ),
                 ),
+        ),
+      ),
+    );
+  }
+}
+
+class InfoChip extends StatelessWidget {
+  final String text;
+
+  const InfoChip({super.key, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+      decoration: BoxDecoration(
+        color: AppColors.teal.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        text,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: AppTextStyles.bodySmall.copyWith(
+          fontSize: 12.5,
+          fontWeight: FontWeight.w500,
+          color: AppColors.charcoal,
         ),
       ),
     );

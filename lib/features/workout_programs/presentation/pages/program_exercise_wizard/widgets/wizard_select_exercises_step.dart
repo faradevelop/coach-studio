@@ -40,7 +40,6 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
         .where(
           (exercise) =>
               exercise.name.contains(normalizedQuery) ||
-              exercise.targetMuscle.label.contains(normalizedQuery) ||
               exercise.equipment.label.contains(normalizedQuery),
         )
         .toList();

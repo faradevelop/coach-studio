@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:coach_studio/core/error/app_exception.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
+import 'package:coach_studio/features/exercises/domain/entities/muscle.dart';
 import 'package:coach_studio/features/exercises/domain/repositories/exercise_repository.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,12 +11,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ExerciseCubit extends Cubit<ExerciseState> {
   final ExerciseRepository repository;
   final AppLogger _logger;
+  List<Muscle> _muscles = [];
 
   StreamSubscription<List<Exercise>>? _subscription;
 
+  List<Muscle> get muscles => _muscles;
+
   ExerciseCubit({required this.repository, AppLogger? logger})
     : _logger = logger ?? _createDefaultLogger(),
-      super(ExerciseInitial());
+      super(ExerciseInitial()) {
+    loadExerciseMeta();
+  }
 
   static AppLogger _createDefaultLogger() {
     throw StateError('AppLogger must be provided to ExerciseCubit');
@@ -33,6 +39,10 @@ class ExerciseCubit extends Cubit<ExerciseState> {
       );
       emit(ExerciseLoaded(exercises: exercises));
     }, onError: _handleError);
+  }
+
+  Future<void> loadExerciseMeta() async {
+    _muscles = await repository.getMuscles();
   }
 
   Future<bool> addExercise(Exercise exercise) async {

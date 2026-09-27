@@ -44,7 +44,6 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
     final query = _query.trim().toLowerCase();
     return exercises.where((exercise) {
       return exercise.name.contains(query) ||
-          exercise.targetMuscle.label.contains(query) ||
           exercise.equipment.label.contains(query);
     }).toList();
   }

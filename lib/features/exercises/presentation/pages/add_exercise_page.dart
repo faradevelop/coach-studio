@@ -17,6 +17,7 @@ class AddExercisePage extends StatelessWidget {
         builder: (context, state) {
           final isLoading = state is ExerciseLoaded && state.isSubmitting;
           return ExerciseForm(
+            muscles: context.read<ExerciseCubit>().muscles,
             isLoading: isLoading,
             onSubmit: (exercise) async {
               final success = await context.read<ExerciseCubit>().addExercise(

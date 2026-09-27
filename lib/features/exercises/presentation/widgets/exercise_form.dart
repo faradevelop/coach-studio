@@ -9,19 +9,22 @@ import 'package:coach_studio/core/widgets/app_dropdown.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
+import 'package:coach_studio/features/exercises/domain/entities/muscle.dart';
 import 'package:coach_studio/features/exercises/domain/enums/difficulty.dart';
 import 'package:coach_studio/features/exercises/domain/enums/equipment.dart';
-import 'package:coach_studio/features/exercises/domain/enums/target_muscle.dart';
+import 'package:coach_studio/features/exercises/domain/enums/exercise_type.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ExerciseForm extends StatefulWidget {
+  final List<Muscle> muscles;
   final Exercise? initialExercise;
   final bool isLoading;
   final Function(Exercise exercise) onSubmit;
 
   const ExerciseForm({
     super.key,
+    required this.muscles,
     this.initialExercise,
     required this.onSubmit,
     this.isLoading = false,
@@ -36,7 +39,8 @@ class _ExerciseFormState extends State<ExerciseForm> {
 
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
-  TargetMuscle? _selectedMuscle;
+  ExerciseType? _selectedType;
+  List<Muscle> _selectedMuscles = [];
   Difficulty? _selectedDifficulty;
   Equipment? _selectedEquipment;
 
@@ -47,7 +51,8 @@ class _ExerciseFormState extends State<ExerciseForm> {
     final exercise = widget.initialExercise;
 
     _nameController = TextEditingController(text: exercise?.name ?? '');
-    _selectedMuscle = exercise?.targetMuscle;
+    _selectedType = exercise?.type;
+    _selectedMuscles = List<Muscle>.from(exercise?.targetMuscles ?? const []);
     _selectedDifficulty = exercise?.difficulty;
     _selectedEquipment = exercise?.equipment;
     _descriptionController = TextEditingController(
@@ -70,7 +75,8 @@ class _ExerciseFormState extends State<ExerciseForm> {
     final exercise = Exercise(
       id: oldExercise?.id ?? '',
       name: _nameController.text.trim(),
-      targetMuscle: _selectedMuscle ?? TargetMuscle.values.first,
+      type: _selectedType,
+      targetMuscles: _selectedMuscles,
       difficulty: _selectedDifficulty ?? Difficulty.values.first,
       equipment: _selectedEquipment ?? Equipment.values.first,
       imageUrl: oldExercise?.imageUrl ?? '',
@@ -180,14 +186,24 @@ class _ExerciseFormState extends State<ExerciseForm> {
                                       : null,
                                 ),
                                 const SizedBox(height: 20),
-                                AppDropdown<TargetMuscle>(
-                                  label: 'عضله هدف',
-                                  value: _selectedMuscle,
-                                  items: TargetMuscle.values,
-                                  itemLabel: (item) => item.label,
-                                  onChanged: (value) {
-                                    setState(() => _selectedMuscle = value);
-                                  },
+
+                                Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    AppDropdown<ExerciseType>(
+                                      label: 'نوع تمرین',
+                                      value: _selectedType,
+                                      items: ExerciseType.values,
+                                      itemLabel: (item) => item.label,
+                                      onChanged: (value) {
+                                        setState(() => _selectedType = value);
+                                      },
+                                    ),
+                                    const SizedBox(height: 20),
+                                    //TO DO
+                                    //Select Multi muscle
+                                  ],
                                 ),
                                 const SizedBox(height: 20),
                                 AppDropdown<Difficulty>(

@@ -92,12 +92,12 @@ class _ExerciseInfo extends StatelessWidget {
           style: AppTextStyles.titleMedium.copyWith(fontSize: 15),
         ),
         const SizedBox(height: 3),
-        Text(
-          '${exercise.targetMuscle.label}  •  ${exercise.equipment.label}',
-          style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.charcoal.withValues(alpha: 0.6),
-          ),
-        ),
+        // Text(
+        //   '${exercise.targetMuscle.label}  •  ${exercise.equipment.label}',
+        //   style: AppTextStyles.bodySmall.copyWith(
+        //     color: AppColors.charcoal.withValues(alpha: 0.6),
+        //   ),
+        // ),
       ],
     );
   }

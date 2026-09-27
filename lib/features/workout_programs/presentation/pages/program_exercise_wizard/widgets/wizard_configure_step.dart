@@ -327,13 +327,13 @@ class _WizardConfigureStepState extends State<WizardConfigureStep> {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                '${exercise.targetMuscle.label}  •  ${exercise.equipment.label}',
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.muted,
-                  fontSize: 12.5,
-                ),
-              ),
+              // Text(
+              //   '${exercise.targetMuscle.label}  •  ${exercise.equipment.label}',
+              //   style: AppTextStyles.bodySmall.copyWith(
+              //     color: AppColors.muted,
+              //     fontSize: 12.5,
+              //   ),
+              // ),
             ],
           ),
         ),
