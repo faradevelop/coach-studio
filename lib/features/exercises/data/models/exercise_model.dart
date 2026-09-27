@@ -1,12 +1,14 @@
+import 'package:coach_studio/features/exercises/data/models/muscle_model.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/domain/enums/difficulty.dart';
 import 'package:coach_studio/features/exercises/domain/enums/equipment.dart';
-import 'package:coach_studio/features/exercises/domain/enums/target_muscle.dart';
+import 'package:coach_studio/features/exercises/domain/enums/exercise_type.dart';
 
 class ExerciseModel {
   final String id;
   final String name;
-  final TargetMuscle targetMuscle;
+  final ExerciseType? type;
+  final List<MuscleModel> targetMuscles;
   final Difficulty difficulty;
   final Equipment equipment;
   final String? imageUrl;
@@ -21,7 +23,8 @@ class ExerciseModel {
   const ExerciseModel({
     required this.id,
     required this.name,
-    required this.targetMuscle,
+    this.type,
+    this.targetMuscles = const [],
     required this.difficulty,
     required this.equipment,
     this.imageUrl,
@@ -36,7 +39,8 @@ class ExerciseModel {
 
   ExerciseModel copyWith({
     String? name,
-    TargetMuscle? targetMuscle,
+    ExerciseType? type,
+    List<MuscleModel>? targetMuscles,
     Difficulty? difficulty,
     Equipment? equipment,
     String? description,
@@ -50,7 +54,8 @@ class ExerciseModel {
     return ExerciseModel(
       id: id,
       name: name ?? this.name,
-      targetMuscle: targetMuscle ?? this.targetMuscle,
+      type: type ?? this.type,
+      targetMuscles: targetMuscles ?? this.targetMuscles,
       difficulty: difficulty ?? this.difficulty,
       equipment: equipment ?? this.equipment,
       imageUrl: imageUrl ?? this.imageUrl,
@@ -68,7 +73,10 @@ class ExerciseModel {
     return ExerciseModel(
       id: entity.id,
       name: entity.name,
-      targetMuscle: entity.targetMuscle,
+      type: entity.type,
+      targetMuscles: entity.targetMuscles
+          .map((muscle) => MuscleModel.fromEntity(muscle))
+          .toList(),
       difficulty: entity.difficulty,
       equipment: entity.equipment,
       imageUrl: entity.imageUrl,
@@ -86,7 +94,8 @@ class ExerciseModel {
     return Exercise(
       id: id,
       name: name,
-      targetMuscle: targetMuscle,
+      type: type,
+      targetMuscles: targetMuscles.map((muscle) => muscle.toEntity()).toList(),
       difficulty: difficulty,
       equipment: equipment,
       imageUrl: imageUrl,
@@ -104,7 +113,12 @@ class ExerciseModel {
     return ExerciseModel(
       id: json['id'] as String,
       name: json['name'] as String,
-      targetMuscle: TargetMuscle.values.byName(json['targetMuscle'] as String),
+      type: json['type'] != null
+          ? ExerciseType.values.byName(json['type'] as String)
+          : null,
+      targetMuscles: (json['targetMuscles'] as List<dynamic>? ?? [])
+          .map((muscle) => MuscleModel.fromJson(muscle as Map<String, dynamic>))
+          .toList(),
       difficulty: Difficulty.values.byName(json['difficulty'] as String),
       equipment: Equipment.values.byName(json['equipment'] as String),
       imageUrl: json['imageUrl'] as String?,
@@ -125,7 +139,8 @@ class ExerciseModel {
   Map<String, dynamic> toRequestJson() {
     return {
       'name': name,
-      'targetMuscle': targetMuscle.name,
+      'type': type?.name,
+      'targetMuscles': targetMuscles.map((muscle) => muscle.slug).toList(),
       'difficulty': difficulty.name,
       'equipment': equipment.name,
       'imageUrl': imageUrl,
