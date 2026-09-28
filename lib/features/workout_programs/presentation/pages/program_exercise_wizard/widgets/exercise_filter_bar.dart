@@ -55,17 +55,19 @@ class ExerciseFilterBar extends StatelessWidget {
               const SizedBox(width: 8),
               _FilterChip(
                 label: 'وسیله',
-                activeLabel: _summaryLabel(
-                  filter.equipment.map((e) => e.label).toList(),
-                ),
-                isActive: filter.equipment.isNotEmpty,
+                activeLabel: filter.equipment?.label,
+                isActive: filter.equipment != null,
                 onTap: () => MultiSelectBottomSheet.show<Equipment>(
                   context: context,
                   title: 'فیلتر بر اساس وسیله',
                   options: Equipment.values,
                   labelBuilder: (e) => e.label,
-                  initialSelected: filter.equipment,
-                  onApply: cubit.applyEquipment,
+                  initialSelected: filter.equipment == null
+                      ? []
+                      : [filter.equipment!],
+                  singleSelect: true,
+                  onApply: (s) =>
+                      cubit.applyEquipment(s.isEmpty ? null : s.first),
                 ),
                 onClear: cubit.clearEquipment,
               ),

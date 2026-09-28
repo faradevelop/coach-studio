@@ -13,11 +13,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ExerciseFilterCubit extends Cubit<ExerciseFilter> {
   ExerciseFilterCubit() : super(const ExerciseFilter());
 
+  void applySearch(String search) {
+    final s = search.trim();
+    if (s == state.search) return;
+    emit(state.copyWith(search: s));
+  }
+
   void applyMuscles(List<Muscle> muscles) =>
       emit(state.copyWith(muscles: muscles));
 
-  void applyEquipment(List<Equipment> equipment) =>
-      emit(state.copyWith(equipment: equipment));
+  void applyEquipment(Equipment? e) =>
+      emit(state.copyWith(equipment: e, clearEquipment: e == null));
 
   void applyDifficulty(Difficulty? difficulty) => emit(
     state.copyWith(difficulty: difficulty, clearDifficulty: difficulty == null),
@@ -27,8 +33,8 @@ class ExerciseFilterCubit extends Cubit<ExerciseFilter> {
       emit(state.copyWith(type: type, clearType: type == null));
 
   void clearMuscles() => emit(state.copyWith(muscles: const []));
-  void clearEquipment() => emit(state.copyWith(equipment: const []));
+  void clearEquipment() => emit(state.copyWith(clearEquipment: true));
   void clearDifficulty() => emit(state.copyWith(clearDifficulty: true));
   void clearType() => emit(state.copyWith(clearType: true));
-  void clearAll() => emit(const ExerciseFilter());
+  void clearAll() => emit(ExerciseFilter(search: state.search));
 }
