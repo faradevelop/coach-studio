@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 class MaxWidthBox extends StatelessWidget {
   final double maxWidth;
   final Widget child;
+  final AlignmentGeometry alignmentGeometry;
 
   /// When true, also forces the box to fill all available height
   /// (needed for the app-wide shell in main.dart).
@@ -17,6 +18,7 @@ class MaxWidthBox extends StatelessWidget {
     required this.maxWidth,
     required this.child,
     this.expandHeight = false,
+    this.alignmentGeometry = Alignment.topCenter,
   });
 
   @override
@@ -26,7 +28,7 @@ class MaxWidthBox extends StatelessWidget {
         : child;
 
     return Align(
-      alignment: Alignment.topCenter,
+      alignment: alignmentGeometry,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: content,
