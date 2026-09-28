@@ -13,61 +13,41 @@ import 'package:coach_studio/features/exercises/domain/enums/exercise_type.dart'
 /// once); difficulty and type are single-select, mirroring the fact that
 /// each [Exercise] carries exactly one value for each.
 class ExerciseFilter {
+  final String search;
   final List<Muscle> muscles;
-  final List<Equipment> equipment;
+  final Equipment? equipment;
   final Difficulty? difficulty;
   final ExerciseType? type;
 
   const ExerciseFilter({
+    this.search = '',
     this.muscles = const [],
-    this.equipment = const [],
+    this.equipment,
     this.difficulty,
     this.type,
   });
 
   bool get isEmpty =>
+      search.isEmpty &&
       muscles.isEmpty &&
-      equipment.isEmpty &&
+      equipment == null &&
       difficulty == null &&
       type == null;
 
   ExerciseFilter copyWith({
+    String? search,
     List<Muscle>? muscles,
-    List<Equipment>? equipment,
+    Equipment? equipment,
     Difficulty? difficulty,
     ExerciseType? type,
+    bool clearEquipment = false,
     bool clearDifficulty = false,
     bool clearType = false,
-  }) {
-    return ExerciseFilter(
-      muscles: muscles ?? this.muscles,
-      equipment: equipment ?? this.equipment,
-      difficulty: clearDifficulty ? null : (difficulty ?? this.difficulty),
-      type: clearType ? null : (type ?? this.type),
-    );
-  }
-
-  /// True when [exercise] satisfies every currently active criterion.
-  bool matches(Exercise exercise) {
-    if (muscles.isNotEmpty &&
-        !muscles.any(
-          (m) => exercise.targetMuscles.any((em) => em.id == m.id),
-        )) {
-      return false;
-    }
-
-    if (equipment.isNotEmpty && !equipment.contains(exercise.equipment)) {
-      return false;
-    }
-
-    if (difficulty != null && exercise.difficulty != difficulty) {
-      return false;
-    }
-
-    if (type != null && exercise.type != type) {
-      return false;
-    }
-
-    return true;
-  }
+  }) => ExerciseFilter(
+    search: search ?? this.search,
+    muscles: muscles ?? this.muscles,
+    equipment: clearEquipment ? null : (equipment ?? this.equipment),
+    difficulty: clearDifficulty ? null : (difficulty ?? this.difficulty),
+    type: clearType ? null : (type ?? this.type),
+  );
 }
