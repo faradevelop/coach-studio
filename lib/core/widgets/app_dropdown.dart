@@ -8,6 +8,7 @@ class AppDropdown<T> extends StatelessWidget {
   final List<T> items;
   final String Function(T) itemLabel;
   final ValueChanged<T?>? onChanged;
+  final String? Function(T?)? validator;
 
   const AppDropdown({
     super.key,
@@ -16,6 +17,7 @@ class AppDropdown<T> extends StatelessWidget {
     required this.itemLabel,
     this.onChanged,
     this.value,
+    this.validator,
   });
 
   @override
@@ -29,6 +31,10 @@ class AppDropdown<T> extends StatelessWidget {
         focusColor: AppColors.teal.withValues(alpha: 0.15),
       ),
       child: DropdownButtonFormField<T>(
+        validator: validator,
+        autovalidateMode: validator == null
+            ? AutovalidateMode.disabled
+            : AutovalidateMode.onUserInteraction,
         initialValue: items.contains(value) ? value : null,
         style: const TextStyle(
           color: AppColors.charcoal,
