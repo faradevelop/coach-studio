@@ -172,7 +172,6 @@ class ExerciseApiDatasource {
   Future<List<MuscleModel>> getMuscles() async {
     _logger.debug('ExerciseDataSource: fetching muscles');
     final data = await client.get('/muscles') as List<dynamic>;
-    print(data);
     final muscles = data
         .map((json) => MuscleModel.fromJson(json as Map<String, dynamic>))
         .toList();
