@@ -116,7 +116,7 @@ class ExerciseModel {
       type: json['type'] != null
           ? ExerciseType.values.byName(json['type'] as String)
           : null,
-      targetMuscles: (json['targetMuscles'] as List<dynamic>? ?? [])
+      targetMuscles: (json['muscles'] as List<dynamic>? ?? [])
           .map((muscle) => MuscleModel.fromJson(muscle as Map<String, dynamic>))
           .toList(),
       difficulty: Difficulty.values.byName(json['difficulty'] as String),
@@ -140,7 +140,7 @@ class ExerciseModel {
     return {
       'name': name,
       'type': type?.name,
-      'targetMuscles': targetMuscles.map((muscle) => muscle.slug).toList(),
+      'muscleSlugs': targetMuscles.map((muscle) => muscle.slug).toList(),
       'difficulty': difficulty.name,
       'equipment': equipment.name,
       'imageUrl': imageUrl,
