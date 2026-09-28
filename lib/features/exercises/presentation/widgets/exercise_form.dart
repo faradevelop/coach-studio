@@ -80,16 +80,20 @@ class _ExerciseFormState extends State<ExerciseForm> {
 
     final oldExercise = widget.initialExercise;
 
+    final type = _selectedType;
+    if (type == null) return; // unreachable after validate(); avoids '!'
     final exercise = Exercise(
       id: oldExercise?.id ?? '',
       name: _nameController.text.trim(),
-      type: _selectedType,
+      type: type,
       targetMuscles: _selectedMuscles,
       difficulty: _selectedDifficulty ?? Difficulty.values.first,
       equipment: _selectedEquipment ?? Equipment.values.first,
       imageUrl: oldExercise?.imageUrl ?? '',
       videoUrl: oldExercise?.videoUrl ?? '',
       description: _descriptionController.text.trim(),
+      instructions: oldExercise?.instructions,
+      mistakes: oldExercise?.mistakes,
       isActive: oldExercise?.isActive ?? true,
     );
 
@@ -204,9 +208,10 @@ class _ExerciseFormState extends State<ExerciseForm> {
                                       value: _selectedType,
                                       items: ExerciseType.values,
                                       itemLabel: (item) => item.label,
-                                      onChanged: (value) {
-                                        setState(() => _selectedType = value);
-                                      },
+                                      validator: (v) =>
+                                          v == null ? 'الزامی' : null,
+                                      onChanged: (value) =>
+                                          setState(() => _selectedType = value),
                                     ),
                                     const SizedBox(height: 20),
                                     MuscleSelectorField(
