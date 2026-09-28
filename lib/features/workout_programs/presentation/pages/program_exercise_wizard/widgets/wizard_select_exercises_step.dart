@@ -8,10 +8,13 @@ import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/custom_search_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
+import 'package:coach_studio/features/exercises/domain/entities/muscle.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
+import 'package:coach_studio/features/exercises/presentation/cubit/exercise_filter_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_wizard_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_wizard_state.dart';
+import 'package:coach_studio/features/workout_programs/presentation/pages/program_exercise_wizard/widgets/exercise_filter_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -28,7 +31,10 @@ class WizardSelectExercisesStep extends StatefulWidget {
 
 class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
   final _searchController = TextEditingController();
+  final _filterCubit = ExerciseFilterCubit();
   String _query = '';
+
+  List<Muscle> _muscles = const [];
 
   List<Exercise> _filterExercises(List<Exercise> exercises, String query) {
     if (query.trim().isEmpty) {
@@ -72,9 +78,27 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
     cubit.toggleExerciseSelection(exercise);
   }
 
+  Future<void> _loadExerciseMeta() async {
+    final exerciseCubit = context.read<ExerciseCubit>();
+
+    await exerciseCubit.waitForExerciseMeta();
+    if (!mounted) return;
+
+    setState(() {
+      _muscles = exerciseCubit.muscles;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadExerciseMeta();
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
+    _filterCubit.close();
     super.dispose();
   }
 
@@ -83,24 +107,30 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
     final wizardCubit = context.read<ProgramExerciseWizardCubit>();
     final wizardState = context.watch<ProgramExerciseWizardCubit>().state;
 
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20),
-      child: MaxWidthBox(
-        maxWidth: AppContentWidth.form,
-        child: Column(
-          children: [
-            _buildSearchHeader(wizardState),
-            Expanded(child: _buildExerciseList(context, wizardState)),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 20),
-              child: AppButton(
-                text: 'تایید و مرحله بعد',
-                onPressed: wizardState.canProceedToConfigure
-                    ? wizardCubit.goToConfigure
-                    : null,
+    return BlocProvider<ExerciseFilterCubit>.value(
+      value: _filterCubit,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: MaxWidthBox(
+          maxWidth: AppContentWidth.form,
+          child: Column(
+            children: [
+              _buildSearchHeader(wizardState),
+              const SizedBox(height: 10),
+              ExerciseFilterBar(availableMuscles: _muscles),
+              const SizedBox(height: 10),
+              Expanded(child: _buildExerciseList(context, wizardState)),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 20),
+                child: AppButton(
+                  text: 'تایید و مرحله بعد',
+                  onPressed: wizardState.canProceedToConfigure
+                      ? wizardCubit.goToConfigure
+                      : null,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -178,7 +208,11 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
     List<Exercise> exercises,
     ProgramExerciseWizardState wizardState,
   ) {
-    final filteredExercises = _filterExercises(exercises, _query);
+    final filter = context.watch<ExerciseFilterCubit>().state;
+    final byFilter = filter.isEmpty
+        ? exercises
+        : exercises.where(filter.matches).toList();
+    final filteredExercises = _filterExercises(byFilter, _query);
 
     if (filteredExercises.isEmpty) {
       return Center(

@@ -12,6 +12,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
   final ExerciseRepository repository;
   final AppLogger _logger;
   List<Muscle> _muscles = [];
+  late final Future<void> _metaLoading;
 
   StreamSubscription<List<Exercise>>? _subscription;
 
@@ -20,7 +21,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
   ExerciseCubit({required this.repository, AppLogger? logger})
     : _logger = logger ?? _createDefaultLogger(),
       super(ExerciseInitial()) {
-    loadExerciseMeta();
+    _metaLoading = loadExerciseMeta();
   }
 
   static AppLogger _createDefaultLogger() {
@@ -40,6 +41,8 @@ class ExerciseCubit extends Cubit<ExerciseState> {
       emit(ExerciseLoaded(exercises: exercises));
     }, onError: _handleError);
   }
+
+  Future<void> waitForExerciseMeta() => _metaLoading;
 
   Future<void> loadExerciseMeta() async {
     _muscles = await repository.getMuscles();
