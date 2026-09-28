@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
@@ -11,7 +13,6 @@ import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/core/widgets/responsive/responsive_grid.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
-import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/empty_exercises.dart';
@@ -30,22 +31,23 @@ class ExerciseListPage extends StatefulWidget {
 
 class _ExerciseListPageState extends State<ExerciseListPage> {
   final TextEditingController _searchController = TextEditingController();
-  String _query = '';
+  Timer? _debounce;
+
+  void _onSearchChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      if (!mounted) return;
+      final cubit = context.read<ExerciseCubit>();
+      final s = value.trim();
+      if (s == cubit.filter.search) return;
+      cubit.applyFilter(cubit.filter.copyWith(search: s));
+    });
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
-  }
-
-  List<Exercise> _filterExercises(List<Exercise> exercises) {
-    if (_query.trim().isEmpty) return exercises;
-
-    final query = _query.trim().toLowerCase();
-    return exercises.where((exercise) {
-      return exercise.name.contains(query) ||
-          exercise.equipment.label.contains(query);
-    }).toList();
   }
 
   @override
@@ -61,13 +63,10 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
         padding: const EdgeInsets.symmetric(horizontal: 14),
         child: BlocBuilder<ExerciseCubit, ExerciseState>(
           builder: (context, state) {
-            if (state is ExerciseLoaded && state.exercises.isEmpty) {
-              if (_query.isNotEmpty || _searchController.text.isNotEmpty) {
-                _query = '';
-                _searchController.clear();
-              }
-            }
-
+            final filter = context.read<ExerciseCubit>().filter;
+            final showSearchBar =
+                state is ExerciseLoaded &&
+                (state.exercises.isNotEmpty || !filter.isEmpty);
             return Column(
               children: [
                 MaxWidthBox(
@@ -81,15 +80,12 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                   ),
                 ),
                 const SizedBox(height: 28),
-                if (state is ExerciseLoaded && state.exercises.isNotEmpty) ...[
+                if (showSearchBar)
                   CustomSearchBar(
                     hint: 'جستجو...',
                     controller: _searchController,
-                    onChanged: (String value) {
-                      setState(() => _query = value);
-                    },
+                    onChanged: _onSearchChanged,
                   ),
-                ],
 
                 Expanded(
                   child: switch (state) {
@@ -102,13 +98,9 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
 
                     ExerciseLoaded(:final exercises) =>
                       exercises.isEmpty
-                          ? EmptyExercises(addMessage: isAdmin)
-                          : Builder(
-                              builder: (_) {
-                                final filtered = _filterExercises(exercises);
-
-                                if (filtered.isEmpty) {
-                                  return Center(
+                          ? (filter.isEmpty
+                                ? EmptyExercises(addMessage: isAdmin)
+                                : Center(
                                     child: Text(
                                       'تمرینی یافت نشد!',
                                       style: TextStyle(
@@ -118,74 +110,65 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                                         fontSize: 15,
                                       ),
                                     ),
-                                  );
-                                }
-
-                                return ResponsiveGrid(
-                                  breakpoints: const [
-                                    ResponsiveGridBreakpoint(
-                                      minWidth: 0,
-                                      columns: 1,
-                                    ),
-                                    ResponsiveGridBreakpoint(
-                                      minWidth: 650,
-                                      columns: 2,
-                                    ),
-                                    ResponsiveGridBreakpoint(
-                                      minWidth: 1000,
-                                      columns: 3,
-                                    ),
-                                  ],
-                                  itemExtent:
-                                      120, // ExerciseCard's fixed 108px + its own 6+6 vertical margin
-                                  padding: const EdgeInsets.fromLTRB(
-                                    0,
-                                    12,
-                                    0,
-                                    90,
-                                  ),
-                                  itemCount: filtered.length,
-                                  itemBuilder: (context, index) {
-                                    final exercise = filtered[index];
-                                    return ExerciseCard(
-                                      exercise: exercise,
-                                      showActions: isAdmin,
-                                      onEdit: () {
-                                        context.pushNamed(
-                                          AppRouteNames.editExercise,
-                                          pathParameters: {
-                                            'exerciseId': exercise.id,
-                                          },
-                                          extra: exercise,
-                                        );
+                                  ))
+                          : ResponsiveGrid(
+                              breakpoints: const [
+                                ResponsiveGridBreakpoint(
+                                  minWidth: 0,
+                                  columns: 1,
+                                ),
+                                ResponsiveGridBreakpoint(
+                                  minWidth: 650,
+                                  columns: 2,
+                                ),
+                                ResponsiveGridBreakpoint(
+                                  minWidth: 1000,
+                                  columns: 3,
+                                ),
+                              ],
+                              itemExtent:
+                                  120, // ExerciseCard's fixed 108px + its own 6+6 vertical margin
+                              padding: const EdgeInsets.fromLTRB(0, 12, 0, 90),
+                              itemCount: exercises.length,
+                              itemBuilder: (context, index) {
+                                final exercise = exercises[index];
+                                return ExerciseCard(
+                                  exercise: exercise,
+                                  showActions: isAdmin,
+                                  onEdit: () {
+                                    context.pushNamed(
+                                      AppRouteNames.editExercise,
+                                      pathParameters: {
+                                        'exerciseId': exercise.id,
                                       },
-                                      onDelete: () async {
-                                        final result = await showDialog<bool>(
-                                          context: context,
-                                          builder: (_) => DeleteDialog(
-                                            itemName: exercise.name,
-                                            title: 'تمرین',
-                                          ),
-                                        );
-
-                                        if (result == true && context.mounted) {
-                                          final success = await context
-                                              .read<ExerciseCubit>()
-                                              .deleteExercise(exercise.id);
-
-                                          if (!success) {
-                                            sl<AppNotification>().error(
-                                              'حذف تمرین ناموفق بود.',
-                                            );
-                                            return;
-                                          }
-
-                                          sl<AppNotification>().success(
-                                            'تمرین با موفقیت حذف شد.',
-                                          );
-                                        }
-                                      },
+                                      extra: exercise,
                                     );
+                                  },
+                                  onDelete: () async {
+                                    final result = await showDialog<bool>(
+                                      context: context,
+                                      builder: (_) => DeleteDialog(
+                                        itemName: exercise.name,
+                                        title: 'تمرین',
+                                      ),
+                                    );
+
+                                    if (result == true && context.mounted) {
+                                      final success = await context
+                                          .read<ExerciseCubit>()
+                                          .deleteExercise(exercise.id);
+
+                                      if (!success) {
+                                        sl<AppNotification>().error(
+                                          'حذف تمرین ناموفق بود.',
+                                        );
+                                        return;
+                                      }
+
+                                      sl<AppNotification>().success(
+                                        'تمرین با موفقیت حذف شد.',
+                                      );
+                                    }
                                   },
                                 );
                               },
