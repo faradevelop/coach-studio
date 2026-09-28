@@ -7,6 +7,7 @@ import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/core/storage/token_storage.dart';
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_theme.dart';
+import 'package:coach_studio/core/widgets/responsive/app_scroll_behavior.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
@@ -89,6 +90,8 @@ class MyApp extends StatelessWidget {
         },
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
+
+          scrollBehavior: const AppScrollBehavior(),
 
           locale: const Locale('fa'),
           supportedLocales: const [Locale('fa'), Locale('en')],
