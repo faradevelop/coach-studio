@@ -13,6 +13,7 @@ import 'package:coach_studio/features/exercises/domain/entities/muscle.dart';
 import 'package:coach_studio/features/exercises/domain/enums/difficulty.dart';
 import 'package:coach_studio/features/exercises/domain/enums/equipment.dart';
 import 'package:coach_studio/features/exercises/domain/enums/exercise_type.dart';
+import 'package:coach_studio/features/exercises/presentation/widgets/muscle_selector_field.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -44,6 +45,8 @@ class _ExerciseFormState extends State<ExerciseForm> {
   Difficulty? _selectedDifficulty;
   Equipment? _selectedEquipment;
 
+  String? _musclesError;
+
   @override
   void initState() {
     super.initState();
@@ -69,6 +72,11 @@ class _ExerciseFormState extends State<ExerciseForm> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
+
+    if (_selectedMuscles.isEmpty) {
+      setState(() => _musclesError = 'حداقل یک عضله را انتخاب کنید');
+      return;
+    }
 
     final oldExercise = widget.initialExercise;
 
@@ -201,8 +209,17 @@ class _ExerciseFormState extends State<ExerciseForm> {
                                       },
                                     ),
                                     const SizedBox(height: 20),
-                                    //TO DO
-                                    //Select Multi muscle
+                                    MuscleSelectorField(
+                                      allMuscles: widget.muscles,
+                                      selected: _selectedMuscles,
+                                      errorText: _musclesError,
+                                      onChanged: (muscles) {
+                                        setState(() {
+                                          _selectedMuscles = muscles;
+                                          _musclesError = null;
+                                        });
+                                      },
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 20),
