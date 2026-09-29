@@ -150,7 +150,12 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
                 _buildSearchHeader(wizardState),
                 const SizedBox(height: 10),
                 ExerciseFilterBar(availableMuscles: _muscles),
-                const SizedBox(height: 10),
+                if (wizardState.selectedExercises.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  _buildSelectedExercises(wizardState),
+                  const SizedBox(height: 8),
+                ] else
+                  const SizedBox(height: 10),
                 Expanded(child: _buildExerciseList(context, wizardState)),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 20),
@@ -242,6 +247,61 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildSelectedExercises(ProgramExerciseWizardState wizardState) {
+    return SizedBox(
+      height: 40,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: wizardState.selectedExercises.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final exercise = wizardState.selectedExercises[index];
+          return Container(
+            constraints: const BoxConstraints(maxWidth: 220),
+            padding: const EdgeInsetsDirectional.only(start: 12, end: 6),
+            decoration: BoxDecoration(
+              color: AppColors.teal.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: AppColors.teal.withValues(alpha: 0.5)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    exercise.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: AppColors.charcoal,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => context
+                      .read<ProgramExerciseWizardCubit>()
+                      .toggleExerciseSelection(exercise),
+                  tooltip: 'حذف ${exercise.name}',
+                  icon: const Icon(Icons.close_rounded, size: 16),
+                  color: AppColors.teal,
+                  visualDensity: VisualDensity.compact,
+                  constraints: const BoxConstraints.tightFor(
+                    width: 28,
+                    height: 28,
+                  ),
+                  padding: EdgeInsets.zero,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
