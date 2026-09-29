@@ -128,6 +128,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                               ],
                               itemExtent:
                                   120, // ExerciseCard's fixed 108px + its own 6+6 vertical margin
+                              mainAxisSpacing: 4,
                               padding: const EdgeInsets.fromLTRB(0, 12, 0, 90),
                               itemCount: exercises.length,
                               itemBuilder: (context, index) {

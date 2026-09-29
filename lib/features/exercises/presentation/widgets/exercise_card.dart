@@ -72,13 +72,54 @@ class ExerciseCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            exercise.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyles.titleMedium.copyWith(
-                              fontSize: 14,
-                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  exercise.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTextStyles.titleMedium.copyWith(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              if (showActions) ...[
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: MiniButton(
+                                    color: AppColors.charcoalSoft.withValues(
+                                      alpha: 0.18,
+                                    ),
+                                    icon: HugeIcon(
+                                      icon: HugeIcons.strokeRoundedEdit03,
+                                      size: 18,
+                                      color: AppColors.charcoal.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                    ),
+                                    onPressed: onEdit,
+                                  ),
+                                ),
+                                SizedBox(width: 4),
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: MiniButton(
+                                    color: AppColors.error.withValues(
+                                      alpha: 0.18,
+                                    ),
+                                    icon: HugeIcon(
+                                      icon: HugeIcons.strokeRoundedDelete03,
+                                      size: 18,
+                                      color: AppColors.error.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                    ),
+                                    onPressed: onDelete,
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                           const SizedBox(height: 7),
                           Row(
@@ -105,14 +146,24 @@ class ExerciseCard extends StatelessWidget {
                               const SizedBox(width: 4),
 
                               Expanded(
-                                child: Wrap(
-                                  spacing: 6,
-                                  runSpacing: 4,
-                                  children: exercise.targetMuscles.map((
-                                    muscle,
-                                  ) {
-                                    return InfoChip(text: muscle.name);
-                                  }).toList(),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      for (
+                                        var index = 0;
+                                        index < exercise.targetMuscles.length;
+                                        index++
+                                      ) ...[
+                                        if (index > 0) const SizedBox(width: 6),
+                                        InfoChip(
+                                          text: exercise
+                                              .targetMuscles[index]
+                                              .name,
+                                        ),
+                                      ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -120,33 +171,6 @@ class ExerciseCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (showActions) ...[
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: MiniButton(
-                          color: AppColors.charcoalSoft.withValues(alpha: 0.18),
-                          icon: HugeIcon(
-                            icon: HugeIcons.strokeRoundedEdit03,
-                            size: 18,
-                            color: AppColors.charcoal.withValues(alpha: 0.9),
-                          ),
-                          onPressed: onEdit,
-                        ),
-                      ),
-                      SizedBox(width: 4),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: MiniButton(
-                          color: AppColors.error.withValues(alpha: 0.18),
-                          icon: HugeIcon(
-                            icon: HugeIcons.strokeRoundedDelete03,
-                            size: 18,
-                            color: AppColors.error.withValues(alpha: 0.9),
-                          ),
-                          onPressed: onDelete,
-                        ),
-                      ),
-                    ],
                   ],
                 ),
               ),
