@@ -17,6 +17,8 @@ class MultiSelectBottomSheet<T> extends StatefulWidget {
   final List<T> initialSelected;
   final bool singleSelect;
   final void Function(List<T> selected) onApply;
+  final String confirmText;
+  final String cancelText;
 
   const MultiSelectBottomSheet({
     super.key,
@@ -26,6 +28,8 @@ class MultiSelectBottomSheet<T> extends StatefulWidget {
     required this.initialSelected,
     required this.onApply,
     this.singleSelect = false,
+    this.confirmText = 'تایید',
+    this.cancelText = 'لغو',
   });
 
   static Future<void> show<T>({
@@ -36,10 +40,14 @@ class MultiSelectBottomSheet<T> extends StatefulWidget {
     required List<T> initialSelected,
     required void Function(List<T> selected) onApply,
     bool singleSelect = false,
+    bool requestFocus = true,
+    String confirmText = 'تایید',
+    String cancelText = 'لغو',
   }) {
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
+      requestFocus: requestFocus,
       backgroundColor: Colors.transparent,
       builder: (_) => MultiSelectBottomSheet<T>(
         title: title,
@@ -48,6 +56,8 @@ class MultiSelectBottomSheet<T> extends StatefulWidget {
         initialSelected: initialSelected,
         onApply: onApply,
         singleSelect: singleSelect,
+        confirmText: confirmText,
+        cancelText: cancelText,
       ),
     );
   }
@@ -115,15 +125,17 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
                     child: Align(
                       alignment: AlignmentDirectional.centerStart,
                       child: Text(
                         widget.title,
-                        style: AppTextStyles.titleMedium,
+                        style: AppTextStyles.titleMedium.copyWith(fontSize: 16),
                       ),
                     ),
                   ),
+                  Divider(),
+                  SizedBox(height: 8),
                   Flexible(
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(
@@ -153,7 +165,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                           child: GestureDetector(
                             onTap: () => Navigator.of(context).pop(),
                             child: Container(
-                              height: 46,
+                              height: 42,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: Colors.white.withValues(alpha: 0.5),
@@ -162,8 +174,8 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                                   color: Colors.white.withValues(alpha: 0.6),
                                 ),
                               ),
-                              child: const Text(
-                                'لغو',
+                              child: Text(
+                                widget.cancelText,
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
@@ -181,7 +193,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                               Navigator.of(context).pop();
                             },
                             child: Container(
-                              height: 46,
+                              height: 42,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: AppColors.orange,
@@ -196,8 +208,8 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                                   ),
                                 ],
                               ),
-                              child: const Text(
-                                'اعمال فیلتر',
+                              child: Text(
+                                widget.confirmText,
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
