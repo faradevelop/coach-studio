@@ -4,7 +4,9 @@ import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
+import 'package:coach_studio/features/exercises/presentation/widgets/exercise_card.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ExerciseSelectTile extends StatelessWidget {
   final Exercise exercise;
@@ -91,13 +93,28 @@ class _ExerciseInfo extends StatelessWidget {
           exercise.name,
           style: AppTextStyles.titleMedium.copyWith(fontSize: 15),
         ),
-        const SizedBox(height: 3),
-        // Text(
-        //   '${exercise.targetMuscle.label}  •  ${exercise.equipment.label}',
-        //   style: AppTextStyles.bodySmall.copyWith(
-        //     color: AppColors.charcoal.withValues(alpha: 0.6),
-        //   ),
-        // ),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            HugeIcon(
+              icon: HugeIcons.strokeRoundedFire02,
+              size: 14,
+              color: AppColors.teal,
+              strokeWidth: 2,
+            ),
+            const SizedBox(width: 4),
+
+            Expanded(
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: exercise.targetMuscles.map((muscle) {
+                  return InfoChip(text: muscle.name);
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }

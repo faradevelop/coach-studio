@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/multi_select_bottom_sheet.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise_filter.dart';
@@ -21,7 +22,7 @@ class ExerciseFilterBar extends StatelessWidget {
   String? _summaryLabel(List<String> values) {
     if (values.isEmpty) return null;
     if (values.length == 1) return values.first;
-    return '${values.first} +${values.length - 1}';
+    return '${values.first}  + ${(values.length - 1).persianNumber}';
   }
 
   @override
@@ -49,6 +50,7 @@ class ExerciseFilterBar extends StatelessWidget {
                   labelBuilder: (m) => m.name,
                   initialSelected: filter.muscles,
                   onApply: cubit.applyMuscles,
+                  confirmText: 'اعمال فیلتر',
                 ),
                 onClear: cubit.clearMuscles,
               ),
@@ -138,8 +140,8 @@ class _FilterChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         padding: EdgeInsetsDirectional.only(
-          end: 14,
-          start: isActive ? 6 : 14,
+          end: isActive ? 12 : 14,
+          start: isActive ? 12 : 14,
           top: 8,
           bottom: 8,
         ),
@@ -157,7 +159,7 @@ class _FilterChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              isActive ? '$label: $activeLabel' : label,
+              isActive ? '$label : $activeLabel' : label,
               style: TextStyle(
                 fontSize: 12.5,
                 fontWeight: FontWeight.w600,
@@ -165,7 +167,7 @@ class _FilterChip extends StatelessWidget {
               ),
             ),
             if (isActive) ...[
-              const SizedBox(width: 4),
+              const SizedBox(width: 8),
               GestureDetector(
                 onTap: onClear,
                 child: Container(
