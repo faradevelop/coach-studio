@@ -67,7 +67,21 @@ class GlassBottomNav extends StatelessWidget {
 
   static const double height = 72;
 
+  // Order MUST match the StatefulShellBranch order in AppRouter.
   final List<_NavItemData> _items = [
+    _NavItemData(
+      name: 'داشبورد',
+      icon: HugeIcon(
+        icon: HugeIcons.strokeRoundedHome01,
+        size: 19,
+        color: AppColors.charcoal,
+      ),
+      activeIcon: HugeIcon(
+        icon: HugeIcons.strokeRoundedHome01,
+        size: 20,
+        color: AppColors.orange,
+      ),
+    ),
     _NavItemData(
       name: 'برنامه',
       icon: HugeIcon(

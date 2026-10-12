@@ -13,6 +13,10 @@ abstract final class AppRoutes {
 
   static const settings = '/settings';
 
+  // Dashboard
+
+  static const dashboard = '/dashboard';
+
   // Workout Programs
 
   static const workoutProgramsList = '/programs';

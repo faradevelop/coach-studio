@@ -12,6 +12,7 @@ import 'package:coach_studio/features/authentication/presentation/pages/login_pa
 import 'package:coach_studio/features/authentication/presentation/pages/reset_password_page.dart';
 import 'package:coach_studio/features/authentication/presentation/pages/settings_page.dart';
 import 'package:coach_studio/features/authentication/presentation/pages/splash_page.dart';
+import 'package:coach_studio/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/add_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/edit_exercise_page.dart';
@@ -33,6 +34,8 @@ class AppRouter {
 
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'root');
+  static final GlobalKey<NavigatorState> _dashboardBranchNavigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'dashboardBranch');
   static final GlobalKey<NavigatorState> _exerciseBranchNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'exerciseBranch');
   static final GlobalKey<NavigatorState> _programBranchNavigatorKey =
@@ -86,7 +89,8 @@ class AppRouter {
       }
 
       if (isAuthRoute || isSplash) {
-        return AppRoutes.workoutProgramsList;
+        // Dashboard is the landing destination after login / session restore.
+        return AppRoutes.dashboard;
       }
 
       if (isAdmin == false && location.startsWith('${AppRoutes.exercises}/')) {
@@ -127,10 +131,22 @@ class AppRouter {
         },
       ),
 
+      // Branch order MUST match the item order in GlassBottomNav:
+      // Dashboard, Programs, Exercises, Settings.
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             ScaffoldWithBottomNav(navigationShell: navigationShell),
         branches: [
+          StatefulShellBranch(
+            navigatorKey: _dashboardBranchNavigatorKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.dashboard,
+                name: AppRouteNames.dashboard,
+                builder: (_, _) => const DashboardPage(),
+              ),
+            ],
+          ),
           StatefulShellBranch(
             navigatorKey: _programBranchNavigatorKey,
             routes: [
