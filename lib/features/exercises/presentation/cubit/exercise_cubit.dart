@@ -19,9 +19,17 @@ class ExerciseCubit extends Cubit<ExerciseState> {
   ExerciseFilter _filter = const ExerciseFilter();
   int _requestId = 0;
 
+  /// Size of the UNFILTERED active-exercise catalog, or null if it has not
+  /// been loaded yet. [ExerciseLoaded.exercises] is the *filtered* list, so
+  /// it can't be used for totals while a search/filter is applied. Updated
+  /// on every unfiltered load, and adjusted by ±1 on add/delete so it stays
+  /// correct even if a mutation happens while a filter is active.
+  int? _totalExercises;
+
   List<Muscle> get muscles => _muscles;
   bool get isMetaLoaded => _metaLoaded;
   ExerciseFilter get filter => _filter;
+  int? get totalExercises => _totalExercises;
 
   ExerciseCubit({required this.repository, AppLogger? logger})
     : _logger = logger ?? _createDefaultLogger(),
@@ -82,6 +90,17 @@ class ExerciseCubit extends Cubit<ExerciseState> {
     return result;
   }
 
+  void _syncTotal(List<Exercise> exercises) {
+    if (_filter.isEmpty) _totalExercises = exercises.length;
+  }
+
+  void _adjustTotal(int delta) {
+    final total = _totalExercises;
+    if (total == null) return;
+    final next = total + delta;
+    _totalExercises = next < 0 ? 0 : next;
+  }
+
   Future<void> _load({required bool showLoading}) async {
     _logger.debug('ExerciseCubit: loading exercises');
     final requestId = ++_requestId;
@@ -93,6 +112,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
         emit(ExerciseError('Invalid request'));
         return;
       }
+      _syncTotal(exercises);
       emit(ExerciseLoaded(exercises: exercises));
     } on AppException catch (e) {
       if (requestId != _requestId) return;
@@ -117,6 +137,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
     final exercises = await _search(_filter);
     if (requestId != _requestId) return;
     if (exercises == null) throw const ServerException('Refresh failed!');
+    _syncTotal(exercises);
     emit(ExerciseLoaded(exercises: exercises, isSubmitting: false));
   }
 
@@ -142,6 +163,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
         _restoreState(currentState);
         return false;
       }
+      _adjustTotal(1);
     } on AppException catch (e) {
       _logger.error('ExerciseCubit: error adding exercise', error: e.message);
       emit(ExerciseError(e.message));
@@ -256,6 +278,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
         _restoreState(currentState);
         return false;
       }
+      _adjustTotal(-1);
     } on ForbiddenException catch (e) {
       _logger.warning('ExerciseCubit: delete forbidden', error: e.message);
       _restoreState(currentState);

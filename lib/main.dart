@@ -12,6 +12,7 @@ import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
+import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,6 +83,16 @@ class MyApp extends StatelessWidget {
         listener: (context, state) {
           if (state is AuthAuthenticated) {
             context.read<WorkoutProgramCubit>().loadPrograms();
+
+            // The initial loadExercises() above can run before a token
+            // exists (fresh login) and end in ExerciseError. Reload only in
+            // that case (or if never started), so a restored session that is
+            // already loading/loaded doesn't fetch twice.
+            final exerciseCubit = context.read<ExerciseCubit>();
+            if (exerciseCubit.state is ExerciseInitial ||
+                exerciseCubit.state is ExerciseError) {
+              exerciseCubit.loadExercises();
+            }
           }
 
           if (state is AuthUnauthenticated) {
