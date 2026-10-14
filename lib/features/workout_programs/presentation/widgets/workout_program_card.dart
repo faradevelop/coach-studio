@@ -5,6 +5,7 @@ import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
+import 'package:coach_studio/core/widgets/app_tag.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/info_chip.dart';
 import 'package:flutter/material.dart';
@@ -59,29 +60,39 @@ class WorkoutProgramCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Image header
-                  Container(
-                    height: 85,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColors.dirtyCream.withValues(alpha: 0.4),
-                      borderRadius: BorderRadius.circular(AppRadius.lg + 2),
-                      border: Border.all(
-                        color: AppColors.cream.withValues(alpha: 0.5),
-                        width: 0.5,
-                      ),
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: Image.asset(
-                      'assets/images/athlete_woman.png',
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, _, _) => Center(
-                        child: Icon(
-                          Icons.fitness_center_rounded,
-                          size: 36,
-                          color: AppColors.orange.withValues(alpha: 0.45),
+                  Stack(
+                    children: [
+                      Container(
+                        height: 85,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: AppColors.dirtyCream.withValues(alpha: 0.4),
+                          borderRadius: BorderRadius.circular(AppRadius.lg + 2),
+                          border: Border.all(
+                            color: AppColors.cream.withValues(alpha: 0.5),
+                            width: 0.5,
+                          ),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Image.asset(
+                          'assets/images/athlete_woman.png',
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, _, _) => Center(
+                            child: Icon(
+                              Icons.fitness_center_rounded,
+                              size: 36,
+                              color: AppColors.orange.withValues(alpha: 0.45),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      if (program.isTemplate)
+                        Positioned(
+                          top: 9,
+                          left: 9,
+                          child: AppTag(text: 'نمونه'),
+                        ),
+                    ],
                   ),
 
                   const SizedBox(height: AppSpacing.md - 2),
