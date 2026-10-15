@@ -38,4 +38,13 @@ abstract final class AppRouteNames {
   static const createExercise = 'createExercise';
 
   static const editExercise = 'editExercise';
+
+  static const exerciseDetail = 'exerciseDetail';
+
+  // Coach
+  static const coaches = 'coaches';
+
+  static const createCoach = 'createCoach';
+
+  static const coachDetail = 'coachDetail';
 }

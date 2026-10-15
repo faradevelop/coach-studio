@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:coach_studio/app/routing/app_router.dart';
+import 'package:coach_studio/core/bootstrap/global_error_handling.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/core/storage/token_storage.dart';
@@ -9,6 +9,7 @@ import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_theme.dart';
 import 'package:coach_studio/core/widgets/responsive/app_scroll_behavior.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
+import 'package:coach_studio/features/authentication/domain/enums/user_role.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
@@ -22,10 +23,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Setup global error handling for Flutter errors and platform errors
-  _setupGlobalErrorHandling();
+  setupGlobalErrorHandling();
 
   // Initialize dependencies and logger
-  await initDependencies();
+  await initDependencies(
+    allowedRole: UserRole.coach,
+    navigatorKey: AppRouter.navigatorKey,
+  );
   final logger = sl<AppLogger>();
 
   logger.info('Application starting');
@@ -44,26 +48,6 @@ void main() async {
   logger.info('Application initialized');
 
   runApp(const MyApp());
-}
-
-/// Setup global error handling for Flutter and async errors.
-void _setupGlobalErrorHandling() {
-  // Capture Flutter framework errors
-  FlutterError.onError = (FlutterErrorDetails details) {
-    final logger = sl<AppLogger>();
-    logger.error(
-      'Flutter Error',
-      error: details.exception,
-      stackTrace: details.stack,
-    );
-  };
-
-  // Capture unhandled async errors
-  PlatformDispatcher.instance.onError = (error, stack) {
-    final logger = sl<AppLogger>();
-    logger.error('Platform Error', error: error, stackTrace: stack);
-    return true;
-  };
 }
 
 class MyApp extends StatelessWidget {

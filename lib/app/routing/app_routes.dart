@@ -32,4 +32,14 @@ abstract final class AppRoutes {
   static const createExercise = '/exercises/create';
 
   static const editExercise = '/exercises/:exerciseId/edit';
+
+  static const exerciseDetail = '/exercises/:exerciseId';
+
+  // Coach
+
+  static const coaches = '/coaches';
+
+  static const createCoach = '/coaches/create';
+
+  static const coachDetail = '/coaches/:coachId';
 }

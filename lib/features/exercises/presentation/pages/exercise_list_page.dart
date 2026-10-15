@@ -11,8 +11,6 @@ import 'package:coach_studio/core/widgets/custom_search_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/core/widgets/responsive/responsive_grid.dart';
-import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
-import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/empty_exercises.dart';
@@ -23,7 +21,9 @@ import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ExerciseListPage extends StatefulWidget {
-  const ExerciseListPage({super.key});
+  /// false = read-only Exercise Bank (Coach app); true = admin management.
+  final bool canManage;
+  const ExerciseListPage({super.key, this.canManage = false});
 
   @override
   State<ExerciseListPage> createState() => _ExerciseListPageState();
@@ -52,12 +52,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isAdmin = context.select<AuthCubit, bool>(
-      (cubit) => switch (cubit.state) {
-        AuthAuthenticated(:final user) => user.isAdmin,
-        _ => false,
-      },
-    );
+    final isAdmin = widget.canManage;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -145,6 +140,15 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                                       extra: exercise,
                                     );
                                   },
+                                  onTap: isAdmin
+                                      ? () => context.pushNamed(
+                                          AppRouteNames.exerciseDetail,
+                                          pathParameters: {
+                                            'exerciseId': exercise.id,
+                                          },
+                                          extra: exercise,
+                                        )
+                                      : null,
                                   onDelete: () async {
                                     final result = await showDialog<bool>(
                                       context: context,

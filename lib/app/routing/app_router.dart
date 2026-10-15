@@ -13,9 +13,6 @@ import 'package:coach_studio/features/authentication/presentation/pages/reset_pa
 import 'package:coach_studio/features/authentication/presentation/pages/settings_page.dart';
 import 'package:coach_studio/features/authentication/presentation/pages/splash_page.dart';
 import 'package:coach_studio/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
-import 'package:coach_studio/features/exercises/presentation/pages/add_exercise_page.dart';
-import 'package:coach_studio/features/exercises/presentation/pages/edit_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/exercise_list_page.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
@@ -82,7 +79,6 @@ class AppRouter {
       }
 
       final isAuthenticated = authState is AuthAuthenticated;
-      final isAdmin = authState is AuthAuthenticated && authState.user.isAdmin;
 
       if (!isAuthenticated) {
         return isAuthRoute ? null : AppRoutes.login;
@@ -91,11 +87,6 @@ class AppRouter {
       if (isAuthRoute || isSplash) {
         // Dashboard is the landing destination after login / session restore.
         return AppRoutes.dashboard;
-      }
-
-      if (isAdmin == false && location.startsWith('${AppRoutes.exercises}/')) {
-        // /exercises/create and /exercises/:id/edit are admin-only
-        return AppRoutes.exercises;
       }
 
       return null;
@@ -178,29 +169,6 @@ class AppRouter {
             ],
           ),
         ],
-      ),
-
-      GoRoute(
-        path: AppRoutes.createExercise,
-        name: AppRouteNames.createExercise,
-        parentNavigatorKey: navigatorKey,
-        builder: (_, _) => const AddExercisePage(),
-      ),
-
-      // exerciseId is required routing state (path param). `extra` is
-      // read only as an optional seed.
-      GoRoute(
-        path: AppRoutes.editExercise,
-        name: AppRouteNames.editExercise,
-        parentNavigatorKey: navigatorKey,
-        builder: (_, state) {
-          final exerciseId = state.pathParameters['exerciseId']!;
-          final seed = state.extra;
-          return EditExercisePage(
-            exerciseId: exerciseId,
-            seedExercise: seed is Exercise ? seed : null,
-          );
-        },
       ),
 
       GoRoute(

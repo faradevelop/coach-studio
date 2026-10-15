@@ -1,4 +1,3 @@
-import 'package:coach_studio/app/routing/app_router.dart';
 import 'package:coach_studio/core/constants/api_config.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/core/logger/app_logger_impl.dart';
@@ -22,11 +21,20 @@ import 'package:coach_studio/features/workout_programs/domain/repositories/progr
 import 'package:coach_studio/features/workout_programs/domain/repositories/workout_program_repository.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
+import 'package:coach_studio/features/authentication/domain/enums/user_role.dart';
+import 'package:coach_studio/features/coaches/data/datasources/coach_api_datasource.dart';
+import 'package:coach_studio/features/coaches/data/repositories/coach_api_repository_impl.dart';
+import 'package:coach_studio/features/coaches/domain/repositories/coach_repository.dart';
+import 'package:coach_studio/features/coaches/presentation/cubit/coach_cubit.dart';
+import 'package:flutter/widgets.dart' show GlobalKey, NavigatorState;
 import 'package:get_it/get_it.dart';
 
 final sl = GetIt.instance;
 
-Future<void> initDependencies() async {
+Future<void> initDependencies({
+  required UserRole allowedRole,
+  required GlobalKey<NavigatorState> navigatorKey,
+}) async {
   // External / Core
 
   // Logger must be registered first — used by other dependencies
@@ -42,7 +50,7 @@ Future<void> initDependencies() async {
   // Notification
 
   sl.registerLazySingleton<AppNotification>(
-    () => FloatingSnackbarNotification(navigatorKey: AppRouter.navigatorKey),
+    () => FloatingSnackbarNotification(navigatorKey: navigatorKey),
   );
 
   // Data sources
@@ -63,6 +71,10 @@ Future<void> initDependencies() async {
     () => ProgramExerciseApiDatasource(client: sl(), logger: sl()),
   );
 
+  sl.registerLazySingleton<CoachApiDatasource>(
+    () => CoachApiDatasource(client: sl(), logger: sl()),
+  );
+
   // Repository
 
   sl.registerLazySingleton<AuthRepository>(
@@ -81,15 +93,19 @@ Future<void> initDependencies() async {
     () => ProgramExerciseApiRepositoryImpl(datasource: sl(), logger: sl()),
   );
 
+  sl.registerLazySingleton<CoachRepository>(
+    () => CoachApiRepositoryImpl(datasource: sl(), logger: sl()),
+  );
+
   // Bloc / Cubit
   //
-  // AuthCubit, ExerciseCubit and WorkoutProgramCubit are intentionally
-  // registered as Singletons: provided above the MaterialApp (outside of
-  // GoRouter) so both the list screens and internal pages (Add/Edit) share
-  // the same instance across navigation, and so AppRouter's `redirect` can
-  // read AuthCubit's state directly via `sl<AuthCubit>()`.
   sl.registerLazySingleton(
-    () => AuthCubit(repository: sl(), tokenStorage: sl(), logger: sl()),
+    () => AuthCubit(
+      repository: sl(),
+      tokenStorage: sl(),
+      logger: sl(),
+      allowedRole: allowedRole,
+    ),
   );
   sl.registerLazySingleton(() => ExerciseCubit(repository: sl(), logger: sl()));
   sl.registerLazySingleton(
@@ -101,6 +117,8 @@ Future<void> initDependencies() async {
   sl.registerFactory(
     () => ProgramExerciseCubit(repository: sl(), logger: sl()),
   );
+
+  sl.registerLazySingleton(() => CoachCubit(repository: sl(), logger: sl()));
 
   // Wire the network layer to the auth layer: any 401 response forces the
   // app back to the unauthenticated state (see ApiClient.onUnauthorized

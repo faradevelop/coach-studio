@@ -1,6 +1,7 @@
 import 'package:coach_studio/core/error/app_exception.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/core/storage/token_storage.dart';
+import 'package:coach_studio/features/authentication/domain/enums/user_role.dart';
 import 'package:coach_studio/features/authentication/domain/repositories/auth_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,10 +11,12 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthRepository repository;
   final TokenStorage tokenStorage;
   final AppLogger _logger;
+  final UserRole allowedRole;
 
   AuthCubit({
     required this.repository,
     required this.tokenStorage,
+    required this.allowedRole,
     AppLogger? logger,
   }) : _logger = logger ?? _createDefaultLogger(),
        super(AuthInitial());
@@ -39,6 +42,14 @@ class AuthCubit extends Cubit<AuthState> {
 
     try {
       final user = await repository.getCurrentUser();
+      if (user.role != allowedRole) {
+        _logger.warning(
+          'AuthCubit: stored session belongs to another app role',
+        );
+        await tokenStorage.clearToken();
+        emit(AuthUnauthenticated());
+        return;
+      }
       _logger.info('AuthCubit: session restored for user');
       emit(AuthAuthenticated(user));
     } on UnauthenticatedException {
@@ -60,6 +71,16 @@ class AuthCubit extends Cubit<AuthState> {
     _logger.info('AuthCubit: login started');
     try {
       final session = await repository.login(identifier, password);
+      if (session.user.role != allowedRole) {
+        // The token was already issued: revoke it server-side, never persist it.
+        await tokenStorage.saveToken(session.token);
+        try {
+          await repository.logout();
+        } catch (_) {}
+        await tokenStorage.clearToken();
+        emit(AuthUnauthenticated());
+        return false;
+      }
       await tokenStorage.saveToken(session.token);
       _logger.info('AuthCubit: login successful');
       emit(AuthAuthenticated(session.user));
