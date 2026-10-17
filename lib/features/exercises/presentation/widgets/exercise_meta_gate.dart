@@ -29,7 +29,7 @@ class _ExerciseMetaGateState extends State<ExerciseMetaGate> {
         if (snap.connectionState != ConnectionState.done) {
           return Center(
             child: LoadingAnimationWidget.hexagonDots(
-              color: AppColors.orange,
+              color: AppColors.primary,
               size: 40,
             ),
           );

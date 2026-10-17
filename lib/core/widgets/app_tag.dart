@@ -14,7 +14,7 @@ class AppTag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
       decoration: BoxDecoration(
-        color: AppColors.orange.withValues(alpha: 0.16),
+        color: AppColors.primarySoft,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -30,7 +30,7 @@ class AppTag extends StatelessWidget {
               style: AppTextStyles.bodySmall.copyWith(
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
-                color: AppColors.charcoal,
+                color: AppColors.primaryDark,
               ),
             ),
           ),

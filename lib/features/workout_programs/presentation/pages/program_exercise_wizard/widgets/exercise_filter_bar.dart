@@ -146,12 +146,10 @@ class _FilterChip extends StatelessWidget {
           bottom: 8,
         ),
         decoration: BoxDecoration(
-          color: isActive
-              ? AppColors.orange.withValues(alpha: 0.14)
-              : Colors.white.withValues(alpha: 0.55),
+          color: isActive ? AppColors.primarySoft : AppColors.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isActive ? AppColors.orange : AppColors.glassBorder,
+            color: isActive ? AppColors.primary : AppColors.outline,
             width: 1.2,
           ),
         ),
@@ -163,7 +161,7 @@ class _FilterChip extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12.5,
                 fontWeight: FontWeight.w600,
-                color: isActive ? AppColors.orangeDark : AppColors.charcoal,
+                color: isActive ? AppColors.primaryDark : AppColors.textPrimary,
               ),
             ),
             if (isActive) ...[
@@ -175,7 +173,7 @@ class _FilterChip extends StatelessWidget {
                   height: 18,
                   alignment: Alignment.center,
                   decoration: const BoxDecoration(
-                    color: AppColors.orange,
+                    color: AppColors.primary,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(

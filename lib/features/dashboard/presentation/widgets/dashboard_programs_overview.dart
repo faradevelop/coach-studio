@@ -4,13 +4,13 @@ import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_error_state.dart';
+import 'package:coach_studio/core/widgets/app_info_chip.dart';
 import 'package:coach_studio/features/dashboard/domain/entities/programs_summary.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_glass_card.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_section_header.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
-import 'package:coach_studio/features/workout_programs/presentation/widgets/info_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -72,7 +72,7 @@ class _OverviewLoading extends StatelessWidget {
       height: 120,
       child: Center(
         child: LoadingAnimationWidget.hexagonDots(
-          color: AppColors.orange,
+          color: AppColors.primary,
           size: 40,
         ),
       ),
@@ -92,7 +92,7 @@ class _OverviewEmpty extends StatelessWidget {
           HugeIcon(
             icon: HugeIcons.strokeRoundedClipboard,
             size: 36,
-            color: AppColors.orange,
+            color: AppColors.primary,
           ),
           const SizedBox(height: 12),
           Text('برنامه‌ای وجود ندارد!', style: AppTextStyles.titleMedium),
@@ -151,12 +151,12 @@ class _CompositionBar extends StatelessWidget {
                 if (summary.templates > 0)
                   Expanded(
                     flex: summary.templates,
-                    child: const ColoredBox(color: AppColors.teal),
+                    child: const ColoredBox(color: AppColors.secondary),
                   ),
                 if (summary.regular > 0)
                   Expanded(
                     flex: summary.regular,
-                    child: const ColoredBox(color: AppColors.orange),
+                    child: const ColoredBox(color: AppColors.primary),
                   ),
               ],
             ),
@@ -166,13 +166,13 @@ class _CompositionBar extends StatelessWidget {
         Row(
           children: [
             _LegendItem(
-              color: AppColors.teal,
+              color: AppColors.secondary,
               label: 'قالب‌ها',
               value: summary.templates,
             ),
             const SizedBox(width: 16),
             _LegendItem(
-              color: AppColors.orange,
+              color: AppColors.primary,
               label: 'برنامه‌های عادی',
               value: summary.regular,
             ),
@@ -209,7 +209,7 @@ class _LegendItem extends StatelessWidget {
           '$label: ${value.persianNumber}',
           style: AppTextStyles.bodySmall.copyWith(
             fontSize: 12,
-            color: AppColors.charcoal.withValues(alpha: 0.75),
+            color: AppColors.textPrimary.withValues(alpha: 0.75),
           ),
         ),
       ],
@@ -229,7 +229,7 @@ class _ProgramTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Material(
-        color: Colors.white.withValues(alpha: 0.5),
+        color: AppColors.surfaceVariant,
         borderRadius: radius,
         child: InkWell(
           borderRadius: radius,
@@ -260,29 +260,29 @@ class _ProgramTile extends StatelessWidget {
                         spacing: 6,
                         runSpacing: 6,
                         children: [
-                          InfoChip(
+                          AppInfoChip(
                             icon: HugeIcon(
                               icon: HugeIcons.strokeRoundedTarget02,
                               size: 14,
-                              color: AppColors.teal,
+                              color: AppColors.secondary,
                               strokeWidth: 2,
                             ),
                             text: program.goal.label,
                           ),
-                          InfoChip(
+                          AppInfoChip(
                             icon: HugeIcon(
                               icon: HugeIcons.strokeRoundedLowSignal,
                               size: 14,
-                              color: AppColors.teal,
+                              color: AppColors.secondary,
                               strokeWidth: 2,
                             ),
                             text: program.level.label,
                           ),
-                          InfoChip(
+                          AppInfoChip(
                             icon: HugeIcon(
                               icon: HugeIcons.strokeRoundedCalendar03,
                               size: 14,
-                              color: AppColors.teal,
+                              color: AppColors.secondary,
                               strokeWidth: 2,
                             ),
                             text: '${program.daysPerWeek} روز در هفته',
@@ -296,7 +296,7 @@ class _ProgramTile extends StatelessWidget {
                 Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 14,
-                  color: AppColors.charcoal.withValues(alpha: 0.4),
+                  color: AppColors.textPrimary.withValues(alpha: 0.4),
                 ),
               ],
             ),

@@ -43,7 +43,7 @@ class AdminRouter {
     initialLocation: AppRoutes.splash,
     refreshListenable: GoRouterRefreshStream(sl<AuthCubit>().stream),
     errorBuilder: (context, state) => Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: AppColors.background,
       body: Center(
         child: AppErrorState(
           title: 'مشکلی پیش آمد',

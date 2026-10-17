@@ -1,8 +1,6 @@
-import 'dart:ui';
-
 import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
+import 'package:coach_studio/core/widgets/app_surface.dart';
 import 'package:flutter/material.dart';
 
 class WizardSectionLabel extends StatelessWidget {
@@ -18,7 +16,7 @@ class WizardSectionLabel extends StatelessWidget {
           width: 3,
           height: 14,
           decoration: BoxDecoration(
-            color: AppColors.orange,
+            color: AppColors.primary,
             borderRadius: BorderRadius.circular(2),
           ),
         ),
@@ -26,7 +24,7 @@ class WizardSectionLabel extends StatelessWidget {
         Text(
           text,
           style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.charcoal.withValues(alpha: 0.75),
+            color: AppColors.textPrimary.withValues(alpha: 0.75),
             fontWeight: FontWeight.w600,
             fontSize: 13,
             letterSpacing: 0.2,
@@ -69,6 +67,7 @@ class WizardMetaChip extends StatelessWidget {
   }
 }
 
+/// Full-width wizard card. Thin wrapper over [AppSurface].
 class WizardGlassCard extends StatelessWidget {
   final Widget child;
 
@@ -76,33 +75,9 @@ class WizardGlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.charcoal.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-            spreadRadius: -2,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(22),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.38),
-              borderRadius: BorderRadius.circular(AppRadius.xl),
-              border: Border.all(color: AppColors.glassBorder, width: 1.2),
-            ),
-            child: child,
-          ),
-        ),
-      ),
+    return AppSurface(
+      padding: const EdgeInsets.all(22),
+      child: SizedBox(width: double.infinity, child: child),
     );
   }
 }

@@ -5,6 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AppTheme {
+  AppTheme._();
+
+  // ── Shared input borders (one definition, used by every state) ──────────
+  static OutlineInputBorder _inputBorder(Color color, [double width = 1]) =>
+      OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.field),
+        borderSide: BorderSide(color: color, width: width),
+      );
+
   static ThemeData get light {
     final base = ThemeData(
       useMaterial3: true,
@@ -13,17 +22,31 @@ class AppTheme {
     );
 
     return base.copyWith(
+      // Pages paint their own background (flat AppColors.background via
+      // the page background), so the scaffold stays transparent as before.
       scaffoldBackgroundColor: Colors.transparent,
+
       colorScheme: const ColorScheme.light(
-        primary: AppColors.orange,
-        onPrimary: AppColors.onOrange,
-        primaryContainer: AppColors.orangeSoft,
-        secondary: AppColors.charcoal,
-        onSecondary: AppColors.onCharcoal,
-        surface: AppColors.cream,
-        onSurface: AppColors.charcoal,
+        primary: AppColors.primary,
+        onPrimary: AppColors.onPrimary,
+        primaryContainer: AppColors.primarySoft,
+        onPrimaryContainer: AppColors.primaryDark,
+        secondary: AppColors.secondary,
+        onSecondary: AppColors.onSecondary,
+        secondaryContainer: AppColors.secondarySoft,
+        onSecondaryContainer: AppColors.secondaryDark,
+        tertiary: AppColors.accent,
+        onTertiary: AppColors.onAccent,
+        tertiaryContainer: AppColors.accentSoft,
         error: AppColors.error,
-        outline: AppColors.grey,
+        onError: AppColors.onError,
+        surface: AppColors.surface,
+        onSurface: AppColors.textPrimary,
+        onSurfaceVariant: AppColors.textSecondary,
+        surfaceContainerHighest: AppColors.surfaceVariant,
+        outline: AppColors.outline,
+        outlineVariant: AppColors.outline,
+        surfaceTint: Colors.transparent, // no Material-3 tint on surfaces
       ),
 
       // ── AppBar ───────────────────────────────────────────
@@ -31,7 +54,7 @@ class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,
-        foregroundColor: AppColors.charcoal,
+        foregroundColor: AppColors.textPrimary,
         centerTitle: false,
         titleTextStyle: AppTextStyles.title,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -46,125 +69,138 @@ class AppTheme {
         bodyMedium: AppTextStyles.body,
         bodySmall: AppTextStyles.bodySmall,
         labelLarge: AppTextStyles.label,
+        labelSmall: AppTextStyles.caption,
       ),
 
-      // ── Cards ────────────────────────────────────────────
+      // ── Cards (flat: white + hairline border, no tint) ──────
       cardTheme: CardThemeData(
         elevation: 0,
-        color: AppColors.surfaceGlass,
+        color: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          side: BorderSide(color: AppColors.surfaceGlassBorder, width: 1.1),
+          side: const BorderSide(color: AppColors.outline),
         ),
         margin: EdgeInsets.zero,
       ),
 
       // ── Floating Action Button ───────────────────────────
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: AppColors.charcoal,
-        foregroundColor: AppColors.onCharcoal,
-        elevation: 6,
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.onPrimary,
+        elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
 
       // ── Buttons ──────────────────────────────────────────
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: AppColors.orange,
-          foregroundColor: AppColors.onOrange,
-          disabledBackgroundColor: AppColors.grey,
-          disabledForegroundColor: AppColors.charcoal.withValues(alpha: 0.5),
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.onPrimary,
+          disabledBackgroundColor: AppColors.disabled,
+          disabledForegroundColor: AppColors.textPrimary.withValues(alpha: 0.5),
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
+          shape: const StadiumBorder(),
+          textStyle: AppTextStyles.button,
+        ),
+      ),
+
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.secondary,
+          side: const BorderSide(color: AppColors.secondary, width: 1.5),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          shape: const StadiumBorder(),
           textStyle: AppTextStyles.button,
         ),
       ),
 
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.orange,
+          foregroundColor: AppColors.primary,
           textStyle: AppTextStyles.label,
         ),
       ),
 
       // ── Input ────────────────────────────────────────────
+      // Single source of truth for every text-like input. AppTextField,
+      // AppDropdown, AppNumberPicker and AppStepper read from here.
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.glass,
+        fillColor: AppColors.surface,
+        hoverColor: AppColors.secondary.withValues(alpha: 0.05),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: AppColors.glassBorder),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: AppColors.glassBorder),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.orange, width: 1.6),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.error, width: 1.2),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.error, width: 1.6),
-        ),
-        labelStyle: TextStyle(
-          color: AppColors.charcoal.withValues(alpha: 0.7),
+        border: _inputBorder(AppColors.outline),
+        enabledBorder: _inputBorder(AppColors.outline),
+        disabledBorder: _inputBorder(AppColors.outline),
+        focusedBorder: _inputBorder(AppColors.secondary, 1.6),
+        errorBorder: _inputBorder(AppColors.error, 1.2),
+        focusedErrorBorder: _inputBorder(AppColors.error, 1.6),
+        labelStyle: const TextStyle(
+          color: AppColors.textSecondary,
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
         floatingLabelStyle: const TextStyle(
-          color: AppColors.orange,
+          color: AppColors.secondaryDark,
           fontSize: 14,
           fontWeight: FontWeight.w600,
         ),
         hintStyle: TextStyle(
-          color: AppColors.charcoal.withValues(alpha: 0.4),
+          color: AppColors.textSecondary.withValues(alpha: 0.7),
           fontSize: 14,
         ),
+        errorStyle: const TextStyle(color: AppColors.error, fontSize: 12),
+        prefixIconColor: AppColors.textSecondary,
+        suffixIconColor: AppColors.textSecondary,
       ),
 
       // ── Popup Menu ───────────────────────────────────────
       popupMenuTheme: PopupMenuThemeData(
-        color: AppColors.glassStrong,
-        elevation: 8,
+        color: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 6,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(color: AppColors.glassBorder),
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          side: const BorderSide(color: AppColors.outline),
         ),
         textStyle: AppTextStyles.body,
       ),
 
       // ── Dialog ───────────────────────────────────────────
       dialogTheme: DialogThemeData(
-        backgroundColor: AppColors.cream.withValues(alpha: 0.95),
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
         elevation: 12,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.xl),
+        ),
       ),
 
       // ── Progress Indicator ───────────────────────────────
       progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: AppColors.orange,
+        color: AppColors.primary,
+      ),
+
+      // ── Text selection / cursor ──────────────────────────
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: AppColors.secondaryDark,
+        selectionColor: AppColors.secondary.withValues(alpha: 0.25),
+        selectionHandleColor: AppColors.secondary,
       ),
 
       // ── Divider ──────────────────────────────────────────
-      dividerTheme: DividerThemeData(
-        color: AppColors.charcoal.withValues(alpha: 0.08),
+      dividerTheme: const DividerThemeData(
+        color: AppColors.outline,
         thickness: 1,
       ),
 
       // ── Icon ─────────────────────────────────────────────
-      iconTheme: const IconThemeData(color: AppColors.charcoal, size: 22),
+      iconTheme: const IconThemeData(color: AppColors.textPrimary, size: 22),
     );
   }
 }

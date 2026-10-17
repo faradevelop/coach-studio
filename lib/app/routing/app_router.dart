@@ -52,7 +52,7 @@ class AppRouter {
     // of an uncontrolled white screen.
     errorBuilder: (context, state) {
       return Scaffold(
-        backgroundColor: AppColors.cream,
+        backgroundColor: AppColors.background,
         body: Center(
           child: AppErrorState(
             title: 'مشکلی پیش آمد',

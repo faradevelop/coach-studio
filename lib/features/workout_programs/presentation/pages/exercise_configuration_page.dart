@@ -1,19 +1,18 @@
 // lib/features/workout_programs/presentation/pages/exercise_configuration_page.dart
 
-import 'dart:ui';
-
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_number_picker.dart';
 import 'package:coach_studio/core/widgets/app_stepper.dart';
+import 'package:coach_studio/core/widgets/app_surface.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
+import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
@@ -58,10 +57,10 @@ class ExerciseConfigurationPage extends StatelessWidget {
 
         if (details == null) {
           return Scaffold(
-            backgroundColor: AppColors.cream,
+            backgroundColor: AppColors.background,
             body: Center(
               child: LoadingAnimationWidget.hexagonDots(
-                color: AppColors.orange,
+                color: AppColors.primary,
                 size: 40,
               ),
             ),
@@ -279,230 +278,166 @@ class _EditProgramExerciseViewState extends State<_EditProgramExerciseView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: AppColors.bgColors,
-            stops: AppColors.bgStops,
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            MaxWidthBox(
+              maxWidth: AppContentWidth.form,
+              child: const InnerPagesAppBar(
+                rightButton: SizedBox(width: 40),
+                title: 'ویرایش تمرین',
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
                 child: MaxWidthBox(
                   maxWidth: AppContentWidth.form,
-                  child: Row(
+                  child: Column(
                     children: [
-                      const Spacer(),
-                      Column(
-                        children: [
-                          Text(
-                            'ویرایش تمرین',
-                            style: AppTextStyles.titleMedium,
-                          ),
-                          const SizedBox(height: 4),
-                          Container(
-                            height: 3,
-                            width: 90,
-                            decoration: BoxDecoration(
-                              color: AppColors.orange,
-                              borderRadius: BorderRadius.circular(2),
+                      _Card(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.secondarySoft,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    _existing.trainingSystem.label,
+                                    style: const TextStyle(
+                                      color: AppColors.secondaryDark,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'روز ${_existing.day.persianNumber}',
+                                  style: AppTextStyles.bodySmall,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 18),
+
+                            AppStepper(
+                              label: 'ست',
+                              value: _setsCount,
+                              onChanged: _onSetsChanged,
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            AppNumberPicker(
+                              label: 'استراحت (ثانیه)',
+                              value: _restSeconds,
+                              min: 0,
+                              max: 600,
+                              onChanged: _onRestChanged,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: AppSpacing.lg - 4),
+
+                      ...widget.details.items.map((itemDetails) {
+                        final exercise = itemDetails.exercise;
+                        final reps = _repsValues[exercise.id]!;
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 14),
+                          child: _Card(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  exercise.name,
+                                  style: AppTextStyles.titleMedium.copyWith(
+                                    fontSize: 16,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                Text('تکرار', style: AppTextStyles.bodySmall),
+
+                                const SizedBox(height: 8),
+
+                                ...List.generate(_setsCount, (index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: AppNumberPicker(
+                                      label: 'ست ${index + 1}',
+                                      value: reps[index],
+                                      min: 1,
+                                      max: 100,
+                                      onChanged: (value) {
+                                        _onRepChanged(exercise.id, index, value);
+                                      },
+                                    ),
+                                  );
+                                }),
+
+                                const SizedBox(height: 4),
+
+                                AppTextField(
+                                  controller: _tempoControllers[exercise.id]!,
+                                  label: 'تمپو',
+                                ),
+
+                                const SizedBox(height: 14),
+
+                                AppTextField(
+                                  controller:
+                                      _descriptionControllers[exercise.id]!,
+                                  label: 'توضیح',
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        );
+                      }),
+
+                      const SizedBox(height: 12),
+
+                      AppButton(
+                        text: 'ویرایش',
+                        isLoading: _isSubmitting,
+                        onPressed: _isSubmitting ? null : _save,
                       ),
-                      const Spacer(),
-                      GlassyBackButton(onTap: () => context.pop()),
                     ],
                   ),
                 ),
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
-                  child: MaxWidthBox(
-                    maxWidth: AppContentWidth.form,
-                    child: Column(
-                      children: [
-                        _GlassCard(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 5,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.teal.withValues(
-                                        alpha: 0.15,
-                                      ),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Text(
-                                      _existing.trainingSystem.label,
-                                      style: const TextStyle(
-                                        color: AppColors.teal,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'روز ${_existing.day.persianNumber}',
-                                    style: AppTextStyles.bodySmall,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 18),
-
-                              AppStepper(
-                                label: 'ست',
-                                value: _setsCount,
-                                onChanged: _onSetsChanged,
-                              ),
-
-                              const SizedBox(height: 16),
-
-                              AppNumberPicker(
-                                label: 'استراحت (ثانیه)',
-                                value: _restSeconds,
-                                min: 0,
-                                max: 600,
-                                onChanged: _onRestChanged,
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        const SizedBox(height: AppSpacing.lg - 4),
-
-                        ...widget.details.items.map((itemDetails) {
-                          final exercise = itemDetails.exercise;
-                          final reps = _repsValues[exercise.id]!;
-
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 14),
-                            child: _GlassCard(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    exercise.name,
-                                    style: AppTextStyles.titleMedium.copyWith(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 16),
-
-                                  Text('تکرار', style: AppTextStyles.bodySmall),
-
-                                  const SizedBox(height: 8),
-
-                                  ...List.generate(_setsCount, (index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                        bottom: 10,
-                                      ),
-                                      child: AppNumberPicker(
-                                        label: 'ست ${index + 1}',
-                                        value: reps[index],
-                                        min: 1,
-                                        max: 100,
-                                        onChanged: (value) {
-                                          _onRepChanged(
-                                            exercise.id,
-                                            index,
-                                            value,
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  }),
-
-                                  const SizedBox(height: 4),
-
-                                  AppTextField(
-                                    controller: _tempoControllers[exercise.id]!,
-                                    label: 'تمپو',
-                                  ),
-
-                                  const SizedBox(height: 14),
-
-                                  AppTextField(
-                                    controller:
-                                        _descriptionControllers[exercise.id]!,
-                                    label: 'توضیح',
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-
-                        const SizedBox(height: 12),
-
-                        AppButton(
-                          text: 'ویرایش',
-                          isLoading: _isSubmitting,
-                          onPressed: _isSubmitting ? null : _save,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _GlassCard extends StatelessWidget {
+/// Full-width card used by this page (thin wrapper over [AppSurface]).
+class _Card extends StatelessWidget {
   final Widget child;
 
-  const _GlassCard({required this.child});
+  const _Card({required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.charcoal.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-            spreadRadius: -2,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.38),
-              borderRadius: BorderRadius.circular(AppRadius.xl),
-              border: Border.all(color: AppColors.glassBorder, width: 1.1),
-            ),
-            child: child,
-          ),
-        ),
-      ),
+    return AppSurface(
+      padding: const EdgeInsets.all(18),
+      child: SizedBox(width: double.infinity, child: child),
     );
   }
 }

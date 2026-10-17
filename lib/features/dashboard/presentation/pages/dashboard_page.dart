@@ -18,7 +18,7 @@ class DashboardPage extends StatelessWidget {
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(14, 20, 14, 100),
         child: MaxWidthBox(
-          maxWidth: AppContentWidth.detail,
+          maxWidth: AppContentWidth.shell,
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

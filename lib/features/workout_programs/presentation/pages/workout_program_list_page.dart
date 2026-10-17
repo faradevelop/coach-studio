@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
@@ -60,7 +58,7 @@ class _WorkoutProgramListView extends StatelessWidget {
 
                   WorkoutProgramLoading() => Center(
                     child: LoadingAnimationWidget.hexagonDots(
-                      color: AppColors.orange,
+                      color: AppColors.primary,
                       size: 40,
                     ),
                   ),
@@ -177,27 +175,18 @@ class _EmptyProgramsState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ClipOval(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                child: Container(
-                  width: 88,
-                  height: 88,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: AppColors.glass,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.glassBorder,
-                      width: 1.2,
-                    ),
-                  ),
-                  child: HugeIcon(
-                    icon: HugeIcons.strokeRoundedClipboard,
-                    size: 40,
-                    color: AppColors.orange,
-                  ),
-                ),
+            Container(
+              width: 88,
+              height: 88,
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                color: AppColors.primarySoft,
+                shape: BoxShape.circle,
+              ),
+              child: HugeIcon(
+                icon: HugeIcons.strokeRoundedClipboard,
+                size: 40,
+                color: AppColors.primary,
               ),
             ),
             const SizedBox(height: AppSpacing.lg),

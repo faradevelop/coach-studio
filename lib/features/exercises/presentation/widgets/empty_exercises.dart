@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
@@ -17,27 +15,17 @@ class EmptyExercises extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Glass circle icon
-            ClipOval(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                child: Container(
-                  width: 88,
-                  height: 88,
-                  decoration: BoxDecoration(
-                    color: AppColors.glass,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.glassBorder,
-                      width: 1.2,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.fitness_center_rounded,
-                    size: 36,
-                    color: AppColors.orange,
-                  ),
-                ),
+            Container(
+              width: 88,
+              height: 88,
+              decoration: const BoxDecoration(
+                color: AppColors.primarySoft,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.fitness_center_rounded,
+                size: 36,
+                color: AppColors.primary,
               ),
             ),
 

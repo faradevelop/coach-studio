@@ -1,4 +1,5 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_shadows.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class CustomAppBar extends StatelessWidget {
                   width: double.infinity,
                   height: 3,
                   decoration: BoxDecoration(
-                    color: AppColors.orange,
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -58,31 +59,21 @@ class CustomAppBar extends StatelessWidget {
                 gradient: const LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
-                  colors: [AppColors.orange, AppColors.orangeDark],
+                  colors: [AppColors.primary, AppColors.primaryDark],
                 ),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x30FF6500),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                    offset: Offset(0, 10),
-                  ),
-                ],
+                boxShadow: AppShadows.primaryGlow,
               ),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: onPressed,
-                  borderRadius: BorderRadius.circular(18),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      HugeIcon(
-                        icon: HugeIcons.strokeRoundedAdd01,
-                        size: 28,
-                        color: AppColors.cream,
-                      ),
-                    ],
+                  borderRadius: BorderRadius.circular(30),
+                  child: Center(
+                    child: HugeIcon(
+                      icon: HugeIcons.strokeRoundedAdd01,
+                      size: 28,
+                      color: AppColors.onPrimary,
+                    ),
                   ),
                 ),
               ),
@@ -94,6 +85,8 @@ class CustomAppBar extends StatelessWidget {
 }
 
 class InnerPagesAppBar extends StatelessWidget {
+  /// Leading-side widget (e.g. a PDF button). When null, an empty 40px box
+  /// is used so the title stays centred against the back button.
   final Widget? rightButton;
   final String title;
 
@@ -109,7 +102,7 @@ class InnerPagesAppBar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
       child: Row(
         children: [
-          rightButton ?? SizedBox(),
+          rightButton ?? const SizedBox(width: 40),
           const Spacer(),
           Column(
             children: [
@@ -124,7 +117,7 @@ class InnerPagesAppBar extends StatelessWidget {
                 height: 3,
                 width: 60,
                 decoration: BoxDecoration(
-                  color: AppColors.orange,
+                  color: AppColors.primary,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),

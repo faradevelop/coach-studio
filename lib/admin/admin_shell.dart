@@ -44,8 +44,8 @@ class AdminShell extends StatelessWidget {
       backgroundColor: Colors.transparent,
       bottomNavigationBar: isMobile
           ? NavigationBar(
-              backgroundColor: AppColors.cream,
-              indicatorColor: AppColors.orange.withValues(alpha: 0.15),
+              backgroundColor: AppColors.surface,
+              indicatorColor: AppColors.primarySoft,
               selectedIndex: index,
               // The 3rd item is a logout action, not a branch.
               onDestinationSelected: (i) =>
@@ -54,29 +54,29 @@ class AdminShell extends StatelessWidget {
                 NavigationDestination(
                   icon: _icon(
                     HugeIcons.strokeRoundedDumbbell01,
-                    AppColors.charcoal,
+                    AppColors.textPrimary,
                   ),
                   selectedIcon: _icon(
                     HugeIcons.strokeRoundedDumbbell01,
-                    AppColors.orange,
+                    AppColors.primary,
                   ),
                   label: 'تمرین‌ها',
                 ),
                 NavigationDestination(
                   icon: _icon(
                     HugeIcons.strokeRoundedUserAccount,
-                    AppColors.charcoal,
+                    AppColors.textPrimary,
                   ),
                   selectedIcon: _icon(
                     HugeIcons.strokeRoundedUserAccount,
-                    AppColors.orange,
+                    AppColors.primary,
                   ),
                   label: 'مربی‌ها',
                 ),
                 NavigationDestination(
                   icon: _icon(
                     HugeIcons.strokeRoundedLogoutCircle02,
-                    AppColors.charcoal,
+                    AppColors.textPrimary,
                   ),
                   label: 'خروج',
                 ),
@@ -87,13 +87,13 @@ class AdminShell extends StatelessWidget {
         children: [
           if (!isMobile)
             NavigationRail(
-              backgroundColor: Colors.white.withValues(alpha: 0.3),
+              backgroundColor: AppColors.surface,
               extended: extended,
               minExtendedWidth: 190,
               labelType: extended
                   ? NavigationRailLabelType.none
                   : NavigationRailLabelType.all,
-              indicatorColor: AppColors.orange.withValues(alpha: 0.15),
+              indicatorColor: AppColors.primarySoft,
               selectedIndex: index,
               onDestinationSelected: _select,
               leading: Padding(
@@ -101,7 +101,7 @@ class AdminShell extends StatelessWidget {
                 child: Text(
                   'Coach Studio',
                   style: AppTextStyles.titleMedium.copyWith(
-                    color: AppColors.orange,
+                    color: AppColors.primary,
                   ),
                 ),
               ),
@@ -115,7 +115,7 @@ class AdminShell extends StatelessWidget {
                       onPressed: () => _logout(context),
                       icon: _icon(
                         HugeIcons.strokeRoundedLogoutCircle02,
-                        AppColors.charcoal,
+                        AppColors.textPrimary,
                       ),
                     ),
                   ),
@@ -125,22 +125,22 @@ class AdminShell extends StatelessWidget {
                 NavigationRailDestination(
                   icon: _icon(
                     HugeIcons.strokeRoundedDumbbell01,
-                    AppColors.charcoal,
+                    AppColors.textPrimary,
                   ),
                   selectedIcon: _icon(
                     HugeIcons.strokeRoundedDumbbell01,
-                    AppColors.orange,
+                    AppColors.primary,
                   ),
                   label: const Text('تمرین‌ها'),
                 ),
                 NavigationRailDestination(
                   icon: _icon(
                     HugeIcons.strokeRoundedUserAccount,
-                    AppColors.charcoal,
+                    AppColors.textPrimary,
                   ),
                   selectedIcon: _icon(
                     HugeIcons.strokeRoundedUserAccount,
-                    AppColors.orange,
+                    AppColors.primary,
                   ),
                   label: const Text('مربی‌ها'),
                 ),

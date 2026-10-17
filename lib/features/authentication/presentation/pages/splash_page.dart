@@ -11,22 +11,12 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: AppColors.bgColors,
-            stops: AppColors.bgStops,
-          ),
-        ),
-        child: Center(
-          child: LoadingAnimationWidget.twistingDots(
-            leftDotColor: AppColors.orange,
-            rightDotColor: AppColors.tealDark,
-            size: 46,
-          ),
+      backgroundColor: AppColors.background,
+      body: Center(
+        child: LoadingAnimationWidget.twistingDots(
+          leftDotColor: AppColors.primary,
+          rightDotColor: AppColors.secondary,
+          size: 46,
         ),
       ),
     );

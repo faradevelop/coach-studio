@@ -1,12 +1,11 @@
-import 'dart:ui';
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/app_surface.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
@@ -60,47 +59,37 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: AppColors.bgColors,
-            stops: AppColors.bgStops,
-          ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-              child: MaxWidthBox(
-                maxWidth: AppContentWidth.form,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Column(
-                      children: [
-                        Text('ورود به حساب', style: AppTextStyles.display),
-                        const SizedBox(height: 8),
-                        Text(
-                          'برای مدیریت برنامه‌های تمرینی وارد شوید',
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.subtitle,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
-                    _LoginFormCard(
-                      formKey: _formKey,
-                      identifierController: _identifierController,
-                      passwordController: _passwordController,
-                      isSubmitting: _isSubmitting,
-                      onSubmit: _submit,
-                    ),
-                  ],
-                ),
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            child: MaxWidthBox(
+              maxWidth: AppContentWidth.form,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Column(
+                    children: [
+                      Text('ورود به حساب', style: AppTextStyles.display),
+                      const SizedBox(height: 8),
+                      Text(
+                        'برای مدیریت برنامه‌های تمرینی وارد شوید',
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.subtitle,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                  _LoginFormCard(
+                    formKey: _formKey,
+                    identifierController: _identifierController,
+                    passwordController: _passwordController,
+                    isSubmitting: _isSubmitting,
+                    onSubmit: _submit,
+                  ),
+                ],
               ),
             ),
           ),
@@ -127,81 +116,52 @@ class _LoginFormCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.charcoal.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-            spreadRadius: -2,
-          ),
-          BoxShadow(
-            color: AppColors.charcoal.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-          child: Container(
-            padding: const EdgeInsets.all(22),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.38),
-              borderRadius: BorderRadius.circular(AppRadius.xl),
-              border: Border.all(color: AppColors.glassBorder, width: 1.2),
+    return AppSurface(
+      padding: const EdgeInsets.all(22),
+      child: Form(
+        key: formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AppTextField(
+              controller: identifierController,
+              label: 'نام کاربری یا ایمیل',
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'الزامی';
+                }
+                return null;
+              },
             ),
-            child: Form(
-              key: formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AppTextField(
-                    controller: identifierController,
-                    label: 'نام کاربری یا ایمیل',
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'الزامی';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  AppTextField(
-                    controller: passwordController,
-                    label: 'رمز عبور',
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'الزامی';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 6),
-                  Align(
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: TextButton(
-                      onPressed: isSubmitting
-                          ? null
-                          : () =>
-                                context.pushNamed(AppRouteNames.forgotPassword),
-                      child: const Text('فراموشی رمز عبور؟'),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  AppButton(
-                    text: 'ورود',
-                    isLoading: isSubmitting,
-                    onPressed: isSubmitting ? null : onSubmit,
-                  ),
-                ],
+            const SizedBox(height: 16),
+            AppTextField(
+              controller: passwordController,
+              label: 'رمز عبور',
+              obscureText: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 6),
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: TextButton(
+                onPressed: isSubmitting
+                    ? null
+                    : () => context.pushNamed(AppRouteNames.forgotPassword),
+                child: const Text('فراموشی رمز عبور؟'),
               ),
             ),
-          ),
+            const SizedBox(height: 8),
+            AppButton(
+              text: 'ورود',
+              isLoading: isSubmitting,
+              onPressed: isSubmitting ? null : onSubmit,
+            ),
+          ],
         ),
       ),
     );

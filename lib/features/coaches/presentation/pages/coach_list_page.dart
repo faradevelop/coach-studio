@@ -1,10 +1,10 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_error_state.dart';
+import 'package:coach_studio/core/widgets/app_surface.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/responsive_grid.dart';
 import 'package:coach_studio/features/authentication/domain/entities/auth_user.dart';
@@ -37,7 +37,7 @@ class CoachListPage extends StatelessWidget {
                   CoachInitial() => const SizedBox(),
                   CoachLoading() => Center(
                     child: LoadingAnimationWidget.hexagonDots(
-                      color: AppColors.orange,
+                      color: AppColors.primary,
                       size: 40,
                     ),
                   ),
@@ -96,59 +96,44 @@ class _CoachCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radius = BorderRadius.circular(AppRadius.xl);
-    return Material(
-      color: Colors.white.withValues(alpha: 0.42),
-      borderRadius: radius,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: radius,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            borderRadius: radius,
-            border: Border.all(color: AppColors.glassBorder, width: 1.2),
+    return AppSurface(
+      onTap: onTap,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: const BoxDecoration(
+              color: AppColors.primarySoft,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.person_rounded, color: AppColors.primary),
           ),
-          child: Row(
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: AppColors.orange.withValues(alpha: 0.18),
-                  shape: BoxShape.circle,
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  coach.username,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.titleMedium.copyWith(fontSize: 15),
                 ),
-                child: const Icon(
-                  Icons.person_rounded,
-                  color: AppColors.orange,
+                const SizedBox(height: 4),
+                Text(
+                  coach.email.englishNumber,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.bodySmall,
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      coach.username,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.titleMedium.copyWith(fontSize: 15),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      coach.email.englishNumber,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-              CoachStatusChip(isActive: coach.isActive),
-            ],
+              ],
+            ),
           ),
-        ),
+          CoachStatusChip(isActive: coach.isActive),
+        ],
       ),
     );
   }

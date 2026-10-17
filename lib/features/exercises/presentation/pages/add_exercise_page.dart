@@ -1,5 +1,6 @@
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
+import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/exercise_form.dart';
@@ -14,6 +15,7 @@ class AddExercisePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: ExerciseMetaGate(
         child: BlocBuilder<ExerciseCubit, ExerciseState>(
           builder: (context, state) {

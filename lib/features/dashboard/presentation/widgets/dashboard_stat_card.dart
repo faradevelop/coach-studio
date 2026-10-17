@@ -30,11 +30,11 @@ class DashboardStatCard extends StatelessWidget {
       return const Icon(
         Icons.refresh_rounded,
         size: 24,
-        color: AppColors.orange,
+        color: AppColors.primary,
       );
     }
     if (isLoading || value == null) {
-      return LoadingAnimationWidget.waveDots(color: AppColors.orange, size: 22);
+      return LoadingAnimationWidget.waveDots(color: AppColors.primary, size: 22);
     }
     return Text(
       value!.persianNumber,
@@ -57,8 +57,8 @@ class DashboardStatCard extends StatelessWidget {
             width: 34,
             height: 34,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColors.teal.withValues(alpha: 0.12),
+            decoration: const BoxDecoration(
+              color: AppColors.secondarySoft,
               shape: BoxShape.circle,
             ),
             child: icon,
@@ -78,9 +78,7 @@ class DashboardStatCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: AppTextStyles.bodySmall.copyWith(
               fontSize: 12,
-              color: hasError
-                  ? AppColors.error
-                  : AppColors.charcoal.withValues(alpha: 0.65),
+              color: hasError ? AppColors.error : AppColors.textSecondary,
             ),
           ),
         ],

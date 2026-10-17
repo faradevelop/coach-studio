@@ -1,12 +1,9 @@
-import 'dart:ui';
-
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
-import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:coach_studio/core/theme/app_radius.dart';
-import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/app_dropdown.dart';
+import 'package:coach_studio/core/widgets/app_surface.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
+import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/domain/entities/muscle.dart';
@@ -15,8 +12,9 @@ import 'package:coach_studio/features/exercises/domain/enums/equipment.dart';
 import 'package:coach_studio/features/exercises/domain/enums/exercise_type.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/muscle_selector_field.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
+/// Page background is provided by the hosting Scaffold
+/// (see AddExercisePage / EditExercisePage).
 class ExerciseForm extends StatefulWidget {
   final List<Muscle> muscles;
   final Exercise? initialExercise;
@@ -104,173 +102,103 @@ class _ExerciseFormState extends State<ExerciseForm> {
   Widget build(BuildContext context) {
     final isEdit = widget.initialExercise != null;
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: AppColors.bgColors,
-          stops: AppColors.bgStops,
-        ),
-      ),
-      child: SafeArea(
-        child: Column(
-          children: [
-            // Custom AppBar
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+    return SafeArea(
+      child: Column(
+        children: [
+          MaxWidthBox(
+            maxWidth: AppContentWidth.form,
+            child: InnerPagesAppBar(
+              rightButton: const SizedBox(width: 40),
+              title: isEdit ? 'ویرایش تمرین' : 'ایجاد تمرین',
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
               child: MaxWidthBox(
                 maxWidth: AppContentWidth.form,
-                child: Row(
-                  children: [
-                    const Spacer(),
-                    Column(
+                child: AppSurface(
+                  padding: const EdgeInsets.all(22),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(
-                          isEdit ? 'ویرایش تمرین' : 'ایجاد تمرین',
-                          style: AppTextStyles.title,
+                        AppTextField(
+                          controller: _nameController,
+                          label: 'نام تمرین',
+                          validator: (value) => value == null || value.isEmpty
+                              ? 'Required'
+                              : null,
                         ),
-                        const SizedBox(height: 4),
-                        Container(
-                          height: 3,
-                          width: isEdit ? 92 : 88,
-                          decoration: BoxDecoration(
-                            color: AppColors.orange,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
+                        const SizedBox(height: 20),
+
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            AppDropdown<ExerciseType>(
+                              label: 'نوع تمرین',
+                              value: _selectedType,
+                              items: ExerciseType.values,
+                              itemLabel: (item) => item.label,
+                              validator: (v) => v == null ? 'الزامی' : null,
+                              onChanged: (value) =>
+                                  setState(() => _selectedType = value),
+                            ),
+                            const SizedBox(height: 20),
+                            MuscleSelectorField(
+                              allMuscles: widget.muscles,
+                              selected: _selectedMuscles,
+                              errorText: _musclesError,
+                              onChanged: (muscles) {
+                                setState(() {
+                                  _selectedMuscles = muscles;
+                                  _musclesError = null;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        AppDropdown<Difficulty>(
+                          label: 'سطح',
+                          value: _selectedDifficulty,
+                          items: Difficulty.values,
+                          itemLabel: (item) => item.label,
+                          onChanged: (value) {
+                            setState(() => _selectedDifficulty = value);
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        AppDropdown<Equipment>(
+                          label: 'وسیله',
+                          value: _selectedEquipment,
+                          items: Equipment.values,
+                          itemLabel: (item) => item.label,
+                          onChanged: (value) {
+                            setState(() => _selectedEquipment = value);
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        AppTextField(
+                          controller: _descriptionController,
+                          label: 'توضیح',
+                          maxLines: 3,
+                        ),
+                        const SizedBox(height: 32),
+                        AppButton(
+                          text: isEdit ? 'ویرایش' : 'تایید',
+                          isLoading: widget.isLoading,
+                          onPressed: widget.isLoading ? null : _submit,
                         ),
                       ],
-                    ),
-                    const Spacer(),
-                    GlassyBackButton(onTap: () => context.pop()),
-                  ],
-                ),
-              ),
-            ),
-
-            // Glass form card
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-                child: MaxWidthBox(
-                  maxWidth: AppContentWidth.form,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.charcoal.withValues(alpha: 0.05),
-                          blurRadius: 20,
-                          offset: const Offset(0, 8),
-                          spreadRadius: -2,
-                        ),
-                        BoxShadow(
-                          color: AppColors.charcoal.withValues(alpha: 0.03),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(AppRadius.xl),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                        child: Container(
-                          padding: const EdgeInsets.all(22),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.38),
-                            borderRadius: BorderRadius.circular(AppRadius.xl),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.55),
-                              width: 1.2,
-                            ),
-                          ),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                AppTextField(
-                                  controller: _nameController,
-                                  label: 'نام تمرین',
-                                  validator: (value) =>
-                                      value == null || value.isEmpty
-                                      ? 'Required'
-                                      : null,
-                                ),
-                                const SizedBox(height: 20),
-
-                                Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    AppDropdown<ExerciseType>(
-                                      label: 'نوع تمرین',
-                                      value: _selectedType,
-                                      items: ExerciseType.values,
-                                      itemLabel: (item) => item.label,
-                                      validator: (v) =>
-                                          v == null ? 'الزامی' : null,
-                                      onChanged: (value) =>
-                                          setState(() => _selectedType = value),
-                                    ),
-                                    const SizedBox(height: 20),
-                                    MuscleSelectorField(
-                                      allMuscles: widget.muscles,
-                                      selected: _selectedMuscles,
-                                      errorText: _musclesError,
-                                      onChanged: (muscles) {
-                                        setState(() {
-                                          _selectedMuscles = muscles;
-                                          _musclesError = null;
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                AppDropdown<Difficulty>(
-                                  label: 'سطح',
-                                  value: _selectedDifficulty,
-                                  items: Difficulty.values,
-                                  itemLabel: (item) => item.label,
-                                  onChanged: (value) {
-                                    setState(() => _selectedDifficulty = value);
-                                  },
-                                ),
-                                const SizedBox(height: 20),
-                                AppDropdown<Equipment>(
-                                  label: 'وسیله',
-                                  value: _selectedEquipment,
-                                  items: Equipment.values,
-                                  itemLabel: (item) => item.label,
-                                  onChanged: (value) {
-                                    setState(() => _selectedEquipment = value);
-                                  },
-                                ),
-                                const SizedBox(height: 20),
-                                AppTextField(
-                                  controller: _descriptionController,
-                                  label: 'توضیح',
-                                  maxLines: 3,
-                                ),
-                                const SizedBox(height: 32),
-                                AppButton(
-                                  text: isEdit ? 'ویرایش' : 'تایید',
-                                  isLoading: widget.isLoading,
-                                  onPressed: widget.isLoading ? null : _submit,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

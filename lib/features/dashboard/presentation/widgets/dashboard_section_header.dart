@@ -22,7 +22,7 @@ class DashboardSectionHeader extends StatelessWidget {
           width: 3,
           height: 16,
           decoration: BoxDecoration(
-            color: AppColors.orange,
+            color: AppColors.primary,
             borderRadius: BorderRadius.circular(2),
           ),
         ),
@@ -38,7 +38,7 @@ class DashboardSectionHeader extends StatelessWidget {
               child: Text(
                 actionLabel!,
                 style: const TextStyle(
-                  color: AppColors.orange,
+                  color: AppColors.primary,
                   fontSize: 12.5,
                   fontWeight: FontWeight.w600,
                 ),

@@ -86,7 +86,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                   child: switch (state) {
                     ExerciseLoading() => Center(
                       child: LoadingAnimationWidget.hexagonDots(
-                        color: AppColors.orange,
+                        color: AppColors.primary,
                         size: 40,
                       ),
                     ),
@@ -95,13 +95,11 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                       exercises.isEmpty
                           ? (filter.isEmpty
                                 ? EmptyExercises(addMessage: isAdmin)
-                                : Center(
+                                : const Center(
                                     child: Text(
                                       'تمرینی یافت نشد!',
                                       style: TextStyle(
-                                        color: AppColors.charcoal.withValues(
-                                          alpha: 0.6,
-                                        ),
+                                        color: AppColors.textSecondary,
                                         fontSize: 15,
                                       ),
                                     ),
@@ -122,7 +120,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                                 ),
                               ],
                               itemExtent:
-                                  120, // ExerciseCard's fixed 108px + its own 6+6 vertical margin
+                                  120, // ExerciseCard's content + its own 6+6 vertical margin
                               mainAxisSpacing: 4,
                               padding: const EdgeInsets.fromLTRB(0, 12, 0, 90),
                               itemCount: exercises.length,

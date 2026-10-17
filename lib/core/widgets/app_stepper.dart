@@ -34,33 +34,20 @@ class AppStepper extends StatelessWidget {
     final canIncrement = value < max;
 
     return InputDecorator(
+      // Fill / borders come from the input theme.
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(
-          color: AppColors.charcoal.withValues(alpha: 0.65),
+        labelStyle: const TextStyle(
+          color: AppColors.textSecondary,
           fontSize: 13,
           fontWeight: FontWeight.w500,
         ),
         floatingLabelStyle: const TextStyle(
-          color: AppColors.teal,
+          color: AppColors.secondaryDark,
           fontSize: 13,
           fontWeight: FontWeight.w600,
         ),
-        filled: true,
-        fillColor: AppColors.glass,
         contentPadding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: AppColors.glassBorder),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: AppColors.glassBorder),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.teal, width: 1.4),
-        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -113,21 +100,19 @@ class _StepperButton extends StatelessWidget {
       child: InkWell(
         onTap: enabled ? onTap : null,
         borderRadius: BorderRadius.circular(10),
-        splashColor: AppColors.teal.withValues(alpha: 0.12),
-        highlightColor: AppColors.teal.withValues(alpha: 0.06),
+        splashColor: AppColors.secondary.withValues(alpha: 0.12),
+        highlightColor: AppColors.secondary.withValues(alpha: 0.06),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 160),
           width: 34,
           height: 34,
           decoration: BoxDecoration(
-            color: enabled
-                ? AppColors.tealSoft.withValues(alpha: 0.5)
-                : AppColors.glass.withValues(alpha: 0.3),
+            color: enabled ? AppColors.secondarySoft : AppColors.surfaceVariant,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: enabled
-                  ? AppColors.teal.withValues(alpha: 0.22)
-                  : AppColors.glassBorderSoft,
+                  ? AppColors.secondary.withValues(alpha: 0.3)
+                  : AppColors.outline,
               width: 1,
             ),
           ),
@@ -136,8 +121,8 @@ class _StepperButton extends StatelessWidget {
               icon: icon,
               size: 16,
               color: enabled
-                  ? AppColors.tealDark
-                  : AppColors.charcoal.withValues(alpha: 0.28),
+                  ? AppColors.secondaryDark
+                  : AppColors.textPrimary.withValues(alpha: 0.28),
             ),
           ),
         ),

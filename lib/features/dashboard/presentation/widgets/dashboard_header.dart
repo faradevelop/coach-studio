@@ -44,7 +44,7 @@ class DashboardHeader extends StatelessWidget {
                     width: double.infinity,
                     height: 3,
                     decoration: BoxDecoration(
-                      color: AppColors.orange,
+                      color: AppColors.primary,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),

@@ -1,4 +1,7 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_shadows.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class CustomSearchBar extends StatelessWidget {
@@ -18,48 +21,32 @@ class CustomSearchBar extends StatelessWidget {
     return Container(
       height: 48,
       decoration: BoxDecoration(
-        color: AppColors.cream,
-        borderRadius: BorderRadius.circular(50),
-        border: Border.all(color: AppColors.glassBorder),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.charcoal.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-            spreadRadius: -2,
-          ),
-          BoxShadow(
-            color: AppColors.charcoal.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.pill),
+        border: Border.all(color: AppColors.outline),
+        boxShadow: AppShadows.card,
       ),
       child: TextField(
         controller: controller,
-        cursorColor: AppColors.orange,
-        style: const TextStyle(
-          color: AppColors.charcoal,
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-        ),
+        cursorColor: AppColors.primary,
+        style: AppTextStyles.body.copyWith(fontSize: 15),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: TextStyle(
-            color: AppColors.charcoal.withValues(alpha: 0.6),
+          hintStyle: const TextStyle(
+            color: AppColors.textSecondary,
             fontSize: 15,
           ),
-          suffixIcon: Icon(
+          suffixIcon: const Icon(
             Icons.search_rounded,
-            color: AppColors.orange,
+            color: AppColors.primary,
             size: 24,
           ),
+          // The bar draws its own pill surface, so the shared input
+          // theme's fill/borders are switched off here.
+          filled: false,
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
-          fillColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          hoverColor: Colors.transparent,
           contentPadding: const EdgeInsets.symmetric(
             vertical: 14,
             horizontal: 14,

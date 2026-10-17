@@ -76,15 +76,8 @@ class AdminApp extends StatelessWidget {
           routerConfig: AdminRouter.router,
           builder: (context, child) {
             if (child == null) return const SizedBox.shrink();
-            return Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: AppColors.bgColors,
-                  stops: AppColors.bgStops,
-                ),
-              ),
+            return ColoredBox(
+              color: AppColors.background,
               child: MaxWidthBox(
                 maxWidth: _maxWidth,
                 expandHeight: true,

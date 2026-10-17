@@ -1,10 +1,9 @@
-import 'dart:ui';
-
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
+import 'package:coach_studio/core/widgets/app_surface.dart';
+import 'package:coach_studio/core/widgets/app_info_chip.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
-import 'package:coach_studio/features/exercises/presentation/widgets/exercise_card.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 
@@ -20,32 +19,18 @@ class ExerciseSelectTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadius.lg - 4),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? AppColors.teal.withValues(alpha: 0.18)
-                : Colors.white.withValues(alpha: 0.40),
-            borderRadius: BorderRadius.circular(AppRadius.lg - 4),
-            border: Border.all(
-              color: isSelected
-                  ? AppColors.teal.withValues(alpha: 0.6)
-                  : AppColors.glassBorder,
-              width: isSelected ? 1.5 : 1.1,
-            ),
-          ),
-          child: Row(
-            children: [
-              _SelectionIndicator(isSelected: isSelected),
-              const SizedBox(width: 14),
-              Expanded(child: _ExerciseInfo(exercise: exercise)),
-            ],
-          ),
-        ),
+    // Tap handling stays with the caller (GestureDetector in the list).
+    return AppSurface(
+      selected: isSelected,
+      elevated: false,
+      radius: AppRadius.lg - 4,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: Row(
+        children: [
+          _SelectionIndicator(isSelected: isSelected),
+          const SizedBox(width: 14),
+          Expanded(child: _ExerciseInfo(exercise: exercise)),
+        ],
       ),
     );
   }
@@ -63,13 +48,10 @@ class _SelectionIndicator extends StatelessWidget {
       height: 24,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isSelected
-            ? AppColors.teal
-            : Colors.white.withValues(alpha: 0.5),
+        color: isSelected ? AppColors.secondary : AppColors.surface,
         border: Border.all(
-          color: isSelected
-              ? AppColors.teal
-              : AppColors.charcoal.withValues(alpha: 0.3),
+          color: isSelected ? AppColors.secondary : AppColors.disabled,
+          width: 1.4,
         ),
       ),
       child: isSelected
@@ -99,17 +81,16 @@ class _ExerciseInfo extends StatelessWidget {
             HugeIcon(
               icon: HugeIcons.strokeRoundedFire02,
               size: 14,
-              color: AppColors.teal,
+              color: AppColors.secondary,
               strokeWidth: 2,
             ),
             const SizedBox(width: 4),
-
             Expanded(
               child: Wrap(
                 spacing: 6,
                 runSpacing: 4,
                 children: exercise.targetMuscles.map((muscle) {
-                  return InfoChip(text: muscle.name);
+                  return AppInfoChip.plain(text: muscle.name);
                 }).toList(),
               ),
             ),

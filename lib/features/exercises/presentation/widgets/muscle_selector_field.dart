@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 /// Multi-select field for an exercise's target muscles. Shows the current
 /// selection as removable chips beneath a field that opens
 /// [MultiSelectBottomSheet] for editing. Used by [ExerciseForm] in both
-/// create and edit mode.
+/// create and edit mode. Visually matches the shared input theme.
 class MuscleSelectorField extends StatefulWidget {
   final List<Muscle> allMuscles;
   final List<Muscle> selected;
@@ -72,14 +72,14 @@ class _MuscleSelectorFieldState extends State<MuscleSelectorField> {
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(12, 12, 16, 12),
               decoration: BoxDecoration(
-                color: AppColors.glass,
-                borderRadius: BorderRadius.circular(AppRadius.md + 2),
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(AppRadius.field),
                 border: Border.all(
                   color: widget.errorText != null
                       ? AppColors.error
                       : _isFocused
-                      ? AppColors.teal
-                      : AppColors.glassBorder,
+                      ? AppColors.secondary
+                      : AppColors.outline,
                   width: _isFocused ? 1.5 : 1,
                 ),
               ),
@@ -91,17 +91,17 @@ class _MuscleSelectorFieldState extends State<MuscleSelectorField> {
                           ? 'عضلات هدف'
                           : 'عضلات هدف (${widget.selected.length.persianNumber})',
                       style: TextStyle(
-                        color: AppColors.charcoal.withValues(
-                          alpha: widget.selected.isEmpty ? 0.55 : 0.85,
-                        ),
+                        color: widget.selected.isEmpty
+                            ? AppColors.textSecondary
+                            : AppColors.textPrimary,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                  Icon(
+                  const Icon(
                     Icons.keyboard_arrow_down_rounded,
-                    color: AppColors.charcoal.withValues(alpha: 0.6),
+                    color: AppColors.textSecondary,
                   ),
                 ],
               ),
@@ -148,7 +148,7 @@ class _RemovableMuscleChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(right: 12, left: 6, top: 6, bottom: 6),
       decoration: BoxDecoration(
-        color: AppColors.teal.withValues(alpha: 0.14),
+        color: AppColors.secondarySoft,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -157,7 +157,7 @@ class _RemovableMuscleChip extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              color: AppColors.tealDark,
+              color: AppColors.secondaryDark,
               fontSize: 12.5,
               fontWeight: FontWeight.w600,
             ),
@@ -168,7 +168,7 @@ class _RemovableMuscleChip extends StatelessWidget {
             child: const Icon(
               Icons.close_rounded,
               size: 16,
-              color: AppColors.tealDark,
+              color: AppColors.secondaryDark,
             ),
           ),
         ],

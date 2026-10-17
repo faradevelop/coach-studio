@@ -73,9 +73,10 @@ class _WizardViewState extends State<_WizardView> {
 
         if (program == null) {
           return Scaffold(
+            backgroundColor: AppColors.background,
             body: Center(
               child: LoadingAnimationWidget.hexagonDots(
-                color: AppColors.orange,
+                color: AppColors.primary,
                 size: 40,
               ),
             ),
@@ -103,29 +104,15 @@ class _WizardViewState extends State<_WizardView> {
                 context.read<ProgramExerciseWizardCubit>().goToPreviousStep();
               },
               child: Scaffold(
-                backgroundColor: AppColors.cream,
-                body: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: AppColors.bgColors,
-                      stops: AppColors.bgStops,
-                    ),
-                  ),
-                  child: SafeArea(
-                    child: Column(
-                      children: [
-                        WizardAppBar(step: wizardState.step),
-                        Expanded(
-                          child: _buildCurrentStep(
-                            context,
-                            program,
-                            wizardState,
-                          ),
-                        ),
-                      ],
-                    ),
+                backgroundColor: AppColors.background,
+                body: SafeArea(
+                  child: Column(
+                    children: [
+                      WizardAppBar(step: wizardState.step),
+                      Expanded(
+                        child: _buildCurrentStep(context, program, wizardState),
+                      ),
+                    ],
                   ),
                 ),
               ),

@@ -6,7 +6,7 @@ class AppTextStyles {
   static const TextStyle display = TextStyle(
     fontSize: 28,
     fontWeight: FontWeight.w800,
-    color: AppColors.charcoal,
+    color: AppColors.textPrimary,
     letterSpacing: -0.5,
     height: 1.2,
   );
@@ -14,14 +14,14 @@ class AppTextStyles {
   static const TextStyle title = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.w700,
-    color: AppColors.charcoal,
+    color: AppColors.textPrimary,
     letterSpacing: -0.3,
   );
 
   static const TextStyle titleMedium = TextStyle(
     fontSize: 17,
     fontWeight: FontWeight.w700,
-    color: AppColors.charcoal,
+    color: AppColors.textPrimary,
     letterSpacing: -0.2,
   );
 
@@ -29,21 +29,29 @@ class AppTextStyles {
   static const TextStyle body = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w500,
-    color: AppColors.charcoal,
+    color: AppColors.textPrimary,
     height: 1.4,
   );
 
   static const TextStyle bodySmall = TextStyle(
     fontSize: 13,
     fontWeight: FontWeight.w500,
-    color: AppColors.muted,
+    color: AppColors.textSecondary,
     height: 1.35,
+  );
+
+  /// NEW: smallest readable text (chips, hints, meta).
+  static const TextStyle caption = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: AppColors.textSecondary,
+    height: 1.3,
   );
 
   static TextStyle get subtitle => TextStyle(
     fontSize: 13,
     fontWeight: FontWeight.w500,
-    color: AppColors.charcoal.withValues(alpha: 0.65),
+    color: AppColors.textPrimary.withValues(alpha: 0.65),
     height: 1.35,
   );
 
@@ -51,13 +59,13 @@ class AppTextStyles {
   static const TextStyle label = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w600,
-    color: AppColors.charcoal,
+    color: AppColors.textPrimary,
   );
 
   static const TextStyle button = TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.w600,
-    color: AppColors.onOrange,
+    color: AppColors.onPrimary,
     letterSpacing: 0.2,
     height: 1.3,
   );

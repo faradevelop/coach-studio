@@ -276,14 +276,14 @@ class _WizardConfigureStepState extends State<WizardConfigureStep> {
       children: [
         WizardMetaChip(
           label: state.trainingSystem.label,
-          color: AppColors.teal,
-          softColor: AppColors.teal.withValues(alpha: 0.12),
+          color: AppColors.secondaryDark,
+          softColor: AppColors.secondarySoft,
         ),
         const SizedBox(width: 6),
         WizardMetaChip(
           label: 'روز ${state.day.persianNumber}',
-          color: AppColors.charcoal.withValues(alpha: 0.65),
-          softColor: AppColors.glass,
+          color: AppColors.textSecondary,
+          softColor: AppColors.surfaceVariant,
         ),
       ],
     );
@@ -327,26 +327,19 @@ class _WizardConfigureStepState extends State<WizardConfigureStep> {
                 ),
               ),
               const SizedBox(height: 4),
-              // Text(
-              //   '${exercise.targetMuscle.label}  •  ${exercise.equipment.label}',
-              //   style: AppTextStyles.bodySmall.copyWith(
-              //     color: AppColors.muted,
-              //     fontSize: 12.5,
-              //   ),
-              // ),
             ],
           ),
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: AppColors.teal.withValues(alpha: 0.12),
+            color: AppColors.secondarySoft,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
             '${_setsCount.persianNumber} ست',
             style: const TextStyle(
-              color: AppColors.teal,
+              color: AppColors.secondaryDark,
               fontWeight: FontWeight.w700,
               fontSize: 12,
             ),

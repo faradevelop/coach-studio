@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
@@ -8,14 +6,14 @@ import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/app_surface.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
+import 'package:coach_studio/core/widgets/app_info_chip.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
-import 'package:coach_studio/features/exercises/presentation/widgets/exercise_card.dart'
-    show InfoChip;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -48,9 +46,10 @@ class ExerciseDetailPage extends StatelessWidget {
         final exercise = _resolve(state);
         if (exercise == null) {
           return Scaffold(
+            backgroundColor: AppColors.background,
             body: Center(
               child: LoadingAnimationWidget.hexagonDots(
-                color: AppColors.orange,
+                color: AppColors.primary,
                 size: 40,
               ),
             ),
@@ -100,122 +99,96 @@ class _ExerciseDetailViewState extends State<_ExerciseDetailView> {
     final imageUrl = e.imageUrl;
 
     return Scaffold(
-      backgroundColor: AppColors.cream,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: AppColors.bgColors,
-            stops: AppColors.bgStops,
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              MaxWidthBox(
-                maxWidth: AppContentWidth.detail,
-                child: InnerPagesAppBar(rightButton: null, title: e.name),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-                  child: MaxWidthBox(
-                    maxWidth: AppContentWidth.detail,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(AppRadius.xl),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                            child: Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.38),
-                                borderRadius: BorderRadius.circular(
-                                  AppRadius.xl,
-                                ),
-                                border: Border.all(
-                                  color: AppColors.glassBorder,
-                                  width: 1.1,
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            MaxWidthBox(
+              maxWidth: AppContentWidth.detail,
+              child: InnerPagesAppBar(rightButton: null, title: e.name),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+                child: MaxWidthBox(
+                  maxWidth: AppContentWidth.detail,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AppSurface(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (imageUrl != null && imageUrl.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.field,
+                                  ),
+                                  child: Image.network(
+                                    imageUrl,
+                                    height: 200,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, _, _) =>
+                                        const SizedBox.shrink(),
+                                  ),
                                 ),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                if (e.type != null) AppInfoChip.plain(text: e.type!.label),
+                                AppInfoChip.plain(text: e.difficulty.label),
+                                AppInfoChip.plain(text: e.equipment.label),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            _Section(
+                              title: 'عضلات هدف',
+                              child: Wrap(
+                                spacing: 6,
+                                runSpacing: 6,
                                 children: [
-                                  if (imageUrl != null && imageUrl.isNotEmpty)
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        bottom: 16,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(14),
-                                        child: Image.network(
-                                          imageUrl,
-                                          height: 200,
-                                          width: double.infinity,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (_, _, _) =>
-                                              const SizedBox.shrink(),
-                                        ),
-                                      ),
-                                    ),
-                                  Wrap(
-                                    spacing: 8,
-                                    runSpacing: 8,
-                                    children: [
-                                      if (e.type != null)
-                                        InfoChip(text: e.type!.label),
-                                      InfoChip(text: e.difficulty.label),
-                                      InfoChip(text: e.equipment.label),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 16),
-                                  _Section(
-                                    title: 'عضلات هدف',
-                                    child: Wrap(
-                                      spacing: 6,
-                                      runSpacing: 6,
-                                      children: [
-                                        for (final m in e.targetMuscles)
-                                          InfoChip(text: m.name),
-                                      ],
-                                    ),
-                                  ),
-                                  _TextSection('توضیح', e.description),
-                                  _TextSection('نحوه اجرا', e.instructions),
-                                  _TextSection('اشتباهات رایج', e.mistakes),
-                                  _TextSection('لینک ویدیو', e.videoUrl),
+                                  for (final m in e.targetMuscles)
+                                    AppInfoChip.plain(text: m.name),
                                 ],
                               ),
                             ),
-                          ),
+                            _TextSection('توضیح', e.description),
+                            _TextSection('نحوه اجرا', e.instructions),
+                            _TextSection('اشتباهات رایج', e.mistakes),
+                            _TextSection('لینک ویدیو', e.videoUrl),
+                          ],
                         ),
-                        const SizedBox(height: 20),
-                        AppButton(
-                          text: 'ویرایش',
-                          onPressed: _isDeleting
-                              ? null
-                              : () => context.pushNamed(
-                                  AppRouteNames.editExercise,
-                                  pathParameters: {'exerciseId': e.id},
-                                  extra: e,
-                                ),
-                        ),
-                        const SizedBox(height: 12),
-                        AppButton(
-                          text: 'حذف',
-                          isLoading: _isDeleting,
-                          onPressed: _isDeleting ? null : _delete,
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 20),
+                      AppButton(
+                        text: 'ویرایش',
+                        onPressed: _isDeleting
+                            ? null
+                            : () => context.pushNamed(
+                                AppRouteNames.editExercise,
+                                pathParameters: {'exerciseId': e.id},
+                                extra: e,
+                              ),
+                      ),
+                      const SizedBox(height: 12),
+                      AppButton(
+                        text: 'حذف',
+                        variant: AppButtonVariant.destructive,
+                        isLoading: _isDeleting,
+                        onPressed: _isDeleting ? null : _delete,
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

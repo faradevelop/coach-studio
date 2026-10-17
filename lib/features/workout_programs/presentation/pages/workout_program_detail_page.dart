@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'dart:ui' show PointerDeviceKind;
 
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
@@ -7,13 +7,17 @@ import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_shadows.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/app_dialog.dart';
 import 'package:coach_studio/core/widgets/app_error_state.dart';
+import 'package:coach_studio/core/widgets/app_surface.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/delete_dialog.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
+import 'package:coach_studio/core/widgets/app_info_chip.dart';
 import 'package:coach_studio/features/workout_programs/data/services/workout_program_pdf_generator.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
@@ -25,7 +29,6 @@ import 'package:coach_studio/features/workout_programs/presentation/cubit/progra
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/athlete_info_form_dialog.dart';
-import 'package:coach_studio/features/workout_programs/presentation/widgets/info_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -78,7 +81,10 @@ class _WorkoutProgramDetailPageState extends State<WorkoutProgramDetailPage> {
           if (state is WorkoutProgramLoaded) {
             return _ProgramNotFoundState();
           }
-          return const Scaffold(body: Center(child: _DetailLoadingIndicator()));
+          return const Scaffold(
+            backgroundColor: AppColors.background,
+            body: Center(child: _DetailLoadingIndicator()),
+          );
         }
 
         return _WorkoutProgramDetailView(program: currentProgram);
@@ -91,7 +97,7 @@ class _DetailLoadingIndicator extends StatelessWidget {
   const _DetailLoadingIndicator();
   @override
   Widget build(BuildContext context) =>
-      LoadingAnimationWidget.hexagonDots(color: AppColors.orange, size: 40);
+      LoadingAnimationWidget.hexagonDots(color: AppColors.primary, size: 40);
 }
 
 class _ProgramNotFoundState extends StatelessWidget {
@@ -99,7 +105,7 @@ class _ProgramNotFoundState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
+      backgroundColor: AppColors.background,
       body: Center(
         child: AppErrorState(
           title: 'برنامه‌ای یافت نشد',
@@ -226,62 +232,52 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: AppColors.bgColors,
-            stops: AppColors.bgStops,
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              MaxWidthBox(
-                maxWidth: AppContentWidth.detail,
-                child: InnerPagesAppBar(
-                  rightButton: _PdfButton(
-                    enabled: !_isGeneratingPdf,
-                    onTap: () => _generatePdf(context),
-                  ),
-                  title: widget.program.title,
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            MaxWidthBox(
+              maxWidth: AppContentWidth.detail,
+              child: InnerPagesAppBar(
+                rightButton: _PdfButton(
+                  enabled: !_isGeneratingPdf,
+                  onTap: () => _generatePdf(context),
                 ),
+                title: widget.program.title,
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(top: 8, bottom: 32),
-                  child: MaxWidthBox(
-                    maxWidth: AppContentWidth.detail,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: _buildProgramInfoCard(context),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: _buildExercisesHeader(context),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        _buildExercisesList(context),
-                      ],
-                    ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(top: 8, bottom: 32),
+                child: MaxWidthBox(
+                  maxWidth: AppContentWidth.detail,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: _buildProgramInfoCard(context),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: _buildExercisesHeader(context),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      _buildExercisesList(context),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildProgramInfoCard(BuildContext context) {
-    return _GlassCard(
+    return _Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -296,11 +292,11 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
                 ),
               ),
               MiniButton(
-                color: AppColors.charcoalSoft.withValues(alpha: 0.18),
+                color: AppColors.textPrimary.withValues(alpha: 0.18),
                 icon: HugeIcon(
                   icon: HugeIcons.strokeRoundedEdit03,
                   size: 18,
-                  color: AppColors.charcoal.withValues(alpha: 0.9),
+                  color: AppColors.textPrimary.withValues(alpha: 0.9),
                 ),
 
                 onPressed: () {
@@ -318,29 +314,29 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              InfoChip(
+              AppInfoChip(
                 icon: HugeIcon(
                   icon: HugeIcons.strokeRoundedTarget02,
                   size: 15,
-                  color: AppColors.teal,
+                  color: AppColors.secondary,
                   strokeWidth: 2,
                 ),
                 text: widget.program.goal.label,
               ),
-              InfoChip(
+              AppInfoChip(
                 icon: HugeIcon(
                   icon: HugeIcons.strokeRoundedLowSignal,
                   size: 15,
-                  color: AppColors.teal,
+                  color: AppColors.secondary,
                   strokeWidth: 2,
                 ),
                 text: widget.program.level.label,
               ),
-              InfoChip(
+              AppInfoChip(
                 icon: HugeIcon(
                   icon: HugeIcons.strokeRoundedCalendar03,
                   size: 15,
-                  color: AppColors.teal,
+                  color: AppColors.secondary,
                   strokeWidth: 2,
                 ),
                 text: '${widget.program.daysPerWeek} روز در هفته',
@@ -362,21 +358,14 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: AppColors.orange,
+              color: AppColors.primary,
               borderRadius: BorderRadius.circular(12),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x30FF6500),
-                  blurRadius: 20,
-                  spreadRadius: 2,
-                  offset: Offset(0, 10),
-                ),
-              ],
+              boxShadow: AppShadows.primaryGlow,
             ),
             child: HugeIcon(
               icon: HugeIcons.strokeRoundedTaskAdd01,
               size: 18,
-              color: AppColors.cream,
+              color: AppColors.onPrimary,
               strokeWidth: 1.5,
             ),
           ),
@@ -748,25 +737,12 @@ class _DayTab extends StatelessWidget {
               curve: Curves.easeOutCubic,
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 3),
               decoration: BoxDecoration(
-                color: isSelected
-                    ? AppColors.teal
-                    : Colors.white.withValues(alpha: 0.55),
-                borderRadius: BorderRadius.circular(30),
+                color: isSelected ? AppColors.primary : AppColors.surface,
+                borderRadius: BorderRadius.circular(AppRadius.full),
                 border: Border.all(
-                  color: isSelected
-                      ? AppColors.tealMuted
-                      : AppColors.glassBorder,
+                  color: isSelected ? AppColors.primaryDark : AppColors.outline,
                   width: 1.4,
                 ),
-                boxShadow: isSelected
-                    ? null
-                    : [
-                        BoxShadow(
-                          color: AppColors.charcoal.withValues(alpha: 0.04),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
               ),
               child: AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 200),
@@ -775,8 +751,8 @@ class _DayTab extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.2,
                   color: isSelected
-                      ? AppColors.onOrange
-                      : AppColors.charcoal.withValues(alpha: 0.78),
+                      ? AppColors.onPrimary
+                      : AppColors.textPrimary.withValues(alpha: 0.78),
                 ),
                 child: Text('روز ${day.persianNumber}'),
               ),
@@ -827,6 +803,10 @@ class _AddDayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = enabled
+        ? AppColors.textSecondary
+        : AppColors.textSecondary.withValues(alpha: 0.4);
+
     return GestureDetector(
       onTap: enabled ? onTap : null,
       behavior: HitTestBehavior.opaque,
@@ -835,19 +815,13 @@ class _AddDayButton extends StatelessWidget {
         height: 32,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          border: Border.all(
-            color: enabled
-                ? AppColors.charcoalSoft.withValues(alpha: 0.6)
-                : AppColors.charcoalSoft.withValues(alpha: 0.3),
-          ),
-          borderRadius: BorderRadius.circular(50),
+          border: Border.all(color: color),
+          borderRadius: BorderRadius.circular(AppRadius.full),
         ),
         child: HugeIcon(
           icon: HugeIcons.strokeRoundedAdd01,
           size: 18,
-          color: enabled
-              ? AppColors.charcoalSoft.withValues(alpha: 0.6)
-              : AppColors.charcoalSoft.withValues(alpha: 0.3),
+          color: color,
         ),
       ),
     );
@@ -869,11 +843,11 @@ class _DoneManagingDaysButton extends StatelessWidget {
         height: 32,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: AppColors.teal,
+          color: AppColors.secondary,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: AppColors.teal.withValues(alpha: 0.35),
+              color: AppColors.secondary.withValues(alpha: 0.35),
               blurRadius: 10,
               offset: const Offset(0, 3),
             ),
@@ -901,23 +875,21 @@ class _ProgramExerciseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final programExercise = details.programExercise;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceGlass,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.glass),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(context, programExercise),
-          const SizedBox(height: 10),
-          ...details.items.map(
-            (itemDetails) => _ExerciseItemCard(itemDetails: itemDetails),
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: AppSurface(
+        radius: AppRadius.md + 2,
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context, programExercise),
+            const SizedBox(height: 10),
+            ...details.items.map(
+              (itemDetails) => _ExerciseItemCard(itemDetails: itemDetails),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -934,7 +906,7 @@ class _ProgramExerciseCard extends StatelessWidget {
           child: Text(
             '${programExercise.sets.persianNumber} ست  •   ${programExercise.rest.persianNumber} استراحت',
             style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.charcoal.withValues(alpha: 0.75),
+              color: AppColors.textPrimary.withValues(alpha: 0.75),
             ),
           ),
         ),
@@ -954,11 +926,10 @@ class _ExercisePopupMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final programExercise = details.programExercise;
 
+    // Colour / shape / elevation come from AppTheme.popupMenuTheme.
     return PopupMenuButton<String>(
       padding: EdgeInsets.zero,
       iconSize: 18,
-      color: AppColors.cream,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       onSelected: (value) async {
         switch (value) {
           case 'edit':
@@ -977,7 +948,7 @@ class _ExercisePopupMenu extends StatelessWidget {
       child: HugeIcon(
         icon: HugeIcons.strokeRoundedMoreHorizontalCircle01,
         size: 20,
-        color: AppColors.orange,
+        color: AppColors.primary,
       ),
     );
   }
@@ -1032,7 +1003,7 @@ class _ExerciseItemCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.5),
+        color: AppColors.surfaceVariant,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -1046,7 +1017,7 @@ class _ExerciseItemCard extends StatelessWidget {
             ),
             maxLines: 2,
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Visibility(
             visible: hasDescription,
             child: Text(
@@ -1056,29 +1027,29 @@ class _ExerciseItemCard extends StatelessWidget {
             ),
           ),
           Divider(
-            color: AppColors.orange.withValues(alpha: 0.35),
+            color: AppColors.primary.withValues(alpha: 0.25),
             height: 12,
             thickness: 1,
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Row(
             children: [
-              InfoChip(
+              AppInfoChip(
                 icon: HugeIcon(
                   icon: HugeIcons.strokeRoundedRepeat,
-                  color: AppColors.teal,
+                  color: AppColors.secondary,
                   size: 14,
                   strokeWidth: 2,
                 ),
                 text: '${item.reps.join(' - ')} تکرار ',
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Visibility(
                 visible: item.tempo != '-',
-                child: InfoChip(
+                child: AppInfoChip(
                   icon: HugeIcon(
                     icon: HugeIcons.strokeRoundedPendulum,
-                    color: AppColors.teal,
+                    color: AppColors.secondary,
                     size: 14,
                     strokeWidth: 2,
                   ),
@@ -1110,27 +1081,15 @@ class _PdfButton extends StatelessWidget {
         height: 42,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.35),
-          borderRadius: BorderRadius.circular(50),
-          border: Border.all(color: AppColors.glassBorderSoft),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.charcoal.withValues(alpha: 0.05),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-              spreadRadius: -2,
-            ),
-            BoxShadow(
-              color: AppColors.charcoal.withValues(alpha: 0.03),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          color: AppColors.surface,
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.outline),
+          boxShadow: AppShadows.card,
         ),
         child: HugeIcon(
           icon: HugeIcons.strokeRoundedPdf02,
           size: 22,
-          color: AppColors.charcoal,
+          color: AppColors.textPrimary,
           strokeWidth: 1.5,
         ),
       ),
@@ -1144,51 +1103,22 @@ class _ExercisesLoadingIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LoadingAnimationWidget.hexagonDots(
-      color: AppColors.orange,
+      color: AppColors.primary,
       size: 40,
     );
   }
 }
 
-class _GlassCard extends StatelessWidget {
+/// Full-width card used by this page (thin wrapper over [AppSurface]).
+class _Card extends StatelessWidget {
   final Widget child;
 
-  const _GlassCard({required this.child});
+  const _Card({required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.charcoal.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-            spreadRadius: -2,
-          ),
-          BoxShadow(
-            color: AppColors.charcoal.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.38),
-              borderRadius: BorderRadius.circular(AppRadius.xl),
-              border: Border.all(color: AppColors.glassBorder, width: 1.1),
-            ),
-            child: child,
-          ),
-        ),
-      ),
+    return AppSurface(
+      child: SizedBox(width: double.infinity, child: child),
     );
   }
 }
@@ -1203,26 +1133,17 @@ class _EmptyDayExercisesState extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            ClipOval(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                child: Container(
-                  width: 72,
-                  height: 72,
-                  decoration: BoxDecoration(
-                    color: AppColors.glass,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.glassBorder,
-                      width: 1.2,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.fitness_center_rounded,
-                    size: 30,
-                    color: AppColors.orange,
-                  ),
-                ),
+            Container(
+              width: 72,
+              height: 72,
+              decoration: const BoxDecoration(
+                color: AppColors.primarySoft,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.fitness_center_rounded,
+                size: 30,
+                color: AppColors.primary,
               ),
             ),
             const SizedBox(height: 14),
@@ -1244,29 +1165,17 @@ class _PdfLoadingDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      child: Container(
-        width: 260,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-        decoration: BoxDecoration(
-          color: AppColors.cream,
-          borderRadius: BorderRadius.circular(AppRadius.xl),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.charcoal.withValues(alpha: 0.12),
-              blurRadius: 30,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
+    return AppDialog(
+      maxWidth: 260,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+      child: SizedBox(
+        width: double.infinity,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             LoadingAnimationWidget.flickr(
-              leftDotColor: AppColors.orange,
-              rightDotColor: AppColors.tealDark,
+              leftDotColor: AppColors.primary,
+              rightDotColor: AppColors.secondary,
               size: 42,
             ),
             const SizedBox(height: 20),

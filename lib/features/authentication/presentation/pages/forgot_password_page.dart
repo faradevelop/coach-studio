@@ -1,11 +1,11 @@
-import 'dart:ui';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/app_surface.dart';
 import 'package:coach_studio/core/widgets/app_text_field.dart';
+import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,59 +57,31 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: AppColors.bgColors,
-            stops: AppColors.bgStops,
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-                child: Row(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // The empty 40px box on the leading side keeps the title centred
+            // against the back button on the trailing side.
+            const InnerPagesAppBar(
+              rightButton: SizedBox(width: 40),
+              title: 'فراموشی رمز عبور',
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+                child: Column(
                   children: [
-                    const SizedBox(width: 40),
-                    const Spacer(),
-                    Column(
-                      children: [
-                        Text(
-                          'فراموشی رمز عبور',
-                          style: AppTextStyles.titleMedium,
-                        ),
-                        const SizedBox(height: 4),
-                        Container(
-                          height: 3,
-                          width: 130,
-                          decoration: BoxDecoration(
-                            color: AppColors.orange,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      'ایمیل خود را وارد کنید تا لینک بازیابی رمز عبور برای شما ارسال شود.',
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.subtitle,
                     ),
-                    const Spacer(),
-                    GlassyBackButton(onTap: () => context.pop()),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-                  child: Column(
-                    children: [
-                      Text(
-                        'ایمیل خود را وارد کنید تا لینک بازیابی رمز عبور برای شما ارسال شود.',
-                        textAlign: TextAlign.center,
-                        style: AppTextStyles.subtitle,
-                      ),
-                      const SizedBox(height: 24),
-                      _GlassCard(
+                    const SizedBox(height: 24),
+                    AppSurface(
+                      padding: const EdgeInsets.all(22),
+                      child: SizedBox(
+                        width: double.infinity,
                         child: Form(
                           key: _formKey,
                           child: Column(
@@ -138,55 +110,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _GlassCard extends StatelessWidget {
-  final Widget child;
-
-  const _GlassCard({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.charcoal.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-            spreadRadius: -2,
-          ),
-          BoxShadow(
-            color: AppColors.charcoal.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(22),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.38),
-              borderRadius: BorderRadius.circular(AppRadius.xl),
-              border: Border.all(color: AppColors.glassBorder, width: 1.2),
             ),
-            child: child,
-          ),
+          ],
         ),
       ),
     );

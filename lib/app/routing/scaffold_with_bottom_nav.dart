@@ -16,15 +16,10 @@ class ScaffoldWithBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Background — uses theme tokens
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomRight,
-              colors: AppColors.bgColors,
-            ),
-          ),
+        // Flat page background (design system `background`).
+        const ColoredBox(
+          color: AppColors.background,
+          child: SizedBox.expand(),
         ),
 
         Scaffold(
@@ -33,7 +28,7 @@ class ScaffoldWithBottomNav extends StatelessWidget {
           bottomNavigationBar: null, // custom glass bottom nav below
         ),
 
-        // Floating Glass Navbar
+        // Floating Glass Navbar (intentionally kept glassy)
         PositionedDirectional(
           start: 12,
           end: 12,
@@ -74,12 +69,12 @@ class GlassBottomNav extends StatelessWidget {
       icon: HugeIcon(
         icon: HugeIcons.strokeRoundedHome01,
         size: 19,
-        color: AppColors.charcoal,
+        color: AppColors.textPrimary,
       ),
       activeIcon: HugeIcon(
         icon: HugeIcons.strokeRoundedHome01,
         size: 20,
-        color: AppColors.orange,
+        color: AppColors.primary,
       ),
     ),
     _NavItemData(
@@ -87,12 +82,12 @@ class GlassBottomNav extends StatelessWidget {
       icon: HugeIcon(
         icon: HugeIcons.strokeRoundedTask01,
         size: 19,
-        color: AppColors.charcoal,
+        color: AppColors.textPrimary,
       ),
       activeIcon: HugeIcon(
         icon: HugeIcons.strokeRoundedTask01,
         size: 20,
-        color: AppColors.orange,
+        color: AppColors.primary,
       ),
     ),
     _NavItemData(
@@ -100,12 +95,12 @@ class GlassBottomNav extends StatelessWidget {
       icon: HugeIcon(
         icon: HugeIcons.strokeRoundedDumbbell01,
         size: 19,
-        color: AppColors.charcoal,
+        color: AppColors.textPrimary,
       ),
       activeIcon: HugeIcon(
         icon: HugeIcons.strokeRoundedDumbbell01,
         size: 20,
-        color: AppColors.orange,
+        color: AppColors.primary,
       ),
     ),
     _NavItemData(
@@ -113,12 +108,12 @@ class GlassBottomNav extends StatelessWidget {
       icon: HugeIcon(
         icon: HugeIcons.strokeRoundedSettings01,
         size: 17,
-        color: AppColors.charcoal,
+        color: AppColors.textPrimary,
       ),
       activeIcon: HugeIcon(
         icon: HugeIcons.strokeRoundedSettings01,
         size: 18,
-        color: AppColors.orange,
+        color: AppColors.primary,
       ),
     ),
   ];
@@ -126,16 +121,16 @@ class GlassBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.all(Radius.circular(100)),
+      borderRadius: const BorderRadius.all(Radius.circular(100)),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: Container(
           height: height,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(100)),
-            border: Border(
-              top: BorderSide(color: AppColors.glassBorder, width: 1.2),
-            ),
+            borderRadius: const BorderRadius.all(Radius.circular(100)),
+            // Hairline in the design-system outline colour so the glass
+            // pill stays visible on the flat light background.
+            border: Border.all(color: AppColors.outline, width: 1),
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -170,8 +165,8 @@ class GlassBottomNav extends StatelessWidget {
                         item.name,
                         style: TextStyle(
                           color: selected
-                              ? AppColors.orange
-                              : AppColors.charcoal,
+                              ? AppColors.primary
+                              : AppColors.textPrimary,
                           fontSize: 10,
                           decoration: TextDecoration.none,
                         ),

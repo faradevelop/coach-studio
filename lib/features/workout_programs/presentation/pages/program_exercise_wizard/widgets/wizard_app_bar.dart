@@ -1,10 +1,14 @@
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
+import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_wizard_state.dart';
 import 'package:flutter/material.dart';
 
+/// Not [InnerPagesAppBar]: the back button here must go through
+/// `Navigator.maybePop` so the wizard's PopScope can step back instead of
+/// leaving the page (go_router's `context.pop` would bypass it).
 class WizardAppBar extends StatelessWidget {
   final WizardStep step;
 
@@ -34,35 +38,14 @@ class WizardAppBar extends StatelessWidget {
                   height: 3,
                   width: 90,
                   decoration: BoxDecoration(
-                    color: AppColors.orange,
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
               ],
             ),
             const Spacer(),
-            GestureDetector(
-              onTap: () => Navigator.of(context).maybePop(),
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.35),
-                  borderRadius: BorderRadius.circular(50),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.4),
-                  ),
-                ),
-                child: const Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    size: 18,
-                    color: AppColors.charcoal,
-                  ),
-                ),
-              ),
-            ),
+            GlassyBackButton(onTap: () => Navigator.of(context).maybePop()),
           ],
         ),
       ),
@@ -90,9 +73,7 @@ class _StepDots extends StatelessWidget {
             height: 8,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isActive
-                  ? AppColors.orange
-                  : AppColors.charcoal.withValues(alpha: 0.15),
+              color: isActive ? AppColors.primary : AppColors.outline,
             ),
           ),
         );

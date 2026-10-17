@@ -1,49 +1,69 @@
 import 'package:flutter/material.dart';
 
+/// Coach Studio colour tokens (Design System v1.0).
+///
+/// Semantic names only — use these everywhere. Neutral surfaces are flat;
+/// the only translucent "glass" element left in the app is the floating
+/// bottom navigation, which draws its own tint.
 class AppColors {
-  // ── Primary (CTA only) ───────────────────────────────────
-  static const Color orange = Color(0xFFFF7A00);
-  static const Color orangeDark = Color(0xFFFF5B00);
-  static const Color orangeSoft = Color(0xFFFFF0E8);
-  static const Color orangeGlow = Color(0xFFFF9A5A);
+  AppColors._();
 
-  // ── Secondary (new) ──────────────────────────────────────
-  static const Color teal = Color(0xFF2A9D8F);
-  static const Color tealDark = Color(0xFF1F7A6F);
-  static const Color tealSoft = Color(0xFFE6F5F2);
-  static const Color tealMuted = Color(0xFF5BB8AA);
+  // ── Brand ────────────────────────────────────────────────
+  static const Color primary = Color(0xFF5B5CE2); // Indigo — CTA, active
+  static const Color primaryDark = Color(0xFF4546B8); // pressed / gradients
+  static const Color primaryLight = Color(0xFF8F90EE); // derived: glow/hover
+  static const Color primarySoft = Color(0xFFEFEFFC); // primary @ ~10% on white
+  static const Color onPrimary = Colors.white;
+
+  static const Color secondary = Color(0xFF42C7A5); // Mint — focus, outline btn
+  static const Color secondaryDark = Color(0xFF2FA286); // derived: text/icons
+  static const Color secondaryLight = Color(0xFFA7E9D9); // gradient end
+  static const Color secondarySoft = Color(0xFFE8F8F4); // secondary @ ~12%
+  static const Color onSecondary = Colors.white;
+
+  static const Color accent = Color(0xFFFF9478); // Coral — sparse highlights
+  static const Color accentSoft = Color(0xFFFFEFEA); // derived
+  static const Color onAccent = Colors.white;
 
   // ── Neutrals ─────────────────────────────────────────────
-  static const Color charcoal = Color(0xFF1C1C1E);
-  static const Color charcoalSoft = Color(0xFF2C2C2E);
-  static const Color cream = Color(0xFFF7F3EE);
-  static const Color dirtyCream = Color(0xFFE9DED4);
-  static const Color grey = Color(0xFFD7CFC8);
-  static const Color muted = Color(0xFF8A8178);
+  static const Color background = Color(0xFFF7F8FC);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color surfaceVariant = Color(0xFFEEF0F7); // derived: subtle fills
+  static const Color outline = Color(0xFFE7E9F0);
+  static const Color textPrimary = Color(0xFF202333);
+  static const Color textSecondary = Color(0xFF74798C);
+  static const Color disabled = Color(0xFFC7C9E8);
 
-  // ── Glass / Surface helpers ──────────────────────────────
-  static Color get glass => Colors.white.withValues(alpha: 0.55);
-  static Color get glassStrong => Colors.white.withValues(alpha: 0.72);
-  static Color get glassBorder => Colors.white.withValues(alpha: 0.45);
-  static Color get glassBorderSoft => Colors.white.withValues(alpha: 0.28);
+  // ── Semantic states ──────────────────────────────────────
+  static const Color success = Color(0xFF34D399);
+  static const Color info = primary;
+  static const Color warning = Color(0xFFFFB347);
+  static const Color error = Color(0xFFFF6B6B);
+  static const Color onError = Colors.white;
 
-  static Color get surfaceGlass => dirtyCream.withValues(alpha: 0.40);
-  static Color get surfaceGlassBorder => dirtyCream.withValues(alpha: 0.55);
+  // Readable foregrounds for tinted status chips (derived).
+  static const Color successDark = Color(0xFF168F63);
+  static const Color warningDark = Color(0xFFB86F08);
+  static const Color errorDark = Color(0xFFD64545);
 
-  // ── Semantic ─────────────────────────────────────────────
-  static const Color error = Color.fromARGB(255, 237, 30, 27);
-  static const Color success = Color(0xFF62dc32);
-  static const Color warning = Color(0xFFF59E0B);
-  static const Color info = Colors.lightBlue;
-  static const Color onOrange = Colors.white;
-  static const Color onTeal = Colors.white;
-  static const Color onCharcoal = Colors.white;
+  // ── Gradients & effects ──────────────────────────────────
+  static const LinearGradient primaryGradient = LinearGradient(
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+    colors: [primary, secondary],
+  );
+  static const LinearGradient secondaryGradient = LinearGradient(
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+    colors: [secondary, secondaryLight],
+  );
 
-  // ── Background gradient stops (used in ScaffoldWithBottomNav) ──
-  static const Color bgStart = Color(0xFFF8F4EE);
-  static const Color bgMid = Color(0xFFF5F0E8);
-  static const Color bgEnd = Color(0xFFF2ECE5);
+  /// Decorative background blur tint (primary @ 10%).
+  static const Color backgroundBlur = Color(0x1A5B5CE2);
 
-  static const List<Color> bgColors = [Color(0xFFfdf1e3), Color(0xFFfbf2e3)];
-  static const List<double> bgStops = [0.0, 1.0];
+  // ── Soft tints for status chips ──────────────────────────
+  static Color get successSoft => success.withValues(alpha: 0.14);
+  static Color get infoSoft => info.withValues(alpha: 0.12);
+  static Color get warningSoft => warning.withValues(alpha: 0.16);
+  static Color get errorSoft => error.withValues(alpha: 0.12);
 }

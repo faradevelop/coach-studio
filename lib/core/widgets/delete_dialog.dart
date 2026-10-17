@@ -1,8 +1,6 @@
-import 'dart:ui';
 import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:coach_studio/core/widgets/app_dialog.dart';
+import 'package:coach_studio/core/widgets/app_confirm_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class DeleteDialog extends StatelessWidget {
@@ -18,134 +16,20 @@ class DeleteDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppDialog(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.70),
-              borderRadius: BorderRadius.circular(30),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.55),
-                width: 1.2,
-              ),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  //mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      width: 42,
-                      height: 42,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: AppColors.orange.withValues(alpha: 0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: HugeIcon(
-                        icon: HugeIcons.strokeRoundedDelete03,
-                        size: 24,
-                        color: AppColors.orange,
-                        strokeWidth: 2,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'حذف $title',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.charcoal,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 15),
-
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 6),
-                  child: Text(
-                    message ??
-                        'آیا از حذف $title ${itemName.isNotEmpty ? "\"$itemName\"" : ""} مطمئن هستید؟',
-                    textAlign: TextAlign.end,
-                    style: TextStyle(
-                      fontSize: 15,
-                      height: 1.4,
-                      color: AppColors.charcoal.withValues(alpha: 0.90),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32),
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => context.pop(false),
-                        child: Container(
-                          height: 42,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(40),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.6),
-                            ),
-                          ),
-                          child: const Text(
-                            'لغو',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.charcoal,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => context.pop(true),
-                        child: Container(
-                          height: 42,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: AppColors.orange,
-                            borderRadius: BorderRadius.circular(40),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.orange.withValues(alpha: 0.35),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: const Text(
-                            'حذف',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
+    return AppConfirmDialog(
+      destructive: true,
+      color: AppColors.error,
+      icon: HugeIcon(
+        icon: HugeIcons.strokeRoundedDelete03,
+        size: 24,
+        color: AppColors.error,
+        strokeWidth: 2,
       ),
+      title: 'حذف $title',
+      message:
+          message ??
+          'آیا از حذف $title ${itemName.isNotEmpty ? "\"$itemName\"" : ""} مطمئن هستید؟',
+      confirmText: 'حذف',
     );
   }
 }

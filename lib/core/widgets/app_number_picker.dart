@@ -67,33 +67,21 @@ class _AppNumberPickerState extends State<AppNumberPicker> {
     final itemCount = widget.max - widget.min + 1;
 
     return InputDecorator(
+      // Fill / borders come from the input theme; only the compact label
+      // and padding are specific to this widget.
       decoration: InputDecoration(
         labelText: widget.label,
-        labelStyle: TextStyle(
-          color: AppColors.charcoal.withValues(alpha: 0.65),
+        labelStyle: const TextStyle(
+          color: AppColors.textSecondary,
           fontSize: 13,
           fontWeight: FontWeight.w500,
         ),
         floatingLabelStyle: const TextStyle(
-          color: AppColors.teal,
+          color: AppColors.secondaryDark,
           fontSize: 13,
           fontWeight: FontWeight.w600,
         ),
-        filled: true,
-        fillColor: AppColors.glass,
         contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: AppColors.glassBorder),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: AppColors.glassBorder),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.teal, width: 1.4),
-        ),
       ),
       child: SizedBox(
         height: 88,
@@ -107,10 +95,10 @@ class _AppNumberPickerState extends State<AppNumberPicker> {
           selectionOverlay: Container(
             margin: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
-              color: AppColors.tealSoft.withValues(alpha: 0.45),
+              color: AppColors.secondarySoft,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: AppColors.teal.withValues(alpha: 0.25),
+                color: AppColors.secondary.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
@@ -127,7 +115,6 @@ class _AppNumberPickerState extends State<AppNumberPicker> {
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.3,
-                    color: AppColors.charcoal,
                   ),
                 ),
               ),

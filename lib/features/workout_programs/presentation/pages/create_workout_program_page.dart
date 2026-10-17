@@ -63,9 +63,10 @@ class _CreateWorkoutProgramViewState extends State<_CreateWorkoutProgramView> {
         // Edit mode but data is not ready yet.
         if (isEditMode && existingProgram == null) {
           return Scaffold(
+            backgroundColor: AppColors.background,
             body: Center(
               child: LoadingAnimationWidget.hexagonDots(
-                color: AppColors.orange,
+                color: AppColors.primary,
                 size: 40,
               ),
             ),
@@ -73,6 +74,7 @@ class _CreateWorkoutProgramViewState extends State<_CreateWorkoutProgramView> {
         }
 
         return Scaffold(
+          backgroundColor: AppColors.background,
           body: WorkoutProgramForm(
             initialProgram: existingProgram,
             isLoading: isSubmitting,

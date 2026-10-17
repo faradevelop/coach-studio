@@ -1,12 +1,11 @@
-import 'dart:ui';
-
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/app_confirm_dialog.dart';
+import 'package:coach_studio/core/widgets/app_surface.dart';
 import 'package:coach_studio/core/widgets/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/authentication/domain/entities/auth_user.dart';
@@ -39,9 +38,10 @@ class CoachDetailPage extends StatelessWidget {
         final coach = _resolve(state);
         if (coach == null) {
           return Scaffold(
+            backgroundColor: AppColors.background,
             body: Center(
               child: LoadingAnimationWidget.hexagonDots(
-                color: AppColors.orange,
+                color: AppColors.primary,
                 size: 40,
               ),
             ),
@@ -71,24 +71,18 @@ class _CoachDetailViewState extends State<_CoachDetailView> {
     if (!activate) {
       final confirmed = await showDialog<bool>(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('غیرفعال‌سازی مربی'),
-          content: Text(
-            'مربی «${coach.username}» دیگر نمی‌تواند وارد شود و نشست‌های فعالش بسته می‌شود. اطلاعات او حذف نخواهد شد.',
+        builder: (_) => AppConfirmDialog(
+          destructive: true,
+          color: AppColors.error,
+          icon: const Icon(
+            Icons.person_off_rounded,
+            size: 22,
+            color: AppColors.error,
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('لغو'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: const Text(
-                'غیرفعال‌سازی',
-                style: TextStyle(color: AppColors.error),
-              ),
-            ),
-          ],
+          title: 'غیرفعال‌سازی مربی',
+          message:
+              'مربی «${coach.username}» دیگر نمی‌تواند وارد شود و نشست‌های فعالش بسته می‌شود. اطلاعات او حذف نخواهد شد.',
+          confirmText: 'غیرفعال‌سازی',
         ),
       );
       if (confirmed != true || !mounted) return;
@@ -113,66 +107,54 @@ class _CoachDetailViewState extends State<_CoachDetailView> {
     final coach = widget.coach;
 
     return Scaffold(
-      backgroundColor: AppColors.cream,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: AppColors.bgColors,
-            stops: AppColors.bgStops,
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              MaxWidthBox(
-                maxWidth: AppContentWidth.detail,
-                child: InnerPagesAppBar(
-                  rightButton: null,
-                  title: coach.username,
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-                  child: MaxWidthBox(
-                    maxWidth: AppContentWidth.form,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _GlassCard(
-                          child: Column(
-                            children: [
-                              _InfoRow(
-                                label: 'نام کاربری',
-                                value: coach.username,
-                              ),
-                              _InfoRow(label: 'ایمیل', value: coach.email),
-                              _InfoRow(label: 'نقش', value: coach.role.label),
-                              Row(
-                                children: [
-                                  Text('وضعیت', style: AppTextStyles.bodySmall),
-                                  const Spacer(),
-                                  CoachStatusChip(isActive: coach.isActive),
-                                ],
-                              ),
-                            ],
-                          ),
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            MaxWidthBox(
+              maxWidth: AppContentWidth.detail,
+              child: InnerPagesAppBar(rightButton: null, title: coach.username),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+                child: MaxWidthBox(
+                  maxWidth: AppContentWidth.form,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AppSurface(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            _InfoRow(label: 'نام کاربری', value: coach.username),
+                            _InfoRow(label: 'ایمیل', value: coach.email),
+                            _InfoRow(label: 'نقش', value: coach.role.label),
+                            Row(
+                              children: [
+                                Text('وضعیت', style: AppTextStyles.bodySmall),
+                                const Spacer(),
+                                CoachStatusChip(isActive: coach.isActive),
+                              ],
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 20),
-                        AppButton(
-                          text: coach.isActive ? 'غیرفعال‌سازی' : 'فعال‌سازی',
-                          isLoading: _busy,
-                          onPressed: _busy ? null : _toggleStatus,
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 20),
+                      AppButton(
+                        text: coach.isActive ? 'غیرفعال‌سازی' : 'فعال‌سازی',
+                        variant: coach.isActive
+                            ? AppButtonVariant.destructive
+                            : AppButtonVariant.primary,
+                        isLoading: _busy,
+                        onPressed: _busy ? null : _toggleStatus,
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -204,30 +186,6 @@ class _InfoRow extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _GlassCard extends StatelessWidget {
-  final Widget child;
-  const _GlassCard({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadius.xl),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.38),
-            borderRadius: BorderRadius.circular(AppRadius.xl),
-            border: Border.all(color: AppColors.glassBorder, width: 1.1),
-          ),
-          child: child,
-        ),
       ),
     );
   }

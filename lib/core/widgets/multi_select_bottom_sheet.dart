@@ -1,8 +1,10 @@
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_shadows.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
+import 'package:coach_studio/core/widgets/app_button.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:flutter/material.dart';
 
@@ -105,11 +107,12 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
           child: ConstrainedBox(
             constraints: BoxConstraints(maxHeight: screenHeight * 0.5),
             child: Container(
-              decoration: const BoxDecoration(
-                color: AppColors.cream,
-                borderRadius: BorderRadius.vertical(
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(AppRadius.xl),
                 ),
+                boxShadow: AppShadows.overlay,
               ),
               padding: EdgeInsets.only(bottom: bottomInset),
               child: Column(
@@ -120,7 +123,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: AppColors.charcoal.withValues(alpha: 0.15),
+                      color: AppColors.outline,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -134,8 +137,8 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                       ),
                     ),
                   ),
-                  Divider(),
-                  SizedBox(height: 8),
+                  const Divider(),
+                  const SizedBox(height: 8),
                   Flexible(
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(
@@ -162,61 +165,22 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: GestureDetector(
-                            onTap: () => Navigator.of(context).pop(),
-                            child: Container(
-                              height: 42,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.5),
-                                borderRadius: BorderRadius.circular(50),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.6),
-                                ),
-                              ),
-                              child: Text(
-                                widget.cancelText,
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.charcoal,
-                                ),
-                              ),
-                            ),
+                          child: AppButton(
+                            text: widget.cancelText,
+                            variant: AppButtonVariant.secondary,
+                            size: AppButtonSize.compact,
+                            onPressed: () => Navigator.of(context).pop(),
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: GestureDetector(
-                            onTap: () {
+                          child: AppButton(
+                            text: widget.confirmText,
+                            size: AppButtonSize.compact,
+                            onPressed: () {
                               widget.onApply(_selected);
                               Navigator.of(context).pop();
                             },
-                            child: Container(
-                              height: 42,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: AppColors.orange,
-                                borderRadius: BorderRadius.circular(50),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.orange.withValues(
-                                      alpha: 0.35,
-                                    ),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Text(
-                                widget.confirmText,
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
                           ),
                         ),
                       ],
@@ -251,13 +215,11 @@ class _SelectableChip extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.teal
-              : Colors.white.withValues(alpha: 0.55),
+          color: isSelected ? AppColors.secondarySoft : AppColors.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.tealMuted : AppColors.glassBorder,
-            width: 1.2,
+            color: isSelected ? AppColors.secondary : AppColors.outline,
+            width: isSelected ? 1.5 : 1.2,
           ),
         ),
         child: Text(
@@ -265,7 +227,7 @@ class _SelectableChip extends StatelessWidget {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: isSelected ? Colors.white : AppColors.charcoal,
+            color: isSelected ? AppColors.secondaryDark : AppColors.textPrimary,
           ),
         ),
       ),

@@ -190,13 +190,13 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
-              color: AppColors.teal.withValues(alpha: 0.2),
+              color: AppColors.secondarySoft,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               '${state.selectedExercises.length.persianNumber}/${state.maxSelection.persianNumber}',
               style: const TextStyle(
-                color: AppColors.teal,
+                color: AppColors.secondaryDark,
                 fontWeight: FontWeight.w700,
                 fontSize: 13,
               ),
@@ -217,7 +217,7 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
     if (_isLoading && _exercises.isEmpty) {
       return Center(
         child: LoadingAnimationWidget.hexagonDots(
-          color: AppColors.orange,
+          color: AppColors.primary,
           size: 40,
         ),
       );
@@ -264,9 +264,11 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
             constraints: const BoxConstraints(maxWidth: 220),
             padding: const EdgeInsetsDirectional.only(start: 12, end: 6),
             decoration: BoxDecoration(
-              color: AppColors.teal.withValues(alpha: 0.14),
+              color: AppColors.secondarySoft,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.teal.withValues(alpha: 0.5)),
+              border: Border.all(
+                color: AppColors.secondary.withValues(alpha: 0.5),
+              ),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -277,7 +279,7 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      color: AppColors.charcoal,
+                      color: AppColors.textPrimary,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
@@ -289,7 +291,7 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
                       .toggleExerciseSelection(exercise),
                   tooltip: 'حذف ${exercise.name}',
                   icon: const Icon(Icons.close_rounded, size: 16),
-                  color: AppColors.teal,
+                  color: AppColors.secondaryDark,
                   visualDensity: VisualDensity.compact,
                   constraints: const BoxConstraints.tightFor(
                     width: 28,
