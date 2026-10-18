@@ -34,7 +34,7 @@ enum AppButtonSize {
 ///
 /// States: default / pressed / focused (Material overlays), disabled
 /// (`onPressed == null`) and loading (`isLoading`). While loading the
-/// button keeps its own colour (instead of turning grey) and ignores taps.
+/// button keeps its own color (instead of turning grey) and ignores taps.
 class AppButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -94,7 +94,8 @@ class AppButton extends StatelessWidget {
       disabledBackgroundColor: background,
       disabledForegroundColor: foreground,
       elevation: 0,
-      shape: StadiumBorder(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.button),
         side: _isOutlined
             ? BorderSide(color: borderColor, width: 1.5)
             : BorderSide.none,

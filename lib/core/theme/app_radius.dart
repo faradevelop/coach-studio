@@ -7,6 +7,7 @@ class AppRadius {
 
   /// Inputs, dropdowns, pickers (was hard-coded as 14 everywhere).
   static const field = 14.0;
+  static const button = 16.0;
   static const lg = 20.0;
   static const xl = 24.0;
   static const full = 999.0;

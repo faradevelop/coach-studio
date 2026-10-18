@@ -17,7 +17,7 @@ class AppTheme {
   static ThemeData get light {
     final base = ThemeData(
       useMaterial3: true,
-      fontFamily: 'iranSans',
+      fontFamily: 'vazirMatn',
       brightness: Brightness.light,
     );
 

@@ -3,24 +3,26 @@ import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 
-/// Shared text input. Borders, fill, label and focus colours come from
+/// Shared text input. Borders, fill, label and focus colors come from
 /// `AppTheme.inputDecorationTheme`; only content-specific bits live here.
 class AppTextField extends StatefulWidget {
   final TextEditingController controller;
-  final String label;
+  final String? label;
   final String? hint;
   final String? Function(String?)? validator;
   final int maxLines;
   final bool obscureText;
+  final Widget? prefixIcn;
 
   const AppTextField({
     super.key,
     required this.controller,
-    required this.label,
+    this.label,
     this.hint,
     this.validator,
     this.maxLines = 1,
     this.obscureText = false,
+    this.prefixIcn,
   });
 
   @override
@@ -42,19 +44,23 @@ class _AppTextFieldState extends State<AppTextField> {
       controller: widget.controller,
       maxLines: _isObscured ? 1 : widget.maxLines,
       obscureText: _isObscured,
-      style: AppTextStyles.body.copyWith(fontSize: 15),
+      style: AppTextStyles.body,
       decoration: InputDecoration(
-        labelText: widget.label,
         hintText: widget.hint,
+        hintStyle: AppTextStyles.bodySmall,
+        prefixIcon: Padding(
+          padding: const EdgeInsets.fromLTRB(4, 8, 10, 8),
+          child: widget.prefixIcn,
+        ),
         suffixIcon: widget.obscureText
             ? IconButton(
                 onPressed: () => setState(() => _isObscured = !_isObscured),
                 icon: HugeIcon(
                   icon: _isObscured
                       ? HugeIcons.strokeRoundedView
-                      : HugeIcons.strokeRoundedViewOff,
+                      : HugeIcons.strokeRoundedViewOffSlash,
                   color: AppColors.textSecondary,
-                  size: 22,
+                  size: 20,
                 ),
               )
             : null,
