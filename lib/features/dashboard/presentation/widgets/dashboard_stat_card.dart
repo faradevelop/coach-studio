@@ -34,7 +34,10 @@ class DashboardStatCard extends StatelessWidget {
       );
     }
     if (isLoading || value == null) {
-      return LoadingAnimationWidget.waveDots(color: AppColors.primary, size: 22);
+      return LoadingAnimationWidget.waveDots(
+        color: AppColors.primary,
+        size: 22,
+      );
     }
     return Text(
       value!.persianNumber,

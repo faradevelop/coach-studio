@@ -1,7 +1,7 @@
 import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
-import 'package:coach_studio/core/widgets/multi_select_bottom_sheet.dart';
+import 'package:coach_studio/core/widgets/sheets/multi_select_bottom_sheet.dart';
 import 'package:coach_studio/features/exercises/domain/entities/muscle.dart';
 import 'package:flutter/material.dart';
 

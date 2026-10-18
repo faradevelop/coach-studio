@@ -1,4 +1,4 @@
-import 'package:coach_studio/core/widgets/app_surface.dart';
+import 'package:coach_studio/core/widgets/display/app_surface.dart';
 import 'package:flutter/material.dart';
 
 /// Shared dialog shell: a transparent [Dialog] hosting one flat

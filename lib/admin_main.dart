@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:coach_studio/admin/admin_router.dart';
+import 'package:coach_studio/app/admin/admin_router.dart';
 import 'package:coach_studio/core/bootstrap/global_error_handling.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/storage/token_storage.dart';

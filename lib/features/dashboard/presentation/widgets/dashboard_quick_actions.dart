@@ -1,6 +1,6 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/buttons/app_button.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_section_header.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

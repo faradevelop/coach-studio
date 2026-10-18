@@ -3,8 +3,8 @@ import 'package:coach_studio/core/localization/extensions/number_extensions.dart
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:coach_studio/core/widgets/app_error_state.dart';
-import 'package:coach_studio/core/widgets/app_info_chip.dart';
+import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
+import 'package:coach_studio/core/widgets/display/app_info_chip.dart';
 import 'package:coach_studio/features/dashboard/domain/entities/programs_summary.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_glass_card.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_section_header.dart';

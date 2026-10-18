@@ -40,8 +40,12 @@ class DashboardStatsSection extends StatelessWidget {
   }
 }
 
-Widget _statIcon(dynamic icon) =>
-    HugeIcon(icon: icon, size: 18, color: AppColors.secondaryDark, strokeWidth: 2);
+Widget _statIcon(dynamic icon) => HugeIcon(
+  icon: icon,
+  size: 18,
+  color: AppColors.secondaryDark,
+  strokeWidth: 2,
+);
 
 class _ProgramsStatCard extends StatelessWidget {
   final String label;

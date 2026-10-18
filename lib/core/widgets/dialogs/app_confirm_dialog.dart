@@ -1,6 +1,6 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:coach_studio/core/widgets/app_button.dart';
-import 'package:coach_studio/core/widgets/app_dialog.dart';
+import 'package:coach_studio/core/widgets/buttons/app_button.dart';
+import 'package:coach_studio/core/widgets/dialogs/app_dialog.dart';
 import 'package:flutter/material.dart';
 
 /// Two-button confirmation dialog (icon + title + message). Pops `true`

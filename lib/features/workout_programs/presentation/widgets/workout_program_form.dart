@@ -1,10 +1,10 @@
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
-import 'package:coach_studio/core/widgets/app_button.dart';
-import 'package:coach_studio/core/widgets/app_dropdown.dart';
-import 'package:coach_studio/core/widgets/app_number_picker.dart';
-import 'package:coach_studio/core/widgets/app_surface.dart';
-import 'package:coach_studio/core/widgets/app_text_field.dart';
-import 'package:coach_studio/core/widgets/custom_app_bar.dart';
+import 'package:coach_studio/core/widgets/buttons/app_button.dart';
+import 'package:coach_studio/core/widgets/inputs/app_dropdown.dart';
+import 'package:coach_studio/core/widgets/inputs/app_number_picker.dart';
+import 'package:coach_studio/core/widgets/display/app_surface.dart';
+import 'package:coach_studio/core/widgets/inputs/app_text_field.dart';
+import 'package:coach_studio/core/widgets/navigation/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';

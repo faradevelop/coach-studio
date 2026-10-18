@@ -4,7 +4,7 @@ import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_shadows.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:coach_studio/core/widgets/app_button.dart';
+import 'package:coach_studio/core/widgets/buttons/app_button.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:flutter/material.dart';
 

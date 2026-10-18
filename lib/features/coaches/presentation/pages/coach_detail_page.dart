@@ -3,10 +3,10 @@ import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:coach_studio/core/widgets/app_button.dart';
-import 'package:coach_studio/core/widgets/app_confirm_dialog.dart';
-import 'package:coach_studio/core/widgets/app_surface.dart';
-import 'package:coach_studio/core/widgets/custom_app_bar.dart';
+import 'package:coach_studio/core/widgets/buttons/app_button.dart';
+import 'package:coach_studio/core/widgets/dialogs/app_confirm_dialog.dart';
+import 'package:coach_studio/core/widgets/display/app_surface.dart';
+import 'package:coach_studio/core/widgets/navigation/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/authentication/domain/entities/auth_user.dart';
 import 'package:coach_studio/features/coaches/presentation/cubit/coach_cubit.dart';
@@ -127,7 +127,10 @@ class _CoachDetailViewState extends State<_CoachDetailView> {
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           children: [
-                            _InfoRow(label: 'نام کاربری', value: coach.username),
+                            _InfoRow(
+                              label: 'نام کاربری',
+                              value: coach.username,
+                            ),
                             _InfoRow(label: 'ایمیل', value: coach.email),
                             _InfoRow(label: 'نقش', value: coach.role.label),
                             Row(

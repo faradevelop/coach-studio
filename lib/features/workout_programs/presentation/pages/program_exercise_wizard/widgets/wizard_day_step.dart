@@ -1,6 +1,6 @@
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
-import 'package:coach_studio/core/widgets/app_button.dart';
-import 'package:coach_studio/core/widgets/app_dropdown.dart';
+import 'package:coach_studio/core/widgets/buttons/app_button.dart';
+import 'package:coach_studio/core/widgets/inputs/app_dropdown.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/training_system.dart';

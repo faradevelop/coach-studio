@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "CS_main",
+      "request": "launch",
+      "type": "dart",
+      "program": "${workspaceFolder}/lib/main.dart"
+    },
+    {
+      "name": "CS_admin",
+      "request": "launch",
+      "type": "dart",
+      "program": "${workspaceFolder}/lib/admin_main.dart"
+    }
+  ]
+}

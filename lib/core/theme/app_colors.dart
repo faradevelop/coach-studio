@@ -28,7 +28,9 @@ class AppColors {
   // ── Neutrals ─────────────────────────────────────────────
   static const Color background = Color(0xFFF7F8FC);
   static const Color surface = Color(0xFFFFFFFF);
-  static const Color surfaceVariant = Color(0xFFEEF0F7); // derived: subtle fills
+  static const Color surfaceVariant = Color(
+    0xFFEEF0F7,
+  ); // derived: subtle fills
   static const Color outline = Color(0xFFE7E9F0);
   static const Color textPrimary = Color(0xFF202333);
   static const Color textSecondary = Color(0xFF74798C);

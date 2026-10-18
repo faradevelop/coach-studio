@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:coach_studio/app/routing/app_router.dart';
+import 'package:coach_studio/app/coach/app_router.dart';
 import 'package:coach_studio/core/bootstrap/global_error_handling.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';

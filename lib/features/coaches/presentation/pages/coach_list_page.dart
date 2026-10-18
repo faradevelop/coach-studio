@@ -3,9 +3,9 @@ import 'package:coach_studio/core/localization/extensions/number_extensions.dart
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:coach_studio/core/widgets/app_error_state.dart';
-import 'package:coach_studio/core/widgets/app_surface.dart';
-import 'package:coach_studio/core/widgets/custom_app_bar.dart';
+import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
+import 'package:coach_studio/core/widgets/display/app_surface.dart';
+import 'package:coach_studio/core/widgets/navigation/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/responsive_grid.dart';
 import 'package:coach_studio/features/authentication/domain/entities/auth_user.dart';
 import 'package:coach_studio/features/coaches/presentation/cubit/coach_cubit.dart';

@@ -1,5 +1,5 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:coach_studio/core/widgets/app_confirm_dialog.dart';
+import 'package:coach_studio/core/widgets/dialogs/app_confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 

@@ -1,4 +1,4 @@
-import 'package:coach_studio/core/widgets/app_status_chip.dart';
+import 'package:coach_studio/core/widgets/display/app_status_chip.dart';
 import 'package:flutter/material.dart';
 
 class CoachStatusChip extends StatelessWidget {

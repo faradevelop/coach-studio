@@ -1,5 +1,5 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:coach_studio/core/widgets/app_error_state.dart';
+import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

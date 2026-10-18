@@ -17,10 +17,7 @@ class ScaffoldWithBottomNav extends StatelessWidget {
     return Stack(
       children: [
         // Flat page background (design system `background`).
-        const ColoredBox(
-          color: AppColors.background,
-          child: SizedBox.expand(),
-        ),
+        const ColoredBox(color: AppColors.background, child: SizedBox.expand()),
 
         Scaffold(
           backgroundColor: Colors.transparent,

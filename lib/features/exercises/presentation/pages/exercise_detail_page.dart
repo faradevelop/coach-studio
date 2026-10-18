@@ -5,12 +5,12 @@ import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:coach_studio/core/widgets/app_button.dart';
-import 'package:coach_studio/core/widgets/app_surface.dart';
-import 'package:coach_studio/core/widgets/custom_app_bar.dart';
-import 'package:coach_studio/core/widgets/delete_dialog.dart';
+import 'package:coach_studio/core/widgets/buttons/app_button.dart';
+import 'package:coach_studio/core/widgets/display/app_surface.dart';
+import 'package:coach_studio/core/widgets/navigation/custom_app_bar.dart';
+import 'package:coach_studio/core/widgets/dialogs/delete_dialog.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
-import 'package:coach_studio/core/widgets/app_info_chip.dart';
+import 'package:coach_studio/core/widgets/display/app_info_chip.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
@@ -141,7 +141,8 @@ class _ExerciseDetailViewState extends State<_ExerciseDetailView> {
                               spacing: 8,
                               runSpacing: 8,
                               children: [
-                                if (e.type != null) AppInfoChip.plain(text: e.type!.label),
+                                if (e.type != null)
+                                  AppInfoChip.plain(text: e.type!.label),
                                 AppInfoChip.plain(text: e.difficulty.label),
                                 AppInfoChip.plain(text: e.equipment.label),
                               ],

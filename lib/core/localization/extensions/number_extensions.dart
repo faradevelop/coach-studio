@@ -1,4 +1,4 @@
-import 'package:coach_studio/core/localization/app_number_formatter.dart';
+import 'package:coach_studio/core/localization/formatters/app_number_formatter.dart';
 
 extension AppNumberExtension on Object? {
   String get persianNumber {
