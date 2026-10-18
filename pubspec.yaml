@@ -80,3 +80,8 @@ flutter:
         - asset: assets/fonts/iranSans_Bold.ttf
           weight: 700
 
+    - family: vazirMatn
+      fonts:
+        - asset: assets/fonts/Vazirmatn_Regular.ttf
+        - asset: assets/fonts/Vazirmatn_Bold.ttf
+          weight: 700
