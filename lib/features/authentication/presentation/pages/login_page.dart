@@ -6,12 +6,14 @@ import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/buttons/app_button.dart';
 import 'package:coach_studio/core/widgets/display/app_surface.dart';
+import 'package:coach_studio/core/widgets/inputs/app_input_label.dart';
 import 'package:coach_studio/core/widgets/inputs/app_text_field.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -63,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 52),
             child: MaxWidthBox(
               maxWidth: AppContentWidth.form,
               child: Column(
@@ -72,6 +74,20 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Column(
                     children: [
+                      Image.asset(
+                        'assets/images/logo.png',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.contain,
+                        errorBuilder: (_, _, _) => Center(
+                          child: HugeIcon(
+                            icon: HugeIcons.strokeRoundedLoginCircle01,
+                            size: 50,
+                            color: AppColors.primaryDark,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 52),
                       Text('ورود به حساب', style: AppTextStyles.display),
                       const SizedBox(height: 8),
                       Text(
@@ -123,9 +139,14 @@ class _LoginFormCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            AppInputLabel(text: 'نام کاربری'),
             AppTextField(
               controller: identifierController,
-              label: 'نام کاربری یا ایمیل',
+              hint: 'نام کاربری یا ایمیل',
+              prefixIcn: HugeIcon(
+                icon: HugeIcons.strokeRoundedUserIdVerification,
+                color: AppColors.textSecondary,
+              ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'الزامی';
@@ -134,9 +155,14 @@ class _LoginFormCard extends StatelessWidget {
               },
             ),
             const SizedBox(height: 16),
+            AppInputLabel(text: 'رمز عبور'),
             AppTextField(
               controller: passwordController,
-              label: 'رمز عبور',
+              hint: 'رمز عبور',
+              prefixIcn: HugeIcon(
+                icon: HugeIcons.strokeRoundedLockPassword,
+                color: AppColors.textSecondary,
+              ),
               obscureText: true,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -155,7 +181,7 @@ class _LoginFormCard extends StatelessWidget {
                 child: const Text('فراموشی رمز عبور؟'),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 50),
             AppButton(
               text: 'ورود',
               isLoading: isSubmitting,
