@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 class AppInfoChip extends StatelessWidget {
   final Widget? icon;
   final String text;
+  final Color textColor;
+  final Color? backgroundColor;
 
   /// Slim vertical padding (used inside dense cards).
   final bool compact;
@@ -19,22 +21,27 @@ class AppInfoChip extends StatelessWidget {
     super.key,
     required this.text,
     this.icon,
+    this.backgroundColor,
+    this.textColor = AppColors.textPrimary,
     this.compact = false,
     this.persianDigits = true,
   });
 
   /// Text-only chip for dense cards (slim padding, digits left as-is).
-  const AppInfoChip.plain({super.key, required this.text})
+  const AppInfoChip.plain({super.key, required this.text, this.backgroundColor})
     : icon = null,
+      textColor = AppColors.secondaryDark,
       compact = true,
       persianDigits = false;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: compact ? 1 : 6),
+      padding: compact
+          ? EdgeInsets.fromLTRB(6, 2, 6, 6)
+          : EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.secondary.withValues(alpha: 0.12),
+        color: backgroundColor ?? AppColors.secondary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -48,9 +55,9 @@ class AppInfoChip extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: AppTextStyles.bodySmall.copyWith(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary,
+                fontSize: compact ? 10 : 12.5,
+                fontWeight: compact ? FontWeight.w700 : FontWeight.w500,
+                color: textColor,
               ),
             ),
           ),
