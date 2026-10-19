@@ -1,7 +1,7 @@
 import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_glass_card.dart';
+import 'package:coach_studio/core/widgets/display/app_surface.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -9,6 +9,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 /// loading → animated dots, error → retry affordance.
 class DashboardStatCard extends StatelessWidget {
   final Widget icon;
+  final Color iconContainerColor;
   final String label;
   final int? value;
   final bool isLoading;
@@ -18,6 +19,7 @@ class DashboardStatCard extends StatelessWidget {
   const DashboardStatCard({
     super.key,
     required this.icon,
+    required this.iconContainerColor,
     required this.label,
     required this.onTap,
     this.value,
@@ -50,21 +52,34 @@ class DashboardStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DashboardGlassCard(
+    return AppSurface(
       onTap: onTap,
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 34,
-            height: 34,
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              color: AppColors.secondarySoft,
-              shape: BoxShape.circle,
-            ),
-            child: icon,
+          Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: iconContainerColor,
+                  shape: BoxShape.circle,
+                ),
+                child: icon,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                hasError ? 'تلاش مجدد' : label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: hasError ? AppColors.error : AppColors.textSecondary,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           SizedBox(
@@ -75,15 +90,15 @@ class DashboardStatCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 2),
-          Text(
-            hasError ? 'تلاش مجدد' : label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.bodySmall.copyWith(
-              fontSize: 12,
-              color: hasError ? AppColors.error : AppColors.textSecondary,
-            ),
-          ),
+          // Text(
+          //   hasError ? 'تلاش مجدد' : label,
+          //   maxLines: 1,
+          //   overflow: TextOverflow.ellipsis,
+          //   style: AppTextStyles.bodySmall.copyWith(
+          //     fontSize: 12,
+          //     color: hasError ? AppColors.error : AppColors.textSecondary,
+          //   ),
+          // ),
         ],
       ),
     );

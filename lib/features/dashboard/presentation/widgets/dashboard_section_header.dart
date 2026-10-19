@@ -1,6 +1,7 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class DashboardSectionHeader extends StatelessWidget {
   final String title;
@@ -18,16 +19,14 @@ class DashboardSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          width: 3,
-          height: 16,
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(2),
-          ),
+        HugeIcon(
+          icon: HugeIcons.strokeRounded24HoursClock,
+          color: AppColors.primary,
+          size: 21,
+          strokeWidth: 2,
         ),
         const SizedBox(width: 8),
-        Text(title, style: AppTextStyles.titleMedium.copyWith(fontSize: 16)),
+        Text(title, style: AppTextStyles.titleMedium.copyWith(fontSize: 13)),
         const Spacer(),
         if (actionLabel != null && onAction != null)
           GestureDetector(
@@ -37,10 +36,9 @@ class DashboardSectionHeader extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
               child: Text(
                 actionLabel!,
-                style: const TextStyle(
+                style: AppTextStyles.titleMedium.copyWith(
+                  fontSize: 12,
                   color: AppColors.primary,
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

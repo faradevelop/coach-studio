@@ -29,6 +29,7 @@ class DashboardStatsSection extends StatelessWidget {
         Expanded(
           child: _ProgramsStatCard(
             label: 'قالب‌ها',
+            isTemplate: true,
             icon: HugeIcons.strokeRoundedCopy02,
             select: (summary) => summary.templates,
           ),
@@ -40,20 +41,18 @@ class DashboardStatsSection extends StatelessWidget {
   }
 }
 
-Widget _statIcon(dynamic icon) => HugeIcon(
-  icon: icon,
-  size: 18,
-  color: AppColors.secondaryDark,
-  strokeWidth: 2,
-);
+Widget _statIcon(dynamic icon) =>
+    HugeIcon(icon: icon, size: 18, color: AppColors.onPrimary, strokeWidth: 2);
 
 class _ProgramsStatCard extends StatelessWidget {
   final String label;
+  final bool isTemplate;
   final dynamic icon;
   final int Function(ProgramsSummary summary) select;
 
   const _ProgramsStatCard({
     required this.label,
+    this.isTemplate = false,
     required this.icon,
     required this.select,
   });
@@ -67,12 +66,18 @@ class _ProgramsStatCard extends StatelessWidget {
         return switch (state) {
           WorkoutProgramLoaded(:final programs) => DashboardStatCard(
             icon: _statIcon(icon),
+            iconContainerColor: isTemplate
+                ? AppColors.accent
+                : AppColors.primary,
             label: label,
             value: select(ProgramsSummary.fromPrograms(programs)),
             onTap: () => context.goNamed(AppRouteNames.workoutProgramsList),
           ),
           WorkoutProgramError() => DashboardStatCard(
             icon: _statIcon(icon),
+            iconContainerColor: isTemplate
+                ? AppColors.accent
+                : AppColors.primary,
             label: label,
             hasError: true,
             onTap: () => cubit.loadPrograms(),
@@ -80,6 +85,9 @@ class _ProgramsStatCard extends StatelessWidget {
           WorkoutProgramInitial() ||
           WorkoutProgramLoading() => DashboardStatCard(
             icon: _statIcon(icon),
+            iconContainerColor: isTemplate
+                ? AppColors.accent
+                : AppColors.primary,
             label: label,
             isLoading: true,
             onTap: null,
@@ -104,6 +112,7 @@ class _ExercisesStatCard extends StatelessWidget {
         if (state is ExerciseError) {
           return DashboardStatCard(
             icon: icon,
+            iconContainerColor: AppColors.secondary,
             label: label,
             hasError: true,
             onTap: () => cubit.loadExercises(),
@@ -116,6 +125,7 @@ class _ExercisesStatCard extends StatelessWidget {
         if (total == null) {
           return DashboardStatCard(
             icon: icon,
+            iconContainerColor: AppColors.secondary,
             label: label,
             isLoading: true,
             onTap: null,
@@ -124,6 +134,7 @@ class _ExercisesStatCard extends StatelessWidget {
 
         return DashboardStatCard(
           icon: icon,
+          iconContainerColor: AppColors.secondary,
           label: label,
           value: total,
           onTap: () => context.goNamed(AppRouteNames.exercises),

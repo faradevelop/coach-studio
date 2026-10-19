@@ -3,6 +3,7 @@ import 'package:coach_studio/core/localization/extensions/number_extensions.dart
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
+import 'package:coach_studio/core/widgets/display/app_surface.dart';
 import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
 import 'package:coach_studio/core/widgets/display/app_info_chip.dart';
 import 'package:coach_studio/features/dashboard/domain/entities/programs_summary.dart';
@@ -29,17 +30,9 @@ class DashboardProgramsOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WorkoutProgramCubit, WorkoutProgramState>(
       builder: (context, state) {
-        final hasPrograms =
-            state is WorkoutProgramLoaded && state.programs.isNotEmpty;
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DashboardSectionHeader(
-              title: 'برنامه‌ها',
-              actionLabel: hasPrograms ? 'مشاهده همه' : null,
-              onAction: hasPrograms ? () => _openAll(context) : null,
-            ),
             const SizedBox(height: 12),
             switch (state) {
               WorkoutProgramInitial() ||
@@ -116,103 +109,30 @@ class _OverviewContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final summary = ProgramsSummary.fromPrograms(programs);
+    //final summary = ProgramsSummary.fromPrograms(programs);
     final preview = programs.take(previewCount).toList();
 
-    return DashboardGlassCard(
+    return AppSurface(
+      padding: EdgeInsets.only(bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _CompositionBar(summary: summary),
-          const SizedBox(height: 16),
-          for (final program in preview) _ProgramTile(program: program),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 14, 16, 2),
+            child: DashboardSectionHeader(
+              title: 'برنامه های اخیر',
+              actionLabel: preview.isNotEmpty ? 'مشاهده همه' : null,
+              onAction: () =>
+                  context.goNamed(AppRouteNames.workoutProgramsList),
+            ),
+          ),
+          Divider(),
+          for (final program in preview) ...[
+            _ProgramTile(program: program),
+            if (program != preview.last) Divider(indent: 76, endIndent: 16),
+          ],
         ],
       ),
-    );
-  }
-}
-
-class _CompositionBar extends StatelessWidget {
-  final ProgramsSummary summary;
-
-  const _CompositionBar({required this.summary});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(AppRadius.full),
-          child: SizedBox(
-            height: 8,
-            child: Row(
-              children: [
-                if (summary.templates > 0)
-                  Expanded(
-                    flex: summary.templates,
-                    child: const ColoredBox(color: AppColors.secondary),
-                  ),
-                if (summary.regular > 0)
-                  Expanded(
-                    flex: summary.regular,
-                    child: const ColoredBox(color: AppColors.primary),
-                  ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            _LegendItem(
-              color: AppColors.secondary,
-              label: 'قالب‌ها',
-              value: summary.templates,
-            ),
-            const SizedBox(width: 16),
-            _LegendItem(
-              color: AppColors.primary,
-              label: 'برنامه‌های عادی',
-              value: summary.regular,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _LegendItem extends StatelessWidget {
-  final Color color;
-  final String label;
-  final int value;
-
-  const _LegendItem({
-    required this.color,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          '$label: ${value.persianNumber}',
-          style: AppTextStyles.bodySmall.copyWith(
-            fontSize: 12,
-            color: AppColors.textPrimary.withValues(alpha: 0.75),
-          ),
-        ),
-      ],
     );
   }
 }
@@ -224,83 +144,83 @@ class _ProgramTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radius = BorderRadius.circular(12);
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        color: AppColors.surfaceVariant,
-        borderRadius: radius,
-        child: InkWell(
-          borderRadius: radius,
-          onTap: () => context.pushNamed(
-            AppRouteNames.workoutProgramDetail,
-            pathParameters: {'programId': program.id},
-            extra: program,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        program.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.body.copyWith(
-                          fontSize: 14.5,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: [
-                          AppInfoChip(
-                            icon: HugeIcon(
-                              icon: HugeIcons.strokeRoundedTarget02,
-                              size: 14,
-                              color: AppColors.secondary,
-                              strokeWidth: 2,
-                            ),
-                            text: program.goal.label,
-                          ),
-                          AppInfoChip(
-                            icon: HugeIcon(
-                              icon: HugeIcons.strokeRoundedLowSignal,
-                              size: 14,
-                              color: AppColors.secondary,
-                              strokeWidth: 2,
-                            ),
-                            text: program.level.label,
-                          ),
-                          AppInfoChip(
-                            icon: HugeIcon(
-                              icon: HugeIcons.strokeRoundedCalendar03,
-                              size: 14,
-                              color: AppColors.secondary,
-                              strokeWidth: 2,
-                            ),
-                            text: '${program.daysPerWeek} روز در هفته',
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 14,
-                  color: AppColors.textPrimary.withValues(alpha: 0.4),
-                ),
-              ],
+    return InkWell(
+      hoverColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      splashFactory: NoSplash.splashFactory,
+      onTap: () => context.pushNamed(
+        AppRouteNames.workoutProgramDetail,
+        pathParameters: {'programId': program.id},
+        extra: program,
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: Row(
+          children: [
+            Container(
+              width: 58,
+              height: 58,
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.accentSoft,
+                borderRadius: BorderRadius.circular(AppRadius.full),
+              ),
+              child: HugeIcon(
+                icon: HugeIcons.strokeRoundedTask01,
+                color: AppColors.accent,
+              ),
             ),
-          ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            program.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.body.copyWith(
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        if (program.isTemplate)
+                          AppInfoChip.plain(text: 'پیش نویس'),
+                        const SizedBox(width: 10),
+                        Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 14,
+                          color: AppColors.textPrimary.withValues(alpha: 0.4),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        HugeIcon(
+                          icon: HugeIcons.strokeRoundedCalendar03,
+                          size: 17,
+                          color: AppColors.secondary,
+                          strokeWidth: 2,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          program.title,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.caption,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
