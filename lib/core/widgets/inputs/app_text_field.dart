@@ -49,8 +49,12 @@ class _AppTextFieldState extends State<AppTextField> {
         hintText: widget.hint,
         hintStyle: AppTextStyles.bodySmall,
         prefixIcon: Padding(
-          padding: const EdgeInsets.fromLTRB(4, 8, 10, 8),
+          padding: EdgeInsetsDirectional.only(start: 8),
           child: widget.prefixIcn,
+        ),
+        prefixIconConstraints: const BoxConstraints(
+          minWidth: 38,
+          minHeight: 16,
         ),
         suffixIcon: widget.obscureText
             ? IconButton(

@@ -146,6 +146,7 @@ class _LoginFormCard extends StatelessWidget {
               prefixIcn: HugeIcon(
                 icon: HugeIcons.strokeRoundedUserIdVerification,
                 color: AppColors.textSecondary,
+                size: 22,
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
@@ -162,6 +163,7 @@ class _LoginFormCard extends StatelessWidget {
               prefixIcn: HugeIcon(
                 icon: HugeIcons.strokeRoundedLockPassword,
                 color: AppColors.textSecondary,
+                size: 22,
               ),
               obscureText: true,
               validator: (value) {
