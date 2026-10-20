@@ -1,16 +1,17 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
 
 class DashboardSectionHeader extends StatelessWidget {
   final String title;
+  final Widget icon;
   final String? actionLabel;
   final VoidCallback? onAction;
 
   const DashboardSectionHeader({
     super.key,
     required this.title,
+    required this.icon,
     this.actionLabel,
     this.onAction,
   });
@@ -19,12 +20,7 @@ class DashboardSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        HugeIcon(
-          icon: HugeIcons.strokeRounded24HoursClock,
-          color: AppColors.primary,
-          size: 21,
-          strokeWidth: 2,
-        ),
+        icon,
         const SizedBox(width: 8),
         Text(title, style: AppTextStyles.titleMedium.copyWith(fontSize: 13)),
         const Spacer(),

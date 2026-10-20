@@ -27,7 +27,7 @@ class DashboardPage extends StatelessWidget {
               DashboardStatsSection(),
               SizedBox(height: AppSpacing.lg),
               DashboardQuickActions(),
-              SizedBox(height: AppSpacing.lg),
+              SizedBox(height: AppSpacing.lg + 4),
               DashboardProgramsOverview(),
             ],
           ),

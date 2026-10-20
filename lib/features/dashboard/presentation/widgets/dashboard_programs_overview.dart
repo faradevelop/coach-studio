@@ -1,12 +1,10 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
-import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/display/app_surface.dart';
 import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
 import 'package:coach_studio/core/widgets/display/app_info_chip.dart';
-import 'package:coach_studio/features/dashboard/domain/entities/programs_summary.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_glass_card.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_section_header.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
@@ -23,9 +21,6 @@ class DashboardProgramsOverview extends StatelessWidget {
 
   static const int _previewCount = 3;
 
-  void _openAll(BuildContext context) =>
-      context.goNamed(AppRouteNames.workoutProgramsList);
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<WorkoutProgramCubit, WorkoutProgramState>(
@@ -33,7 +28,6 @@ class DashboardProgramsOverview extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 12),
             switch (state) {
               WorkoutProgramInitial() ||
               WorkoutProgramLoading() => const _OverviewLoading(),
@@ -91,7 +85,7 @@ class _OverviewEmpty extends StatelessWidget {
           Text('برنامه‌ای وجود ندارد!', style: AppTextStyles.titleMedium),
           const SizedBox(height: 6),
           Text(
-            'با «ایجاد برنامه» اولین برنامه را بسازید',
+            'با کلیک روی «ساخت برنامه» اولین برنامه را بسازید',
             textAlign: TextAlign.center,
             style: AppTextStyles.subtitle,
           ),
@@ -109,7 +103,6 @@ class _OverviewContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final summary = ProgramsSummary.fromPrograms(programs);
     final preview = programs.take(previewCount).toList();
 
     return AppSurface(
@@ -121,12 +114,18 @@ class _OverviewContent extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(14, 14, 16, 2),
             child: DashboardSectionHeader(
               title: 'برنامه های اخیر',
+              icon: HugeIcon(
+                icon: HugeIcons.strokeRounded24HoursClock,
+                color: AppColors.primary,
+                size: 21,
+                strokeWidth: 2,
+              ),
               actionLabel: preview.isNotEmpty ? 'مشاهده همه' : null,
               onAction: () =>
                   context.goNamed(AppRouteNames.workoutProgramsList),
             ),
           ),
-          Divider(),
+          Divider(height: 12),
           for (final program in preview) ...[
             _ProgramTile(program: program),
             if (program != preview.last) Divider(indent: 76, endIndent: 16),

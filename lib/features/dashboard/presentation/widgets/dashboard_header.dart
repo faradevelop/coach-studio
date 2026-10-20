@@ -10,20 +10,20 @@ class DashboardHeader extends StatelessWidget {
   const DashboardHeader({super.key});
 
   static String _greeting(int hour) {
-    if (hour < 3) return 'سلام، شب بخیر';
-    if (hour < 10) return 'سلام، صبح بخیر';
-    if (hour < 16) return 'سلام، روز بخیر';
-    if (hour < 19) return 'سلام، عصر بخیر';
-    return 'سلام، شب بخیر';
+    if (hour < 3) return 'شب بخیر';
+    if (hour < 10) return 'صبح بخیر';
+    if (hour < 16) return 'روز بخیر';
+    if (hour < 19) return 'عصر بخیر';
+    return 'شب بخیر';
   }
 
-  static String _greetingEmoji(int hour) {
-    if (hour < 3) return '🌙';
-    if (hour < 10) return '🌅';
-    if (hour < 16) return '☀️';
-    if (hour < 19) return '🌇';
-    return '🌙';
-  }
+  // static String _greetingEmoji(int hour) {
+  //   if (hour < 3) return '🌙';
+  //   if (hour < 10) return '🌅';
+  //   if (hour < 16) return '☀️';
+  //   if (hour < 19) return '🌇';
+  //   return '🌙';
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -32,42 +32,42 @@ class DashboardHeader extends StatelessWidget {
           state is AuthAuthenticated ? state.user.username : null,
       builder: (context, username) {
         final greeting = _greeting(DateTime.now().hour);
-        final greetingEmoji = _greetingEmoji(DateTime.now().hour);
+        // final greetingEmoji = _greetingEmoji(DateTime.now().hour);
         return Row(
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  greeting,
+                  '$greeting، پردیس',
                   style: AppTextStyles.titleMedium.copyWith(fontSize: 18),
                 ),
                 const SizedBox(height: 4),
-                if (username != null)
-                  Row(
-                    children: [
-                      Text(
-                        username,
-                        style: AppTextStyles.titleMedium.copyWith(fontSize: 18),
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        greetingEmoji,
-                        style: AppTextStyles.title.copyWith(fontSize: 14),
-                      ),
-                    ],
-                  ),
 
-                // Text(
-                //   'خلاصه‌ای از وضعیت برنامه‌ها و تمرین‌های شما',
-                //   style: AppTextStyles.subtitle,
-                // ),
+                // if (username != null)
+                //   Row(
+                //     children: [
+                //       Text(
+                //         username,
+                //         style: AppTextStyles.titleMedium.copyWith(fontSize: 18),
+                //       ),
+                //       const SizedBox(width: 5),
+                //       Text(
+                //         greetingEmoji,
+                //         style: AppTextStyles.title.copyWith(fontSize: 14),
+                //       ),
+                //     ],
+                //   ),
+                Text(
+                  'خلاصه‌ای از وضعیت برنامه‌ها و تمرین‌های شما',
+                  style: AppTextStyles.subtitle,
+                ),
               ],
             ),
             Spacer(),
             HugeIcon(
               icon: HugeIcons.strokeRoundedNotification01,
-              size: 27,
+              size: 26,
               color: AppColors.textPrimary,
             ),
           ],
