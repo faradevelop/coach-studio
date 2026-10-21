@@ -47,4 +47,7 @@ abstract final class AppRouteNames {
   static const createCoach = 'createCoach';
 
   static const coachDetail = 'coachDetail';
+
+  // Athlete
+  static const athletes = 'athletes';
 }

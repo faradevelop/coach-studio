@@ -5,6 +5,7 @@ import 'package:coach_studio/app/coach/scaffold_with_bottom_nav.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
+import 'package:coach_studio/features/athlete/presentation/pages/athlete_list_page.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
 import 'package:coach_studio/features/authentication/presentation/pages/forgot_password_page.dart';
@@ -39,6 +40,8 @@ class AppRouter {
       GlobalKey<NavigatorState>(debugLabel: 'programBranch');
   static final GlobalKey<NavigatorState> _settingsBranchNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'settingsBranch');
+  static final GlobalKey<NavigatorState> _athleteBranchNavigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'athletesBranch');
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
@@ -145,6 +148,16 @@ class AppRouter {
                 path: AppRoutes.workoutProgramsList,
                 name: AppRouteNames.workoutProgramsList,
                 builder: (_, _) => const WorkoutProgramListPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _athleteBranchNavigatorKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.athletes,
+                name: AppRouteNames.athletes,
+                builder: (_, _) => const AthleteListPage(),
               ),
             ],
           ),

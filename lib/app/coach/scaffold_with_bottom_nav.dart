@@ -88,6 +88,19 @@ class GlassBottomNav extends StatelessWidget {
       ),
     ),
     _NavItemData(
+      name: 'ورزشکار',
+      icon: HugeIcon(
+        icon: HugeIcons.strokeRoundedGymnastic,
+        size: 19,
+        color: AppColors.textPrimary,
+      ),
+      activeIcon: HugeIcon(
+        icon: HugeIcons.strokeRoundedGymnastic,
+        size: 20,
+        color: AppColors.primary,
+      ),
+    ),
+    _NavItemData(
       name: 'تمرین',
       icon: HugeIcon(
         icon: HugeIcons.strokeRoundedDumbbell01,

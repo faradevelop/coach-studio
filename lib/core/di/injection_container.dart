@@ -5,6 +5,7 @@ import 'package:coach_studio/core/network/api_client.dart';
 import 'package:coach_studio/core/notifications/data/floating_snackbar_notification.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/storage/token_storage.dart';
+import 'package:coach_studio/features/athlete/presentation/cubit/athlete_cubit.dart';
 import 'package:coach_studio/features/authentication/data/datasources/auth_api_datasource.dart';
 import 'package:coach_studio/features/authentication/data/repositories/auth_api_repository_impl.dart';
 import 'package:coach_studio/features/authentication/domain/repositories/auth_repository.dart';
@@ -111,6 +112,7 @@ Future<void> initDependencies({
   sl.registerLazySingleton(
     () => WorkoutProgramCubit(repository: sl(), logger: sl()),
   );
+  sl.registerLazySingleton(() => AthleteCubit());
 
   // ProgramExerciseCubit remains a Factory: a new instance per Program Detail
   // flow, disposed on exit — no cross-tab persistence required.
