@@ -2,7 +2,7 @@ import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:coach_studio/core/widgets/buttons/app_button.dart';
+import 'package:coach_studio/core/widgets/buttons/app_mini_button.dart';
 import 'package:coach_studio/core/widgets/display/app_info_chip.dart';
 import 'package:coach_studio/core/widgets/display/app_surface.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
@@ -59,7 +59,7 @@ class ExerciseCard extends StatelessWidget {
                       if (showActions) ...[
                         Align(
                           alignment: Alignment.topRight,
-                          child: MiniButton(
+                          child: AppMiniButton(
                             color: AppColors.textPrimary.withValues(
                               alpha: 0.18,
                             ),
@@ -70,20 +70,20 @@ class ExerciseCard extends StatelessWidget {
                                 alpha: 0.9,
                               ),
                             ),
-                            onPressed: onEdit,
+                            onTap: onEdit,
                           ),
                         ),
                         const SizedBox(width: 4),
                         Align(
                           alignment: Alignment.topRight,
-                          child: MiniButton(
+                          child: AppMiniButton(
                             color: AppColors.error.withValues(alpha: 0.18),
                             icon: HugeIcon(
                               icon: HugeIcons.strokeRoundedDelete03,
                               size: 18,
                               color: AppColors.error.withValues(alpha: 0.9),
                             ),
-                            onPressed: onDelete,
+                            onTap: onDelete,
                           ),
                         ),
                       ],

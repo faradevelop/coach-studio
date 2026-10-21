@@ -1,6 +1,5 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
-import 'package:coach_studio/core/theme/app_shadows.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -122,66 +121,6 @@ class AppButton extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [icon!, const SizedBox(width: 8), label],
                     )),
-      ),
-    );
-  }
-}
-
-class MiniButton extends StatelessWidget {
-  final Color color;
-  final Widget icon;
-  final VoidCallback onPressed;
-
-  const MiniButton({
-    super.key,
-    required this.color,
-    required this.icon,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: 40,
-        height: 28,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(AppRadius.lg),
-        ),
-        child: Center(child: icon),
-      ),
-    );
-  }
-}
-
-class GlassyBackButton extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const GlassyBackButton({super.key, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          shape: BoxShape.circle,
-          border: Border.all(color: AppColors.outline),
-          boxShadow: AppShadows.card,
-        ),
-        child: const Directionality(
-          textDirection: TextDirection.ltr,
-          child: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            size: 18,
-            color: AppColors.textPrimary,
-          ),
-        ),
       ),
     );
   }

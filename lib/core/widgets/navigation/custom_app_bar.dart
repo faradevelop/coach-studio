@@ -1,7 +1,7 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_shadows.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:coach_studio/core/widgets/buttons/app_button.dart';
+import 'package:coach_studio/core/widgets/buttons/app_mini_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -124,7 +124,7 @@ class InnerPagesAppBar extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          GlassyBackButton(onTap: () => context.pop()),
+          AppMiniButton.back(onTap: () => context.pop()),
         ],
       ),
     );

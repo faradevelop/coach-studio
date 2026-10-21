@@ -10,7 +10,7 @@ import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_shadows.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:coach_studio/core/widgets/buttons/app_button.dart';
+import 'package:coach_studio/core/widgets/buttons/app_mini_button.dart';
 import 'package:coach_studio/core/widgets/dialogs/app_dialog.dart';
 import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
 import 'package:coach_studio/core/widgets/display/app_surface.dart';
@@ -291,15 +291,18 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              MiniButton(
+              AppMiniButton(
                 color: AppColors.textPrimary.withValues(alpha: 0.18),
-                icon: HugeIcon(
-                  icon: HugeIcons.strokeRoundedEdit03,
-                  size: 18,
-                  color: AppColors.textPrimary.withValues(alpha: 0.9),
+                icon: Padding(
+                  padding: const EdgeInsets.all(3),
+                  child: HugeIcon(
+                    icon: HugeIcons.strokeRoundedEdit03,
+                    size: 18,
+                    color: AppColors.textPrimary.withValues(alpha: 0.9),
+                  ),
                 ),
 
-                onPressed: () {
+                onTap: () {
                   context.pushNamed(
                     AppRouteNames.createWorkoutProgram,
                     queryParameters: {'programId': widget.program.id},
