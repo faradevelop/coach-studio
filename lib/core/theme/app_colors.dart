@@ -32,7 +32,7 @@ class AppColors {
     0xFFEEF0F7,
   ); // derived: subtle fills
   static const Color outline = Color(0xFFE7E9F0);
-  static const Color textPrimary = Color(0xFF202333);
+  static const Color textPrimary = Color(0xFF2D2D2D);
   static const Color textSecondary = Color(0xFF74798C);
   static const Color disabled = Color(0xFFC7C9E8);
 
