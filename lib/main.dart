@@ -9,6 +9,7 @@ import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_theme.dart';
 import 'package:coach_studio/core/widgets/responsive/app_scroll_behavior.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
+import 'package:coach_studio/features/athlete/presentation/cubit/athlete_cubit.dart';
 import 'package:coach_studio/features/authentication/domain/enums/user_role.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
@@ -62,11 +63,13 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => sl<AuthCubit>()),
         BlocProvider(create: (_) => sl<ExerciseCubit>()..loadExercises()),
         BlocProvider(create: (_) => sl<WorkoutProgramCubit>()),
+        BlocProvider(create: (_) => sl<AthleteCubit>()),
       ],
       child: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
             context.read<WorkoutProgramCubit>().loadPrograms();
+            context.read<AthleteCubit>().loadAthletes();
 
             // The initial loadExercises() above can run before a token
             // exists (fresh login) and end in ExerciseError. Reload only in
@@ -81,6 +84,7 @@ class MyApp extends StatelessWidget {
 
           if (state is AuthUnauthenticated) {
             context.read<WorkoutProgramCubit>().reset();
+            context.read<AthleteCubit>().reset();
           }
         },
         child: MaterialApp.router(

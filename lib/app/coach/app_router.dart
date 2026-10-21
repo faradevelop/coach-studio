@@ -5,6 +5,9 @@ import 'package:coach_studio/app/coach/scaffold_with_bottom_nav.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
+import 'package:coach_studio/features/athlete/domain/entities/athlete.dart';
+import 'package:coach_studio/features/athlete/presentation/pages/athlete_detail_page.dart';
+import 'package:coach_studio/features/athlete/presentation/pages/athlete_form_page.dart';
 import 'package:coach_studio/features/athlete/presentation/pages/athlete_list_page.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
@@ -198,6 +201,32 @@ class AppRouter {
             seedProgram: seed is WorkoutProgram ? seed : null,
           );
         },
+      ),
+
+      GoRoute(
+        path: AppRoutes.createAthlete,
+        name: AppRouteNames.createAthlete,
+        parentNavigatorKey: navigatorKey,
+        builder: (_, _) => const AthleteFormPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.editAthlete,
+        name: AppRouteNames.editAthlete,
+        parentNavigatorKey: navigatorKey,
+        builder: (_, state) {
+          final seed = state.extra;
+          return AthleteFormPage(
+            athleteId: state.pathParameters['athleteId'],
+            seedAthlete: seed is Athlete ? seed : null,
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.athleteDetail,
+        name: AppRouteNames.athleteDetail,
+        parentNavigatorKey: navigatorKey,
+        builder: (_, state) =>
+            AthleteDetailPage(athleteId: state.pathParameters['athleteId']!),
       ),
 
       // Program Detail + its entire internal flow. ProgramExerciseCubit

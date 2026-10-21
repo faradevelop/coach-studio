@@ -24,6 +24,7 @@ class ResponsiveGrid extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final double mainAxisSpacing;
   final double crossAxisSpacing;
+  final ScrollPhysics? physics;
 
   const ResponsiveGrid({
     super.key,
@@ -34,6 +35,7 @@ class ResponsiveGrid extends StatelessWidget {
     this.padding = EdgeInsets.zero,
     this.mainAxisSpacing = 14,
     this.crossAxisSpacing = 14,
+    this.physics,
   });
 
   int _columnsFor(double width) {
@@ -52,6 +54,7 @@ class ResponsiveGrid extends StatelessWidget {
       builder: (context, constraints) {
         return GridView.builder(
           padding: padding,
+          physics: physics,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: _columnsFor(constraints.maxWidth),
             mainAxisSpacing: mainAxisSpacing,

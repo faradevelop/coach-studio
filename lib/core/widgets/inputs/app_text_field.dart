@@ -13,6 +13,7 @@ class AppTextField extends StatefulWidget {
   final int maxLines;
   final bool obscureText;
   final Widget? prefixIcn;
+  final TextInputType? keyboardType;
 
   const AppTextField({
     super.key,
@@ -23,6 +24,7 @@ class AppTextField extends StatefulWidget {
     this.maxLines = 1,
     this.obscureText = false,
     this.prefixIcn,
+    this.keyboardType,
   });
 
   @override
@@ -42,6 +44,7 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: widget.controller,
+      keyboardType: widget.keyboardType,
       maxLines: _isObscured ? 1 : widget.maxLines,
       obscureText: _isObscured,
       style: AppTextStyles.body,

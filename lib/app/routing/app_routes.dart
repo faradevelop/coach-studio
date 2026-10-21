@@ -46,4 +46,10 @@ abstract final class AppRoutes {
   // Athlete
 
   static const athletes = '/athletes';
+
+  static const createAthlete = '/athletes/create';
+
+  static const editAthlete = '/athletes/:athleteId/edit';
+
+  static const athleteDetail = '/athletes/:athleteId';
 }

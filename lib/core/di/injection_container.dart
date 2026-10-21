@@ -5,6 +5,9 @@ import 'package:coach_studio/core/network/api_client.dart';
 import 'package:coach_studio/core/notifications/data/floating_snackbar_notification.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/storage/token_storage.dart';
+import 'package:coach_studio/features/athlete/data/datasources/athlete_api_datasource.dart';
+import 'package:coach_studio/features/athlete/data/repositories/athlete_api_repository_impl.dart';
+import 'package:coach_studio/features/athlete/domain/repositories/athlete_repository.dart';
 import 'package:coach_studio/features/athlete/presentation/cubit/athlete_cubit.dart';
 import 'package:coach_studio/features/authentication/data/datasources/auth_api_datasource.dart';
 import 'package:coach_studio/features/authentication/data/repositories/auth_api_repository_impl.dart';
@@ -76,6 +79,10 @@ Future<void> initDependencies({
     () => CoachApiDatasource(client: sl(), logger: sl()),
   );
 
+  sl.registerLazySingleton<AthleteApiDatasource>(
+    () => AthleteApiDatasource(client: sl(), logger: sl()),
+  );
+
   // Repository
 
   sl.registerLazySingleton<AuthRepository>(
@@ -98,6 +105,10 @@ Future<void> initDependencies({
     () => CoachApiRepositoryImpl(datasource: sl(), logger: sl()),
   );
 
+  sl.registerLazySingleton<AthleteRepository>(
+    () => AthleteApiRepositoryImpl(datasource: sl(), logger: sl()),
+  );
+
   // Bloc / Cubit
   //
   sl.registerLazySingleton(
@@ -108,11 +119,14 @@ Future<void> initDependencies({
       allowedRole: allowedRole,
     ),
   );
+
   sl.registerLazySingleton(() => ExerciseCubit(repository: sl(), logger: sl()));
+
   sl.registerLazySingleton(
     () => WorkoutProgramCubit(repository: sl(), logger: sl()),
   );
-  sl.registerLazySingleton(() => AthleteCubit());
+
+  sl.registerLazySingleton(() => AthleteCubit(repository: sl(), logger: sl()));
 
   // ProgramExerciseCubit remains a Factory: a new instance per Program Detail
   // flow, disposed on exit — no cross-tab persistence required.

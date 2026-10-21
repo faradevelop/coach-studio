@@ -1,0 +1,15 @@
+import 'package:coach_studio/features/athlete/domain/entities/athlete.dart';
+
+class AthleteSummary {
+  final int total;
+  final int active;
+  final int archived;
+  final List<Athlete> recent;
+
+  const AthleteSummary({
+    required this.total,
+    required this.active,
+    required this.archived,
+    required this.recent,
+  });
+}

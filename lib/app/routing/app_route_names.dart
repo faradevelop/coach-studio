@@ -50,4 +50,10 @@ abstract final class AppRouteNames {
 
   // Athlete
   static const athletes = 'athletes';
+
+  static const createAthlete = 'createAthlete';
+
+  static const editAthlete = 'editAthlete';
+
+  static const athleteDetail = 'athleteDetail';
 }

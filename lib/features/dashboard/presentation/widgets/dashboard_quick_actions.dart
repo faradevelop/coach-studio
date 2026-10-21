@@ -50,7 +50,7 @@ class DashboardQuickActions extends StatelessWidget {
               color: AppColors.accent,
             ),
             itemVariant: AppColors.accent,
-            onPressed: () {},
+            onPressed: () => context.pushNamed(AppRouteNames.createAthlete),
           ),
         ],
       ),

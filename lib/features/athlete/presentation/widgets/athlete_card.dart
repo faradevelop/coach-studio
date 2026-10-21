@@ -1,9 +1,10 @@
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/display/app_info_chip.dart';
 import 'package:coach_studio/core/widgets/display/app_surface.dart';
-import 'package:coach_studio/features/athlete/domain/athlete.dart';
+import 'package:coach_studio/features/athlete/domain/entities/athlete.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 
@@ -14,13 +15,16 @@ class AthleteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final programTitle = athlete.currentAssignment?.program?.title;
+    final phone = athlete.phone;
+
     return Padding(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: AppSurface(
         onTap: onTap,
         child: Row(
           children: [
-            _AthleteImage(imageUrl: ''),
+            const _AthleteAvatar(),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -31,7 +35,7 @@ class AthleteCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          'سارا',
+                          athlete.fullName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.titleMedium.copyWith(
@@ -39,28 +43,55 @@ class AthleteCard extends StatelessWidget {
                           ),
                         ),
                       ),
-
-                      AppInfoChip.plain(text: 'فعال'),
+                      AppInfoChip.plain(
+                        text: athlete.isArchived ? 'بایگانی' : 'فعال',
+                        backgroundColor: athlete.isArchived
+                            ? AppColors.warningSoft
+                            : null,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 6),
                   Row(
                     children: [
                       HugeIcon(
-                        icon: HugeIcons.strokeRoundedDateTime,
+                        icon: HugeIcons.strokeRoundedTask01,
                         size: 16,
                         color: AppColors.secondary,
                         strokeWidth: 2,
                       ),
-                      SizedBox(width: 6),
-                      Text(
-                        '29-01-1405',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.titleMedium.copyWith(fontSize: 14),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          programTitle ?? 'بدون برنامه',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.bodySmall,
+                        ),
                       ),
                     ],
                   ),
+                  if (phone != null && phone.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.phone_outlined,
+                          size: 16,
+                          color: AppColors.secondary,
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            phone.persianNumber,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.bodySmall,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -71,35 +102,24 @@ class AthleteCard extends StatelessWidget {
   }
 }
 
-class _AthleteImage extends StatelessWidget {
-  final String imageUrl;
-
-  const _AthleteImage({required this.imageUrl});
-
-  static const _placeholder = Icon(
-    Icons.fitness_center_rounded,
-    size: 30,
-    color: AppColors.primary,
-  );
+class _AthleteAvatar extends StatelessWidget {
+  const _AthleteAvatar();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 72,
       height: 72,
-      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: AppColors.surfaceVariant,
         borderRadius: BorderRadius.circular(AppRadius.lg - 2),
         border: Border.all(color: AppColors.outline),
       ),
-      child: imageUrl.isEmpty
-          ? _placeholder
-          : Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (_, _, _) => _placeholder,
-            ),
+      child: const Icon(
+        Icons.person_rounded,
+        size: 34,
+        color: AppColors.primary,
+      ),
     );
   }
 }
