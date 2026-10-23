@@ -10,6 +10,8 @@ class WorkoutProgramModel {
   final int daysPerWeek;
   final String? notes;
   final bool isTemplate;
+  final String? athleteId;
+  final String? athleteName;
 
   const WorkoutProgramModel({
     required this.id,
@@ -19,6 +21,8 @@ class WorkoutProgramModel {
     required this.daysPerWeek,
     this.notes,
     required this.isTemplate,
+    this.athleteId,
+    this.athleteName,
   });
 
   WorkoutProgramModel copyWith({
@@ -29,6 +33,8 @@ class WorkoutProgramModel {
     int? daysPerWeek,
     String? notes,
     bool? isTemplate,
+    String? athleteId,
+    String? athleteName,
   }) {
     return WorkoutProgramModel(
       id: id ?? this.id,
@@ -38,6 +44,8 @@ class WorkoutProgramModel {
       daysPerWeek: daysPerWeek ?? this.daysPerWeek,
       notes: notes ?? this.notes,
       isTemplate: isTemplate ?? this.isTemplate,
+      athleteId: athleteId ?? this.athleteId,
+      athleteName: athleteName ?? this.athleteName,
     );
   }
 
@@ -50,6 +58,8 @@ class WorkoutProgramModel {
       daysPerWeek: entity.daysPerWeek,
       notes: entity.notes,
       isTemplate: entity.isTemplate,
+      athleteId: entity.athleteId,
+      athleteName: entity.athleteName,
     );
   }
 
@@ -74,6 +84,8 @@ class WorkoutProgramModel {
       daysPerWeek: json['daysPerWeek'] as int,
       notes: json['notes'] as String?,
       isTemplate: json['isTemplate'] as bool,
+      athleteId: json['athleteId'] as String?,
+      athleteName: json['athleteName'] as String?,
     );
   }
 
@@ -84,7 +96,6 @@ class WorkoutProgramModel {
       'level': level.name,
       'daysPerWeek': daysPerWeek,
       'notes': notes,
-      'isTemplate': isTemplate,
     };
   }
 }

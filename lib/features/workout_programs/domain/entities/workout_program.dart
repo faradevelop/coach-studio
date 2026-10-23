@@ -9,6 +9,8 @@ class WorkoutProgram {
   final int daysPerWeek;
   final String? notes;
   final bool isTemplate;
+  final String? athleteId;
+  final String? athleteName;
 
   const WorkoutProgram({
     required this.id,
@@ -18,6 +20,8 @@ class WorkoutProgram {
     required this.daysPerWeek,
     this.notes,
     required this.isTemplate,
+    this.athleteId,
+    this.athleteName,
   });
 
   WorkoutProgram copyWith({
@@ -28,6 +32,8 @@ class WorkoutProgram {
     int? daysPerWeek,
     String? notes,
     bool? isTemplate,
+    String? athleteId,
+    String? athleteName,
   }) {
     return WorkoutProgram(
       id: id ?? this.id,
@@ -37,6 +43,8 @@ class WorkoutProgram {
       daysPerWeek: daysPerWeek ?? this.daysPerWeek,
       notes: notes ?? this.notes,
       isTemplate: isTemplate ?? this.isTemplate,
+      athleteId: athleteId ?? this.athleteId,
+      athleteName: athleteName ?? this.athleteName,
     );
   }
 }
