@@ -114,7 +114,9 @@ class _Body extends StatelessWidget {
   }
 
   Future<void> _assign(BuildContext context) async {
-    final programsState = context.read<WorkoutProgramCubit>().state;
+    final programCubit = context.read<WorkoutProgramCubit>();
+    final programsState = programCubit.state;
+
     if (programsState is! WorkoutProgramLoaded ||
         programsState.programs.isEmpty) {
       sl<AppNotification>().warning('ابتدا یک برنامه‌ی تمرینی ایجاد کنید.');
@@ -137,6 +139,7 @@ class _Body extends StatelessWidget {
       sl<AppNotification>().error(error);
       return;
     }
+    programCubit.loadPrograms();
     sl<AppNotification>().success('برنامه با موفقیت اختصاص داده شد.');
   }
 

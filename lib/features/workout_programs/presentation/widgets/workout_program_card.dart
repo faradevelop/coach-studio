@@ -57,7 +57,7 @@ class WorkoutProgramCard extends StatelessWidget {
                 ),
               ),
               if (program.isTemplate)
-                Positioned(top: 9, left: 9, child: AppTag(text: 'نمونه')),
+                Positioned(top: 9, left: 9, child: AppTag(text: 'پیش‌نویس')),
             ],
           ),
 
@@ -68,11 +68,12 @@ class WorkoutProgramCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Expanded(
                   child: Text(
                     program.title,
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.titleMedium.copyWith(
                       fontSize: 15,
@@ -166,12 +167,13 @@ class CustomPopupMenu extends StatelessWidget {
             onDelete();
         }
       },
-      itemBuilder: (_) => const [
+      itemBuilder: (_) => [
         PopupMenuItem(value: 'copy', child: Text('کپی')),
-        PopupMenuItem(
-          value: 'delete',
-          child: Text('حذف', style: TextStyle(color: AppColors.error)),
-        ),
+        if (program.athleteId == null)
+          PopupMenuItem(
+            value: 'delete',
+            child: Text('حذف', style: TextStyle(color: AppColors.error)),
+          ),
       ],
       child: HugeIcon(
         icon: HugeIcons.strokeRoundedMoreHorizontalCircle01,
