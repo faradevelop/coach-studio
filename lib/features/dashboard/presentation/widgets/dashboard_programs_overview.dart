@@ -1,10 +1,11 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:coach_studio/core/widgets/display/app_surface.dart';
-import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
+import 'package:coach_studio/core/widgets/display/app_glass_surface.dart';
 import 'package:coach_studio/core/widgets/display/app_info_chip.dart';
+import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_glass_card.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_section_header.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
@@ -101,19 +102,26 @@ class _OverviewContent extends StatelessWidget {
 
   const _OverviewContent({required this.programs, required this.previewCount});
 
+  /// Icon tones cycle orange → indigo → teal, like the reference board.
+  static const List<Color> _tones = [
+    AppColors.primary,
+    AppColors.accent,
+    AppColors.secondary,
+  ];
+
   @override
   Widget build(BuildContext context) {
     final preview = programs.take(previewCount).toList();
 
-    return AppSurface(
-      padding: EdgeInsets.only(bottom: 10),
+    return AppGlassSurface(
+      padding: const EdgeInsets.only(bottom: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 16, 2),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
             child: DashboardSectionHeader(
-              title: 'برنامه های اخیر',
+              title: 'برنامه‌های اخیر',
               icon: HugeIcon(
                 icon: HugeIcons.strokeRounded24HoursClock,
                 color: AppColors.primary,
@@ -125,10 +133,11 @@ class _OverviewContent extends StatelessWidget {
                   context.goNamed(AppRouteNames.workoutProgramsList),
             ),
           ),
-          Divider(height: 12),
-          for (final program in preview) ...[
-            _ProgramTile(program: program),
-            if (program != preview.last) Divider(indent: 76, endIndent: 16),
+          const Divider(height: 16),
+          for (var i = 0; i < preview.length; i++) ...[
+            _ProgramTile(program: preview[i], tone: _tones[i % _tones.length]),
+            if (i < preview.length - 1)
+              const Divider(indent: 78, endIndent: 16, height: 1),
           ],
         ],
       ),
@@ -138,86 +147,73 @@ class _OverviewContent extends StatelessWidget {
 
 class _ProgramTile extends StatelessWidget {
   final WorkoutProgram program;
+  final Color tone;
 
-  const _ProgramTile({required this.program});
+  const _ProgramTile({required this.program, required this.tone});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       hoverColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      splashFactory: NoSplash.splashFactory,
+      splashColor: tone.withValues(alpha: 0.08),
+      highlightColor: Colors.transparent,
       onTap: () => context.pushNamed(
         AppRouteNames.workoutProgramDetail,
         pathParameters: {'programId': program.id},
         extra: program,
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(
           children: [
             Container(
-              width: 58,
-              height: 58,
-              padding: EdgeInsets.all(16),
+              width: 48,
+              height: 48,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: AppColors.accentSoft,
-                borderRadius: BorderRadius.circular(AppRadius.full),
+                color: tone.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(AppRadius.md + 2),
               ),
               child: HugeIcon(
                 icon: HugeIcons.strokeRoundedTask01,
-                color: AppColors.accent,
+                size: 22,
+                color: tone,
+                strokeWidth: 2,
               ),
             ),
+            const SizedBox(width: 14),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            program.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyles.body.copyWith(
-                              fontSize: 14.5,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        if (program.isTemplate)
-                          AppInfoChip.plain(text: 'پیش نویس'),
-                        const SizedBox(width: 10),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 14,
-                          color: AppColors.textPrimary.withValues(alpha: 0.4),
-                        ),
-                      ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    program.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.body.copyWith(
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w700,
                     ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        HugeIcon(
-                          icon: HugeIcons.strokeRoundedCalendar03,
-                          size: 17,
-                          color: AppColors.secondary,
-                          strokeWidth: 2,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          program.title,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.caption,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${program.goal.label} • ${program.daysPerWeek.persianNumber} روز در هفته',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.caption,
+                  ),
+                ],
               ),
+            ),
+            if (program.isTemplate) ...[
+              const SizedBox(width: 8),
+              AppInfoChip.plain(text: 'پیش نویس'),
+            ],
+            const SizedBox(width: 8),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 14,
+              color: AppColors.textPrimary.withValues(alpha: 0.4),
             ),
           ],
         ),

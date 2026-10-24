@@ -22,7 +22,7 @@ class DashboardSectionHeader extends StatelessWidget {
       children: [
         icon,
         const SizedBox(width: 8),
-        Text(title, style: AppTextStyles.titleMedium.copyWith(fontSize: 13)),
+        Text(title, style: AppTextStyles.titleMedium.copyWith(fontSize: 15)),
         const Spacer(),
         if (actionLabel != null && onAction != null)
           GestureDetector(
@@ -33,8 +33,9 @@ class DashboardSectionHeader extends StatelessWidget {
               child: Text(
                 actionLabel!,
                 style: AppTextStyles.titleMedium.copyWith(
-                  fontSize: 12,
-                  color: AppColors.primary,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.accent,
                 ),
               ),
             ),
