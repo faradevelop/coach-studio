@@ -294,10 +294,10 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
               AppMiniButton(
                 color: AppColors.textPrimary.withValues(alpha: 0.18),
                 icon: Padding(
-                  padding: const EdgeInsets.all(3),
+                  padding: const EdgeInsets.all(4),
                   child: HugeIcon(
                     icon: HugeIcons.strokeRoundedEdit03,
-                    size: 18,
+                    size: 16,
                     color: AppColors.textPrimary.withValues(alpha: 0.9),
                   ),
                 ),
@@ -363,13 +363,23 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
             decoration: BoxDecoration(
               color: AppColors.primary,
               borderRadius: BorderRadius.circular(12),
-              boxShadow: AppShadows.primaryGlow,
             ),
-            child: HugeIcon(
-              icon: HugeIcons.strokeRoundedTaskAdd01,
-              size: 18,
-              color: AppColors.onPrimary,
-              strokeWidth: 1.5,
+            child: Row(
+              children: [
+                HugeIcon(
+                  icon: HugeIcons.strokeRoundedTaskAdd01,
+                  size: 18,
+                  color: AppColors.onPrimary,
+                  strokeWidth: 1.5,
+                ),
+                SizedBox(width: 6),
+                Text(
+                  'تمرین جدید',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.onPrimary,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -662,7 +672,7 @@ class _DayExercisesTabsState extends State<_DayExercisesTabs> {
                   ),
                 if (_isManagingDays) ...[
                   Padding(
-                    padding: const EdgeInsets.only(top: 10, right: 6),
+                    padding: const EdgeInsets.only(top: 6, right: 6),
                     child: _DoneManagingDaysButton(onTap: _exitEditMode),
                   ),
                 ],
@@ -743,7 +753,9 @@ class _DayTab extends StatelessWidget {
                 color: isSelected ? AppColors.primary : AppColors.surface,
                 borderRadius: BorderRadius.circular(AppRadius.full),
                 border: Border.all(
-                  color: isSelected ? AppColors.primaryDark : AppColors.outline,
+                  color: isSelected
+                      ? AppColors.primaryDark.withValues(alpha: 0.2)
+                      : AppColors.outline,
                   width: 1.4,
                 ),
               ),
@@ -762,7 +774,7 @@ class _DayTab extends StatelessWidget {
             ),
             if (isManaging)
               PositionedDirectional(
-                top: -10,
+                top: -8,
                 end: -4,
                 child: GestureDetector(
                   onTap: onDelete,
@@ -846,15 +858,8 @@ class _DoneManagingDaysButton extends StatelessWidget {
         height: 32,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: AppColors.secondary,
+          color: AppColors.accent,
           shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.secondary.withValues(alpha: 0.35),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
         ),
         child: const Icon(Icons.check_rounded, size: 18, color: Colors.white),
       ),

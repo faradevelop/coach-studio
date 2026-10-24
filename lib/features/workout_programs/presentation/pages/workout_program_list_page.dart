@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
@@ -6,8 +8,10 @@ import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
+import 'package:coach_studio/core/widgets/inputs/custom_search_bar.dart';
 import 'package:coach_studio/core/widgets/navigation/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/dialogs/delete_dialog.dart';
+import 'package:coach_studio/core/widgets/navigation/custom_tab_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/core/widgets/responsive/responsive_grid.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
@@ -29,8 +33,24 @@ class WorkoutProgramListPage extends StatelessWidget {
   }
 }
 
-class _WorkoutProgramListView extends StatelessWidget {
+class _WorkoutProgramListView extends StatefulWidget {
   const _WorkoutProgramListView();
+
+  @override
+  State<_WorkoutProgramListView> createState() =>
+      _WorkoutProgramListViewState();
+}
+
+class _WorkoutProgramListViewState extends State<_WorkoutProgramListView> {
+  final _searchController = TextEditingController();
+  Timer? _debounce;
+
+  void _onSearchChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 400), () {});
+  }
+
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +70,27 @@ class _WorkoutProgramListView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.lg + 4),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: CustomSearchBar(
+              hint: 'جستجو...',
+              controller: _searchController,
+              onChanged: _onSearchChanged,
+            ),
+          ),
+          SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: CustomTabBar(
+              tabs: ['همه برنامه‌ها', 'برنامه‌ها‌ی فعال', 'برنامه‌های آرشیو'],
+              selectedIndex: _selectedIndex,
+              onTabSelected: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+            ),
+          ),
           Expanded(
             child: BlocBuilder<WorkoutProgramCubit, WorkoutProgramState>(
               builder: (context, state) {
@@ -83,7 +124,7 @@ class _WorkoutProgramListView extends StatelessWidget {
                               ),
                             ],
                             itemExtent: 210,
-                            padding: const EdgeInsets.fromLTRB(14, 12, 14, 100),
+                            padding: const EdgeInsets.fromLTRB(14, 20, 14, 100),
                             itemCount: programs.length,
                             itemBuilder: (context, index) {
                               final program = programs[index];

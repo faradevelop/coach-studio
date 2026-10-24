@@ -154,7 +154,7 @@ class CustomPopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Colour / shape / elevation come from AppTheme.popupMenuTheme.
+    // Color / shape / elevation come from AppTheme.popupMenuTheme.
     return PopupMenuButton<String>(
       padding: EdgeInsets.zero,
       iconSize: 18,
@@ -177,8 +177,8 @@ class CustomPopupMenu extends StatelessWidget {
       ],
       child: HugeIcon(
         icon: HugeIcons.strokeRoundedMoreHorizontalCircle01,
-        size: 20,
-        color: AppColors.primary,
+        size: 22,
+        color: AppColors.accent,
       ),
     );
   }

@@ -70,7 +70,6 @@ class _AppNumberPickerState extends State<AppNumberPicker> {
       // Fill / borders come from the input theme; only the compact label
       // and padding are specific to this widget.
       decoration: InputDecoration(
-        labelText: widget.label,
         labelStyle: const TextStyle(
           color: AppColors.textSecondary,
           fontSize: 13,

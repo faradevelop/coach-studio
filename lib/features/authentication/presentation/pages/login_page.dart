@@ -3,10 +3,11 @@ import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_shadows.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/buttons/app_button.dart';
 import 'package:coach_studio/core/widgets/display/app_surface.dart';
-import 'package:coach_studio/core/widgets/inputs/app_input_label.dart';
 import 'package:coach_studio/core/widgets/inputs/app_text_field.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
@@ -74,20 +75,36 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Column(
                     children: [
-                      Image.asset(
-                        'assets/images/logo.png',
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, _, _) => Center(
-                          child: HugeIcon(
-                            icon: HugeIcons.strokeRoundedLoginCircle01,
-                            size: 50,
-                            color: AppColors.primaryDark,
-                          ),
+                      Container(
+                        width: 62,
+                        height: 62,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          gradient: AppColors.accentGradient,
+                          borderRadius: BorderRadius.circular(AppRadius.md),
+                          boxShadow: AppShadows.accentGlow,
+                        ),
+                        child: HugeIcon(
+                          icon: HugeIcons.strokeRoundedDumbbell01,
+                          size: 32,
+                          color: AppColors.onPrimary,
+                          strokeWidth: 2,
                         ),
                       ),
-                      const SizedBox(height: 52),
+                      // Image.asset(
+                      //   'assets/images/logo.png',
+                      //   width: 100,
+                      //   height: 100,
+                      //   fit: BoxFit.contain,
+                      //   errorBuilder: (_, _, _) => Center(
+                      //     child: HugeIcon(
+                      //       icon: HugeIcons.strokeRoundedLoginCircle01,
+                      //       size: 50,
+                      //       color: AppColors.primaryDark,
+                      //     ),
+                      //   ),
+                      // ),
+                      const SizedBox(height: 32),
                       Text('ورود به حساب', style: AppTextStyles.display),
                       const SizedBox(height: 8),
                       Text(
@@ -139,8 +156,8 @@ class _LoginFormCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            AppInputLabel(text: 'نام کاربری'),
             AppTextField(
+              label: 'نام کاربری',
               controller: identifierController,
               hint: 'نام کاربری یا ایمیل',
               prefixIcn: HugeIcon(
@@ -156,8 +173,8 @@ class _LoginFormCard extends StatelessWidget {
               },
             ),
             const SizedBox(height: 16),
-            AppInputLabel(text: 'رمز عبور'),
             AppTextField(
+              label: 'رمز عبور',
               controller: passwordController,
               hint: 'رمز عبور',
               prefixIcn: HugeIcon(
@@ -173,14 +190,19 @@ class _LoginFormCard extends StatelessWidget {
                 return null;
               },
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Align(
               alignment: AlignmentDirectional.centerEnd,
               child: TextButton(
                 onPressed: isSubmitting
                     ? null
                     : () => context.pushNamed(AppRouteNames.forgotPassword),
-                child: const Text('فراموشی رمز عبور؟'),
+                child: Text(
+                  'فراموشی رمز عبور؟',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.accent,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 50),
