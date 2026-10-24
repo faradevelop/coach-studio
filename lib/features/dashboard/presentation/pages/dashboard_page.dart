@@ -25,7 +25,6 @@ class DashboardPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   DashboardHeader(),
-                  // SizedBox(height: AppSpacing.md),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 14),
                     child: DashboardQuickActions(),

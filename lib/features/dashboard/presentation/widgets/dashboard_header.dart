@@ -113,16 +113,15 @@ class _HeroGreeting extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final imageWidth = (constraints.maxWidth * 0.42).clamp(130.0, 280.0);
-
         return SizedBox(
           height: _height,
           child: Stack(
             children: [
               PositionedDirectional(
-                end: -imageWidth * 0.03,
-                top: 9,
+                end: -imageWidth * 0.08,
+                top: 10,
                 child: _Blob(
-                  size: imageWidth * 0.75,
+                  size: (imageWidth * 0.8).clamp(150.0, 204.0),
                   gradient: AppColors.accentGradient,
                 ),
               ),

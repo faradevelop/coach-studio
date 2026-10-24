@@ -1,9 +1,10 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/features/athlete/domain/entities/athlete_summary.dart';
+import 'package:coach_studio/features/athlete/presentation/cubit/athlete_cubit.dart';
+import 'package:coach_studio/features/athlete/presentation/cubit/athlete_state.dart';
 import 'package:coach_studio/features/dashboard/domain/entities/programs_summary.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_stat_card.dart';
-import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
-import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +22,8 @@ class DashboardStatsSection extends StatelessWidget {
       children: [
         Expanded(
           child: _ProgramsStatCard(
-            label: 'برنامه‌ها',
-            icon: HugeIcons.strokeRoundedTask01,
+            label: 'کل برنامه‌ها',
+            icon: HugeIcons.strokeRoundedClipboard,
             color: AppColors.primary,
             select: (summary) => summary.total,
           ),
@@ -30,14 +31,21 @@ class DashboardStatsSection extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: _ProgramsStatCard(
-            label: 'قالب‌ها',
+            label: '‌برنامه‌های پیش‌نویس',
             icon: HugeIcons.strokeRoundedCopy02,
             color: AppColors.accent,
             select: (summary) => summary.templates,
           ),
         ),
         const SizedBox(width: 10),
-        const Expanded(child: _ExercisesStatCard()),
+        Expanded(
+          child: _AthleteStatCard(
+            label: 'ورزشکارها',
+            icon: HugeIcons.strokeRoundedWorkoutRun,
+            color: AppColors.secondary,
+            select: (summary) => summary.total,
+          ),
+        ),
       ],
     );
   }
@@ -95,48 +103,49 @@ class _ProgramsStatCard extends StatelessWidget {
   }
 }
 
-class _ExercisesStatCard extends StatelessWidget {
-  const _ExercisesStatCard();
+class _AthleteStatCard extends StatelessWidget {
+  final String label;
+  final dynamic icon;
+  final Color color;
+  final int Function(AthleteSummary summary) select;
+
+  const _AthleteStatCard({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.select,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ExerciseCubit, ExerciseState>(
+    return BlocBuilder<AthleteCubit, AthleteState>(
       builder: (context, state) {
-        final cubit = context.read<ExerciseCubit>();
-        const color = AppColors.secondary;
-        final icon = _statIcon(HugeIcons.strokeRoundedDumbbell01, color);
-        const label = 'تمرین‌ها';
+        final cubit = context.read<AthleteCubit>();
+        final statIcon = _statIcon(icon, color);
 
-        if (state is ExerciseError) {
-          return DashboardStatCard(
-            icon: icon,
+        return switch (state) {
+          AthleteLoaded(:final athletes) => DashboardStatCard(
+            icon: statIcon,
+            iconContainerColor: color,
+            label: label,
+            value: select(AthleteSummary.fromAthletes(athletes)),
+            onTap: () => context.goNamed(AppRouteNames.athletes),
+          ),
+          AthleteError() => DashboardStatCard(
+            icon: statIcon,
             iconContainerColor: color,
             label: label,
             hasError: true,
-            onTap: () => cubit.loadExercises(),
-          );
-        }
-
-        // Total of the UNFILTERED catalog (see ExerciseCubit.totalExercises);
-        // null means it has not been loaded yet.
-        final total = cubit.totalExercises;
-        if (total == null) {
-          return DashboardStatCard(
-            icon: icon,
+            onTap: () => cubit.loadAthletes(),
+          ),
+          AthleteInitial() || AthleteLoading() => DashboardStatCard(
+            icon: statIcon,
             iconContainerColor: color,
             label: label,
             isLoading: true,
             onTap: null,
-          );
-        }
-
-        return DashboardStatCard(
-          icon: icon,
-          iconContainerColor: color,
-          label: label,
-          value: total,
-          onTap: () => context.goNamed(AppRouteNames.exercises),
-        );
+          ),
+        };
       },
     );
   }
