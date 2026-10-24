@@ -22,8 +22,7 @@ class AppTheme {
     );
 
     return base.copyWith(
-      // Pages paint their own background (flat AppColors.background via
-      // the page background), so the scaffold stays transparent as before.
+      // Pages paint their own background, so the scaffold stays transparent.
       scaffoldBackgroundColor: Colors.transparent,
 
       colorScheme: const ColorScheme.light(
@@ -38,6 +37,7 @@ class AppTheme {
         tertiary: AppColors.accent,
         onTertiary: AppColors.onAccent,
         tertiaryContainer: AppColors.accentSoft,
+        onTertiaryContainer: AppColors.accentDark,
         error: AppColors.error,
         onError: AppColors.onError,
         surface: AppColors.surface,
@@ -106,10 +106,11 @@ class AppTheme {
         ),
       ),
 
+      // Secondary = indigo outline (reference board).
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.secondary,
-          side: const BorderSide(color: AppColors.secondary, width: 1.5),
+          foregroundColor: AppColors.accent,
+          side: const BorderSide(color: AppColors.accent, width: 1.5),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           shape: const StadiumBorder(),
           textStyle: AppTextStyles.button,
@@ -118,9 +119,20 @@ class AppTheme {
 
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.primary,
+          foregroundColor: AppColors.accent,
           textStyle: AppTextStyles.label,
         ),
+      ),
+
+      // ── Switch ───────────────────────────────────────────
+      switchTheme: SwitchThemeData(
+        thumbColor: const WidgetStatePropertyAll(Colors.white),
+        trackColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? AppColors.secondary
+              : AppColors.disabled,
+        ),
+        trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
       ),
 
       // ── Input ────────────────────────────────────────────
@@ -178,6 +190,24 @@ class AppTheme {
         elevation: 12,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.xl),
+        ),
+      ),
+
+      // ── Navigation bar (admin, narrow screens) ───────────
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: AppColors.surface,
+        indicatorColor: AppColors.primarySoft,
+        surfaceTintColor: Colors.transparent,
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => TextStyle(
+            fontSize: 11,
+            fontWeight: states.contains(WidgetState.selected)
+                ? FontWeight.w700
+                : FontWeight.w500,
+            color: states.contains(WidgetState.selected)
+                ? AppColors.primary
+                : AppColors.textSecondary,
+          ),
         ),
       ),
 

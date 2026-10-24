@@ -6,13 +6,13 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 /// Visual role of an [AppButton].
 enum AppButtonVariant {
-  /// Main call to action (indigo, filled). Default.
+  /// Main call to action (orange, filled). Default.
   primary,
 
-  /// Secondary action (white, mint outline).
+  /// Secondary action (white, indigo outline).
   secondary,
 
-  /// Sparse highlight action (coral, filled), e.g. "view details".
+  /// Sparse highlight action (indigo, filled).
   accent,
 
   /// Destructive action (red, filled), e.g. delete / logout.
@@ -63,8 +63,7 @@ class AppButton extends StatelessWidget {
 
   Color get _foreground => switch (variant) {
     AppButtonVariant.primary => AppColors.onPrimary,
-    // secondaryDark (not the light mint) keeps the label readable on white.
-    AppButtonVariant.secondary => AppColors.secondaryDark,
+    AppButtonVariant.secondary => AppColors.accent,
     AppButtonVariant.accent => AppColors.onAccent,
     AppButtonVariant.destructive => AppColors.onError,
   };
@@ -85,7 +84,7 @@ class AppButton extends StatelessWidget {
         : _background;
     final borderColor = showDisabledLook
         ? AppColors.disabled
-        : AppColors.secondary;
+        : AppColors.accent;
 
     final style = FilledButton.styleFrom(
       backgroundColor: background,

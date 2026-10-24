@@ -3,6 +3,16 @@ import 'package:flutter/material.dart';
 
 class AppTextStyles {
   // Titles
+
+  /// Large greeting / hero headline.
+  static const TextStyle hero = TextStyle(
+    fontSize: 30,
+    fontWeight: FontWeight.w800,
+    color: AppColors.textPrimary,
+    letterSpacing: -0.5,
+    height: 1.25,
+  );
+
   static const TextStyle display = TextStyle(
     fontSize: 28,
     fontWeight: FontWeight.w800,
@@ -40,7 +50,7 @@ class AppTextStyles {
     height: 1.35,
   );
 
-  /// NEW: smallest readable text (chips, hints, meta).
+  /// Smallest readable text (chips, hints, meta).
   static const TextStyle caption = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w500,

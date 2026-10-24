@@ -30,7 +30,10 @@ class MaxWidthBox extends StatelessWidget {
     return Align(
       alignment: alignmentGeometry,
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxWidth),
+        constraints: BoxConstraints(
+          maxWidth: maxWidth,
+          minHeight: expandHeight ? double.infinity : 0,
+        ),
         child: content,
       ),
     );
