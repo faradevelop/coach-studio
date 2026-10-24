@@ -42,37 +42,56 @@ class _AppTextFieldState extends State<AppTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: widget.controller,
-      keyboardType: widget.keyboardType,
-      maxLines: _isObscured ? 1 : widget.maxLines,
-      obscureText: _isObscured,
-      style: AppTextStyles.body,
-      decoration: InputDecoration(
-        hintText: widget.hint,
-        hintStyle: AppTextStyles.bodySmall,
-        prefixIcon: Padding(
-          padding: EdgeInsetsDirectional.only(start: 8),
-          child: widget.prefixIcn,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.label != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
+            child: Text(
+              widget.label!,
+              style: AppTextStyles.bodySmall.copyWith(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary.withValues(alpha: 0.8),
+              ),
+            ),
+          ),
+        TextFormField(
+          controller: widget.controller,
+          keyboardType: widget.keyboardType,
+          maxLines: _isObscured ? 1 : widget.maxLines,
+          obscureText: _isObscured,
+          style: AppTextStyles.body,
+          decoration: InputDecoration(
+            hintText: widget.hint,
+            hintStyle: AppTextStyles.bodySmall,
+            prefixIcon: widget.prefixIcn != null
+                ? Padding(
+                    padding: EdgeInsetsDirectional.only(start: 8),
+                    child: widget.prefixIcn,
+                  )
+                : null,
+            prefixIconConstraints: const BoxConstraints(
+              minWidth: 38,
+              minHeight: 16,
+            ),
+            suffixIcon: widget.obscureText
+                ? IconButton(
+                    onPressed: () => setState(() => _isObscured = !_isObscured),
+                    icon: HugeIcon(
+                      icon: _isObscured
+                          ? HugeIcons.strokeRoundedView
+                          : HugeIcons.strokeRoundedViewOffSlash,
+                      color: AppColors.textSecondary,
+                      size: 20,
+                    ),
+                  )
+                : null,
+          ),
+          validator: widget.validator,
         ),
-        prefixIconConstraints: const BoxConstraints(
-          minWidth: 38,
-          minHeight: 16,
-        ),
-        suffixIcon: widget.obscureText
-            ? IconButton(
-                onPressed: () => setState(() => _isObscured = !_isObscured),
-                icon: HugeIcon(
-                  icon: _isObscured
-                      ? HugeIcons.strokeRoundedView
-                      : HugeIcons.strokeRoundedViewOffSlash,
-                  color: AppColors.textSecondary,
-                  size: 20,
-                ),
-              )
-            : null,
-      ),
-      validator: widget.validator,
+      ],
     );
   }
 }
