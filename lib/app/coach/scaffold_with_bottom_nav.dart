@@ -1,7 +1,7 @@
-import 'dart:ui';
-
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/widgets/display/app_glass_surface.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -19,13 +19,9 @@ class ScaffoldWithBottomNav extends StatelessWidget {
         // Flat page background (design system `background`).
         const ColoredBox(color: AppColors.background, child: SizedBox.expand()),
 
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          body: navigationShell,
-          bottomNavigationBar: null, // custom glass bottom nav below
-        ),
+        Scaffold(backgroundColor: Colors.transparent, body: navigationShell),
 
-        // Floating Glass Navbar (intentionally kept glassy)
+        // Floating glass navbar — the single blurred element in the shell.
         PositionedDirectional(
           start: 12,
           end: 12,
@@ -45,7 +41,6 @@ class ScaffoldWithBottomNav extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 6),
       ],
     );
   }
@@ -66,7 +61,7 @@ class GlassBottomNav extends StatelessWidget {
       icon: HugeIcon(
         icon: HugeIcons.strokeRoundedHome01,
         size: 19,
-        color: AppColors.textPrimary,
+        color: AppColors.textSecondary,
       ),
       activeIcon: HugeIcon(
         icon: HugeIcons.strokeRoundedHome01,
@@ -79,7 +74,7 @@ class GlassBottomNav extends StatelessWidget {
       icon: HugeIcon(
         icon: HugeIcons.strokeRoundedTask01,
         size: 19,
-        color: AppColors.textPrimary,
+        color: AppColors.textSecondary,
       ),
       activeIcon: HugeIcon(
         icon: HugeIcons.strokeRoundedTask01,
@@ -92,7 +87,7 @@ class GlassBottomNav extends StatelessWidget {
       icon: HugeIcon(
         icon: HugeIcons.strokeRoundedGymnastic,
         size: 19,
-        color: AppColors.textPrimary,
+        color: AppColors.textSecondary,
       ),
       activeIcon: HugeIcon(
         icon: HugeIcons.strokeRoundedGymnastic,
@@ -105,7 +100,7 @@ class GlassBottomNav extends StatelessWidget {
       icon: HugeIcon(
         icon: HugeIcons.strokeRoundedDumbbell01,
         size: 19,
-        color: AppColors.textPrimary,
+        color: AppColors.textSecondary,
       ),
       activeIcon: HugeIcon(
         icon: HugeIcons.strokeRoundedDumbbell01,
@@ -118,7 +113,7 @@ class GlassBottomNav extends StatelessWidget {
       icon: HugeIcon(
         icon: HugeIcons.strokeRoundedSettings01,
         size: 17,
-        color: AppColors.textPrimary,
+        color: AppColors.textSecondary,
       ),
       activeIcon: HugeIcon(
         icon: HugeIcons.strokeRoundedSettings01,
@@ -130,63 +125,49 @@ class GlassBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(100)),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-        child: Container(
-          height: height,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(100)),
-            // Hairline in the design-system outline colour so the glass
-            // pill stays visible on the flat light background.
-            border: Border.all(color: AppColors.outline, width: 1),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.white.withValues(alpha: 0.0),
-                Colors.white.withValues(alpha: 0.25),
-                Colors.white.withValues(alpha: 0.45),
-              ],
-              stops: const [0.0, 0.45, 1.0],
-            ),
-          ),
-          child: Row(
-            children: List.generate(_items.length, (index) {
-              final item = _items[index];
-              final selected = index == currentIndex;
+    return AppGlassSurface(
+      blur: true,
+      radius: AppRadius.full,
+      padding: EdgeInsets.zero,
+      child: SizedBox(
+        height: height,
+        child: Row(
+          children: List.generate(_items.length, (index) {
+            final item = _items[index];
+            final selected = index == currentIndex;
 
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () => onTap(index),
-                  behavior: HitTestBehavior.opaque,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AnimatedScale(
-                        duration: const Duration(milliseconds: 250),
-                        curve: Curves.easeOutBack,
-                        scale: selected ? 1.12 : 1.0,
-                        child: selected ? item.activeIcon : item.icon,
+            return Expanded(
+              child: GestureDetector(
+                onTap: () => onTap(index),
+                behavior: HitTestBehavior.opaque,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AnimatedScale(
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeOutBack,
+                      scale: selected ? 1.12 : 1.0,
+                      child: selected ? item.activeIcon : item.icon,
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      item.name,
+                      style: TextStyle(
+                        color: selected
+                            ? AppColors.primary
+                            : AppColors.textSecondary,
+                        fontSize: 10,
+                        fontWeight: selected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                        decoration: TextDecoration.none,
                       ),
-                      const SizedBox(height: 5),
-                      Text(
-                        item.name,
-                        style: TextStyle(
-                          color: selected
-                              ? AppColors.primary
-                              : AppColors.textPrimary,
-                          fontSize: 10,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              );
-            }),
-          ),
+              ),
+            );
+          }),
         ),
       ),
     );
