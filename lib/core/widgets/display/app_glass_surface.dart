@@ -6,15 +6,10 @@ import 'package:coach_studio/core/theme/app_shadows.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 
-/// Translucent "glass" surface for floating / highlighted elements.
+/// Translucent glass surface for floating / highlighted elements.
 ///
-/// By default, no backdrop blur is applied for better performance.
-/// When [blur] is true, the surface gets a stronger glass effect:
-/// - stronger backdrop blur
-/// - more transparent surface
-/// - brighter highlight
-/// - more visible glass border
-/// - stronger floating shadow
+/// When [blur] is enabled, the widget creates a stronger glassmorphism effect
+/// using backdrop blur, translucent gradients, highlights and a subtle border.
 class AppGlassSurface extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
@@ -22,9 +17,7 @@ class AppGlassSurface extends StatelessWidget {
   final bool elevated;
   final bool blur;
 
-  /// Controls the strength of the backdrop blur.
-  ///
-  /// Only has an effect when [blur] is true.
+  /// Backdrop blur intensity.
   final double blurSigma;
 
   final VoidCallback? onTap;
@@ -36,7 +29,7 @@ class AppGlassSurface extends StatelessWidget {
     this.radius = AppRadius.xl,
     this.elevated = true,
     this.blur = false,
-    this.blurSigma = 24,
+    this.blurSigma = 36,
     this.onTap,
   });
 
@@ -60,45 +53,30 @@ class AppGlassSurface extends StatelessWidget {
             ),
           );
 
-    BoxDecoration decoration({required bool glass, required bool shadow}) {
-      return BoxDecoration(
-        borderRadius: borderRadius,
+    // ─────────────────────────────────────────────────────────────
+    // Normal surface
+    // ─────────────────────────────────────────────────────────────
 
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: glass
-              ? [
-                  AppColors.glassHighlight.withValues(alpha: 0.55),
-                  AppColors.glassFill.withValues(alpha: 0.28),
-                ]
-              : const [AppColors.glassHighlight, AppColors.glassFill],
-        ),
-
-        border: Border.all(
-          color: glass
-              ? AppColors.glassBorder.withValues(alpha: 0.85)
-              : AppColors.glassBorder,
-          width: glass ? 1.2 : 0.8,
-        ),
-
-        boxShadow: shadow && elevated
-            ? (glass ? AppShadows.overlay : AppShadows.card)
-            : AppShadows.none,
-      );
-    }
-
-    // Normal surface — cheap, no backdrop blur.
     if (!blur) {
       return DecoratedBox(
-        decoration: decoration(glass: false, shadow: true),
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [AppColors.glassHighlight, AppColors.glassFill],
+          ),
+          border: Border.all(color: AppColors.glassBorder, width: 0.8),
+          boxShadow: elevated ? AppShadows.card : AppShadows.none,
+        ),
         child: content,
       );
     }
 
-    // Strong glass surface.
-    //
-    // Shadow stays outside the clip so it won't be cut off.
+    // ─────────────────────────────────────────────────────────────
+    // Strong glass
+    // ─────────────────────────────────────────────────────────────
+
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: borderRadius,
@@ -109,8 +87,50 @@ class AppGlassSurface extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
           child: DecoratedBox(
-            decoration: decoration(glass: true, shadow: false),
-            child: content,
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+
+              // More transparent glass.
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  // Bright glass highlight.
+                  Colors.white.withValues(alpha: 0.08),
+
+                  // Main translucent glass body.
+                  AppColors.glassFill.withValues(alpha: 0.08),
+
+                  // Slightly denser bottom.
+                  AppColors.glassFill.withValues(alpha: 0.04),
+                ],
+                stops: const [0.0, 0.45, 1.0],
+              ),
+
+              // Thin bright glass edge.
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.32),
+                width: 1,
+              ),
+            ),
+            child: Stack(
+              children: [
+                // Subtle inner highlight at the top.
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 1,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.45),
+                    ),
+                  ),
+                ),
+
+                content,
+              ],
+            ),
           ),
         ),
       ),

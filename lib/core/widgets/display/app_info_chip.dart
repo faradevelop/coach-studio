@@ -56,7 +56,7 @@ class AppInfoChip extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: AppTextStyles.bodySmall.copyWith(
                 fontSize: compact ? 10 : 12.5,
-                fontWeight: compact ? FontWeight.w700 : FontWeight.w500,
+                fontWeight: compact ? FontWeight.w400 : FontWeight.w500,
                 color: textColor,
               ),
             ),
