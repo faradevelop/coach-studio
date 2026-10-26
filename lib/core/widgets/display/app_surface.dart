@@ -49,7 +49,7 @@ class AppSurface extends StatelessWidget {
           borderRadius: borderRadius,
           side: BorderSide(
             color: selected ? AppColors.secondary : AppColors.outline,
-            width: selected ? 1.5 : 1,
+            width: selected ? 1 : 0.7,
           ),
         ),
         child: InkWell(

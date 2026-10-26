@@ -6,20 +6,27 @@ import 'package:coach_studio/core/theme/app_shadows.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 
-/// Translucent "glass" surface for floating / highlighted elements
-/// (dashboard cards, floating navigation).
+/// Translucent "glass" surface for floating / highlighted elements.
 ///
-/// Performance: by default NO blur is applied — it is just a translucent
-/// white gradient with a soft border and shadow, which is cheap and safe in
-/// repeated elements. Pass [blur] = true only for a single, standalone
-/// element that sits over scrolling content (e.g. the floating bottom nav).
+/// By default, no backdrop blur is applied for better performance.
+/// When [blur] is true, the surface gets a stronger glass effect:
+/// - stronger backdrop blur
+/// - more transparent surface
+/// - brighter highlight
+/// - more visible glass border
+/// - stronger floating shadow
 class AppGlassSurface extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
   final double radius;
   final bool elevated;
   final bool blur;
+
+  /// Controls the strength of the backdrop blur.
+  ///
+  /// Only has an effect when [blur] is true.
   final double blurSigma;
+
   final VoidCallback? onTap;
 
   const AppGlassSurface({
@@ -29,7 +36,7 @@ class AppGlassSurface extends StatelessWidget {
     this.radius = AppRadius.xl,
     this.elevated = true,
     this.blur = false,
-    this.blurSigma = 12,
+    this.blurSigma = 24,
     this.onTap,
   });
 
@@ -38,6 +45,7 @@ class AppGlassSurface extends StatelessWidget {
     final borderRadius = BorderRadius.circular(radius);
 
     final padded = Padding(padding: padding, child: child);
+
     final content = onTap == null
         ? padded
         : Material(
@@ -52,22 +60,45 @@ class AppGlassSurface extends StatelessWidget {
             ),
           );
 
-    BoxDecoration decoration({required bool shadow}) => BoxDecoration(
-      borderRadius: borderRadius,
-      gradient: const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [AppColors.glassHighlight, AppColors.glassFill],
-      ),
-      border: Border.all(color: AppColors.glassBorder, width: 1),
-      boxShadow: shadow && elevated ? AppShadows.card : AppShadows.none,
-    );
+    BoxDecoration decoration({required bool glass, required bool shadow}) {
+      return BoxDecoration(
+        borderRadius: borderRadius,
 
-    if (!blur) {
-      return DecoratedBox(decoration: decoration(shadow: true), child: content);
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: glass
+              ? [
+                  AppColors.glassHighlight.withValues(alpha: 0.55),
+                  AppColors.glassFill.withValues(alpha: 0.28),
+                ]
+              : const [AppColors.glassHighlight, AppColors.glassFill],
+        ),
+
+        border: Border.all(
+          color: glass
+              ? AppColors.glassBorder.withValues(alpha: 0.85)
+              : AppColors.glassBorder,
+          width: glass ? 1.2 : 0.8,
+        ),
+
+        boxShadow: shadow && elevated
+            ? (glass ? AppShadows.overlay : AppShadows.card)
+            : AppShadows.none,
+      );
     }
 
-    // Shadow lives outside the clip so it is not cut off by ClipRRect.
+    // Normal surface — cheap, no backdrop blur.
+    if (!blur) {
+      return DecoratedBox(
+        decoration: decoration(glass: false, shadow: true),
+        child: content,
+      );
+    }
+
+    // Strong glass surface.
+    //
+    // Shadow stays outside the clip so it won't be cut off.
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: borderRadius,
@@ -78,7 +109,7 @@ class AppGlassSurface extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
           child: DecoratedBox(
-            decoration: decoration(shadow: false),
+            decoration: decoration(glass: true, shadow: false),
             child: content,
           ),
         ),

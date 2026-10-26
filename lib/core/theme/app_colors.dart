@@ -13,7 +13,7 @@ class AppColors {
 
   // ── Brand: Orange (primary) ──────────────────────────────
   static const Color primary = Color(0xFFFF8A3D);
-  static const Color primaryDark = Color(0xFFD35A0B); // pressed / text on soft
+  static const Color primaryDark = Color(0xFFF06508); // pressed / text on soft
   static const Color primaryLight = Color(0xFFFFB074); // gradient start / glow
   static const Color primarySoft = Color(0xFFFFF1E6); // primary @ ~12%
   static const Color onPrimary = Colors.white;
@@ -21,25 +21,26 @@ class AppColors {
   // ── Brand: Teal (secondary) ──────────────────────────────
   static const Color secondary = Color(0xFF14B8A6);
   static const Color secondaryDark = Color(0xFF0D9488);
-  static const Color secondaryLight = Color(0xFF5EEAD4);
+  static const Color secondaryLight = Color.fromARGB(255, 97, 223, 204);
   static const Color secondarySoft = Color(0xFFE6F8F5);
   static const Color onSecondary = Colors.white;
 
   // ── Brand: Indigo (accent) ───────────────────────────────
-  static const Color accent = Color(0xFF4338CA);
-  static const Color accentDark = Color(0xFF3730A3);
-  static const Color accentLight = Color(0xFF6C63F0);
-  static const Color accentSoft = Color(0xFFEEEFFD);
+  static const Color accent = Color(0xFF6770f3);
+  static const Color accentDark = Color(0xFF454CB3);
+  static const Color accentLight = Color(0xFF9790FD);
+  static const Color accentSoft = Color(0xFFA8AEFD);
   static const Color onAccent = Colors.white;
 
   // ── Neutrals ─────────────────────────────────────────────
-  static const Color background = Color(0xFFF8FAFC);
+  //static const Color background = Color(0xFFF8FAFC);
+  static const Color background = Color(0xFFFFFDFB);
   static const Color surface = Color(0xFFFFFFFF);
   static const Color surfaceVariant = Color(0xFFF1F5F9);
-  static const Color outline = Color(0xFFE2E8F0);
-  static const Color textPrimary = Color(0xFF0F172A);
-  static const Color textSecondary = Color(0xFF64748B);
-  static const Color textMuted = Color(0xFF94A3B8);
+  static const Color outline = Color(0xFFECECED);
+  static const Color textPrimary = Color(0xFF363637);
+  static const Color textSecondary = Color(0xFF878B91);
+  static const Color textMuted = Color(0xFFBABDBF);
   static const Color disabled = Color(0xFFCBD5E1);
 
   // ── Semantic states ──────────────────────────────────────
@@ -68,12 +69,12 @@ class AppColors {
   static const LinearGradient accentGradient = LinearGradient(
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
-    colors: [accentLight, accent],
+    colors: [accentSoft, accent],
   );
   static const LinearGradient secondaryGradient = LinearGradient(
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
-    colors: [secondaryDark, secondaryLight],
+    colors: [secondaryLight, secondaryDark],
   );
 
   /// Decorative background tint (primary @ 10%).
