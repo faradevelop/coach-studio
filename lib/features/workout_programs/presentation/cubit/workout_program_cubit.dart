@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:coach_studio/core/error/app_exception.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_filter.dart';
 import 'package:coach_studio/features/workout_programs/domain/repositories/workout_program_repository.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +10,8 @@ class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
   final WorkoutProgramRepository repository;
   final AppLogger _logger;
 
-  StreamSubscription<List<WorkoutProgram>>? _subscription;
+  WorkoutProgramFilter _filter = const WorkoutProgramFilter();
+  int _requestId = 0;
 
   WorkoutProgramCubit({required this.repository, AppLogger? logger})
     : _logger = logger ?? _createDefaultLogger(),
@@ -21,24 +21,77 @@ class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
     throw StateError('AppLogger must be provided to WorkoutProgramCubit');
   }
 
-  void loadPrograms() {
+  /// The currently applied filter (survives tab switches, cleared on reset()).
+  WorkoutProgramFilter get filter => _filter;
+
+  /// Always loads the full list; when a filter is active, also loads the
+  /// filtered result (in parallel) so `programs` stays unfiltered.
+  Future<WorkoutProgramLoaded> _fetch() async {
+    final filter = _filter;
+    final results = await Future.wait<List<WorkoutProgram>>([
+      repository.watchPrograms().first,
+      if (!filter.isEmpty) repository.watchPrograms(filter: filter).first,
+    ]);
+    return WorkoutProgramLoaded(
+      results[0],
+      filtered: filter.isEmpty ? null : results[1],
+    );
+  }
+
+  Future<void> loadPrograms() async {
     _logger.debug('WorkoutProgramCubit: loading programs');
+    final requestId = ++_requestId;
     emit(WorkoutProgramLoading());
 
-    _subscription?.cancel();
-
-    _subscription = repository.watchPrograms().listen((programs) {
+    try {
+      final loaded = await _fetch();
+      if (requestId != _requestId) return; // stale response
       _logger.info(
-        'WorkoutProgramCubit: programs loaded (${programs.length} items)',
+        'WorkoutProgramCubit: programs loaded (${loaded.programs.length} items)',
       );
-      emit(WorkoutProgramLoaded(programs));
-    }, onError: _handleError);
+      emit(loaded);
+    } catch (e) {
+      if (requestId != _requestId) return;
+      _handleError(e);
+    }
+  }
+
+  /// Applies search / status / goal / level on the server. Returns false when
+  /// the request failed (the caller shows the notification). Never replaces
+  /// the list with an error state, so a failed search doesn't wipe the page.
+  Future<bool> applyFilter(WorkoutProgramFilter filter) async {
+    _filter = filter;
+
+    final current = state;
+    if (current is! WorkoutProgramLoaded) {
+      await loadPrograms();
+      return state is WorkoutProgramLoaded;
+    }
+
+    final requestId = ++_requestId;
+
+    if (filter.isEmpty) {
+      emit(WorkoutProgramLoaded(current.programs)); // no network needed
+      return true;
+    }
+
+    try {
+      final results = await repository.watchPrograms(filter: filter).first;
+      if (requestId != _requestId) return true; // superseded
+      emit(WorkoutProgramLoaded(current.programs, filtered: results));
+      return true;
+    } catch (e) {
+      if (requestId != _requestId) return true;
+      _logger.error('WorkoutProgramCubit: failed to apply filter', error: e);
+      return false;
+    }
   }
 
   Future<void> _refreshPrograms() async {
-    final programs = await repository.watchPrograms().first;
-
-    emit(WorkoutProgramLoaded(programs));
+    final requestId = ++_requestId;
+    final loaded = await _fetch();
+    if (requestId != _requestId) return;
+    emit(loaded);
   }
 
   Future<WorkoutProgram?> addProgram(WorkoutProgram program) async {
@@ -426,13 +479,8 @@ class WorkoutProgramCubit extends Cubit<WorkoutProgramState> {
   }
 
   void reset() {
+    _requestId++;
+    _filter = const WorkoutProgramFilter();
     emit(WorkoutProgramInitial());
-  }
-
-  @override
-  Future<void> close() {
-    _subscription?.cancel();
-
-    return super.close();
   }
 }
