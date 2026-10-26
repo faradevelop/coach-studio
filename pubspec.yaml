@@ -78,6 +78,8 @@ flutter:
       fonts:
         - asset: assets/fonts/Estedad_Light.ttf
           weight: 300
+        - asset: assets/fonts/Estedad_Regular.ttf
+          weight: 400
         - asset: assets/fonts/Estedad_Medium.ttf
           weight: 500
         - asset: assets/fonts/Estedad_Bold.ttf
