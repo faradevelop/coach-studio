@@ -57,22 +57,25 @@ class _DashboardBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const IgnorePointer(
-      child: ClipRect(
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            PositionedDirectional(
-              top: -140,
-              start: -110,
-              child: _Glow(color: AppColors.primary, size: 360),
-            ),
-            PositionedDirectional(
-              top: -80,
-              end: -150,
-              child: _Glow(color: AppColors.accent, size: 360),
-            ),
-          ],
+    return IgnorePointer(
+      child: Container(
+        color: AppColors.background,
+        child: ClipRect(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              PositionedDirectional(
+                top: -140,
+                start: -110,
+                child: _Glow(color: AppColors.primary, size: 360),
+              ),
+              // PositionedDirectional(
+              //   top: -80,
+              //   end: -150,
+              //   child: _Glow(color: AppColors.accent, size: 360),
+              // ),
+            ],
+          ),
         ),
       ),
     );

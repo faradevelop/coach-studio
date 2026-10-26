@@ -19,6 +19,7 @@ class DashboardQuickActions extends StatelessWidget {
         Expanded(
           child: _QuickActionButton(
             label: 'ساخت برنامه',
+            icon: HugeIcons.strokeRoundedPropertyAdd,
             gradient: AppColors.primaryGradient,
             shadow: AppShadows.primaryGlow,
             onTap: () => context.goNamed(AppRouteNames.createWorkoutProgram),
@@ -28,6 +29,7 @@ class DashboardQuickActions extends StatelessWidget {
         Expanded(
           child: _QuickActionButton(
             label: 'افزودن ورزشکار',
+            icon: HugeIcons.strokeRoundedUserAdd02,
             gradient: AppColors.accentGradient,
             shadow: AppShadows.accentGlow,
             onTap: () => context.pushNamed(AppRouteNames.createAthlete),
@@ -40,6 +42,7 @@ class DashboardQuickActions extends StatelessWidget {
 
 class _QuickActionButton extends StatelessWidget {
   final String label;
+  final List<List<dynamic>> icon;
   final Gradient gradient;
   final List<BoxShadow> shadow;
   final VoidCallback onTap;
@@ -49,6 +52,7 @@ class _QuickActionButton extends StatelessWidget {
     required this.gradient,
     required this.shadow,
     required this.onTap,
+    required this.icon,
   });
 
   @override
@@ -76,7 +80,7 @@ class _QuickActionButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   HugeIcon(
-                    icon: HugeIcons.strokeRoundedAdd01,
+                    icon: icon,
                     size: 20,
                     color: AppColors.onPrimary,
                     strokeWidth: 2,

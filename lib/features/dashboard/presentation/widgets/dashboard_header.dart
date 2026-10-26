@@ -50,9 +50,8 @@ class _TopBar extends StatelessWidget {
           height: 38,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            gradient: AppColors.primaryGradient,
+            color: AppColors.primary,
             borderRadius: BorderRadius.circular(AppRadius.md),
-            boxShadow: AppShadows.primaryGlow,
           ),
           child: HugeIcon(
             icon: HugeIcons.strokeRoundedDumbbell01,
@@ -122,7 +121,17 @@ class _HeroGreeting extends StatelessWidget {
                 top: 10,
                 child: _Blob(
                   size: (imageWidth * 0.8).clamp(150.0, 204.0),
-                  gradient: AppColors.accentGradient,
+                  gradient: RadialGradient(
+                    center: AlignmentGeometry.topEnd, //Alignment(-0.18, -0.86),
+                    focal: Alignment(1.00, -0.76),
+                    radius: 1.28,
+                    colors: [
+                      const Color.fromARGB(255, 252, 143, 0),
+                      const Color.fromARGB(255, 253, 230, 199),
+                    ],
+                    stops: [0.15, 0.69],
+                    tileMode: TileMode.clamp,
+                  ).withOpacity(0.3),
                 ),
               ),
               PositionedDirectional(
@@ -130,7 +139,7 @@ class _HeroGreeting extends StatelessWidget {
                 bottom: 6,
                 child: _Blob(
                   size: imageWidth * 0.5,
-                  gradient: AppColors.secondaryGradient,
+                  gradient: AppColors.secondaryGradient.withOpacity(0.2),
                 ),
               ),
               PositionedDirectional(
@@ -139,7 +148,7 @@ class _HeroGreeting extends StatelessWidget {
                 bottom: 0,
                 width: imageWidth,
                 child: Image.asset(
-                  'assets/images/athlete_solid.png',
+                  'assets/images/athlete_woman3d.PNG',
                   fit: BoxFit.contain,
                   alignment: Alignment.bottomCenter,
                   errorBuilder: (_, _, _) => const SizedBox.shrink(),
@@ -149,7 +158,7 @@ class _HeroGreeting extends StatelessWidget {
                 start: 0,
                 end: imageWidth + 8,
                 top: 0,
-                bottom: 0,
+                bottom: 32,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 14),
                   child: Column(

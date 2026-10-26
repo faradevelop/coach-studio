@@ -2,7 +2,7 @@ import 'package:coach_studio/core/localization/extensions/number_extensions.dart
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:coach_studio/core/widgets/display/app_glass_surface.dart';
+import 'package:coach_studio/core/widgets/display/app_surface.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -56,7 +56,7 @@ class DashboardStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppGlassSurface(
+    return AppSurface(
       onTap: onTap,
       radius: AppRadius.lg,
       padding: const EdgeInsets.all(14),

@@ -5,8 +5,8 @@ import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/display/app_glass_surface.dart';
 import 'package:coach_studio/core/widgets/display/app_info_chip.dart';
+import 'package:coach_studio/core/widgets/display/app_surface.dart';
 import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
-import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_glass_card.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_section_header.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
@@ -73,7 +73,7 @@ class _OverviewEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DashboardGlassCard(
+    return AppGlassSurface(
       padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
       child: Column(
         children: [
@@ -113,7 +113,7 @@ class _OverviewContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final preview = programs.take(previewCount).toList();
 
-    return AppGlassSurface(
+    return AppSurface(
       padding: const EdgeInsets.only(bottom: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
