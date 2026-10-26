@@ -17,7 +17,7 @@ class AppTheme {
   static ThemeData get light {
     final base = ThemeData(
       useMaterial3: true,
-      fontFamily: 'Estedad',
+      fontFamily: AppTextStyles.fontFamily,
       brightness: Brightness.light,
     );
 
@@ -70,7 +70,7 @@ class AppTheme {
         bodySmall: AppTextStyles.bodySmall,
         labelLarge: AppTextStyles.label,
         labelSmall: AppTextStyles.caption,
-      ),
+      ).apply(fontFamily: AppTextStyles.fontFamily),
 
       // ── Cards (flat: white + hairline border, no tint) ──────
       cardTheme: CardThemeData(

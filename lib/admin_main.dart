@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:coach_studio/app/admin/admin_router.dart';
+import 'package:coach_studio/core/bootstrap/font_preloader.dart';
 import 'package:coach_studio/core/bootstrap/global_error_handling.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/core/storage/token_storage.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_theme.dart';
@@ -28,6 +30,7 @@ void main() async {
     allowedRole: UserRole.admin,
     navigatorKey: AdminRouter.navigatorKey,
   );
+  await verifyFontAssets(sl<AppLogger>());
   await sl<TokenStorage>().init();
   unawaited(sl<AuthCubit>().restoreSession());
 

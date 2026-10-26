@@ -25,11 +25,9 @@ class WorkoutProgramPdfGenerator {
     required AthleteInfo athlete,
   }) async {
     final regularFontData = await rootBundle.load(
-      'assets/fonts/iranSans_Regular.ttf',
+      'assets/fonts/Estedad_Regular.ttf',
     );
-    final boldFontData = await rootBundle.load(
-      'assets/fonts/iranSans_Bold.ttf',
-    );
+    final boldFontData = await rootBundle.load('assets/fonts/Estedad_Bold.ttf');
     final logoData = await rootBundle.load(ClubInfo.logoAsset);
     final instagramData = await rootBundle.load(ClubInfo.instagramAsset);
     final phoneData = await rootBundle.load(ClubInfo.phoneAsset);

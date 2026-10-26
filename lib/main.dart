@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:coach_studio/app/coach/app_router.dart';
+import 'package:coach_studio/core/bootstrap/font_preloader.dart';
 import 'package:coach_studio/core/bootstrap/global_error_handling.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';
@@ -32,6 +33,8 @@ void main() async {
     navigatorKey: AppRouter.navigatorKey,
   );
   final logger = sl<AppLogger>();
+
+  await verifyFontAssets(logger);
 
   logger.info('Application starting');
   logger.debug('Initializing dependencies');
