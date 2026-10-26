@@ -17,7 +17,7 @@ class AppTheme {
   static ThemeData get light {
     final base = ThemeData(
       useMaterial3: true,
-      fontFamily: 'iranSans',
+      fontFamily: 'Estedad',
       brightness: Brightness.light,
     );
 
@@ -226,7 +226,7 @@ class AppTheme {
       // ── Divider ──────────────────────────────────────────
       dividerTheme: const DividerThemeData(
         color: AppColors.outline,
-        thickness: 1,
+        thickness: 0.6,
       ),
 
       // ── Icon ─────────────────────────────────────────────

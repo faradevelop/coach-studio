@@ -74,14 +74,11 @@ flutter:
 
   # ─────────────── Fonts ───────────────
   fonts:
-    - family: iranSans
+    - family: Estedad
       fonts:
-        - asset: assets/fonts/iranSans_Regular.ttf
-        - asset: assets/fonts/iranSans_Bold.ttf
-          weight: 700
-
-    - family: vazirMatn
-      fonts:
-        - asset: assets/fonts/Vazirmatn_Regular.ttf
-        - asset: assets/fonts/Vazirmatn_Bold.ttf
+        - asset: assets/fonts/Estedad_Light.ttf
+          weight: 300
+        - asset: assets/fonts/Estedad_Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Estedad_Bold.ttf
           weight: 700
