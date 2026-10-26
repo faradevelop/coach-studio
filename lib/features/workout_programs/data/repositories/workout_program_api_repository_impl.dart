@@ -3,6 +3,7 @@ import 'package:coach_studio/core/network/api_exception.dart';
 import 'package:coach_studio/features/workout_programs/data/datasources/workout_program_api_datasource.dart';
 import 'package:coach_studio/features/workout_programs/data/models/workout_program_model.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_filter.dart';
 import 'package:coach_studio/features/workout_programs/domain/repositories/workout_program_repository.dart';
 
 class WorkoutProgramApiRepositoryImpl implements WorkoutProgramRepository {
@@ -19,10 +20,19 @@ class WorkoutProgramApiRepositoryImpl implements WorkoutProgramRepository {
   }
 
   @override
-  Stream<List<WorkoutProgram>> watchPrograms() async* {
+  Stream<List<WorkoutProgram>> watchPrograms({
+    WorkoutProgramFilter filter = const WorkoutProgramFilter(),
+  }) async* {
     _logger.debug('WorkoutProgramRepository: loading programs');
     try {
-      final models = await datasource.getPrograms();
+      final models = await datasource.getPrograms(
+        search: filter.search,
+        status: filter.status == ProgramStatusFilter.all
+            ? null
+            : filter.status.name,
+        goal: filter.goal?.name,
+        level: filter.level?.name,
+      );
       if (models != null) {
         final programs = models.map((m) => m.toEntity()).toList();
         _logger.info(

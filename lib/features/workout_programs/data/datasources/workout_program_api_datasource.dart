@@ -16,10 +16,29 @@ class WorkoutProgramApiDatasource {
     );
   }
 
-  Future<List<WorkoutProgramModel>?> getPrograms() async {
-    _logger.debug('WorkoutProgramDataSource: fetching all programs');
+  Future<List<WorkoutProgramModel>?> getPrograms({
+    String? search,
+    String? status,
+    String? goal,
+    String? level,
+  }) async {
+    final query = <String, String>{};
+    final term = search?.trim() ?? '';
+    if (term.isNotEmpty) {
+      // Backend max length for `search` is 100.
+      query['search'] = term.length > 100 ? term.substring(0, 100) : term;
+    }
+    if (status != null && status.isNotEmpty) query['status'] = status;
+    if (goal != null && goal.isNotEmpty) query['goal'] = goal;
+    if (level != null && level.isNotEmpty) query['level'] = level;
+
+    final qs = query.isEmpty
+        ? ''
+        : '?${query.entries.map((e) => '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(e.value)}').join('&')}';
+
+    _logger.debug('WorkoutProgramDataSource: fetching programs ($qs)');
     try {
-      final data = await client.get('/workout-programs') as List<dynamic>;
+      final data = await client.get('/workout-programs$qs') as List<dynamic>;
       final programs = data
           .map(
             (json) =>

@@ -72,10 +72,13 @@ class WorkoutProgramModel {
       daysPerWeek: daysPerWeek,
       notes: notes,
       isTemplate: isTemplate,
+      athleteId: athleteId,
+      athleteName: athleteName,
     );
   }
 
   factory WorkoutProgramModel.fromJson(Map<String, dynamic> json) {
+    final athlete = json['athlete'];
     return WorkoutProgramModel(
       id: json['id'] as String,
       title: json['title'] as String,
@@ -85,7 +88,9 @@ class WorkoutProgramModel {
       notes: json['notes'] as String?,
       isTemplate: json['isTemplate'] as bool,
       athleteId: json['athleteId'] as String?,
-      athleteName: json['athleteName'] as String?,
+      athleteName: athlete is Map<String, dynamic>
+          ? athlete['fullName'] as String?
+          : null,
     );
   }
 

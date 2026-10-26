@@ -1,7 +1,10 @@
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_filter.dart';
 
 abstract class WorkoutProgramRepository {
-  Stream<List<WorkoutProgram>> watchPrograms();
+  Stream<List<WorkoutProgram>> watchPrograms({
+    WorkoutProgramFilter filter = const WorkoutProgramFilter(),
+  });
 
   Future<WorkoutProgram?> addProgram(WorkoutProgram program);
 
