@@ -125,8 +125,8 @@ class _OverviewContent extends StatelessWidget {
               icon: HugeIcon(
                 icon: HugeIcons.strokeRounded24HoursClock,
                 color: AppColors.primary,
-                size: 21,
-                strokeWidth: 2,
+                size: 22,
+                strokeWidth: 1.5,
               ),
               actionLabel: preview.isNotEmpty ? 'مشاهده همه' : null,
               onAction: () =>
@@ -178,7 +178,7 @@ class _ProgramTile extends StatelessWidget {
                 icon: HugeIcons.strokeRoundedTask01,
                 size: 22,
                 color: tone,
-                strokeWidth: 2,
+                strokeWidth: 1.5,
               ),
             ),
             const SizedBox(width: 14),
@@ -191,16 +191,40 @@ class _ProgramTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.body.copyWith(
-                      fontSize: 14.5,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${program.goal.label} • ${program.daysPerWeek.persianNumber} روز در هفته',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.caption,
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      HugeIcon(
+                        icon: HugeIcons.strokeRoundedTarget02,
+                        size: 15,
+                        color: AppColors.secondary,
+                        strokeWidth: 2,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        program.goal.label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.caption.copyWith(fontSize: 11),
+                      ),
+                      SizedBox(width: 10),
+                      HugeIcon(
+                        icon: HugeIcons.strokeRoundedCalendarDays,
+                        size: 15,
+                        color: AppColors.secondary,
+                        strokeWidth: 2,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        '${program.daysPerWeek.persianNumber} روز در هفته',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.caption.copyWith(fontSize: 11),
+                      ),
+                    ],
                   ),
                 ],
               ),

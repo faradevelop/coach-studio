@@ -14,16 +14,20 @@ class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
   @override
   Widget build(BuildContext context) {
+    final safeTop = MediaQuery.viewPaddingOf(context).top;
     return Stack(
       children: [
         const Positioned.fill(child: _DashboardBackdrop()),
         SafeArea(
+          top: false,
           child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
             child: MaxWidthBox(
               maxWidth: AppContentWidth.shell,
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  SizedBox(height: safeTop),
                   DashboardHeader(),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 14),

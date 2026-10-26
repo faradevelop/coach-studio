@@ -48,7 +48,7 @@ class DashboardStatCard extends StatelessWidget {
     return Text(
       value!.persianNumber,
       style: AppTextStyles.titleMedium.copyWith(
-        fontSize: 24,
+        fontSize: 22,
         fontWeight: FontWeight.w800,
       ),
     );
@@ -78,16 +78,19 @@ class DashboardStatCard extends StatelessWidget {
             hasError ? 'تلاش مجدد' : label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.bodySmall.copyWith(
+            style: AppTextStyles.caption.copyWith(
               color: hasError ? AppColors.error : AppColors.textSecondary,
             ),
           ),
-          const SizedBox(height: 4),
-          SizedBox(
-            height: 32,
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: _buildValue(),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 6),
+            child: SizedBox(
+              height: 32,
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: _buildValue(),
+              ),
             ),
           ),
         ],

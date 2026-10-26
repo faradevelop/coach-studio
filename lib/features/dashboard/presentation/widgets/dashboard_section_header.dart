@@ -22,19 +22,19 @@ class DashboardSectionHeader extends StatelessWidget {
       children: [
         icon,
         const SizedBox(width: 8),
-        Text(title, style: AppTextStyles.titleMedium.copyWith(fontSize: 15)),
+        Text(title, style: AppTextStyles.titleMedium.copyWith(fontSize: 14)),
         const Spacer(),
         if (actionLabel != null && onAction != null)
           GestureDetector(
             onTap: onAction,
             behavior: HitTestBehavior.opaque,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 0),
               child: Text(
                 actionLabel!,
                 style: AppTextStyles.titleMedium.copyWith(
                   fontSize: 12.5,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w500,
                   color: AppColors.accent,
                 ),
               ),

@@ -22,7 +22,7 @@ class DashboardStatsSection extends StatelessWidget {
       children: [
         Expanded(
           child: _ProgramsStatCard(
-            label: 'کل برنامه‌ها',
+            label: 'همه برنامه‌ها',
             icon: HugeIcons.strokeRoundedClipboard,
             color: AppColors.primary,
             select: (summary) => summary.total,
@@ -31,7 +31,7 @@ class DashboardStatsSection extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: _ProgramsStatCard(
-            label: '‌برنامه‌های پیش‌نویس',
+            label: '‌برنامه‌ها پیش‌نویس',
             icon: HugeIcons.strokeRoundedCopy02,
             color: AppColors.accent,
             select: (summary) => summary.templates,
