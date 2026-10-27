@@ -24,7 +24,10 @@ class CoachApiDatasource {
 
   Future<void> createCoach({
     required String username,
-    required String email,
+    required String firstName,
+    required String lastName,
+    required String phone,
+    String? email,
     required String password,
     required String passwordConfirmation,
   }) async {
@@ -32,6 +35,9 @@ class CoachApiDatasource {
     // NOTE: never log the password.
     await client.post('/users', {
       'username': username,
+      'firstName': firstName,
+      'lastName': lastName,
+      'phone': phone,
       'email': email,
       'password': password,
       'password_confirmation': passwordConfirmation,
@@ -46,6 +52,9 @@ class CoachApiDatasource {
     if (active) {
       await client.put('/users/${coach.id}', {
         'username': coach.username,
+        'firstName': coach.firstName,
+        'lastName': coach.lastName,
+        'phone': coach.phone,
         'email': coach.email,
         'role': coach.role.name,
         'isActive': true,

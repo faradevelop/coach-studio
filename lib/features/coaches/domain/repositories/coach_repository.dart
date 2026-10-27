@@ -5,7 +5,10 @@ abstract class CoachRepository {
 
   Future<void> createCoach({
     required String username,
-    required String email,
+    required String firstName,
+    required String lastName,
+    required String phone,
+    String? email,
     required String password,
     required String passwordConfirmation,
   });

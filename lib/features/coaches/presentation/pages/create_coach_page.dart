@@ -1,4 +1,5 @@
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/localization/formatters/app_number_formatter.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
@@ -21,7 +22,10 @@ class CreateCoachPage extends StatefulWidget {
 
 class _CreateCoachPageState extends State<CreateCoachPage> {
   final _formKey = GlobalKey<FormState>();
+  final _firstName = TextEditingController();
+  final _lastName = TextEditingController();
   final _username = TextEditingController();
+  final _phone = TextEditingController();
   final _email = TextEditingController();
   final _password = TextEditingController();
   final _confirm = TextEditingController();
@@ -29,7 +33,10 @@ class _CreateCoachPageState extends State<CreateCoachPage> {
 
   @override
   void dispose() {
+    _firstName.dispose();
+    _lastName.dispose();
     _username.dispose();
+    _phone.dispose();
     _email.dispose();
     _password.dispose();
     _confirm.dispose();
@@ -42,10 +49,15 @@ class _CreateCoachPageState extends State<CreateCoachPage> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final email = _email.text.trim();
+
     setState(() => _isSubmitting = true);
     final error = await context.read<CoachCubit>().createCoach(
       username: _username.text.trim(),
-      email: _email.text.trim(),
+      firstName: _firstName.text.trim(),
+      lastName: _lastName.text.trim(),
+      phone: AppNumberFormatter.toEnglish(_phone.text).trim(),
+      email: email.isEmpty ? null : email,
       password: _password.text,
       passwordConfirmation: _confirm.text,
     );
@@ -84,20 +96,50 @@ class _CreateCoachPageState extends State<CreateCoachPage> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           AppTextField(
+                            controller: _firstName,
+                            label: 'نام',
+                            validator: _required,
+                          ),
+                          const SizedBox(height: 16),
+                          AppTextField(
+                            controller: _lastName,
+                            label: 'نام خانوادگی',
+                            validator: _required,
+                          ),
+                          const SizedBox(height: 16),
+                          AppTextField(
                             controller: _username,
                             label: 'نام کاربری',
                             validator: _required,
                           ),
                           const SizedBox(height: 16),
                           AppTextField(
-                            controller: _email,
-                            label: 'ایمیل',
+                            controller: _phone,
+                            label: 'شماره موبایل',
+                            keyboardType: TextInputType.phone,
                             validator: (v) {
-                              if (_required(v) != null) return 'الزامی';
-                              if (!v!.contains('@')) {
-                                return 'ایمیل معتبر وارد کنید';
+                              final value = AppNumberFormatter.toEnglish(
+                                v,
+                              ).trim();
+                              if (value.isEmpty) return 'الزامی';
+                              if (value.length > 30 ||
+                                  !RegExp(r'^[0-9+\-\s()]+$').hasMatch(value)) {
+                                return 'شماره موبایل معتبر نیست';
                               }
                               return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          AppTextField(
+                            controller: _email,
+                            label: 'ایمیل (اختیاری)',
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (v) {
+                              final value = v?.trim() ?? '';
+                              if (value.isEmpty) return null;
+                              return value.contains('@')
+                                  ? null
+                                  : 'ایمیل معتبر وارد کنید';
                             },
                           ),
                           const SizedBox(height: 16),

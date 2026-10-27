@@ -28,13 +28,19 @@ class CoachCubit extends Cubit<CoachState> {
   /// Returns null on success, otherwise a user-presentable error message.
   Future<String?> createCoach({
     required String username,
-    required String email,
+    required String firstName,
+    required String lastName,
+    required String phone,
+    String? email,
     required String password,
     required String passwordConfirmation,
   }) {
     return _mutate(
       () => repository.createCoach(
         username: username,
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
         email: email,
         password: password,
         passwordConfirmation: passwordConfirmation,

@@ -81,7 +81,7 @@ class _CoachDetailViewState extends State<_CoachDetailView> {
           ),
           title: 'غیرفعال‌سازی مربی',
           message:
-              'مربی «${coach.username}» دیگر نمی‌تواند وارد شود و نشست‌های فعالش بسته می‌شود. اطلاعات او حذف نخواهد شد.',
+              'مربی «${coach.displayName}» دیگر نمی‌تواند وارد شود و نشست‌های فعالش بسته می‌شود. اطلاعات او حذف نخواهد شد.',
           confirmText: 'غیرفعال‌سازی',
         ),
       );
@@ -102,6 +102,9 @@ class _CoachDetailViewState extends State<_CoachDetailView> {
     );
   }
 
+  static String _orDash(String? value) =>
+      (value == null || value.trim().isEmpty) ? '—' : value;
+
   @override
   Widget build(BuildContext context) {
     final coach = widget.coach;
@@ -113,7 +116,10 @@ class _CoachDetailViewState extends State<_CoachDetailView> {
           children: [
             MaxWidthBox(
               maxWidth: AppContentWidth.detail,
-              child: InnerPagesAppBar(rightButton: null, title: coach.username),
+              child: InnerPagesAppBar(
+                rightButton: null,
+                title: coach.displayName,
+              ),
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -128,10 +134,27 @@ class _CoachDetailViewState extends State<_CoachDetailView> {
                         child: Column(
                           children: [
                             _InfoRow(
+                              label: 'نام',
+                              value: _orDash(coach.firstName),
+                              ltr: false,
+                            ),
+                            _InfoRow(
+                              label: 'نام خانوادگی',
+                              value: _orDash(coach.lastName),
+                              ltr: false,
+                            ),
+                            _InfoRow(
                               label: 'نام کاربری',
                               value: coach.username,
                             ),
-                            _InfoRow(label: 'ایمیل', value: coach.email),
+                            _InfoRow(
+                              label: 'شماره موبایل',
+                              value: _orDash(coach.phone),
+                            ),
+                            _InfoRow(
+                              label: 'ایمیل',
+                              value: _orDash(coach.email),
+                            ),
                             _InfoRow(label: 'نقش', value: coach.role.label),
                             Row(
                               children: [
@@ -167,7 +190,8 @@ class _CoachDetailViewState extends State<_CoachDetailView> {
 class _InfoRow extends StatelessWidget {
   final String label;
   final String value;
-  const _InfoRow({required this.label, required this.value});
+  final bool ltr;
+  const _InfoRow({required this.label, required this.value, this.ltr = true});
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +203,7 @@ class _InfoRow extends StatelessWidget {
           const SizedBox(width: 16),
           Expanded(
             child: Directionality(
-              textDirection: TextDirection.ltr,
+              textDirection: ltr ? TextDirection.ltr : TextDirection.rtl,
               child: Text(
                 value,
                 textAlign: TextAlign.end,

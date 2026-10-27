@@ -117,6 +117,10 @@ class _ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final email = user.email;
+    final hasFullName = user.fullName.isNotEmpty;
+    final hasPhone = user.phone.isNotEmpty;
+
     return AppSurface(
       padding: const EdgeInsets.all(18),
       child: SizedBox(
@@ -147,7 +151,7 @@ class _ProfileCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(right: 5),
                         child: Text(
-                          user.username,
+                          user.displayName,
                           style: AppTextStyles.titleMedium.copyWith(
                             fontSize: 16,
                           ),
@@ -182,6 +186,18 @@ class _ProfileCard extends StatelessWidget {
             const SizedBox(height: 16),
             const Divider(),
             const SizedBox(height: 12),
+            if (hasFullName) ...[
+              _ProfileInfoRow(
+                icon: const Icon(
+                  Icons.badge_outlined,
+                  size: 18,
+                  color: AppColors.textSecondary,
+                ),
+                label: 'نام و نام خانوادگی',
+                value: user.fullName,
+              ),
+              const SizedBox(height: 10),
+            ],
             _ProfileInfoRow(
               icon: HugeIcon(
                 icon: HugeIcons.strokeRoundedUserAccount,
@@ -191,16 +207,30 @@ class _ProfileCard extends StatelessWidget {
               label: 'نام کاربری',
               value: user.username,
             ),
-            const SizedBox(height: 10),
-            _ProfileInfoRow(
-              icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedMail01,
-                size: 18,
-                color: AppColors.textSecondary,
+            if (hasPhone) ...[
+              const SizedBox(height: 10),
+              _ProfileInfoRow(
+                icon: const Icon(
+                  Icons.phone_outlined,
+                  size: 18,
+                  color: AppColors.textSecondary,
+                ),
+                label: 'شماره موبایل',
+                value: user.phone,
               ),
-              label: 'ایمیل',
-              value: user.email,
-            ),
+            ],
+            if (email != null && email.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              _ProfileInfoRow(
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedMail01,
+                  size: 18,
+                  color: AppColors.textSecondary,
+                ),
+                label: 'ایمیل',
+                value: email,
+              ),
+            ],
           ],
         ),
       ),

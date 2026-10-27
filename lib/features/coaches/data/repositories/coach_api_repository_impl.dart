@@ -25,13 +25,19 @@ class CoachApiRepositoryImpl implements CoachRepository {
   @override
   Future<void> createCoach({
     required String username,
-    required String email,
+    required String firstName,
+    required String lastName,
+    required String phone,
+    String? email,
     required String password,
     required String passwordConfirmation,
   }) => _guard(
     'create coach',
     () => datasource.createCoach(
       username: username,
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
       email: email,
       password: password,
       passwordConfirmation: passwordConfirmation,

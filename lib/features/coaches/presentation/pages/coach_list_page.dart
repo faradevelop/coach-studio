@@ -94,6 +94,13 @@ class _CoachCard extends StatelessWidget {
 
   const _CoachCard({required this.coach, required this.onTap});
 
+  /// Email when present, otherwise the phone number.
+  String get _subtitle {
+    final email = coach.email;
+    if (email != null && email.isNotEmpty) return email.englishNumber;
+    return coach.phone.persianNumber;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppSurface(
@@ -117,14 +124,14 @@ class _CoachCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  coach.username,
+                  coach.displayName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.titleMedium.copyWith(fontSize: 15),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  coach.email.englishNumber,
+                  _subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.bodySmall,
