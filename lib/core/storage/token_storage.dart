@@ -7,7 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// The token is cached in memory after [init] so [ApiClient] can read it
 /// synchronously on every request without an async call per request.
 class TokenStorage {
-  static const _tokenKey = 'auth_token';
+  /// One storage key per app role: the Coach and Admin web apps share the
+  /// same origin (and so the same localStorage) and must not share a token.
+  TokenStorage({required String role}) : _tokenKey = 'auth_token_$role';
+
+  final String _tokenKey;
 
   String? _token;
 

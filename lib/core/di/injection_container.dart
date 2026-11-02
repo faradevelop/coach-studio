@@ -44,7 +44,9 @@ Future<void> initDependencies({
   // Logger must be registered first — used by other dependencies
   sl.registerLazySingleton<AppLogger>(() => AppLoggerImpl());
 
-  sl.registerLazySingleton<TokenStorage>(() => TokenStorage());
+  sl.registerLazySingleton<TokenStorage>(
+    () => TokenStorage(role: allowedRole.name),
+  );
 
   sl.registerLazySingleton<ApiClient>(
     () =>
