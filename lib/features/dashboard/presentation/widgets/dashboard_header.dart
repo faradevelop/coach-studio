@@ -3,7 +3,10 @@ import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_shadows.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
+import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
+import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class DashboardHeader extends StatelessWidget {
@@ -30,7 +33,14 @@ class DashboardHeader extends StatelessWidget {
           child: const _TopBar(),
         ),
         const SizedBox(height: AppSpacing.md),
-        _HeroGreeting(greeting: '$greeting،', name: 'پردیس'),
+        BlocSelector<AuthCubit, AuthState, String>(
+          selector: (state) {
+            return state is AuthAuthenticated ? state.user.firstName : '';
+          },
+          builder: (context, userFirstName) {
+            return _HeroGreeting(greeting: '$greeting،', name: userFirstName);
+          },
+        ),
       ],
     );
   }
