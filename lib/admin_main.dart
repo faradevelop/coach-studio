@@ -19,10 +19,12 @@ import 'package:coach_studio/features/exercises/presentation/cubit/exercise_stat
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 /// Run:   flutter run -d chrome -t lib/admin_main.dart
 /// Build: flutter build web -t lib/admin_main.dart
 void main() async {
+  usePathUrlStrategy(); // first line, once per entry point
   WidgetsFlutterBinding.ensureInitialized();
   setupGlobalErrorHandling();
 

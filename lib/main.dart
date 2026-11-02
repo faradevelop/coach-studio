@@ -20,8 +20,10 @@ import 'package:coach_studio/features/workout_programs/presentation/cubit/workou
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 void main() async {
+  usePathUrlStrategy(); // first line, once per entry point
   WidgetsFlutterBinding.ensureInitialized();
 
   // Setup global error handling for Flutter errors and platform errors
