@@ -38,6 +38,22 @@ class AdminRouter {
     debugLabel: 'adminCoaches',
   );
 
+  /// Only same-app paths are accepted; auth/splash pages are never a target.
+  static String? _safeFrom(String? from) {
+    if (from == null || !from.startsWith('/') || from.startsWith('//')) {
+      return null;
+    }
+    final path = Uri.tryParse(from)?.path;
+    const blocked = {
+      AppRoutes.splash,
+      AppRoutes.login,
+      AppRoutes.forgotPassword,
+      AppRoutes.resetPassword,
+    };
+    if (path == null || blocked.contains(path)) return null;
+    return from;
+  }
+
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
     initialLocation: AppRoutes.splash,
@@ -54,25 +70,38 @@ class AdminRouter {
       ),
     ),
 
-    // AuthCubit only ever becomes Authenticated for role=admin
-    // (allowedRole), so no extra role checks are needed here.
     redirect: (context, state) {
-      final auth = sl<AuthCubit>().state;
+      final authState = sl<AuthCubit>().state;
       final location = state.matchedLocation;
 
       final isSplash = location == AppRoutes.splash;
+      final isResetRoute = location == AppRoutes.resetPassword;
       final isAuthRoute =
           location == AppRoutes.login ||
           location == AppRoutes.forgotPassword ||
-          location == AppRoutes.resetPassword;
+          isResetRoute;
 
-      if (auth is AuthInitial || auth is AuthLoading) {
-        return isSplash ? null : AppRoutes.splash;
+      // Session restoration in progress.
+      if (authState is AuthInitial || authState is AuthLoading) {
+        // The reset link must keep its ?email=&token= query.
+        if (isSplash || isResetRoute) return null;
+        // Remember the wanted location so a refresh / deep link survives the splash.
+        return Uri(
+          path: AppRoutes.splash,
+          queryParameters: {'from': state.uri.toString()},
+        ).toString();
       }
-      if (auth is! AuthAuthenticated) {
+
+      if (authState is! AuthAuthenticated) {
         return isAuthRoute ? null : AppRoutes.login;
       }
-      if (isAuthRoute || isSplash) return AppRoutes.exercises;
+
+      // Authenticated.
+      if (isSplash) {
+        return _safeFrom(state.uri.queryParameters['from']) ??
+            AppRoutes.exercises;
+      }
+      if (isAuthRoute) return AppRoutes.exercises;
       return null;
     },
 
