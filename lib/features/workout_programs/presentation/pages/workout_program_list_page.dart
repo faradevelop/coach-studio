@@ -19,7 +19,6 @@ import 'package:coach_studio/features/workout_programs/presentation/cubit/workou
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/info_dialog.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/workout_program_card.dart';
-import 'package:coach_studio/features/workout_programs/presentation/widgets/workout_program_filter_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -86,11 +85,13 @@ class _WorkoutProgramListViewState extends State<_WorkoutProgramListView> {
       child: BlocBuilder<WorkoutProgramCubit, WorkoutProgramState>(
         builder: (context, state) {
           final filter = context.read<WorkoutProgramCubit>().filter;
+
           final showTools =
               state is WorkoutProgramLoaded && state.programs.isNotEmpty;
 
           return Column(
             children: [
+              // Always visible AppBar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 child: MaxWidthBox(
@@ -103,41 +104,45 @@ class _WorkoutProgramListViewState extends State<_WorkoutProgramListView> {
                   ),
                 ),
               ),
-              if (showTools) ...[
-                const SizedBox(height: AppSpacing.lg + 4),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  child: CustomSearchBar(
-                    hint: 'جستجوی برنامه یا ورزشکار...',
-                    controller: _searchController,
-                    onChanged: _onSearchChanged,
-                  ),
+
+              Expanded(
+                child: NestedScrollView(
+                  floatHeaderSlivers: false,
+                  physics: const ClampingScrollPhysics(),
+
+                  headerSliverBuilder: (context, innerBoxIsScrolled) {
+                    return [
+                      if (showTools) ...[
+                        // SearchBar: collapses and fades out
+                        SliverPersistentHeader(
+                          pinned: false,
+                          delegate: _SearchBarDelegate(
+                            controller: _searchController,
+                            onChanged: _onSearchChanged,
+                          ),
+                        ),
+
+                        // TabBar: stays at the top
+                        SliverPersistentHeader(
+                          pinned: true,
+                          delegate: _PinnedTabBarDelegate(
+                            filter: filter,
+                            onTabSelected: (index) {
+                              _apply(
+                                filter.copyWith(
+                                  status: ProgramStatusFilter.values[index],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ];
+                  },
+
+                  body: _buildBody(context, state, filter),
                 ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  child: CustomTabBar(
-                    tabs: ProgramStatusFilter.values
-                        .map((s) => s.label)
-                        .toList(),
-                    selectedIndex: filter.status.index,
-                    onTabSelected: (index) => _apply(
-                      filter.copyWith(
-                        status: ProgramStatusFilter.values[index],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  child: WorkoutProgramFilterBar(
-                    filter: filter,
-                    onChanged: _apply,
-                  ),
-                ),
-              ],
-              Expanded(child: _buildBody(context, state, filter)),
+              ),
             ],
           );
         },
@@ -284,5 +289,92 @@ class _EmptyProgramsState extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+
+  const _SearchBarDelegate({required this.controller, required this.onChanged});
+
+  @override
+  double get minExtent => 0;
+
+  @override
+  double get maxExtent => 72;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    final progress = (shrinkOffset / maxExtent).clamp(0.0, 1.0);
+
+    return ClipRect(
+      child: Align(
+        alignment: Alignment.topCenter,
+        heightFactor: 1.0 - progress,
+        child: Opacity(
+          opacity: 1.0 - progress,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            child: CustomSearchBar(
+              hint: 'جستجوی برنامه یا ورزشکار...',
+              controller: controller,
+              onChanged: onChanged,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _SearchBarDelegate oldDelegate) {
+    return oldDelegate.controller != controller ||
+        oldDelegate.onChanged != onChanged;
+  }
+}
+
+class _PinnedTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final WorkoutProgramFilter filter;
+  final ValueChanged<int> onTabSelected;
+
+  const _PinnedTabBarDelegate({
+    required this.filter,
+    required this.onTabSelected,
+  });
+
+  @override
+  double get minExtent => 52;
+
+  @override
+  double get maxExtent => 52;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      alignment: Alignment.center,
+      child: CustomTabBar(
+        height: 40,
+        tabs: ProgramStatusFilter.values.map((s) => s.label).toList(),
+        selectedIndex: filter.status.index,
+        onTabSelected: onTabSelected,
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _PinnedTabBarDelegate oldDelegate) {
+    return oldDelegate.filter != filter ||
+        oldDelegate.onTabSelected != onTabSelected;
   }
 }

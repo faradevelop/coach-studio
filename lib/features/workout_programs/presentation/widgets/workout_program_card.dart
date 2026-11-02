@@ -4,7 +4,6 @@ import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/display/app_surface.dart';
-import 'package:coach_studio/core/widgets/display/app_tag.dart';
 import 'package:coach_studio/core/widgets/display/app_info_chip.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:flutter/material.dart';
@@ -40,24 +39,36 @@ class WorkoutProgramCard extends StatelessWidget {
                 width: double.infinity,
                 margin: EdgeInsets.all(3),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceVariant,
+                  gradient: AppColors.secondaryGradient.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(AppRadius.xl - 3),
                 ),
                 clipBehavior: Clip.antiAlias,
-                child: Image.asset(
-                  'assets/images/athlete_woman.png',
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, _, _) => Center(
-                    child: Icon(
-                      Icons.fitness_center_rounded,
-                      size: 36,
-                      color: AppColors.primary.withValues(alpha: 0.45),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Image.asset(
+                    'assets/images/athlete_woman.png',
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, _, _) => Center(
+                      child: Icon(
+                        Icons.fitness_center_rounded,
+                        size: 36,
+                        color: AppColors.primaryLight,
+                      ),
                     ),
                   ),
                 ),
               ),
               if (program.isTemplate)
-                Positioned(top: 9, left: 9, child: AppTag(text: 'پیش‌نویس')),
+                Positioned(
+                  top: 9,
+                  left: 9,
+                  child: AppInfoChip(
+                    compact: true,
+                    text: 'پیش‌نویس',
+                    backgroundColor: AppColors.glassFill,
+                    textColor: AppColors.primary,
+                  ),
+                ),
             ],
           ),
 
@@ -101,7 +112,7 @@ class WorkoutProgramCard extends StatelessWidget {
               ),
             ),
           ),
-          const Divider(thickness: 1, indent: 10, endIndent: 8),
+          const Divider(thickness: 0.7, indent: 10, endIndent: 8),
 
           // Stats row
           Padding(
@@ -175,10 +186,19 @@ class CustomPopupMenu extends StatelessWidget {
             child: Text('حذف', style: TextStyle(color: AppColors.error)),
           ),
       ],
-      child: HugeIcon(
-        icon: HugeIcons.strokeRoundedMoreHorizontalCircle01,
-        size: 22,
-        color: AppColors.accent,
+      child: Container(
+        width: 24,
+        height: 24,
+        padding: EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          color: AppColors.outline,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: HugeIcon(
+          icon: HugeIcons.strokeRoundedMoreHorizontal,
+          size: 10,
+          color: AppColors.textSecondary,
+        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class CustomTabBar extends StatelessWidget {
@@ -10,7 +11,7 @@ class CustomTabBar extends StatelessWidget {
     required this.onTabSelected,
     this.activeColor,
     this.backgroundColor,
-    this.height = 48,
+    this.height = 44,
   }) : assert(tabs.length == 3);
 
   final List<String> tabs;
@@ -23,11 +24,13 @@ class CustomTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.zero,
       height: height,
-      padding: const EdgeInsets.all(2),
+      //padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.disabled.withValues(alpha: 0.3),
+        color: backgroundColor ?? AppColors.outline.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(AppRadius.full),
+        border: Border.all(color: AppColors.glassBorder),
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -37,7 +40,7 @@ class CustomTabBar extends StatelessWidget {
             children: [
               /// Moving active capsule
               AnimatedPositioned(
-                duration: const Duration(milliseconds: 450),
+                duration: const Duration(milliseconds: 250),
                 curve: Curves.easeOutCubic,
                 right: tabWidth * selectedIndex,
                 top: 0,
@@ -45,10 +48,10 @@ class CustomTabBar extends StatelessWidget {
                 width: tabWidth,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: activeColor ?? AppColors.surface,
+                    color: activeColor ?? AppColors.glassBorder,
                     borderRadius: BorderRadius.circular(AppRadius.full),
                     border: Border.all(
-                      width: 2,
+                      width: 0.5,
                       color: activeColor ?? AppColors.outline,
                     ),
                   ),
@@ -66,16 +69,15 @@ class CustomTabBar extends StatelessWidget {
                       onTap: () => onTabSelected(index),
                       child: Center(
                         child: AnimatedDefaultTextStyle(
-                          duration: const Duration(milliseconds: 450),
+                          duration: const Duration(milliseconds: 100),
                           curve: Curves.easeOut,
-                          style: TextStyle(
-                            fontSize: 12,
+                          style: AppTextStyles.caption.copyWith(
                             fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w500,
+                                ? FontWeight.w500
+                                : FontWeight.w400,
                             color: isSelected
-                                ? AppColors.accent
-                                : AppColors.textMuted,
+                                ? AppColors.accentDark
+                                : AppColors.textSecondary,
                           ),
                           child: Text(
                             tabs[index],

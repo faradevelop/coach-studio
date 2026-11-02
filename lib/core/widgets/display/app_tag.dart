@@ -12,7 +12,7 @@ class AppTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+      padding: const EdgeInsets.fromLTRB(6, 2, 6, 6),
       decoration: BoxDecoration(
         color: AppColors.primarySoft,
         borderRadius: BorderRadius.circular(20),
@@ -27,9 +27,9 @@ class AppTag extends StatelessWidget {
               text.persianNumber,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.bodySmall.copyWith(
+              style: AppTextStyles.label.copyWith(
                 fontSize: 10,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
                 color: AppColors.primaryDark,
               ),
             ),

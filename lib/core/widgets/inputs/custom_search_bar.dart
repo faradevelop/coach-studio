@@ -19,11 +19,11 @@ class CustomSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 48,
+      height: 44,
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.pill),
-        border: Border.all(color: AppColors.outline),
+        border: Border.all(color: AppColors.outline, width: 0.25),
         boxShadow: AppShadows.card,
       ),
       child: TextField(
@@ -32,10 +32,7 @@ class CustomSearchBar extends StatelessWidget {
         style: AppTextStyles.body.copyWith(fontSize: 15),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: const TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 15,
-          ),
+          hintStyle: AppTextStyles.bodySmall,
           suffixIcon: const Icon(
             Icons.search_rounded,
             color: AppColors.primary,
@@ -48,8 +45,8 @@ class CustomSearchBar extends StatelessWidget {
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
-            vertical: 14,
-            horizontal: 14,
+            vertical: 20,
+            horizontal: 16,
           ),
         ),
         onChanged: onChanged,
