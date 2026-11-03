@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class AppStepper extends StatelessWidget {
-  final String label;
+  final String? label;
   final int value;
   final int min;
   final int max;
@@ -13,7 +13,7 @@ class AppStepper extends StatelessWidget {
 
   const AppStepper({
     super.key,
-    required this.label,
+    this.label,
     required this.value,
     required this.onChanged,
     this.min = 1,
@@ -33,51 +33,68 @@ class AppStepper extends StatelessWidget {
     final canDecrement = value > min;
     final canIncrement = value < max;
 
-    return InputDecorator(
-      // Fill / borders come from the input theme.
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(
-          color: AppColors.textSecondary,
-          fontSize: 13,
-          fontWeight: FontWeight.w500,
-        ),
-        floatingLabelStyle: const TextStyle(
-          color: AppColors.secondaryDark,
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-        ),
-        contentPadding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _StepperButton(
-            icon: HugeIcons.strokeRoundedMinusSign,
-            enabled: canDecrement,
-            onTap: _decrement,
-          ),
-          const SizedBox(width: 14),
-          SizedBox(
-            width: 36,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+
+      children: [
+        if (label != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
             child: Text(
-              value.persianNumber,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.titleMedium.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -0.4,
+              label!,
+              style: AppTextStyles.bodySmall.copyWith(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary.withValues(alpha: 0.8),
               ),
             ),
           ),
-          const SizedBox(width: 14),
-          _StepperButton(
-            icon: HugeIcons.strokeRoundedPlusSign,
-            enabled: canIncrement,
-            onTap: _increment,
+        InputDecorator(
+          // Fill / borders come from the input theme.
+          decoration: InputDecoration(
+            labelStyle: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+            floatingLabelStyle: const TextStyle(
+              color: AppColors.secondaryDark,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            contentPadding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
           ),
-        ],
-      ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _StepperButton(
+                icon: HugeIcons.strokeRoundedMinusSign,
+                enabled: canDecrement,
+                onTap: _decrement,
+              ),
+              const SizedBox(width: 14),
+              SizedBox(
+                width: 36,
+                child: Text(
+                  value.persianNumber,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.titleMedium.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.4,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 14),
+              _StepperButton(
+                icon: HugeIcons.strokeRoundedPlusSign,
+                enabled: canIncrement,
+                onTap: _increment,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

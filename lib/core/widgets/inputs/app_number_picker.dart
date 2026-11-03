@@ -1,11 +1,12 @@
 import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:horizontal_slider/src/horizontal_slider.dart';
 
-class AppNumberPicker extends StatefulWidget {
-  final String label;
+class AppNumberPicker extends StatelessWidget {
+  final String? label;
   final int value;
   final int min;
   final int max;
@@ -13,113 +14,75 @@ class AppNumberPicker extends StatefulWidget {
 
   const AppNumberPicker({
     super.key,
-    required this.label,
+    this.label,
     required this.value,
     required this.onChanged,
     this.min = 1,
     this.max = 100,
-  });
-
-  @override
-  State<AppNumberPicker> createState() => _AppNumberPickerState();
-}
-
-class _AppNumberPickerState extends State<AppNumberPicker> {
-  late FixedExtentScrollController _scrollController;
-
-  int get _currentValue => widget.value.clamp(widget.min, widget.max);
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = FixedExtentScrollController(
-      initialItem: _currentValue - widget.min,
-    );
-  }
-
-  @override
-  void didUpdateWidget(covariant AppNumberPicker oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (oldWidget.value != widget.value ||
-        oldWidget.min != widget.min ||
-        oldWidget.max != widget.max) {
-      final index = (_currentValue - widget.min).clamp(
-        0,
-        widget.max - widget.min,
-      );
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted || !_scrollController.hasClients) return;
-        _scrollController.jumpToItem(index);
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+  }) : assert(min <= max);
 
   @override
   Widget build(BuildContext context) {
-    final itemCount = widget.max - widget.min + 1;
+    final safeValue = value.clamp(min, max);
+    final values = List<num>.generate(max - min + 1, (index) => min + index);
 
-    return InputDecorator(
-      // Fill / borders come from the input theme; only the compact label
-      // and padding are specific to this widget.
-      decoration: InputDecoration(
-        labelStyle: const TextStyle(
-          color: AppColors.textSecondary,
-          fontSize: 13,
-          fontWeight: FontWeight.w500,
-        ),
-        floatingLabelStyle: const TextStyle(
-          color: AppColors.secondaryDark,
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-        ),
-        contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-      ),
-      child: SizedBox(
-        height: 88,
-        child: CupertinoPicker(
-          itemExtent: 36,
-          diameterRatio: 1.4,
-          squeeze: 1.1,
-          useMagnifier: true,
-          magnification: 1.12,
-          scrollController: _scrollController,
-          selectionOverlay: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            decoration: BoxDecoration(
-              color: AppColors.secondarySoft,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: AppColors.secondary.withValues(alpha: 0.3),
-                width: 1,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (label != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
+            child: Text(
+              label!,
+              style: AppTextStyles.bodySmall.copyWith(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary.withValues(alpha: 0.8),
               ),
             ),
           ),
-          onSelectedItemChanged: (index) {
-            widget.onChanged(widget.min + index);
-          },
-          children: [
-            for (var i = 0; i < itemCount; i++)
-              Center(
-                child: Text(
-                  (widget.min + i).persianNumber,
-                  style: AppTextStyles.titleMedium.copyWith(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-              ),
-          ],
+        Container(
+          width: double.infinity,
+          height: 56,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppRadius.field),
+            border: Border.all(color: AppColors.outline),
+          ),
+          child: HorizontalPicker(
+            values: values,
+            valueFormatter: (value) => value.persianNumber,
+            initialSelectedIndex: safeValue - min,
+            pickerHeight: 56,
+            itemExtent: 52,
+            diameterRatio: 2.5,
+            perspective: 0.003,
+            onValueSelected: (selectedValue) {
+              onChanged(selectedValue.toInt());
+            },
+            selectedTextStyle: AppTextStyles.titleMedium.copyWith(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+            unselectedTextStyle: AppTextStyles.titleMedium.copyWith(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textSecondary,
+            ),
+            selectedItemPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
+            selectedItemDecoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.secondarySoft,
+              border: Border.all(color: AppColors.secondary, width: 1.5),
+            ),
+            unselectedItemDecoration: const BoxDecoration(
+              shape: BoxShape.circle,
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

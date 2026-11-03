@@ -10,27 +10,35 @@ class WizardSectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 3,
-          height: 14,
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(2),
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(top: 2, bottom: 3),
+      decoration: BoxDecoration(
+        color: AppColors.primarySoft,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 3,
+            height: 14,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(2),
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          text,
-          style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.textPrimary.withValues(alpha: 0.75),
-            fontWeight: FontWeight.w600,
-            fontSize: 13,
-            letterSpacing: 0.2,
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.textPrimary.withValues(alpha: 0.75),
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+              letterSpacing: 0.2,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
