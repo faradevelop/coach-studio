@@ -8,7 +8,6 @@ import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/dialogs/delete_dialog.dart';
 import 'package:coach_studio/core/widgets/display/app_glass_surface.dart';
 import 'package:coach_studio/core/widgets/display/app_info_chip.dart';
-import 'package:coach_studio/core/widgets/display/app_surface.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';

@@ -109,7 +109,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 24),
 
                         AppDropdown<ProgramGoal>(
                           label: 'هدف',
@@ -122,7 +122,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                                   setState(() => _goal = value);
                                 },
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 24),
 
                         AppDropdown<ProgramLevel>(
                           label: 'سطح',
@@ -135,7 +135,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                                   setState(() => _level = value);
                                 },
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 24),
 
                         Visibility(
                           visible: widget.initialProgram == null,
@@ -149,14 +149,14 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 24),
 
                         AppTextField(
                           controller: _notesController,
                           label: 'توضیح',
                           maxLines: 3,
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 36),
 
                         AppButton(
                           text: isEdit ? 'ویرایش' : 'تایید',
