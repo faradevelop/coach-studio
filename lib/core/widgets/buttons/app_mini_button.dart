@@ -31,12 +31,14 @@ class AppMiniButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 40,
-        height: radius == null ? 28 : 40,
+        width: 38,
+        height: radius == null ? 28 : 38,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(radius ?? AppRadius.lg),
-          border: Border.all(color: AppColors.outline),
+          border: Border.all(
+            color: radius == null ? AppColors.glassBorder : AppColors.outline,
+          ),
           boxShadow: AppShadows.card,
         ),
         child: Directionality(textDirection: TextDirection.ltr, child: icon),

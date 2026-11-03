@@ -231,6 +231,12 @@ class AppTheme {
 
       // ── Icon ─────────────────────────────────────────────
       iconTheme: const IconThemeData(color: AppColors.textPrimary, size: 22),
+
+      //── Ink effect ─────────────────────────────────────────────
+      splashFactory: NoSplash.splashFactory,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      //hoverColor: Colors.transparent,
     );
   }
 }
