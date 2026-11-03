@@ -51,6 +51,10 @@ dependencies:
   logger: ^2.7.0
   persian_number_utility: ^1.1.6
 
+ # ───────── Local Packages ─────────
+  horizontal_slider:
+    path: packages/horizontal_slider-0.0.3
+
 # ─────────────────────────────────────────────
 # Development Dependencies
 # ─────────────────────────────────────────────
