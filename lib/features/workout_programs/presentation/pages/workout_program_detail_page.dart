@@ -243,7 +243,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
                   enabled: !_isGeneratingPdf,
                   onTap: () => _generatePdf(context),
                 ),
-                title: widget.program.title,
+                title: 'جزئیات برنامه',
               ),
             ),
             Expanded(
@@ -277,7 +277,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
   }
 
   Widget _buildProgramInfoCard(BuildContext context) {
-    return _Card(
+    return AppSurface(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -354,6 +354,15 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
   Widget _buildExercisesHeader(BuildContext context) {
     return Row(
       children: [
+        Container(
+          width: 3,
+          height: 14,
+          margin: EdgeInsets.symmetric(horizontal: 6),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(AppRadius.full),
+          ),
+        ),
         Text('تمرین‌ها', style: AppTextStyles.titleMedium),
         const Spacer(),
         GestureDetector(
@@ -635,7 +644,7 @@ class _DayExercisesTabsState extends State<_DayExercisesTabs> {
                           for (final day in widget.days)
                             Padding(
                               key: ValueKey('day-$day'),
-                              padding: const EdgeInsets.only(left: 8),
+                              padding: const EdgeInsets.only(left: 4),
                               child: _DayTab(
                                 day: day,
                                 isSelected: day == widget.selectedDay,
@@ -672,7 +681,7 @@ class _DayExercisesTabsState extends State<_DayExercisesTabs> {
                   ),
                 if (_isManagingDays) ...[
                   Padding(
-                    padding: const EdgeInsets.only(top: 6, right: 6),
+                    padding: const EdgeInsets.only(right: 6, bottom: 4),
                     child: _DoneManagingDaysButton(onTap: _exitEditMode),
                   ),
                 ],
@@ -739,72 +748,69 @@ class _DayTab extends StatelessWidget {
       // of this GestureDetector consuming it to re-enter edit mode.
       onLongPress: onLongPress,
       behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: EdgeInsets.only(top: isManaging ? 10 : 0),
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 260),
-              curve: Curves.easeOutCubic,
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 3),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary : AppColors.surface,
-                borderRadius: BorderRadius.circular(AppRadius.full),
-                border: Border.all(
-                  color: isSelected
-                      ? AppColors.primaryDark.withValues(alpha: 0.2)
-                      : AppColors.outline,
-                  width: 1.4,
-                ),
-              ),
-              child: AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 200),
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.2,
-                  color: isSelected
-                      ? AppColors.onPrimary
-                      : AppColors.textPrimary.withValues(alpha: 0.78),
-                ),
-                child: Text('روز ${day.persianNumber}'),
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 260),
+            curve: Curves.easeOutCubic,
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 6),
+            decoration: BoxDecoration(
+              color: isSelected ? AppColors.primary : AppColors.surface,
+              borderRadius: BorderRadius.circular(AppRadius.full),
+              border: Border.all(
+                color: isSelected
+                    ? AppColors.primaryDark.withValues(alpha: 0.2)
+                    : AppColors.outline,
+                width: 1.4,
               ),
             ),
-            if (isManaging)
-              PositionedDirectional(
-                top: -8,
-                end: -4,
-                child: GestureDetector(
-                  onTap: onDelete,
-                  behavior: HitTestBehavior.opaque,
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: AppColors.error,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 1.4),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.error.withValues(alpha: 0.4),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.close_rounded,
-                      size: 13,
-                      color: Colors.white,
-                    ),
+            child: AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
+              style: AppTextStyles.caption.copyWith(
+                letterSpacing: 0.2,
+                fontWeight: FontWeight.w500,
+                color: isSelected
+                    ? AppColors.onPrimary
+                    : AppColors.textPrimary.withValues(alpha: 0.78),
+              ),
+
+              child: Text('روز ${day.persianNumber}'),
+            ),
+          ),
+          if (isManaging)
+            PositionedDirectional(
+              top: -8,
+              end: -3,
+              child: GestureDetector(
+                onTap: onDelete,
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.error,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 1.4),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.error.withValues(alpha: 0.4),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.close_rounded,
+                    size: 13,
+                    color: Colors.white,
                   ),
                 ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
@@ -819,17 +825,18 @@ class _AddDayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = enabled
-        ? AppColors.textSecondary
-        : AppColors.textSecondary.withValues(alpha: 0.4);
+        ? AppColors.accent
+        : AppColors.accent.withValues(alpha: 0.4);
 
     return GestureDetector(
       onTap: enabled ? onTap : null,
       behavior: HitTestBehavior.opaque,
       child: Container(
-        width: 42,
-        height: 32,
+        width: 28,
+        height: 28,
         alignment: Alignment.center,
         decoration: BoxDecoration(
+          color: AppColors.accent.withValues(alpha: 0.2),
           border: Border.all(color: color),
           borderRadius: BorderRadius.circular(AppRadius.full),
         ),
@@ -854,8 +861,8 @@ class _DoneManagingDaysButton extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
-        width: 32,
-        height: 32,
+        width: 28,
+        height: 28,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: AppColors.accent,
@@ -1117,20 +1124,7 @@ class _ExercisesLoadingIndicator extends StatelessWidget {
   }
 }
 
-/// Full-width card used by this page (thin wrapper over [AppSurface]).
-class _Card extends StatelessWidget {
-  final Widget child;
-
-  const _Card({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return AppSurface(
-      child: SizedBox(width: double.infinity, child: child),
-    );
-  }
-}
-
+// Full-width card used by this page (thin wrapper over [AppSurface]).
 class _EmptyDayExercisesState extends StatelessWidget {
   const _EmptyDayExercisesState({super.key});
 
@@ -1160,7 +1154,21 @@ class _EmptyDayExercisesState extends StatelessWidget {
               style: AppTextStyles.titleMedium.copyWith(fontSize: 15),
             ),
             const SizedBox(height: 6),
-            Text('با دکمه + تمرین اضافه کنید', style: AppTextStyles.subtitle),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('با دکمه', style: AppTextStyles.subtitle),
+                const SizedBox(width: 2),
+                HugeIcon(
+                  icon: HugeIcons.strokeRoundedTaskAdd01,
+                  size: 16,
+                  color: AppColors.textSecondary,
+                  strokeWidth: 1.2,
+                ),
+                const SizedBox(width: 4),
+                Text('تمرین اضافه کنید', style: AppTextStyles.subtitle),
+              ],
+            ),
           ],
         ),
       ),

@@ -39,7 +39,7 @@ class AppInfoChip extends StatelessWidget {
     return Container(
       padding: compact
           ? EdgeInsets.fromLTRB(6, 2, 6, 6)
-          : EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          : EdgeInsets.fromLTRB(10, 6, 8, 8),
       decoration: BoxDecoration(
         color: backgroundColor ?? AppColors.secondary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
@@ -55,7 +55,7 @@ class AppInfoChip extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: AppTextStyles.bodySmall.copyWith(
-                fontSize: compact ? 10 : 12.5,
+                fontSize: compact ? 10 : 12,
                 fontWeight: compact ? FontWeight.w400 : FontWeight.w500,
                 color: textColor,
               ),
