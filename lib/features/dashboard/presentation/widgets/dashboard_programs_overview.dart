@@ -165,6 +165,7 @@ class _ProgramTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               width: 48,
@@ -194,7 +195,7 @@ class _ProgramTile extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Row(
                     children: [
                       HugeIcon(
@@ -229,15 +230,15 @@ class _ProgramTile extends StatelessWidget {
                 ],
               ),
             ),
-            if (program.isTemplate) ...[
-              const SizedBox(width: 8),
-              AppInfoChip.plain(text: 'پیش نویس'),
-            ],
-            const SizedBox(width: 8),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 14,
-              color: AppColors.textPrimary.withValues(alpha: 0.4),
+            if (program.isTemplate) ...[AppInfoChip.plain(text: 'پیش نویس')],
+            const SizedBox(width: 12),
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 14,
+                color: AppColors.textPrimary.withValues(alpha: 0.4),
+              ),
             ),
           ],
         ),

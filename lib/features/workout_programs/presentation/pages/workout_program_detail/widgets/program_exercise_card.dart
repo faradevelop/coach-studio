@@ -32,7 +32,7 @@ class ProgramExerciseCard extends StatelessWidget {
     final programExercise = details.programExercise;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 16),
       child: AppGlassSurface(
         blur: true,
         radius: AppRadius.md + 4,
@@ -50,28 +50,81 @@ class ProgramExerciseCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Text(
-                    '${programExercise.order.persianNumber} )',
-                    style: AppTextStyles.label.copyWith(fontSize: 14.5),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      '${programExercise.sets.persianNumber} ست  •   ${programExercise.rest.persianNumber} استراحت',
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.textPrimary.withValues(alpha: 0.75),
+                  Container(
+                    width: 26,
+                    height: 26,
+                    decoration: BoxDecoration(
+                      color: AppColors.accent.withValues(alpha: 0.2),
+                      // border: Border.all(color: AppColors.accent, width: 1.2),
+                      borderRadius: BorderRadius.circular(AppRadius.sm + 2),
+                    ),
+                    child: Center(
+                      child: Text(
+                        programExercise.order.persianNumber,
+                        style: AppTextStyles.label.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: AppInfoChip(
+                      text: programExercise.trainingSystem.label,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
                   ExerciseActionsMenu(program: program, details: details),
                 ],
               ),
               const SizedBox(height: 10),
-              for (final itemDetails in details.items)
+
+              for (final itemDetails in details.items) ...[
                 ExerciseItemCard(itemDetails: itemDetails),
+                if (itemDetails == details.items.last)
+                  ExerciseRestLabel(programExercise: programExercise),
+              ],
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ExerciseRestLabel extends StatelessWidget {
+  const ExerciseRestLabel({super.key, required this.programExercise});
+
+  final ProgramExercise programExercise;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 30,
+      padding: EdgeInsets.symmetric(horizontal: 6),
+      decoration: BoxDecoration(
+        color: AppColors.accent.withValues(alpha: 0.2),
+        // border: Border.all(color: AppColors.accent, width: 1.2),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+      ),
+      child: Row(
+        children: [
+          HugeIcon(
+            icon: HugeIcons.strokeRoundedStopWatch,
+            color: AppColors.accent,
+            size: 20,
+            strokeWidth: 1.8,
+          ),
+          SizedBox(width: 4),
+          Text(
+            '${programExercise.rest.persianNumber} ثانیه استراحت ',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -142,10 +195,19 @@ class ExerciseActionsMenu extends StatelessWidget {
           child: Text('حذف', style: TextStyle(color: AppColors.error)),
         ),
       ],
-      child: HugeIcon(
-        icon: HugeIcons.strokeRoundedMoreHorizontalCircle01,
-        size: 20,
-        color: AppColors.primary,
+      child: Container(
+        width: 26,
+        height: 26,
+        padding: EdgeInsets.all(1),
+        decoration: BoxDecoration(
+          color: AppColors.outline,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: HugeIcon(
+          icon: HugeIcons.strokeRoundedMoreHorizontal,
+          size: 10,
+          color: AppColors.primary,
+        ),
       ),
     );
   }
