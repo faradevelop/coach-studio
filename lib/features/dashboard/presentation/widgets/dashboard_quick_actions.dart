@@ -22,7 +22,7 @@ class DashboardQuickActions extends StatelessWidget {
             icon: HugeIcons.strokeRoundedPropertyAdd,
             gradient: AppColors.primaryGradient,
             shadow: AppShadows.primaryGlow,
-            onTap: () => context.goNamed(AppRouteNames.createWorkoutProgram),
+            onTap: () => context.pushNamed(AppRouteNames.createWorkoutProgram),
           ),
         ),
         const SizedBox(width: 12),
