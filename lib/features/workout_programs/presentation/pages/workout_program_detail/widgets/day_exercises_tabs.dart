@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/widgets/dialogs/delete_dialog.dart';
 import 'package:coach_studio/core/widgets/display/app_reorderable.dart';
+import 'package:coach_studio/core/widgets/display/drag_auto_scroller.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
@@ -25,6 +28,7 @@ class DayExercisesTabs extends StatefulWidget {
   final ValueChanged<int> onDayChanged;
   final WorkoutProgram program;
   final bool isSubmitting;
+  final ScrollController? scrollController;
 
   const DayExercisesTabs({
     super.key,
@@ -34,6 +38,7 @@ class DayExercisesTabs extends StatefulWidget {
     required this.onDayChanged,
     required this.program,
     required this.isSubmitting,
+    this.scrollController,
   });
 
   @override
@@ -41,6 +46,17 @@ class DayExercisesTabs extends StatefulWidget {
 }
 
 class _DayExercisesTabsState extends State<DayExercisesTabs> {
+  // ── Auto-scroll while dragging an exercise ──────────────────
+  late final DragAutoScroller _autoScroller = DragAutoScroller(
+    controllerProvider: () => widget.scrollController,
+  );
+
+  @override
+  void dispose() {
+    _autoScroller.dispose();
+    super.dispose();
+  }
+
   /// Local UI-only flag: whether the day tabs are in drag/delete mode.
   bool _isManagingDays = false;
 
@@ -189,21 +205,31 @@ class _DayExercisesTabsState extends State<DayExercisesTabs> {
   }
 
   Widget _buildExercisesColumn(List<ProgramExerciseDetails> exercises) {
-    return AppReorderableColumn(
+    return Listener(
       key: ValueKey(widget.selectedDay),
-      ignorePrimaryScrollController: true,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      needsLongPressDraggable: !widget.isSubmitting,
-      onReorder: (oldIndex, newIndex) =>
-          _reorderExercise(exercises, oldIndex, newIndex),
-      children: [
-        for (final details in exercises)
-          ProgramExerciseCard(
-            key: ValueKey(details.programExercise.id),
-            details: details,
-            program: widget.program,
-          ),
-      ],
+      onPointerDown: _autoScroller.updatePointer,
+      onPointerMove: _autoScroller.updatePointer,
+      onPointerUp: (_) => _autoScroller.stop(),
+      onPointerCancel: (_) => _autoScroller.stop(),
+      child: AppReorderableColumn(
+        ignorePrimaryScrollController: true,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        needsLongPressDraggable: !widget.isSubmitting,
+        onReorderStarted: (_) => _autoScroller.start(),
+        onNoReorder: _autoScroller.stop,
+        onReorder: (oldIndex, newIndex) {
+          _autoScroller.stop();
+          _reorderExercise(exercises, oldIndex, newIndex);
+        },
+        children: [
+          for (final details in exercises)
+            ProgramExerciseCard(
+              key: ValueKey(details.programExercise.id),
+              details: details,
+              program: widget.program,
+            ),
+        ],
+      ),
     );
   }
 }

@@ -61,6 +61,8 @@ class AppReorderableColumn extends StatelessWidget {
   final bool needsLongPressDraggable;
   final bool ignorePrimaryScrollController;
   final CrossAxisAlignment crossAxisAlignment;
+  final void Function(int index)? onReorderStarted;
+  final VoidCallback? onNoReorder;
 
   const AppReorderableColumn({
     super.key,
@@ -69,6 +71,8 @@ class AppReorderableColumn extends StatelessWidget {
     this.needsLongPressDraggable = true,
     this.ignorePrimaryScrollController = false,
     this.crossAxisAlignment = CrossAxisAlignment.start,
+    this.onReorderStarted,
+    this.onNoReorder,
   });
 
   @override
@@ -81,6 +85,8 @@ class AppReorderableColumn extends StatelessWidget {
         needsLongPressDraggable: needsLongPressDraggable,
         buildDraggableFeedback: _feedback,
         onReorder: onReorder,
+        onReorderStarted: onReorderStarted,
+        onNoReorder: (_) => onNoReorder?.call(),
         children: children,
       ),
     );

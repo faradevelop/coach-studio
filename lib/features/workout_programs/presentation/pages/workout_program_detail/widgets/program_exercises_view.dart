@@ -16,12 +16,14 @@ class ProgramExercisesView extends StatelessWidget {
   final WorkoutProgram program;
   final int selectedDay;
   final ValueChanged<int> onDayChanged;
+  final ScrollController? scrollController;
 
   const ProgramExercisesView({
     super.key,
     required this.program,
     required this.selectedDay,
     required this.onDayChanged,
+    this.scrollController,
   });
 
   @override
@@ -44,8 +46,9 @@ class ProgramExercisesView extends StatelessWidget {
               child: Center(child: AppLoadingIndicator()),
             ),
             ProgramExerciseError() => AppErrorState(
-              onRetry: () =>
-                  context.read<ProgramExerciseCubit>().loadExercises(program.id),
+              onRetry: () => context.read<ProgramExerciseCubit>().loadExercises(
+                program.id,
+              ),
             ),
             ProgramExerciseLoaded(:final exercises, :final isSubmitting) =>
               _buildTabs(
@@ -70,6 +73,7 @@ class ProgramExercisesView extends StatelessWidget {
       onDayChanged: onDayChanged,
       program: program,
       isSubmitting: isSubmitting,
+      scrollController: scrollController,
     );
   }
 }

@@ -115,6 +115,14 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
   bool _isGeneratingPdf = false;
   int _selectedDay = 1;
 
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   void didUpdateWidget(covariant _WorkoutProgramDetailView oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -215,6 +223,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
             ),
             Expanded(
               child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
                 padding: const EdgeInsets.only(top: 8, bottom: 32),
                 child: MaxWidthBox(
                   maxWidth: AppContentWidth.detail,
@@ -236,6 +245,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
                       ProgramExercisesView(
                         program: widget.program,
                         selectedDay: _selectedDay,
+                        scrollController: _scrollController,
                         onDayChanged: (day) =>
                             setState(() => _selectedDay = day),
                       ),
