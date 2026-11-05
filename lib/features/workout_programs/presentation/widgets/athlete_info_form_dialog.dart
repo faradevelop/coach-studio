@@ -45,74 +45,80 @@ class _AthleteInfoFormDialogState extends State<AthleteInfoFormDialog> {
   @override
   Widget build(BuildContext context) {
     return AppDialog(
-      padding: const EdgeInsets.fromLTRB(22, 26, 22, 20),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: const BoxDecoration(
-                color: AppColors.primarySoft,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.person_outline_rounded,
-                color: AppColors.primary,
-                size: 28,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'اطلاعات ورزشکار',
-              style: TextStyle(
-                fontSize: 19,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 22),
-            AppTextField(
-              controller: _nameController,
-              label: 'نام و نام خانوادگی',
-              validator: _required,
-            ),
-            const SizedBox(height: 14),
-            AppTextField(
-              controller: _heightController,
-              label: 'قد (cm)',
-              validator: _required,
-            ),
-            const SizedBox(height: 14),
-            AppTextField(
-              controller: _weightController,
-              label: 'وزن (kg)',
-              validator: _required,
-            ),
-            const SizedBox(height: 26),
-            Row(
+      padding: const EdgeInsets.symmetric(horizontal: 22),
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 26),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: AppButton(
-                    text: 'انصراف',
-                    variant: AppButtonVariant.secondary,
-                    size: AppButtonSize.compact,
-                    onPressed: () => Navigator.of(context).pop(),
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: const BoxDecoration(
+                    color: AppColors.primarySoft,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.person_rounded,
+                    color: AppColors.primary,
+                    size: 28,
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: AppButton(
-                    text: 'ساخت PDF',
-                    size: AppButtonSize.compact,
-                    onPressed: _submit,
+                const SizedBox(height: 16),
+                const Text(
+                  'اطلاعات ورزشکار',
+                  style: TextStyle(
+                    fontSize: 19,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
                   ),
+                ),
+                const SizedBox(height: 22),
+                AppTextField(
+                  controller: _nameController,
+                  label: 'نام و نام خانوادگی',
+                  validator: _required,
+                ),
+                const SizedBox(height: 14),
+                AppTextField(
+                  controller: _heightController,
+                  label: 'قد (cm)',
+                  validator: _required,
+                ),
+                const SizedBox(height: 14),
+                AppTextField(
+                  controller: _weightController,
+                  label: 'وزن (kg)',
+                  validator: _required,
+                ),
+                const SizedBox(height: 26),
+                Row(
+                  children: [
+                    Expanded(
+                      child: AppButton(
+                        text: 'انصراف',
+                        variant: AppButtonVariant.secondary,
+                        size: AppButtonSize.compact,
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: AppButton(
+                        text: 'ساخت PDF',
+                        size: AppButtonSize.compact,
+                        onPressed: _submit,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

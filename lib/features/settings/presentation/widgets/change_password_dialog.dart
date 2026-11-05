@@ -67,91 +67,97 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   @override
   Widget build(BuildContext context) {
     return AppDialog(
-      padding: const EdgeInsets.fromLTRB(22, 26, 22, 20),
+      padding: const EdgeInsets.symmetric(horizontal: 22),
       child: Form(
         key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                color: AppColors.primarySoft,
-                shape: BoxShape.circle,
-              ),
-              child: HugeIcon(
-                icon: HugeIcons.strokeRoundedLockSync01,
-                size: 28,
-                color: AppColors.primary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'تغییر رمز عبور',
-              style: TextStyle(
-                fontSize: 19,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 22),
-            AppTextField(
-              controller: _currentPasswordController,
-              label: 'رمز عبور فعلی',
-              obscureText: true,
-              validator: (v) => (v == null || v.isEmpty) ? 'الزامی' : null,
-            ),
-            const SizedBox(height: 14),
-            AppTextField(
-              controller: _newPasswordController,
-              label: 'رمز عبور جدید',
-              obscureText: true,
-              validator: (v) {
-                if (v == null || v.isEmpty) return 'الزامی';
-                if (v.length < 8) return 'حداقل ۸ کاراکتر';
-                return null;
-              },
-            ),
-            const SizedBox(height: 14),
-            AppTextField(
-              controller: _confirmPasswordController,
-              label: 'تکرار رمز عبور جدید',
-              obscureText: true,
-              validator: (v) {
-                if (v == null || v.isEmpty) return 'الزامی';
-                if (v != _newPasswordController.text) {
-                  return 'رمز عبور مطابقت ندارد';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 26),
-            Row(
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 26),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: AppButton(
-                    text: 'انصراف',
-                    variant: AppButtonVariant.secondary,
-                    size: AppButtonSize.compact,
-                    onPressed: _isSubmitting
-                        ? null
-                        : () => Navigator.of(context).pop(),
+                Container(
+                  width: 50,
+                  height: 50,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    color: AppColors.primarySoft,
+                    shape: BoxShape.circle,
+                  ),
+                  child: HugeIcon(
+                    icon: HugeIcons.strokeRoundedLockSync01,
+                    size: 28,
+                    color: AppColors.primary,
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: AppButton(
-                    text: 'تایید',
-                    size: AppButtonSize.compact,
-                    isLoading: _isSubmitting,
-                    onPressed: _isSubmitting ? null : _submit,
+                const SizedBox(height: 16),
+                const Text(
+                  'تغییر رمز عبور',
+                  style: TextStyle(
+                    fontSize: 19,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
                   ),
+                ),
+                const SizedBox(height: 22),
+                AppTextField(
+                  controller: _currentPasswordController,
+                  label: 'رمز عبور فعلی',
+                  obscureText: true,
+                  validator: (v) => (v == null || v.isEmpty) ? 'الزامی' : null,
+                ),
+                const SizedBox(height: 14),
+                AppTextField(
+                  controller: _newPasswordController,
+                  label: 'رمز عبور جدید',
+                  obscureText: true,
+                  validator: (v) {
+                    if (v == null || v.isEmpty) return 'الزامی';
+                    if (v.length < 8) return 'حداقل ۸ کاراکتر';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 14),
+                AppTextField(
+                  controller: _confirmPasswordController,
+                  label: 'تکرار رمز عبور جدید',
+                  obscureText: true,
+                  validator: (v) {
+                    if (v == null || v.isEmpty) return 'الزامی';
+                    if (v != _newPasswordController.text) {
+                      return 'رمز عبور مطابقت ندارد';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 26),
+                Row(
+                  children: [
+                    Expanded(
+                      child: AppButton(
+                        text: 'انصراف',
+                        variant: AppButtonVariant.secondary,
+                        size: AppButtonSize.compact,
+                        onPressed: _isSubmitting
+                            ? null
+                            : () => Navigator.of(context).pop(),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: AppButton(
+                        text: 'تایید',
+                        size: AppButtonSize.compact,
+                        isLoading: _isSubmitting,
+                        onPressed: _isSubmitting ? null : _submit,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
