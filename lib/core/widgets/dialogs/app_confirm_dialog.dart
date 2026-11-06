@@ -67,10 +67,10 @@ class AppConfirmDialog extends StatelessWidget {
             padding: const EdgeInsetsDirectional.only(start: 6),
             child: Text(
               message,
-              textAlign: TextAlign.end,
+              textAlign: TextAlign.start,
               style: TextStyle(
                 fontSize: 15,
-                height: 1.4,
+                height: 1.7,
                 color: AppColors.textPrimary.withValues(alpha: 0.9),
               ),
             ),

@@ -180,6 +180,8 @@ class ExerciseActionsMenu extends StatelessWidget {
     return PopupMenuButton<_ExerciseMenuAction>(
       padding: EdgeInsets.zero,
       iconSize: 18,
+      position: PopupMenuPosition.under,
+      menuPadding: EdgeInsets.zero,
       onSelected: (action) async {
         switch (action) {
           case _ExerciseMenuAction.edit:
@@ -189,10 +191,36 @@ class ExerciseActionsMenu extends StatelessWidget {
         }
       },
       itemBuilder: (_) => const [
-        PopupMenuItem(value: _ExerciseMenuAction.edit, child: Text('ویرایش')),
+        PopupMenuItem(
+          value: _ExerciseMenuAction.edit,
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: HugeIcon(icon: HugeIcons.strokeRoundedEdit02, size: 16),
+              ),
+              SizedBox(width: 2),
+              Text('ویرایش'),
+            ],
+          ),
+        ),
+        PopupMenuDivider(height: 0.8, indent: 10, endIndent: 10),
         PopupMenuItem(
           value: _ExerciseMenuAction.delete,
-          child: Text('حذف', style: TextStyle(color: AppColors.error)),
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: HugeIcon(
+                  icon: HugeIcons.strokeRoundedDelete02,
+                  size: 16,
+                  color: AppColors.error,
+                ),
+              ),
+              SizedBox(width: 2),
+              Text('حذف', style: TextStyle(color: AppColors.error)),
+            ],
+          ),
         ),
       ],
       child: Container(

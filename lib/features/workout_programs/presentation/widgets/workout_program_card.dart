@@ -176,6 +176,8 @@ class CustomPopupMenu extends StatelessWidget {
     return PopupMenuButton<String>(
       padding: EdgeInsets.zero,
       iconSize: 18,
+      position: PopupMenuPosition.under,
+      menuPadding: EdgeInsets.zero,
       onSelected: (value) async {
         switch (value) {
           case 'copy':
@@ -186,12 +188,39 @@ class CustomPopupMenu extends StatelessWidget {
         }
       },
       itemBuilder: (_) => [
-        PopupMenuItem(value: 'copy', child: Text('کپی')),
-        if (program.athleteId == null)
+        PopupMenuItem(
+          value: 'copy',
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: HugeIcon(icon: HugeIcons.strokeRoundedCopy01, size: 16),
+              ),
+              SizedBox(width: 2),
+              Text('کپی'),
+            ],
+          ),
+        ),
+        if (program.athleteId == null) ...[
+          PopupMenuDivider(height: 0.8, indent: 10, endIndent: 10),
           PopupMenuItem(
             value: 'delete',
-            child: Text('حذف', style: TextStyle(color: AppColors.error)),
+            child: Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(5),
+                  child: HugeIcon(
+                    icon: HugeIcons.strokeRoundedDelete02,
+                    size: 16,
+                    color: AppColors.error,
+                  ),
+                ),
+                SizedBox(width: 2),
+                Text('حذف', style: TextStyle(color: AppColors.error)),
+              ],
+            ),
           ),
+        ],
       ],
       child: Container(
         width: 24,

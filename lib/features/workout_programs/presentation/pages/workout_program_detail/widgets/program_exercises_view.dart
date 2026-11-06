@@ -1,3 +1,5 @@
+import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
 import 'package:coach_studio/core/widgets/feedback/app_loading_indicator.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
@@ -33,9 +35,7 @@ class ProgramExercisesView extends StatelessWidget {
           current is ProgramExerciseLoaded && current.errorMessage != null,
       listener: (context, state) {
         if (state is ProgramExerciseLoaded && state.errorMessage != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          sl<AppNotification>().error(state.errorMessage!);
         }
       },
       child: BlocBuilder<ProgramExerciseCubit, ProgramExerciseState>(

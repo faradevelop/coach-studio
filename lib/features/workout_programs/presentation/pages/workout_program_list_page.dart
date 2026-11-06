@@ -222,8 +222,7 @@ class _WorkoutProgramListViewState extends State<_WorkoutProgramListView> {
               context: context,
               builder: (_) => InfoDialog(
                 title: program.title,
-                message:
-                    'برنامه "${program.title}" با نام "${program.title} (copy)" ذخیره خواهد شد.',
+                message: 'یک کپی از برنامه "${program.title}" ساخته خواهد شد.',
               ),
             );
 
