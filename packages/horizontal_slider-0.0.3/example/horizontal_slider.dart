@@ -43,7 +43,7 @@ class _WeightPickerExampleState extends State<WeightPickerExample> {
             selectedItemDecoration: BoxDecoration(
               border: Border.all(color: Colors.blue, width: 2),
               borderRadius: BorderRadius.circular(8),
-              color: Colors.blue.withOpacity(0.1),
+              color: Colors.blue.withValues(alpha: 0.1),
             ),
             unselectedItemDecoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),

@@ -55,6 +55,12 @@ class HorizontalPicker extends StatefulWidget {
   /// The padding to be used for the unselected items.
   final EdgeInsets? unSelectedItemPadding;
 
+  /// The width to be used for the selected item
+  final double selectedItemWidth;
+
+  /// The width to be used for the unselected items.
+  final double unSelectedItemWidth;
+
   /// The duration of the scroll animation.
   final Duration? scrollDuration;
 
@@ -77,6 +83,8 @@ class HorizontalPicker extends StatefulWidget {
     this.unSelectedItemPadding,
     this.scrollDuration,
     this.valueFormatter,
+    this.selectedItemWidth = 38,
+    this.unSelectedItemWidth = 34,
   });
 
   @override
@@ -209,6 +217,14 @@ class _HorizontalPickerState extends State<HorizontalPicker> {
                         // Check if the item is selected
                         final isSelected = index == selectedIndex;
                         return Container(
+                          width:
+                              isSelected
+                                  ? widget.selectedItemWidth
+                                  : widget.unSelectedItemWidth,
+                          height:
+                              isSelected
+                                  ? widget.selectedItemWidth
+                                  : widget.unSelectedItemWidth,
                           // Set the decoration and padding based on whether the item is selected
                           decoration:
                               isSelected
@@ -218,12 +234,16 @@ class _HorizontalPickerState extends State<HorizontalPicker> {
                               isSelected
                                   ? widget.selectedItemPadding
                                   : widget.unSelectedItemPadding,
-                          child: Text(
-                            widget.valueFormatter?.call(widget.values[index]) ??
-                                widget.values[index].toString(),
-                            style: _getTextStyle(isSelected),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          child: Center(
+                            child: Text(
+                              widget.valueFormatter?.call(
+                                    widget.values[index],
+                                  ) ??
+                                  widget.values[index].toString(),
+                              style: _getTextStyle(isSelected),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         );
                       },
