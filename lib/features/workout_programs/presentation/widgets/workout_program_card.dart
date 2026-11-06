@@ -39,7 +39,14 @@ class WorkoutProgramCard extends StatelessWidget {
                 width: double.infinity,
                 margin: EdgeInsets.all(3),
                 decoration: BoxDecoration(
-                  gradient: AppColors.secondaryGradient.withOpacity(0.2),
+                  gradient: LinearGradient(
+                    begin: Alignment.centerRight,
+                    end: Alignment.centerLeft,
+                    colors: [
+                      AppColors.accent.withValues(alpha: 0.14),
+                      AppColors.accentDark.withValues(alpha: 0.2),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(AppRadius.xl - 3),
                 ),
                 clipBehavior: Clip.antiAlias,
@@ -197,7 +204,7 @@ class CustomPopupMenu extends StatelessWidget {
         child: HugeIcon(
           icon: HugeIcons.strokeRoundedMoreHorizontal,
           size: 10,
-          color: AppColors.textSecondary,
+          color: AppColors.primary,
         ),
       ),
     );
