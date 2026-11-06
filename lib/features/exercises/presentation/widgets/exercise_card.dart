@@ -63,11 +63,14 @@ class ExerciseCard extends StatelessWidget {
                             color: AppColors.textPrimary.withValues(
                               alpha: 0.18,
                             ),
-                            icon: HugeIcon(
-                              icon: HugeIcons.strokeRoundedEdit03,
-                              size: 18,
-                              color: AppColors.textPrimary.withValues(
-                                alpha: 0.9,
+                            icon: Padding(
+                              padding: const EdgeInsets.all(3),
+                              child: HugeIcon(
+                                icon: HugeIcons.strokeRoundedEdit03,
+                                size: 18,
+                                color: AppColors.textPrimary.withValues(
+                                  alpha: 0.9,
+                                ),
                               ),
                             ),
                             onTap: onEdit,
@@ -78,10 +81,13 @@ class ExerciseCard extends StatelessWidget {
                           alignment: Alignment.topRight,
                           child: AppMiniButton(
                             color: AppColors.error.withValues(alpha: 0.18),
-                            icon: HugeIcon(
-                              icon: HugeIcons.strokeRoundedDelete03,
-                              size: 18,
-                              color: AppColors.error.withValues(alpha: 0.9),
+                            icon: Padding(
+                              padding: const EdgeInsets.all(3),
+                              child: HugeIcon(
+                                icon: HugeIcons.strokeRoundedDelete03,
+                                size: 12,
+                                color: AppColors.error.withValues(alpha: 0.9),
+                              ),
                             ),
                             onTap: onDelete,
                           ),

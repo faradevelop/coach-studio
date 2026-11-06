@@ -54,7 +54,7 @@ class AppNumberPicker extends StatelessWidget {
             initialSelectedIndex: safeValue - min,
             pickerHeight: 56,
             itemExtent: 52,
-            diameterRatio: 2.5,
+            diameterRatio: 1.7,
             perspective: 0.003,
             onValueSelected: (selectedValue) {
               onChanged(selectedValue.toInt());
@@ -62,23 +62,21 @@ class AppNumberPicker extends StatelessWidget {
             selectedTextStyle: AppTextStyles.titleMedium.copyWith(
               fontSize: 16,
               fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
             unselectedTextStyle: AppTextStyles.titleMedium.copyWith(
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
               color: AppColors.textSecondary,
-            ),
-            selectedItemPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
             ),
             selectedItemDecoration: BoxDecoration(
               shape: BoxShape.circle,
               color: AppColors.secondarySoft,
-              border: Border.all(color: AppColors.secondary, width: 1.5),
+              border: Border.all(color: AppColors.secondary, width: 1),
             ),
             unselectedItemDecoration: const BoxDecoration(
               shape: BoxShape.circle,
+              color: AppColors.secondarySoft,
             ),
           ),
         ),

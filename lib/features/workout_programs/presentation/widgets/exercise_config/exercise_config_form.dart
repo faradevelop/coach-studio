@@ -2,6 +2,7 @@
 import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/buttons/app_button.dart';
 import 'package:coach_studio/core/widgets/display/app_surface.dart';
@@ -124,7 +125,8 @@ class _ExerciseConfigFormState extends State<ExerciseConfigForm> {
           children: [
             _buildGlobalSettings(),
             const SizedBox(height: 18),
-            for (final draft in _drafts) _buildExerciseCard(draft),
+            for (var i = 0; i < _drafts.length; i++)
+              _buildExerciseCard(_drafts[i], i),
             const SizedBox(height: 12),
             AppButton(
               text: widget.submitLabel,
@@ -139,7 +141,7 @@ class _ExerciseConfigFormState extends State<ExerciseConfigForm> {
 
   Widget _buildGlobalSettings() {
     return AppSurface(
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 22),
       child: SizedBox(
         width: double.infinity,
         child: Column(
@@ -190,23 +192,36 @@ class _ExerciseConfigFormState extends State<ExerciseConfigForm> {
     );
   }
 
-  Widget _buildExerciseCard(_ItemDraft draft) {
+  Widget _buildExerciseCard(_ItemDraft draft, int index) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: AppSurface(
-        padding: const EdgeInsets.all(22),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         child: SizedBox(
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildExerciseHeader(draft),
-              const SizedBox(height: 18),
-              const ExerciseConfigSectionLabel(text: 'تکرارها'),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 22),
+                child: _buildExerciseHeader(draft, index),
+              ),
+              Divider(),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 22),
+                child: const ExerciseConfigSectionLabel(text: 'تکرارها'),
+              ),
               const SizedBox(height: 16),
-              _buildRepPickers(draft),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 22),
+                child: _buildRepPickers(draft),
+              ),
               const SizedBox(height: 22),
-              _buildExtraFields(draft),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 22),
+                child: _buildExtraFields(draft),
+              ),
             ],
           ),
         ),
@@ -214,16 +229,35 @@ class _ExerciseConfigFormState extends State<ExerciseConfigForm> {
     );
   }
 
-  Widget _buildExerciseHeader(_ItemDraft draft) {
+  Widget _buildExerciseHeader(_ItemDraft draft, int index) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Container(
+          width: 26,
+          height: 26,
+          decoration: BoxDecoration(
+            color: AppColors.accent.withValues(alpha: 0.2),
+            // border: Border.all(color: AppColors.accent, width: 1.2),
+            borderRadius: BorderRadius.circular(AppRadius.sm + 2),
+          ),
+          child: Center(
+            child: Text(
+              (index + 1).persianNumber,
+              style: AppTextStyles.label.copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
         Expanded(
           child: Text(
             draft.exerciseName,
             style: AppTextStyles.titleMedium.copyWith(
               fontSize: 16,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
