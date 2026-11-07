@@ -34,11 +34,11 @@ dependencies:
   pdf: ^3.13.0
   printing: ^5.15.0
 
-  # ─────────────── Localization & Date ───────────────
+  # ─────────────── Localization ───────────────
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
-  shamsi_date: ^1.1.1
+  persian_number_utility: ^1.1.6
 
   # ─────────────── UI ───────────────
   cupertino_icons: ^1.0.8
@@ -47,9 +47,11 @@ dependencies:
   reorderables: ^0.6.0
   floating_snackbar: ^2.0.0
 
+  # ─────────────── Date and Time ───────────────
+  persian_datetime_picker: ^3.2.0
+
   # ───────── Logging ─────────
   logger: ^2.7.0
-  persian_number_utility: ^1.1.6
 
  # ───────── Local Packages ─────────
   horizontal_slider:

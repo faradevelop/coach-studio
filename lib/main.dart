@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 void main() async {
   usePathUrlStrategy(); // first line, once per entry point
@@ -97,9 +98,11 @@ class MyApp extends StatelessWidget {
 
           scrollBehavior: const AppScrollBehavior(),
 
-          locale: const Locale('fa'),
-          supportedLocales: const [Locale('fa'), Locale('en')],
+          locale: const Locale('fa', 'IR'),
+          supportedLocales: const [Locale('fa', 'IR'), Locale('en', 'US')],
           localizationsDelegates: const [
+            PersianMaterialLocalizations.delegate,
+            PersianCupertinoLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
