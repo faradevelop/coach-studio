@@ -9,6 +9,7 @@
 import 'dart:typed_data';
 
 import 'package:coach_studio/core/constants/club_info.dart';
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
@@ -17,7 +18,7 @@ import 'package:coach_studio/features/workout_programs/domain/entities/workout_p
 import 'package:coach_studio/features/workout_programs/domain/enums/training_system.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:shamsi_date/shamsi_date.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 import 'pdf_build_input.dart';
 
@@ -248,24 +249,25 @@ pw.Widget _buildHeader(
                     topRight: pw.Radius.circular(4),
                     bottomRight: pw.Radius.circular(4),
                   ),
+                  flex: 2,
                 ),
                 _headerStatCell(
-                  'وزن',
-                  athlete.weight,
+                  '(kg) وزن',
+                  athlete.weight.persianNumber,
                   boldFont,
                   regularFont,
                   pw.BorderRadius.zero,
                 ),
                 _headerStatCell(
-                  'قد',
-                  athlete.height,
+                  '(cm) قد',
+                  athlete.height.persianNumber,
                   boldFont,
                   regularFont,
                   pw.BorderRadius.zero,
                 ),
                 _headerStatCell(
                   'تاریخ',
-                  dateStr,
+                  dateStr.persianNumber,
                   boldFont,
                   regularFont,
                   pw.BorderRadius.only(
@@ -277,7 +279,7 @@ pw.Widget _buildHeader(
                 pw.SizedBox(width: 8),
 
                 _headerStatCell(
-                  'سطح برنامه',
+                  'سطح',
                   program.level.label,
                   boldFont,
                   regularFont,
@@ -287,15 +289,15 @@ pw.Widget _buildHeader(
                   ),
                 ),
                 _headerStatCell(
-                  'هدف برنامه',
+                  'هدف',
                   program.goal.label,
                   boldFont,
                   regularFont,
                   pw.BorderRadius.zero,
                 ),
                 _headerStatCell(
-                  'تعداد روز در هفته',
-                  '${program.daysPerWeek} روز',
+                  'روز در هفته',
+                  '${program.daysPerWeek.persianNumber} روز',
                   boldFont,
                   regularFont,
                   pw.BorderRadius.only(
@@ -353,9 +355,11 @@ pw.Widget _headerStatCell(
   String value,
   pw.Font boldFont,
   pw.Font regularFont,
-  pw.BorderRadius radius,
-) {
+  pw.BorderRadius radius, {
+  int flex = 1,
+}) {
   return pw.Expanded(
+    flex: flex,
     child: pw.Container(
       padding: const pw.EdgeInsets.symmetric(vertical: 4, horizontal: 2),
       decoration: pw.BoxDecoration(
@@ -432,7 +436,7 @@ pw.Widget _buildDayBanner(int day, pw.Font regularFont) {
     color: _light,
     alignment: pw.Alignment.center,
     child: pw.Text(
-      'شماره روز : $day',
+      'شماره روز  :  ${day.persianNumber}',
       style: pw.TextStyle(font: regularFont, color: _black, fontSize: 8),
     ),
   );
@@ -457,7 +461,7 @@ pw.Widget _buildTableHeaderRow(pw.Font boldFont) {
         _headerCell('ست', _setsFlex, boldFont),
         _headerCell('تکرارها', _repsFlex, boldFont),
         _headerCell('تمپو', _tempoFlex, boldFont),
-        _headerCell('استراحت', _restFlex, boldFont),
+        _headerCell('(s) استراحت', _restFlex, boldFont),
         _headerCell('سیستم', _systemFlex, boldFont),
       ],
     ),
@@ -595,7 +599,7 @@ pw.Widget _buildNormalRow(
         child: pw.Row(
           crossAxisAlignment: pw.CrossAxisAlignment.stretch,
           children: [
-            _subCell(_repsFlex, item.reps.join(' - '), regularFont),
+            _subCell(_repsFlex, item.reps.reversed.join(' - '), regularFont),
             _subCell(_tempoFlex, item.tempo, regularFont),
             _subCell(_restFlex, pe.rest, regularFont),
             _subCell(_systemFlex, '-', regularFont),
@@ -630,7 +634,7 @@ pw.Widget _buildNormalRow(
               ),
             ),
             child: pw.Text(
-              '$number',
+              number.persianNumber,
               style: pw.TextStyle(font: boldFont, fontSize: 11, color: _orange),
             ),
           ),
@@ -732,7 +736,7 @@ pw.Widget _buildNormalRow(
               ),
             ),
             child: pw.Text(
-              pe.sets,
+              pe.sets.persianNumber,
               style: pw.TextStyle(font: boldFont, fontSize: 10),
             ),
           ),
@@ -795,7 +799,7 @@ pw.Widget _buildSuperSetRow(
               ),
             ),
             child: pw.Text(
-              '$number',
+              number.persianNumber,
               style: pw.TextStyle(font: boldFont, fontSize: 11, color: _orange),
             ),
           ),
@@ -900,7 +904,7 @@ pw.Widget _buildSuperSetRow(
               ),
             ),
             child: pw.Text(
-              pe.sets,
+              pe.sets.persianNumber,
               style: pw.TextStyle(font: boldFont, fontSize: 10),
             ),
           ),
@@ -931,7 +935,7 @@ pw.Widget _buildSuperSetRow(
                         children: [
                           _subCell(
                             _repsFlex,
-                            item1.reps.join(' - '),
+                            item1.reps.reversed.join(' - '),
                             regularFont,
                           ),
                           _subCell(_tempoFlex, item1.tempo, regularFont),
@@ -951,7 +955,7 @@ pw.Widget _buildSuperSetRow(
                         children: [
                           _subCell(
                             _repsFlex,
-                            item2.reps.join(' - '),
+                            item2.reps.reversed.join(' - '),
                             regularFont,
                           ),
                           _subCell(_tempoFlex, item2.tempo, regularFont),
@@ -973,7 +977,7 @@ pw.Widget _buildSuperSetRow(
                     ),
                   ),
                   child: pw.Text(
-                    pe.rest,
+                    pe.rest.persianNumber,
                     style: pw.TextStyle(font: regularFont, fontSize: 9),
                   ),
                 ),
@@ -1013,7 +1017,7 @@ pw.Widget _subCell(int flex, String text, pw.Font regularFont) {
         border: pw.Border(left: pw.BorderSide(color: _darkGrey, width: 0.5)),
       ),
       child: pw.Text(
-        text.isEmpty ? '-' : text,
+        text.isEmpty ? '-' : text.persianNumber,
         textAlign: pw.TextAlign.center,
         style: pw.TextStyle(font: regularFont, fontSize: 8),
       ),
