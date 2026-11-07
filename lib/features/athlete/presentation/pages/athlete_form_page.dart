@@ -1,14 +1,16 @@
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/localization/formatters/app_number_formatter.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/buttons/app_button.dart';
 import 'package:coach_studio/core/widgets/display/app_surface.dart';
 import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
 import 'package:coach_studio/core/widgets/inputs/app_dropdown.dart';
-import 'package:coach_studio/core/widgets/inputs/app_number_picker.dart';
+import 'package:coach_studio/core/widgets/inputs/app_persian_date_picker.dart';
 import 'package:coach_studio/core/widgets/inputs/app_text_field.dart';
 import 'package:coach_studio/core/widgets/navigation/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
@@ -22,7 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:shamsi_date/shamsi_date.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 class AthleteFormPage extends StatefulWidget {
   final String? athleteId; // present -> edit mode
@@ -105,7 +107,7 @@ class _AthleteFormState extends State<_AthleteForm> {
   Gender? _gender;
   ProgramGoal? _goal;
   ProgramLevel? _level;
-  bool _hasDob = false;
+  bool _hasDob = true;
   late int _dobYear;
   late int _dobMonth;
   late int _dobDay;
@@ -138,10 +140,23 @@ class _AthleteFormState extends State<_AthleteForm> {
       _dobMonth = j.month;
       _dobDay = j.day;
     } else {
-      _dobYear = Jalali.now().year - 25;
-      _dobMonth = 1;
-      _dobDay = 1;
+      _dobYear = Jalali.now().year;
+      _dobMonth = Jalali.now().month;
+      _dobDay = Jalali.now().day;
     }
+    if (dob != null) {
+      displayDob = _displayDob();
+    } else {
+      _hasDob = false;
+      displayDob = 'انتخاب کنید';
+    }
+  }
+
+  String displayDob = '';
+  String _displayDob() {
+    return '${_dobYear.toString().persianNumber}/'
+        '${_dobMonth.toString().padLeft(2, '0').persianNumber}/'
+        '${_dobDay.toString().padLeft(2, '0').persianNumber}';
   }
 
   @override
@@ -187,7 +202,7 @@ class _AthleteFormState extends State<_AthleteForm> {
 
     final dob = _buildDob();
     if (dob != null && dob.isAfter(DateTime.now())) {
-      sl<AppNotification>().error('تاریخ تولد نمی‌تواند در آینده باشد.');
+      sl<AppNotification>().error('تاریخ تولد اشتباه است.');
       return;
     }
 
@@ -266,56 +281,75 @@ class _AthleteFormState extends State<_AthleteForm> {
                         ),
                         const SizedBox(height: 16),
                         AppDropdown<Gender>(
+                          searchable: false,
                           label: 'جنسیت',
                           value: _gender,
                           items: Gender.values,
                           itemLabel: (g) => g.label,
                           onChanged: (v) => setState(() => _gender = v),
                         ),
-                        const SizedBox(height: 8),
-                        SwitchListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text('تاریخ تولد', style: AppTextStyles.label),
-                          value: _hasDob,
-                          activeTrackColor: AppColors.secondary,
-                          onChanged: (v) => setState(() => _hasDob = v),
+                        const SizedBox(height: 18),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 8,
+                            left: 2,
+                            right: 2,
+                          ),
+                          child: Text(
+                            'تاریخ تولد',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary.withValues(
+                                alpha: 0.8,
+                              ),
+                            ),
+                          ),
                         ),
-                        if (_hasDob) ...[
-                          Row(
+                        Container(
+                          height: 52,
+                          padding: EdgeInsets.only(left: 7, right: 18),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.field,
+                            ),
+                            border: Border.all(color: AppColors.outline),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Expanded(
-                                child: AppNumberPicker(
-                                  label: 'سال',
-                                  value: _dobYear,
-                                  min: 1300,
-                                  max: Jalali.now().year,
-                                  onChanged: (v) => _dobYear = v,
+                                child: Text(
+                                  displayDob,
+                                  style: AppTextStyles.body.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: _hasDob
+                                        ? AppColors.textPrimary
+                                        : AppColors.textSecondary,
+                                  ),
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: AppNumberPicker(
-                                  label: 'ماه',
-                                  value: _dobMonth,
-                                  min: 1,
-                                  max: 12,
-                                  onChanged: (v) => _dobMonth = v,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: AppNumberPicker(
-                                  label: 'روز',
-                                  value: _dobDay,
-                                  min: 1,
-                                  max: 31,
-                                  onChanged: (v) => _dobDay = v,
-                                ),
+                              AppPersianDatePicker(
+                                value: Jalali(_dobYear, _dobMonth, _dobDay),
+                                placeholder: 'انتخاب تاریخ تولد',
+                                helpText: 'انتخاب تاریخ تولد',
+                                firstDate: Jalali(1300, 1, 1),
+                                lastDate: Jalali.now(),
+                                onChanged: (date) {
+                                  setState(() {
+                                    _dobYear = date.year;
+                                    _dobMonth = date.month;
+                                    _dobDay = date.day;
+                                    _hasDob = true;
+                                    displayDob = _displayDob();
+                                  });
+                                },
                               ),
                             ],
                           ),
-                        ],
-                        const SizedBox(height: 16),
+                        ),
+                        const SizedBox(height: 18),
                         AppTextField(
                           controller: _phone,
                           label: 'شماره تماس',
@@ -356,8 +390,8 @@ class _AthleteFormState extends State<_AthleteForm> {
                             ).trim();
                             if (value.isEmpty) return null;
                             final n = int.tryParse(value);
-                            if (n == null || n < 50 || n > 300) {
-                              return 'عددی بین ۵۰ تا ۳۰۰ وارد کنید';
+                            if (n == null || n < 100 || n > 250) {
+                              return 'قد وارد شده معتبر نیست';
                             }
                             return null;
                           },
@@ -375,8 +409,8 @@ class _AthleteFormState extends State<_AthleteForm> {
                             ).trim().replaceAll(RegExp('[٫,]'), '.');
                             if (value.isEmpty) return null;
                             final n = double.tryParse(value);
-                            if (n == null || n < 20 || n > 500) {
-                              return 'عددی بین ۲۰ تا ۵۰۰ وارد کنید';
+                            if (n == null || n < 40 || n > 300) {
+                              'وزن وارد شده معتبر نیست';
                             }
                             return null;
                           },
