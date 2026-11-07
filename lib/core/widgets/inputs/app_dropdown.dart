@@ -5,10 +5,11 @@ import 'package:coach_studio/core/theme/app_shadows.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
-/// Dropdown سفارشی: فیلد + پنل جستجو که کاملاً «زیر» فیلد باز می‌شود.
+/// Dropdown سفارشی: فیلد + پنل گزینه‌ها که کاملاً «زیر» فیلد باز می‌شود.
 class AppDropdown<T> extends StatelessWidget {
   final String label;
   final String hint;
+  final bool searchable;
   final T? value;
   final List<T> items;
   final String Function(T) itemLabel;
@@ -22,6 +23,7 @@ class AppDropdown<T> extends StatelessWidget {
     required this.itemLabel,
     this.onChanged,
     this.value,
+    this.searchable = true,
     this.validator,
     this.hint = 'انتخاب کنید',
   });
@@ -40,6 +42,7 @@ class AppDropdown<T> extends StatelessWidget {
         return _DropdownField<T>(
           label: label,
           hint: hint,
+          searchable: searchable,
           items: items,
           itemLabel: itemLabel,
           value: current,
@@ -61,6 +64,7 @@ class AppDropdown<T> extends StatelessWidget {
 class _DropdownField<T> extends StatefulWidget {
   final String label;
   final String hint;
+  final bool searchable;
   final List<T> items;
   final String Function(T) itemLabel;
   final T? value;
@@ -71,6 +75,7 @@ class _DropdownField<T> extends StatefulWidget {
   const _DropdownField({
     required this.label,
     required this.hint,
+    required this.searchable,
     required this.items,
     required this.itemLabel,
     required this.value,
@@ -152,6 +157,7 @@ class _DropdownFieldState<T> extends State<_DropdownField<T>> {
                   items: widget.items,
                   itemLabel: widget.itemLabel,
                   selected: widget.value,
+                  searchable: widget.searchable,
                   maxHeight: maxHeight,
                   onSelected: (item) {
                     _close();
@@ -240,7 +246,7 @@ class _DropdownFieldState<T> extends State<_DropdownField<T>> {
                       overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.body.copyWith(
                         fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w400,
                         color: selectedLabel == null
                             ? AppColors.textSecondary
                             : (widget.enabled
@@ -286,6 +292,7 @@ class _DropdownPanel<T> extends StatefulWidget {
   final List<T> items;
   final String Function(T) itemLabel;
   final T? selected;
+  final bool searchable;
   final double maxHeight;
   final ValueChanged<T> onSelected;
 
@@ -293,6 +300,7 @@ class _DropdownPanel<T> extends StatefulWidget {
     required this.items,
     required this.itemLabel,
     required this.selected,
+    required this.searchable,
     required this.maxHeight,
     required this.onSelected,
   });
@@ -354,7 +362,7 @@ class _DropdownPanelState<T> extends State<_DropdownPanel<T>> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildSearch(),
+                if (widget.searchable) _buildSearch(),
                 Flexible(
                   child: filtered.isEmpty
                       ? const Padding(

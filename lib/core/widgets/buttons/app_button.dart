@@ -40,6 +40,7 @@ class AppButton extends StatelessWidget {
   final bool isLoading;
   final AppButtonVariant variant;
   final AppButtonSize size;
+  final double? width;
 
   /// Optional icon shown before [text].
   final Widget? icon;
@@ -52,6 +53,7 @@ class AppButton extends StatelessWidget {
     this.variant = AppButtonVariant.primary,
     this.size = AppButtonSize.regular,
     this.icon,
+    this.width = double.infinity,
   });
 
   Color get _background => switch (variant) {
@@ -106,7 +108,7 @@ class AppButton extends StatelessWidget {
     );
 
     return SizedBox(
-      width: double.infinity,
+      width: width,
       height: size == AppButtonSize.regular ? 48 : 42,
       child: FilledButton(
         onPressed: isDisabled ? null : onPressed,
