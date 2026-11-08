@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/utils/enum_parser.dart';
 import 'package:coach_studio/features/athlete/data/models/athlete_program_assignment_model.dart';
 import 'package:coach_studio/features/athlete/domain/entities/athlete.dart';
 import 'package:coach_studio/features/athlete/domain/enums/gender.dart';
@@ -98,9 +99,7 @@ class AthleteModel {
       coachId: json['coachId'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
-      gender: json['gender'] != null
-          ? Gender.values.byName(json['gender'] as String)
-          : null,
+      gender: tryEnumByName(Gender.values, json['gender']),
       dateOfBirth: json['dateOfBirth'] != null
           ? DateTime.parse(json['dateOfBirth'] as String)
           : null,
@@ -108,12 +107,11 @@ class AthleteModel {
       email: json['email'] as String?,
       heightCm: (json['heightCm'] as num?)?.toInt(),
       weightKg: (json['weightKg'] as num?)?.toDouble(),
-      fitnessGoal: json['fitnessGoal'] != null
-          ? ProgramGoal.values.byName(json['fitnessGoal'] as String)
-          : null,
-      experienceLevel: json['experienceLevel'] != null
-          ? ProgramLevel.values.byName(json['experienceLevel'] as String)
-          : null,
+      fitnessGoal: tryEnumByName(ProgramGoal.values, json['fitnessGoal']),
+      experienceLevel: tryEnumByName(
+        ProgramLevel.values,
+        json['experienceLevel'],
+      ),
       injuries: json['injuries'] as String?,
       physicalLimitations: json['physicalLimitations'] as String?,
       coachNotes: json['coachNotes'] as String?,

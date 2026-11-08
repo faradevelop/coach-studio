@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/utils/enum_parser.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
@@ -82,8 +83,12 @@ class WorkoutProgramModel {
     return WorkoutProgramModel(
       id: json['id'] as String,
       title: json['title'] as String,
-      goal: ProgramGoal.values.byName(json['goal'] as String),
-      level: ProgramLevel.values.byName(json['level'] as String),
+      goal:
+          tryEnumByName(ProgramGoal.values, json['goal']) ??
+          ProgramGoal.strength,
+      level:
+          tryEnumByName(ProgramLevel.values, json['level']) ??
+          ProgramLevel.beginner,
       daysPerWeek: json['daysPerWeek'] as int,
       notes: json['notes'] as String?,
       isTemplate: json['isTemplate'] as bool,

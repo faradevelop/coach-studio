@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/utils/enum_parser.dart';
 import 'package:coach_studio/features/exercises/data/models/muscle_model.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/domain/enums/difficulty.dart';
@@ -113,14 +114,15 @@ class ExerciseModel {
     return ExerciseModel(
       id: json['id'] as String,
       name: json['name'] as String,
-      type: json['type'] != null
-          ? ExerciseType.values.byName(json['type'] as String)
-          : null,
+      type: tryEnumByName(ExerciseType.values, json['type']),
       targetMuscles: (json['muscles'] as List<dynamic>? ?? [])
           .map((muscle) => MuscleModel.fromJson(muscle as Map<String, dynamic>))
           .toList(),
-      difficulty: Difficulty.values.byName(json['difficulty'] as String),
-      equipment: Equipment.values.byName(json['equipment'] as String),
+      difficulty:
+          tryEnumByName(Difficulty.values, json['difficulty']) ??
+          Difficulty.intermediate,
+      equipment:
+          tryEnumByName(Equipment.values, json['equipment']) ?? Equipment.other,
       imageUrl: json['imageUrl'] as String?,
       videoUrl: json['videoUrl'] as String?,
       description: json['description'] as String?,
