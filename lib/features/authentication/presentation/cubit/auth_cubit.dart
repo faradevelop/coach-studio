@@ -67,7 +67,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<bool> login(String identifier, String password) async {
+  Future<LoginOutcome> login(String identifier, String password) async {
     _logger.info('AuthCubit: login started');
     try {
       final session = await repository.login(identifier, password);
@@ -79,16 +79,28 @@ class AuthCubit extends Cubit<AuthState> {
         } catch (_) {}
         await tokenStorage.clearToken();
         emit(AuthUnauthenticated());
-        return false;
+        // Same message as a wrong password: never reveal which app an account belongs to.
+        return LoginOutcome.invalidCredentials;
       }
       await tokenStorage.saveToken(session.token);
       _logger.info('AuthCubit: login successful');
       emit(AuthAuthenticated(session.user));
-      return true;
+      return LoginOutcome.success;
+    } on NetworkException catch (e) {
+      _logger.warning('AuthCubit: login failed (network)', error: e.message);
+      emit(AuthUnauthenticated());
+      return LoginOutcome.network;
+    } on RateLimitException {
+      emit(AuthUnauthenticated());
+      return LoginOutcome.tooManyAttempts;
+    } on ValidationException {
+      // Backend answers 422 for wrong/unknown credentials and inactive users.
+      emit(AuthUnauthenticated());
+      return LoginOutcome.invalidCredentials;
     } catch (e) {
       _logger.error('AuthCubit: login failed', error: e);
       emit(AuthUnauthenticated());
-      return false;
+      return LoginOutcome.serverError;
     }
   }
 
@@ -190,4 +202,12 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthUnauthenticated());
     }
   }
+}
+
+enum LoginOutcome {
+  success,
+  invalidCredentials,
+  network,
+  tooManyAttempts,
+  serverError,
 }

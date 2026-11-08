@@ -42,18 +42,34 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => _isSubmitting = true);
 
     try {
-      final success = await context.read<AuthCubit>().login(
+      final outcome = await context.read<AuthCubit>().login(
         _identifierController.text.trim(),
         _passwordController.text,
       );
 
       if (!mounted) return;
 
-      if (!success) {
-        sl<AppNotification>().error('نام کاربری/ایمیل یا رمز عبور اشتباه است.');
+      switch (outcome) {
+        case LoginOutcome.success:
+          // The router's redirect reacts to AuthCubit's new state.
+          break;
+        case LoginOutcome.invalidCredentials:
+          sl<AppNotification>().error(
+            'نام کاربری/ایمیل یا رمز عبور اشتباه است.',
+          );
+        case LoginOutcome.network:
+          sl<AppNotification>().error(
+            'اتصال به سرور برقرار نشد. اینترنت خود را بررسی کنید.',
+          );
+        case LoginOutcome.tooManyAttempts:
+          sl<AppNotification>().error(
+            'تلاش‌های ناموفق زیاد بود. چند دقیقه بعد دوباره امتحان کنید.',
+          );
+        case LoginOutcome.serverError:
+          sl<AppNotification>().error(
+            'خطایی در سرور رخ داد. لطفاً بعداً دوباره تلاش کنید.',
+          );
       }
-      // On success, the router's redirect reacts to AuthCubit's new state
-      // automatically and navigates to the programs list.
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
