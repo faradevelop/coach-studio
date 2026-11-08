@@ -17,9 +17,8 @@ class AthleteDetailCubit extends Cubit<AthleteDetailState> {
     required this.athleteId,
     required this.repository,
     required this.listCubit,
-    required AppLogger logger,
-  }) : _logger = logger,
-       super(AthleteDetailLoading());
+    required this._logger,
+  }) : super(AthleteDetailLoading());
 
   /// [silent] keeps the current content visible while reloading.
   Future<void> load({bool silent = false}) async {

@@ -177,7 +177,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_web_plugins:
-    dependency: transitive
+    dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
@@ -208,10 +208,10 @@ packages:
   horizontal_slider:
     dependency: "direct main"
     description:
-      path: "packages/horizontal_slider-0.0.3"
+      path: "packages/horizontal_slider"
       relative: true
     source: path
-    version: "0.0.3"
+    version: "1.0.0"
   http:
     dependency: "direct main"
     description:

@@ -23,6 +23,8 @@ dependencies:
 
   # ─────────────── Routing ───────────────
   go_router: ^17.3.0
+  flutter_web_plugins:
+    sdk: flutter
 
   # ─────────────── Networking ───────────────
   http: ^1.2.2
@@ -55,7 +57,7 @@ dependencies:
 
  # ───────── Local Packages ─────────
   horizontal_slider:
-    path: packages/horizontal_slider-0.0.3
+    path: packages/horizontal_slider
 
 # ─────────────────────────────────────────────
 # Development Dependencies
