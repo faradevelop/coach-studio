@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:coach_studio/core/error/app_exception.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
@@ -10,6 +8,9 @@ import 'package:coach_studio/features/exercises/presentation/cubit/exercise_stat
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ExerciseCubit extends Cubit<ExerciseState> {
+  static const _unexpectedMessage =
+      'خطای غیرمنتظره‌ای رخ داد. دوباره تلاش کنید.';
+
   final ExerciseRepository repository;
   final AppLogger _logger;
 
@@ -31,14 +32,10 @@ class ExerciseCubit extends Cubit<ExerciseState> {
   ExerciseFilter get filter => _filter;
   int? get totalExercises => _totalExercises;
 
-  ExerciseCubit({required this.repository, AppLogger? logger})
-    : _logger = logger ?? _createDefaultLogger(),
-      super(ExerciseInitial()) {
+  ExerciseCubit({required this.repository, required this._logger})
+    : super(ExerciseInitial()) {
     ensureMetaLoaded();
   }
-
-  static AppLogger _createDefaultLogger() =>
-      throw StateError('AppLogger must be provided to ExerciseCubit');
 
   /// Loads stable metadata (muscles). Retryable; never throws.
   Future<bool> ensureMetaLoaded() {
@@ -62,7 +59,7 @@ class ExerciseCubit extends Cubit<ExerciseState> {
     }
   }
 
-  Future<List<Exercise>?> _search(ExerciseFilter f) =>
+  Future<List<Exercise>> _search(ExerciseFilter f) =>
       repository.searchExercises(
         search: f.search,
         type: f.type?.name,
@@ -82,13 +79,8 @@ class ExerciseCubit extends Cubit<ExerciseState> {
   }
 
   /// Stateless server-side query (wizard). Does not touch list state or [filter].
-  Future<List<Exercise>> searchExercises(ExerciseFilter filter) async {
-    final result = await _search(filter);
-    if (result == null) {
-      throw const ValidationException('Invalid search parameters');
-    }
-    return result;
-  }
+  Future<List<Exercise>> searchExercises(ExerciseFilter filter) =>
+      _search(filter);
 
   void _syncTotal(List<Exercise> exercises) {
     if (_filter.isEmpty) _totalExercises = exercises.length;
@@ -108,10 +100,6 @@ class ExerciseCubit extends Cubit<ExerciseState> {
     try {
       final exercises = await _search(_filter);
       if (requestId != _requestId) return; // stale response
-      if (exercises == null) {
-        emit(ExerciseError('Invalid request'));
-        return;
-      }
       _syncTotal(exercises);
       emit(ExerciseLoaded(exercises: exercises));
     } on AppException catch (e) {
@@ -127,194 +115,84 @@ class ExerciseCubit extends Cubit<ExerciseState> {
         'ExerciseCubit: unexpected error loading exercises',
         error: e,
       );
-      emit(ExerciseError(e.toString()));
+      emit(ExerciseError(_unexpectedMessage));
     }
   }
 
-  // Mutations refresh with the ACTIVE filter, so add/edit/delete doesn't drop the search.
+  /// Mutations refresh with the ACTIVE filter, so add/edit/delete doesn't
+  /// drop the search. Throws on failure.
   Future<void> _refreshExercises() async {
     final requestId = ++_requestId;
     final exercises = await _search(_filter);
     if (requestId != _requestId) return;
-    if (exercises == null) throw const ServerException('Refresh failed!');
     _syncTotal(exercises);
-    emit(ExerciseLoaded(exercises: exercises, isSubmitting: false));
+    emit(ExerciseLoaded(exercises: exercises));
   }
 
-  Future<bool> addExercise(Exercise exercise) async {
-    _logger.info('ExerciseCubit: adding exercise');
-    final currentState = state;
+  Future<bool> addExercise(Exercise exercise) => _mutate(
+    action: 'add exercise',
+    run: () => repository.addExercise(exercise),
+    totalDelta: 1,
+  );
 
-    if (currentState is! ExerciseLoaded) {
+  Future<bool> updateExercise(Exercise exercise) => _mutate(
+    action: 'update exercise ${exercise.id}',
+    run: () => repository.updateExercise(exercise),
+  );
+
+  Future<bool> deleteExercise(String id) => _mutate(
+    action: 'delete exercise $id',
+    run: () => repository.deleteExercise(id),
+    totalDelta: -1,
+  );
+
+  /// A failed mutation (validation, forbidden, network...) restores the
+  /// existing list instead of switching the whole page to Error. A failed
+  /// refresh after a successful mutation is only logged.
+  Future<bool> _mutate({
+    required String action,
+    required Future<void> Function() run,
+    int totalDelta = 0,
+  }) async {
+    final current = state;
+
+    if (current is! ExerciseLoaded || current.isSubmitting) {
       _logger.warning(
-        'ExerciseCubit: cannot add exercise — not in loaded state',
+        'ExerciseCubit: cannot $action — not loaded or already submitting',
       );
       return false;
     }
 
-    emit(currentState.copyWith(isSubmitting: true));
+    emit(current.copyWith(isSubmitting: true));
 
-    // Mutation
     try {
-      final success = await repository.addExercise(exercise);
-
-      if (!success) {
-        _logger.error('ExerciseCubit: failed to add exercise');
-        _restoreState(currentState);
-        return false;
-      }
-      _adjustTotal(1);
+      await run();
     } on AppException catch (e) {
-      _logger.error('ExerciseCubit: error adding exercise', error: e.message);
-      emit(ExerciseError(e.message));
+      _logger.error('ExerciseCubit: failed to $action', error: e.message);
+      _endSubmitting();
       return false;
     } catch (e) {
-      _logger.error(
-        'ExerciseCubit: unexpected error adding exercise',
-        error: e,
-      );
-      emit(ExerciseError(e.toString()));
+      _logger.error('ExerciseCubit: unexpected error ($action)', error: e);
+      _endSubmitting();
       return false;
     }
 
-    // Refresh
+    if (totalDelta != 0) _adjustTotal(totalDelta);
+
     try {
       await _refreshExercises();
-      _logger.info('ExerciseCubit: exercise added successfully');
-    } on ForbiddenException catch (e) {
-      _logger.warning('ExerciseCubit: add forbidden', error: e.message);
-      _restoreState(currentState);
-      return false;
-    } on AppException catch (e) {
-      _logger.error(
-        'ExerciseCubit: refresh failed after adding exercise',
-        error: e.message,
-      );
-      emit(ExerciseError(e.message));
-    } catch (_) {
-      _logger.error('ExerciseCubit: refresh failed after adding exercise');
-      emit(ExerciseError('Refresh failed!'));
+    } catch (e) {
+      _logger.error('ExerciseCubit: refresh failed after $action', error: e);
     }
 
+    _endSubmitting(); // no-op unless the refresh failed or was superseded
     return true;
   }
 
-  Future<bool> updateExercise(Exercise exercise) async {
-    _logger.info('ExerciseCubit: updating exercise ${exercise.id}');
-    final currentState = state;
-
-    if (currentState is! ExerciseLoaded) {
-      _logger.warning(
-        'ExerciseCubit: cannot update exercise — not in loaded state',
-      );
-      return false;
+  void _endSubmitting() {
+    final s = state;
+    if (s is ExerciseLoaded && s.isSubmitting) {
+      emit(s.copyWith(isSubmitting: false));
     }
-
-    emit(currentState.copyWith(isSubmitting: true));
-
-    // Mutation
-    try {
-      final success = await repository.updateExercise(exercise);
-
-      if (!success) {
-        _logger.error('ExerciseCubit: failed to update exercise');
-        _restoreState(currentState);
-        return false;
-      }
-    } on ForbiddenException catch (e) {
-      _logger.warning('ExerciseCubit: update forbidden', error: e.message);
-      _restoreState(currentState);
-      return false;
-    } on AppException catch (e) {
-      _logger.error('ExerciseCubit: error updating exercise', error: e.message);
-      emit(ExerciseError(e.message));
-      return false;
-    } catch (e) {
-      _logger.error(
-        'ExerciseCubit: unexpected error updating exercise',
-        error: e,
-      );
-      emit(ExerciseError(e.toString()));
-      return false;
-    }
-
-    // Refresh
-    try {
-      await _refreshExercises();
-      _logger.info('ExerciseCubit: exercise updated successfully');
-    } on AppException catch (e) {
-      _logger.error(
-        'ExerciseCubit: refresh failed after updating exercise',
-        error: e.message,
-      );
-      emit(ExerciseError(e.message));
-    } catch (_) {
-      _logger.error('ExerciseCubit: refresh failed after updating exercise');
-      emit(ExerciseError('Refresh failed!'));
-    }
-
-    return true;
-  }
-
-  Future<bool> deleteExercise(String id) async {
-    _logger.info('ExerciseCubit: deleting exercise $id');
-    final currentState = state;
-
-    if (currentState is! ExerciseLoaded) {
-      _logger.warning(
-        'ExerciseCubit: cannot delete exercise — not in loaded state',
-      );
-      return false;
-    }
-
-    emit(currentState.copyWith(isSubmitting: true));
-
-    // Mutation
-    try {
-      final success = await repository.deleteExercise(id);
-
-      if (!success) {
-        _logger.error('ExerciseCubit: failed to delete exercise');
-        _restoreState(currentState);
-        return false;
-      }
-      _adjustTotal(-1);
-    } on ForbiddenException catch (e) {
-      _logger.warning('ExerciseCubit: delete forbidden', error: e.message);
-      _restoreState(currentState);
-      return false;
-    } on AppException catch (e) {
-      _logger.error('ExerciseCubit: error deleting exercise', error: e.message);
-      emit(ExerciseError(e.message));
-      return false;
-    } catch (e) {
-      _logger.error(
-        'ExerciseCubit: unexpected error deleting exercise',
-        error: e,
-      );
-      emit(ExerciseError(e.toString()));
-      return false;
-    }
-
-    // Refresh
-    try {
-      await _refreshExercises();
-      _logger.info('ExerciseCubit: exercise deleted successfully');
-    } on AppException catch (e) {
-      _logger.error(
-        'ExerciseCubit: refresh failed after deleting exercise',
-        error: e.message,
-      );
-      emit(ExerciseError(e.message));
-    } catch (_) {
-      _logger.error('ExerciseCubit: refresh failed after deleting exercise');
-      emit(ExerciseError('Refresh failed!'));
-    }
-
-    return true;
-  }
-
-  void _restoreState(ExerciseLoaded previousState) {
-    emit(previousState.copyWith(isSubmitting: false));
   }
 }

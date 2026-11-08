@@ -1,13 +1,11 @@
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
 import 'package:coach_studio/features/exercises/domain/entities/muscle.dart';
 
+/// Every method either completes or throws an [AppException].
 abstract class ExerciseRepository {
-  Stream<List<Exercise>> watchExercises();
-
-  /// Searches/filters exercises server-side. All parameters are optional —
-  /// only the ones with a value are sent to the API. [muscleSlugs] (when
-  /// provided) is sent as a single comma-separated `muscles` parameter.
-  Future<List<Exercise>?> searchExercises({
+  /// Server-side search/filter. All parameters are optional; [muscleSlugs]
+  /// is sent as a single comma-separated `muscles` parameter.
+  Future<List<Exercise>> searchExercises({
     String? search,
     String? type,
     String? difficulty,
@@ -15,11 +13,11 @@ abstract class ExerciseRepository {
     List<String>? muscleSlugs,
   });
 
-  Future<bool> addExercise(Exercise exercise);
+  Future<void> addExercise(Exercise exercise);
 
-  Future<bool> updateExercise(Exercise exercise);
+  Future<void> updateExercise(Exercise exercise);
 
-  Future<bool> deleteExercise(String id);
+  Future<void> deleteExercise(String id);
 
   Future<Exercise?> getExerciseById(String id);
 

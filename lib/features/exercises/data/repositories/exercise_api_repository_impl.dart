@@ -10,204 +10,63 @@ class ExerciseApiRepositoryImpl implements ExerciseRepository {
   final ExerciseApiDatasource datasource;
   final AppLogger _logger;
 
-  ExerciseApiRepositoryImpl({required this.datasource, AppLogger? logger})
-    : _logger = logger ?? _createDefaultLogger();
-
-  static AppLogger _createDefaultLogger() {
-    throw StateError('AppLogger must be provided to ExerciseApiRepositoryImpl');
-  }
+  ExerciseApiRepositoryImpl({required this.datasource, required this._logger});
 
   @override
-  Stream<List<Exercise>> watchExercises() async* {
-    // Single-emission stream: fulfills the existing Stream<...> contract
-    // without simulating real-time push updates. See Section 6 note.
-    _logger.debug('ExerciseRepository: loading exercises');
-    try {
-      final models = await datasource.getExercises();
-      if (models != null) {
-        final exercises = models.map((model) => model.toEntity()).toList();
-        _logger.info(
-          'ExerciseRepository: ${exercises.length} exercises loaded',
-        );
-        yield exercises;
-      }
-    } on ApiException catch (e) {
-      _logger.error(
-        'ExerciseRepository: failed to load exercises',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'ExerciseRepository: unexpected error loading exercises',
-        error: e,
-      );
-      rethrow;
-    }
-  }
-
-  @override
-  Future<List<Exercise>?> searchExercises({
+  Future<List<Exercise>> searchExercises({
     String? search,
     String? type,
     String? difficulty,
     String? equipment,
     List<String>? muscleSlugs,
-  }) async {
-    _logger.debug('ExerciseRepository: searching exercises');
-    try {
-      final models = await datasource.searchExercises(
-        search: search,
-        type: type,
-        difficulty: difficulty,
-        equipment: equipment,
-        muscleSlugs: muscleSlugs,
-      );
-
-      if (models == null) return null;
-
-      return models.map((model) => model.toEntity()).toList();
-    } on ApiException catch (e) {
-      _logger.error(
-        'ExerciseRepository: failed to search exercises',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'ExerciseRepository: unexpected error searching exercises',
-        error: e,
-      );
-      rethrow;
-    }
-  }
+  }) => _guard('search exercises', () async {
+    final models = await datasource.searchExercises(
+      search: search,
+      type: type,
+      difficulty: difficulty,
+      equipment: equipment,
+      muscleSlugs: muscleSlugs,
+    );
+    return models.map((m) => m.toEntity()).toList();
+  });
 
   @override
-  Future<bool> addExercise(Exercise exercise) async {
-    _logger.info('ExerciseRepository: adding exercise');
-    try {
-      final result = await datasource.createExercise(
-        ExerciseModel.fromEntity(exercise),
-      );
-      final success = result != null;
-      if (success) {
-        _logger.info('ExerciseRepository: exercise added successfully');
-      } else {
-        _logger.warning('ExerciseRepository: failed to add exercise');
-      }
-      return success;
-    } on ApiException catch (e) {
-      _logger.error(
-        'ExerciseRepository: error adding exercise',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'ExerciseRepository: unexpected error adding exercise',
-        error: e,
-      );
-      rethrow;
-    }
-  }
+  Future<void> addExercise(Exercise exercise) =>
+      _guard<void>('add exercise', () async {
+        await datasource.createExercise(ExerciseModel.fromEntity(exercise));
+      });
 
   @override
-  Future<bool> updateExercise(Exercise exercise) async {
-    _logger.info('ExerciseRepository: updating exercise ${exercise.id}');
-    try {
-      final success = await datasource.updateExercise(
-        ExerciseModel.fromEntity(exercise),
-      );
-      if (success) {
-        _logger.info('ExerciseRepository: exercise updated successfully');
-      } else {
-        _logger.warning('ExerciseRepository: failed to update exercise');
-      }
-      return success;
-    } on ApiException catch (e) {
-      _logger.error(
-        'ExerciseRepository: error updating exercise',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'ExerciseRepository: unexpected error updating exercise',
-        error: e,
-      );
-      rethrow;
-    }
-  }
+  Future<void> updateExercise(Exercise exercise) =>
+      _guard<void>('update exercise ${exercise.id}', () {
+        return datasource.updateExercise(ExerciseModel.fromEntity(exercise));
+      });
 
   @override
-  Future<bool> deleteExercise(String id) async {
-    _logger.info('ExerciseRepository: deleting exercise $id');
-    try {
-      final success = await datasource.deleteExercise(id);
-      if (success) {
-        _logger.info('ExerciseRepository: exercise deleted successfully');
-      } else {
-        _logger.warning('ExerciseRepository: failed to delete exercise');
-      }
-      return success;
-    } on ApiException catch (e) {
-      _logger.error(
-        'ExerciseRepository: error deleting exercise',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'ExerciseRepository: unexpected error deleting exercise',
-        error: e,
-      );
-      rethrow;
-    }
-  }
+  Future<void> deleteExercise(String id) =>
+      _guard<void>('delete exercise $id', () => datasource.deleteExercise(id));
 
   @override
-  Future<Exercise?> getExerciseById(String id) async {
-    _logger.debug('ExerciseRepository: fetching exercise $id');
-    try {
-      final model = await datasource.getExerciseById(id);
-      if (model != null) {
-        _logger.debug('ExerciseRepository: exercise $id retrieved');
-      } else {
-        _logger.debug('ExerciseRepository: exercise $id not found');
-      }
-      return model?.toEntity();
-    } on ApiException catch (e) {
-      _logger.error(
-        'ExerciseRepository: error fetching exercise $id',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'ExerciseRepository: unexpected error fetching exercise',
-        error: e,
-      );
-      rethrow;
-    }
-  }
+  Future<Exercise?> getExerciseById(String id) =>
+      _guard('fetch exercise $id', () async {
+        final model = await datasource.getExerciseById(id);
+        return model?.toEntity();
+      });
 
   @override
-  Future<List<Muscle>> getMuscles() async {
-    _logger.debug('ExerciseRepository: loading exercise types');
+  Future<List<Muscle>> getMuscles() => _guard('load muscles', () async {
+    final models = await datasource.getMuscles();
+    return models.map((m) => m.toEntity()).toList();
+  });
+
+  Future<T> _guard<T>(String action, Future<T> Function() run) async {
     try {
-      final models = await datasource.getMuscles();
-      return models.map((m) => m.toEntity()).toList();
+      return await run();
     } on ApiException catch (e) {
-      _logger.error(
-        'ExerciseRepository: failed to load exercises types',
-        error: e.message,
-      );
+      _logger.error('ExerciseRepository: failed to $action', error: e.message);
       throw ApiException.mapApiException(e);
     } catch (e) {
-      _logger.error(
-        'ExerciseRepository: unexpected error loading exercises types',
-        error: e,
-      );
+      _logger.error('ExerciseRepository: unexpected error ($action)', error: e);
       rethrow;
     }
   }
