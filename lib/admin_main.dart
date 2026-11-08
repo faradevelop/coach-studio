@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:coach_studio/app/admin/admin_router.dart';
+import 'package:coach_studio/app/config/app_config.dart';
 import 'package:coach_studio/core/bootstrap/font_preloader.dart';
 import 'package:coach_studio/core/bootstrap/global_error_handling.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
@@ -27,6 +28,7 @@ void main() async {
   usePathUrlStrategy(); // first line, once per entry point
   WidgetsFlutterBinding.ensureInitialized();
   setupGlobalErrorHandling();
+  AppConfig.validate();
 
   await initDependencies(
     allowedRole: UserRole.admin,
