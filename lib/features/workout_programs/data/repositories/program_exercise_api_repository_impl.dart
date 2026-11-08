@@ -12,173 +12,57 @@ class ProgramExerciseApiRepositoryImpl implements ProgramExerciseRepository {
 
   ProgramExerciseApiRepositoryImpl({
     required this.datasource,
-    AppLogger? logger,
-  }) : _logger = logger ?? _createDefaultLogger();
-
-  static AppLogger _createDefaultLogger() {
-    throw StateError(
-      'AppLogger must be provided to ProgramExerciseApiRepositoryImpl',
-    );
-  }
+    required this._logger,
+  });
 
   @override
-  Stream<List<ProgramExerciseDetails>> watchProgramExercises(
-    String workoutId,
-  ) async* {
-    _logger.debug(
-      'ProgramExerciseRepository: loading exercises for program $workoutId',
-    );
-    try {
-      final details = await datasource.getProgramExerciseDetails(workoutId);
-      if (details != null) {
-        _logger.info(
-          'ProgramExerciseRepository: ${details.length} program exercises loaded',
+  Future<List<ProgramExerciseDetails>> getProgramExercises(String workoutId) =>
+      _guard(
+        'load program exercises',
+        () => datasource.getProgramExerciseDetails(workoutId),
+      );
+
+  @override
+  Future<void> addProgramExercise(ProgramExercise exercise) =>
+      _guard<void>('add program exercise', () async {
+        await datasource.createProgramExercise(
+          ProgramExerciseModel.fromEntity(exercise),
         );
-        yield details;
-      }
+      });
+
+  @override
+  Future<void> updateProgramExercise(ProgramExercise exercise) =>
+      _guard<void>('update program exercise ${exercise.id}', () async {
+        await datasource.updateProgramExercise(
+          ProgramExerciseModel.fromEntity(exercise),
+        );
+      });
+
+  @override
+  Future<void> deleteProgramExercise(String id) => _guard<void>(
+    'delete program exercise $id',
+    () => datasource.deleteProgramExercise(id),
+  );
+
+  @override
+  Future<void> reorderProgramExercise(String exerciseId, int targetOrder) =>
+      _guard<void>(
+        'reorder program exercise $exerciseId',
+        () => datasource.reorderProgramExercise(exerciseId, targetOrder),
+      );
+
+  Future<T> _guard<T>(String action, Future<T> Function() run) async {
+    try {
+      return await run();
     } on ApiException catch (e) {
       _logger.error(
-        'ProgramExerciseRepository: failed to load program exercises',
+        'ProgramExerciseRepository: failed to $action',
         error: e.message,
       );
       throw ApiException.mapApiException(e);
     } catch (e) {
       _logger.error(
-        'ProgramExerciseRepository: unexpected error loading program exercises',
-        error: e,
-      );
-      rethrow;
-    }
-  }
-
-  @override
-  Future<bool> addProgramExercise(ProgramExercise exercise) async {
-    _logger.info('ProgramExerciseRepository: adding program exercise');
-    try {
-      final result = await datasource.createProgramExercise(
-        ProgramExerciseModel.fromEntity(exercise),
-      );
-      final success = result != null;
-      if (success) {
-        _logger.info(
-          'ProgramExerciseRepository: program exercise added successfully',
-        );
-      } else {
-        _logger.warning(
-          'ProgramExerciseRepository: failed to add program exercise',
-        );
-      }
-      return success;
-    } on ApiException catch (e) {
-      _logger.error(
-        'ProgramExerciseRepository: error adding program exercise',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'ProgramExerciseRepository: unexpected error adding program exercise',
-        error: e,
-      );
-      rethrow;
-    }
-  }
-
-  @override
-  Future<bool> updateProgramExercise(ProgramExercise exercise) async {
-    _logger.info(
-      'ProgramExerciseRepository: updating program exercise ${exercise.id}',
-    );
-    try {
-      final result = await datasource.updateProgramExercise(
-        ProgramExerciseModel.fromEntity(exercise),
-      );
-      final success = result != null;
-      if (success) {
-        _logger.info(
-          'ProgramExerciseRepository: program exercise updated successfully',
-        );
-      } else {
-        _logger.warning(
-          'ProgramExerciseRepository: failed to update program exercise',
-        );
-      }
-      return success;
-    } on ApiException catch (e) {
-      _logger.error(
-        'ProgramExerciseRepository: error updating program exercise',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'ProgramExerciseRepository: unexpected error updating program exercise',
-        error: e,
-      );
-      rethrow;
-    }
-  }
-
-  @override
-  Future<bool> deleteProgramExercise(String id) async {
-    _logger.info('ProgramExerciseRepository: deleting program exercise $id');
-    try {
-      final success = await datasource.deleteProgramExercise(id);
-      if (success) {
-        _logger.info(
-          'ProgramExerciseRepository: program exercise deleted successfully',
-        );
-      } else {
-        _logger.warning(
-          'ProgramExerciseRepository: failed to delete program exercise',
-        );
-      }
-      return success;
-    } on ApiException catch (e) {
-      _logger.error(
-        'ProgramExerciseRepository: error deleting program exercise',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'ProgramExerciseRepository: unexpected error deleting program exercise',
-        error: e,
-      );
-      rethrow;
-    }
-  }
-
-  @override
-  Future<bool> reorderProgramExercise(
-    String exerciseId,
-    int targetOrder,
-  ) async {
-    _logger.debug(
-      'ProgramExerciseRepository: reordering program exercise $exerciseId to order $targetOrder',
-    );
-    try {
-      final success = await datasource.reorderProgramExercise(
-        exerciseId,
-        targetOrder,
-      );
-      if (success) {
-        _logger.debug('ProgramExerciseRepository: program exercise reordered');
-      } else {
-        _logger.warning(
-          'ProgramExerciseRepository: failed to reorder program exercise',
-        );
-      }
-      return success;
-    } on ApiException catch (e) {
-      _logger.error(
-        'ProgramExerciseRepository: error reordering program exercise',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'ProgramExerciseRepository: unexpected error reordering program exercise',
+        'ProgramExerciseRepository: unexpected error ($action)',
         error: e,
       );
       rethrow;

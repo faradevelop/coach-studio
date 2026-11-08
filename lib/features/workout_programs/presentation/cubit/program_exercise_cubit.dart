@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:coach_studio/core/error/app_exception.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
@@ -9,328 +7,135 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'program_exercise_state.dart';
 
 class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
+  static const _unexpectedMessage =
+      'خطای غیرمنتظره‌ای رخ داد. دوباره تلاش کنید.';
+
   final ProgramExerciseRepository repository;
   final AppLogger _logger;
 
-  StreamSubscription? _subscription;
   String? _workoutId;
+  int _requestId = 0;
 
-  ProgramExerciseCubit({required this.repository, AppLogger? logger})
-    : _logger = logger ?? _createDefaultLogger(),
-      super(const ProgramExerciseInitial());
+  ProgramExerciseCubit({required this.repository, required this._logger})
+    : super(const ProgramExerciseInitial());
 
-  static AppLogger _createDefaultLogger() {
-    throw StateError('AppLogger must be provided to ProgramExerciseCubit');
+  /// This cubit is a per-flow factory instance, so an in-flight request can
+  /// finish after the page (and the cubit) is gone.
+  void _safeEmit(ProgramExerciseState state) {
+    if (!isClosed) emit(state);
   }
 
-  void loadExercises(String workoutId) {
-    _logger.debug(
-      'ProgramExerciseCubit: loading exercises for program $workoutId',
-    );
+  Future<void> loadExercises(String workoutId) async {
+    _logger.debug('ProgramExerciseCubit: loading exercises for $workoutId');
     _workoutId = workoutId;
+    final requestId = ++_requestId;
 
-    emit(const ProgramExerciseLoading());
+    _safeEmit(const ProgramExerciseLoading());
 
-    _subscription?.cancel();
-
-    _subscription = repository.watchProgramExercises(workoutId).listen((
-      exercises,
-    ) {
+    try {
+      final exercises = await repository.getProgramExercises(workoutId);
+      if (requestId != _requestId) return; // superseded
       _logger.info(
         'ProgramExerciseCubit: exercises loaded (${exercises.length} items)',
       );
-      emit(ProgramExerciseLoaded(exercises: exercises));
-    }, onError: _handleError);
+      _safeEmit(ProgramExerciseLoaded(exercises: exercises));
+    } on AppException catch (e) {
+      if (requestId != _requestId) return;
+      _logger.error('ProgramExerciseCubit: load failed', error: e.message);
+      _safeEmit(ProgramExerciseError(e.message));
+    } catch (e) {
+      if (requestId != _requestId) return;
+      _logger.error('ProgramExerciseCubit: unexpected load error', error: e);
+      _safeEmit(const ProgramExerciseError(_unexpectedMessage));
+    }
   }
 
+  /// Throws on failure; callers decide how to degrade.
   Future<void> _refreshExercises() async {
     final workoutId = _workoutId;
-
     if (workoutId == null) return;
 
-    final exercises = await repository.watchProgramExercises(workoutId).first;
-
-    emit(ProgramExerciseLoaded(exercises: exercises, isSubmitting: false));
+    final requestId = ++_requestId;
+    final exercises = await repository.getProgramExercises(workoutId);
+    if (requestId != _requestId) return;
+    _safeEmit(ProgramExerciseLoaded(exercises: exercises));
   }
 
-  Future<bool> addProgramExercise(ProgramExercise exercise) async {
-    _logger.info('ProgramExerciseCubit: adding program exercise');
-    final current = state;
+  Future<bool> addProgramExercise(ProgramExercise exercise) => _mutate(
+    action: 'add program exercise',
+    run: () => repository.addProgramExercise(exercise),
+  );
 
-    if (current is! ProgramExerciseLoaded) {
-      _logger.warning(
-        'ProgramExerciseCubit: cannot add exercise — not in loaded state',
+  Future<bool> updateProgramExercise(ProgramExercise exercise) => _mutate(
+    action: 'update program exercise ${exercise.id}',
+    run: () => repository.updateProgramExercise(exercise),
+  );
+
+  Future<bool> deleteExercise(String id) => _mutate(
+    action: 'delete program exercise $id',
+    run: () => repository.deleteProgramExercise(id),
+  );
+
+  Future<bool> reorderProgramExercise(String exerciseId, int targetOrder) =>
+      _mutate(
+        action: 'reorder program exercise $exerciseId',
+        run: () => repository.reorderProgramExercise(exerciseId, targetOrder),
       );
-      return false;
-    }
 
-    emit(current.copyWith(isSubmitting: true));
-
-    // Mutation
-    try {
-      final success = await repository.addProgramExercise(exercise);
-
-      if (!success) {
-        _logger.error('ProgramExerciseCubit: failed to add program exercise');
-        _restoreState(current);
-        return false;
-      }
-    } on AppException catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: error adding exercise',
-        error: e.message,
-      );
-      emit(ProgramExerciseError(e.message));
-      return false;
-    } catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: unexpected error adding exercise',
-        error: e,
-      );
-      emit(ProgramExerciseError(e.toString()));
-      return false;
-    }
-
-    // Refresh
-    try {
-      await _refreshExercises();
-      _logger.info('ProgramExerciseCubit: program exercise added successfully');
-    } on AppException catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: refresh failed after adding exercise',
-        error: e.message,
-      );
-      emit(ProgramExerciseError(e.message));
-    } catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: refresh failed after adding exercise',
-      );
-      emit(ProgramExerciseError('Refresh failed!'));
-    }
-
-    return true;
-  }
-
-  Future<bool> updateProgramExercise(ProgramExercise exercise) async {
-    _logger.info(
-      'ProgramExerciseCubit: updating program exercise ${exercise.id}',
-    );
-    final current = state;
-
-    if (current is! ProgramExerciseLoaded) {
-      _logger.warning(
-        'ProgramExerciseCubit: cannot update exercise — not in loaded state',
-      );
-      return false;
-    }
-
-    emit(current.copyWith(isSubmitting: true));
-
-    // Mutation
-    try {
-      final success = await repository.updateProgramExercise(exercise);
-
-      if (!success) {
-        _logger.error(
-          'ProgramExerciseCubit: failed to update program exercise',
-        );
-        _restoreState(current);
-        return false;
-      }
-    } on AppException catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: error updating exercise',
-        error: e.message,
-      );
-      emit(ProgramExerciseError(e.message));
-      return false;
-    } catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: unexpected error updating exercise',
-        error: e,
-      );
-      emit(ProgramExerciseError(e.toString()));
-      return false;
-    }
-
-    // Refresh
-    try {
-      await _refreshExercises();
-      _logger.info(
-        'ProgramExerciseCubit: program exercise updated successfully',
-      );
-    } on AppException catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: refresh failed after updating exercise',
-        error: e.message,
-      );
-      emit(ProgramExerciseError(e.message));
-    } catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: refresh failed after updating exercise',
-      );
-      emit(ProgramExerciseError('Refresh failed!'));
-    }
-
-    return true;
-  }
-
-  Future<bool> deleteExercise(String id) async {
-    _logger.info('ProgramExerciseCubit: deleting program exercise $id');
-    final current = state;
-
-    if (current is! ProgramExerciseLoaded) {
-      _logger.warning(
-        'ProgramExerciseCubit: cannot delete exercise — not in loaded state',
-      );
-      return false;
-    }
-
-    emit(current.copyWith(isSubmitting: true));
-
-    // Mutation
-    try {
-      final success = await repository.deleteProgramExercise(id);
-
-      if (!success) {
-        _logger.error(
-          'ProgramExerciseCubit: failed to delete program exercise',
-        );
-        _restoreState(current);
-        return false;
-      }
-    } on AppException catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: error deleting exercise',
-        error: e.message,
-      );
-      emit(ProgramExerciseError(e.message));
-      return false;
-    } catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: unexpected error deleting exercise',
-        error: e,
-      );
-      emit(ProgramExerciseError(e.toString()));
-      return false;
-    }
-
-    // Refresh
-    try {
-      await _refreshExercises();
-      _logger.info(
-        'ProgramExerciseCubit: program exercise deleted successfully',
-      );
-    } on AppException catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: refresh failed after deleting exercise',
-        error: e.message,
-      );
-      emit(ProgramExerciseError(e.message));
-    } catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: refresh failed after deleting exercise',
-      );
-      emit(ProgramExerciseError('Refresh failed!'));
-    }
-
-    return true;
-  }
-
-  Future<bool> reorderProgramExercise(
-    String exerciseId,
-    int targetOrder,
-  ) async {
-    _logger.debug(
-      'ProgramExerciseCubit: reordering exercise $exerciseId to order $targetOrder',
-    );
+  /// Shared mutation flow:
+  ///  1. refuse if not loaded or another mutation is in flight,
+  ///  2. run it; on failure restore the previous list (never switch to Error),
+  ///  3. refresh; if only the refresh fails the mutation still counts as done.
+  Future<bool> _mutate({
+    required String action,
+    required Future<void> Function() run,
+  }) async {
     final current = state;
 
     if (current is! ProgramExerciseLoaded || current.isSubmitting) {
       _logger.warning(
-        'ProgramExerciseCubit: cannot reorder exercise — invalid state',
+        'ProgramExerciseCubit: cannot $action — not loaded or already submitting',
       );
       return false;
     }
 
-    emit(current.copyWith(isSubmitting: true));
+    _safeEmit(
+      ProgramExerciseLoaded(exercises: current.exercises, isSubmitting: true),
+    );
 
-    // Mutation
     try {
-      final success = await repository.reorderProgramExercise(
-        exerciseId,
-        targetOrder,
-      );
-
-      if (!success) {
-        _logger.error(
-          'ProgramExerciseCubit: failed to reorder program exercise',
-        );
-        _restoreState(current);
-        return false;
-      }
+      await run();
     } on AppException catch (e) {
       _logger.error(
-        'ProgramExerciseCubit: error reordering exercise',
+        'ProgramExerciseCubit: failed to $action',
         error: e.message,
       );
-      emit(ProgramExerciseError(e.message));
+      _restore(current);
       return false;
     } catch (e) {
       _logger.error(
-        'ProgramExerciseCubit: unexpected error reordering exercise',
+        'ProgramExerciseCubit: unexpected error ($action)',
         error: e,
       );
-      emit(ProgramExerciseError(e.toString()));
+      _restore(current);
       return false;
     }
 
-    // Refresh
     try {
       await _refreshExercises();
-      _logger.debug(
-        'ProgramExerciseCubit: program exercise reordered successfully',
-      );
-    } on AppException catch (e) {
-      _logger.error(
-        'ProgramExerciseCubit: refresh failed after reordering exercise',
-        error: e.message,
-      );
-      emit(ProgramExerciseError(e.message));
     } catch (e) {
       _logger.error(
-        'ProgramExerciseCubit: refresh failed after reordering exercise',
+        'ProgramExerciseCubit: refresh failed after $action',
+        error: e,
       );
-      emit(ProgramExerciseError('Refresh failed!'));
+      _restore(current);
+      return true;
     }
 
     return true;
   }
 
-  void _restoreState(ProgramExerciseLoaded previousState) {
-    emit(previousState.copyWith(isSubmitting: false));
-  }
-
-  void _handleError(Object error) {
-    if (error is AppException) {
-      _logger.error(
-        'ProgramExerciseCubit: error in watch stream',
-        error: error.message,
-      );
-      emit(ProgramExerciseError(error.message));
-      return;
-    }
-
-    _logger.error(
-      'ProgramExerciseCubit: unexpected error in watch stream',
-      error: error,
-    );
-    emit(ProgramExerciseError(error.toString()));
-  }
-
-  @override
-  Future<void> close() {
-    _subscription?.cancel();
-    return super.close();
+  void _restore(ProgramExerciseLoaded previous) {
+    _safeEmit(ProgramExerciseLoaded(exercises: previous.exercises));
   }
 }
