@@ -390,7 +390,7 @@ class _AthleteFormState extends State<_AthleteForm> {
                             ).trim();
                             if (value.isEmpty) return null;
                             final n = int.tryParse(value);
-                            if (n == null || n < 100 || n > 250) {
+                            if (n == null || n < 50 || n > 300) {
                               return 'قد وارد شده معتبر نیست';
                             }
                             return null;
@@ -409,7 +409,7 @@ class _AthleteFormState extends State<_AthleteForm> {
                             ).trim().replaceAll(RegExp('[٫,]'), '.');
                             if (value.isEmpty) return null;
                             final n = double.tryParse(value);
-                            if (n == null || n < 40 || n > 300) {
+                            if (n == null || n < 20 || n > 500) {
                               'وزن وارد شده معتبر نیست';
                             }
                             return null;
