@@ -1,5 +1,6 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
+import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
@@ -160,6 +161,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
 
     setState(() => _isGeneratingPdf = true);
 
+    final rootNavigator = Navigator.of(context, rootNavigator: true);
     showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -167,20 +169,24 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
       builder: (_) => const PdfLoadingDialog(),
     );
 
+    var succeeded = false;
     try {
       await _buildAndSharePdf(state.exercises, athlete);
+      succeeded = true;
+    } catch (e, st) {
+      sl<AppLogger>().error('PDF generation failed', error: e, stackTrace: st);
+    }
 
-      if (mounted) {
+    // Closes ONLY the loading dialog (never the page behind it).
+    rootNavigator.pop();
+
+    if (mounted) {
+      setState(() => _isGeneratingPdf = false);
+      if (succeeded) {
         sl<AppNotification>().success('PDF برنامه ایجاد شد!');
-        context.pop();
-      }
-    } catch (_) {
-      if (mounted) {
-        context.pop();
+      } else {
         sl<AppNotification>().error('ساخت PDF با خطا مواجه شد');
       }
-    } finally {
-      if (mounted) setState(() => _isGeneratingPdf = false);
     }
   }
 

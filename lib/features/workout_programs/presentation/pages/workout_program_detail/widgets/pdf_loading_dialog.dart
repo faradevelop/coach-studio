@@ -9,27 +9,30 @@ class PdfLoadingDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppDialog(
-      maxWidth: 260,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-      child: SizedBox(
-        width: double.infinity,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            LoadingAnimationWidget.flickr(
-              leftDotColor: AppColors.primary,
-              rightDotColor: AppColors.secondary,
-              size: 42,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'در حال ساخت PDF',
-              style: AppTextStyles.titleMedium.copyWith(fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            Text('لطفاً کمی صبر کنید...', style: AppTextStyles.subtitle),
-          ],
+    return PopScope(
+      canPop: false,
+      child: AppDialog(
+        maxWidth: 260,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              LoadingAnimationWidget.flickr(
+                leftDotColor: AppColors.primary,
+                rightDotColor: AppColors.secondary,
+                size: 42,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'در حال ساخت PDF',
+                style: AppTextStyles.titleMedium.copyWith(fontSize: 16),
+              ),
+              const SizedBox(height: 8),
+              Text('لطفاً کمی صبر کنید...', style: AppTextStyles.subtitle),
+            ],
+          ),
         ),
       ),
     );
