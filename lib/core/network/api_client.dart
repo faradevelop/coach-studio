@@ -1,17 +1,32 @@
+import 'dart:async';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+
+import 'package:coach_studio/core/error/app_exception.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/core/network/api_exception.dart';
 import 'package:coach_studio/core/storage/token_storage.dart';
+import 'package:http/http.dart' as http;
 
 /// Thin HTTP wrapper responsible for:
 /// - sending requests with JSON headers (+ Authorization: Bearer `<token>`
 ///   when a session is active)
+/// - enforcing a timeout and mapping connectivity failures to
+///   [NetworkException] (GET requests are retried once)
 /// - unwrapping the backend's standard envelope: { success, message, data|errors }
 /// - throwing ApiException on failure so callers can handle it uniformly
 /// - reporting 401 responses via [onUnauthorized] so the app can clear the
 ///   local session and redirect to login
 class ApiClient {
+  static const Duration _timeout = Duration(seconds: 20);
+  static const Duration _retryDelay = Duration(milliseconds: 600);
+
+  static const String _timeoutMessage =
+      'پاسخی از سرور دریافت نشد. اتصال اینترنت خود را بررسی کنید.';
+  static const String _offlineMessage =
+      'اتصال به سرور برقرار نشد. اتصال اینترنت خود را بررسی کنید.';
+  static const String _invalidResponseMessage =
+      'پاسخ نامعتبر از سرور دریافت شد. لطفاً بعداً دوباره تلاش کنید.';
+
   final String baseUrl;
   final http.Client _client;
   final TokenStorage tokenStorage;
@@ -43,172 +58,138 @@ class ApiClient {
     return headers;
   }
 
-  Future<dynamic> get(String path) async {
-    _logger.debug('API → GET $path');
+  // Only idempotent reads are retried; a retried POST could create twice.
+  Future<dynamic> get(String path) =>
+      _request('GET', path, retryOnNetworkError: true);
+
+  Future<dynamic> post(String path, Map<String, dynamic> body) =>
+      _request('POST', path, body: body);
+
+  Future<dynamic> put(String path, Map<String, dynamic> body) =>
+      _request('PUT', path, body: body);
+
+  Future<dynamic> patch(String path, Map<String, dynamic> body) =>
+      _request('PATCH', path, body: body);
+
+  Future<dynamic> delete(String path) => _request('DELETE', path);
+
+  Future<dynamic> _request(
+    String method,
+    String path, {
+    Map<String, dynamic>? body,
+    bool retryOnNetworkError = false,
+  }) async {
+    // The query string may contain personal data (e.g. athlete search),
+    // so it is never logged.
+    final logPath = path.split('?').first;
+    _logger.debug('API → $method $logPath');
     final stopwatch = Stopwatch()..start();
+    var attempt = 0;
 
-    try {
-      final response = await _client.get(
-        Uri.parse('$baseUrl$path'),
-        headers: _headers,
-      );
-      final duration = stopwatch.elapsedMilliseconds;
-      final result = _unwrap(response);
-
-      _logger.info('API ← ${response.statusCode} GET $path ($duration ms)');
-      return result;
-    } catch (e) {
-      final duration = stopwatch.elapsedMilliseconds;
-      if (e is ApiException) {
+    while (true) {
+      attempt++;
+      try {
+        final response = await _send(method, path, body).timeout(_timeout);
+        final result = _unwrap(response);
+        _logger.info(
+          'API ← ${response.statusCode} $method $logPath '
+          '(${stopwatch.elapsedMilliseconds} ms)',
+        );
+        return result;
+      } on ApiException catch (e) {
         _logger.error(
-          'API ← ${e.statusCode} GET $path ($duration ms)',
+          'API ← ${e.statusCode} $method $logPath '
+          '(${stopwatch.elapsedMilliseconds} ms)',
           error: e.message,
         );
-      } else {
-        _logger.error('API GET $path failed ($duration ms)', error: e);
+        rethrow;
+      } on TimeoutException catch (e) {
+        if (retryOnNetworkError && attempt == 1) {
+          await Future<void>.delayed(_retryDelay);
+          continue;
+        }
+        _logger.error('API $method $logPath timed out', error: e);
+        throw const NetworkException(_timeoutMessage);
+      } on http.ClientException catch (e) {
+        // Offline / DNS / connection refused / CORS failure. http's IOClient
+        // wraps SocketException into ClientException, so no dart:io import
+        // is needed (keeps Web compiling).
+        if (retryOnNetworkError && attempt == 1) {
+          await Future<void>.delayed(_retryDelay);
+          continue;
+        }
+        _logger.error('API $method $logPath connection failed', error: e);
+        throw const NetworkException(_offlineMessage);
       }
-      rethrow;
     }
   }
 
-  Future<dynamic> post(String path, Map<String, dynamic> body) async {
-    _logger.debug('API → POST $path');
-    final stopwatch = Stopwatch()..start();
+  Future<http.Response> _send(
+    String method,
+    String path,
+    Map<String, dynamic>? body,
+  ) {
+    final uri = Uri.parse('$baseUrl$path');
+    final encoded = body == null ? null : jsonEncode(body);
 
-    try {
-      final response = await _client.post(
-        Uri.parse('$baseUrl$path'),
-        headers: _headers,
-        body: jsonEncode(body),
-      );
-      final duration = stopwatch.elapsedMilliseconds;
-      final result = _unwrap(response);
-
-      _logger.info('API ← ${response.statusCode} POST $path ($duration ms)');
-      return result;
-    } catch (e) {
-      final duration = stopwatch.elapsedMilliseconds;
-      if (e is ApiException) {
-        _logger.error(
-          'API ← ${e.statusCode} POST $path ($duration ms)',
-          error: e.message,
-        );
-      } else {
-        _logger.error('API POST $path failed ($duration ms)', error: e);
-      }
-      rethrow;
-    }
-  }
-
-  Future<dynamic> put(String path, Map<String, dynamic> body) async {
-    _logger.debug('API → PUT $path');
-    final stopwatch = Stopwatch()..start();
-
-    try {
-      final response = await _client.put(
-        Uri.parse('$baseUrl$path'),
-        headers: _headers,
-        body: jsonEncode(body),
-      );
-      final duration = stopwatch.elapsedMilliseconds;
-      final result = _unwrap(response);
-
-      _logger.info('API ← ${response.statusCode} PUT $path ($duration ms)');
-      return result;
-    } catch (e) {
-      final duration = stopwatch.elapsedMilliseconds;
-      if (e is ApiException) {
-        _logger.error(
-          'API ← ${e.statusCode} PUT $path ($duration ms)',
-          error: e.message,
-        );
-      } else {
-        _logger.error('API PUT $path failed ($duration ms)', error: e);
-      }
-      rethrow;
-    }
-  }
-
-  Future<dynamic> patch(String path, Map<String, dynamic> body) async {
-    _logger.debug('API → PATCH $path');
-    final stopwatch = Stopwatch()..start();
-
-    try {
-      final response = await _client.patch(
-        Uri.parse('$baseUrl$path'),
-        headers: _headers,
-        body: jsonEncode(body),
-      );
-      final duration = stopwatch.elapsedMilliseconds;
-      final result = _unwrap(response);
-
-      _logger.info('API ← ${response.statusCode} PATCH $path ($duration ms)');
-      return result;
-    } catch (e) {
-      final duration = stopwatch.elapsedMilliseconds;
-      if (e is ApiException) {
-        _logger.error(
-          'API ← ${e.statusCode} PATCH $path ($duration ms)',
-          error: e.message,
-        );
-      } else {
-        _logger.error('API PATCH $path failed ($duration ms)', error: e);
-      }
-      rethrow;
-    }
-  }
-
-  Future<dynamic> delete(String path) async {
-    _logger.debug('API → DELETE $path');
-    final stopwatch = Stopwatch()..start();
-
-    try {
-      final response = await _client.delete(
-        Uri.parse('$baseUrl$path'),
-        headers: _headers,
-      );
-      final duration = stopwatch.elapsedMilliseconds;
-      final result = _unwrap(response);
-
-      _logger.info('API ← ${response.statusCode} DELETE $path ($duration ms)');
-      return result;
-    } catch (e) {
-      final duration = stopwatch.elapsedMilliseconds;
-      if (e is ApiException) {
-        _logger.error(
-          'API ← ${e.statusCode} DELETE $path ($duration ms)',
-          error: e.message,
-        );
-      } else {
-        _logger.error('API DELETE $path failed ($duration ms)', error: e);
-      }
-      rethrow;
+    switch (method) {
+      case 'GET':
+        return _client.get(uri, headers: _headers);
+      case 'POST':
+        return _client.post(uri, headers: _headers, body: encoded);
+      case 'PUT':
+        return _client.put(uri, headers: _headers, body: encoded);
+      case 'PATCH':
+        return _client.patch(uri, headers: _headers, body: encoded);
+      case 'DELETE':
+        return _client.delete(uri, headers: _headers);
+      default:
+        throw ArgumentError('Unsupported HTTP method: $method');
     }
   }
 
   dynamic _unwrap(http.Response response) {
-    final Map<String, dynamic> decoded =
-        jsonDecode(response.body) as Map<String, dynamic>;
-    final bool success = decoded['success'] as bool? ?? false;
+    final status = response.statusCode;
 
-    if (response.statusCode >= 200 && response.statusCode < 300 && success) {
-      return decoded['data'];
-    }
-
-    if (response.statusCode == 401) {
+    if (status == 401) {
       _logger.warning('API: Unauthorized (401) — session may be invalid');
       onUnauthorized?.call();
     }
 
-    final rawErrors = decoded['errors'];
+    // A proxy/gateway can answer with HTML (502/504) or an empty body;
+    // that must surface as an ApiException, not a FormatException.
+    Map<String, dynamic>? decoded;
+    try {
+      final raw = jsonDecode(
+        utf8.decode(response.bodyBytes, allowMalformed: true),
+      );
+      if (raw is Map<String, dynamic>) decoded = raw;
+    } on FormatException {
+      decoded = null;
+    }
 
+    final bool isOk = status >= 200 && status < 300;
+
+    if (isOk && decoded != null && (decoded['success'] as bool? ?? false)) {
+      return decoded['data'];
+    }
+
+    if (decoded == null) {
+      throw ApiException(
+        message: _invalidResponseMessage,
+        statusCode: status,
+        errors: const {},
+      );
+    }
+
+    final rawErrors = decoded['errors'];
     final Map<String, dynamic> errors = rawErrors is Map<String, dynamic>
         ? rawErrors
         : {};
 
     throw ApiException(
       message: decoded['message'] as String? ?? 'Unexpected error',
-      statusCode: response.statusCode,
+      statusCode: status,
       errors: errors,
     );
   }
