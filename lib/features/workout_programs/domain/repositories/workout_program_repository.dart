@@ -1,22 +1,23 @@
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_filter.dart';
 
+/// Every method either completes or throws an [AppException].
 abstract class WorkoutProgramRepository {
-  Stream<List<WorkoutProgram>> watchPrograms({
+  Future<List<WorkoutProgram>> getPrograms({
     WorkoutProgramFilter filter = const WorkoutProgramFilter(),
   });
 
-  Future<WorkoutProgram?> addProgram(WorkoutProgram program);
+  Future<WorkoutProgram> addProgram(WorkoutProgram program);
 
-  Future<bool> updateProgram(WorkoutProgram program);
+  Future<void> updateProgram(WorkoutProgram program);
 
-  Future<bool> deleteProgram(String id);
+  Future<void> deleteProgram(String id);
 
-  Future<bool> duplicateProgram(String id, String title);
+  Future<void> duplicateProgram(String id, String title);
 
-  Future<WorkoutProgram?> addDay(String programId);
+  Future<WorkoutProgram> addDay(String programId);
 
-  Future<bool> deleteDay(String programId, int day);
+  Future<void> deleteDay(String programId, int day);
 
-  Future<bool> reorderDay(String programId, int day, int targetOrder);
+  Future<void> reorderDay(String programId, int day, int targetOrder);
 }

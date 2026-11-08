@@ -10,239 +10,85 @@ class WorkoutProgramApiRepositoryImpl implements WorkoutProgramRepository {
   final WorkoutProgramApiDatasource datasource;
   final AppLogger _logger;
 
-  WorkoutProgramApiRepositoryImpl({required this.datasource, AppLogger? logger})
-    : _logger = logger ?? _createDefaultLogger();
-
-  static AppLogger _createDefaultLogger() {
-    throw StateError(
-      'AppLogger must be provided to WorkoutProgramApiRepositoryImpl',
-    );
-  }
+  WorkoutProgramApiRepositoryImpl({
+    required this.datasource,
+    required this._logger,
+  });
 
   @override
-  Stream<List<WorkoutProgram>> watchPrograms({
+  Future<List<WorkoutProgram>> getPrograms({
     WorkoutProgramFilter filter = const WorkoutProgramFilter(),
-  }) async* {
-    _logger.debug('WorkoutProgramRepository: loading programs');
-    try {
-      final models = await datasource.getPrograms(
-        search: filter.search,
-        status: filter.status == ProgramStatusFilter.all
-            ? null
-            : filter.status.name,
-        goal: filter.goal?.name,
-        level: filter.level?.name,
-      );
-      if (models != null) {
-        final programs = models.map((m) => m.toEntity()).toList();
-        _logger.info(
-          'WorkoutProgramRepository: ${programs.length} programs loaded',
-        );
-        yield programs;
-      }
-    } on ApiException catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: failed to load programs',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: unexpected error loading programs',
-        error: e,
-      );
-      rethrow;
-    }
-  }
+  }) => _guard('load programs', () async {
+    final models = await datasource.getPrograms(
+      search: filter.search,
+      status: filter.status == ProgramStatusFilter.all
+          ? null
+          : filter.status.name,
+      goal: filter.goal?.name,
+      level: filter.level?.name,
+    );
+    return models.map((m) => m.toEntity()).toList();
+  });
 
   @override
-  Future<WorkoutProgram?> addProgram(WorkoutProgram program) async {
-    _logger.info('WorkoutProgramRepository: adding program');
-    try {
-      final created = await datasource.createProgram(
-        WorkoutProgramModel.fromEntity(program),
-      );
-      if (created != null) {
-        _logger.info('WorkoutProgramRepository: program added successfully');
+  Future<WorkoutProgram> addProgram(WorkoutProgram program) =>
+      _guard('add program', () async {
+        final created = await datasource.createProgram(
+          WorkoutProgramModel.fromEntity(program),
+        );
         return created.toEntity();
-      }
-      _logger.warning('WorkoutProgramRepository: failed to add program');
-      return null;
-    } on ApiException catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: error adding program',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: unexpected error adding program',
-        error: e,
-      );
-      rethrow;
-    }
-  }
+      });
 
   @override
-  Future<bool> updateProgram(WorkoutProgram program) async {
-    _logger.info('WorkoutProgramRepository: updating program ${program.id}');
-    try {
-      final success = await datasource.updateProgram(
-        WorkoutProgramModel.fromEntity(program),
-      );
-      if (success) {
-        _logger.info('WorkoutProgramRepository: program updated successfully');
-      } else {
-        _logger.warning('WorkoutProgramRepository: failed to update program');
-      }
-      return success;
-    } on ApiException catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: error updating program',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: unexpected error updating program',
-        error: e,
-      );
-      rethrow;
-    }
-  }
+  Future<void> updateProgram(WorkoutProgram program) => _guard<void>(
+    'update program ${program.id}',
+    () {
+      return datasource.updateProgram(WorkoutProgramModel.fromEntity(program));
+    },
+  );
 
   @override
-  Future<bool> deleteProgram(String id) async {
-    _logger.info('WorkoutProgramRepository: deleting program $id');
-    try {
-      final success = await datasource.deleteProgram(id);
-      if (success) {
-        _logger.info('WorkoutProgramRepository: program deleted successfully');
-      } else {
-        _logger.warning('WorkoutProgramRepository: failed to delete program');
-      }
-      return success;
-    } on ApiException catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: error deleting program',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: unexpected error deleting program',
-        error: e,
-      );
-      rethrow;
-    }
-  }
+  Future<void> deleteProgram(String id) =>
+      _guard<void>('delete program $id', () => datasource.deleteProgram(id));
 
   @override
-  Future<bool> duplicateProgram(String id, String title) async {
-    _logger.info('WorkoutProgramRepository: duplicating program $id');
-    try {
-      final success = await datasource.duplicateProgram(id, title);
-      if (success) {
-        _logger.info(
-          'WorkoutProgramRepository: program duplicated successfully',
-        );
-      } else {
-        _logger.warning(
-          'WorkoutProgramRepository: failed to duplicate program',
-        );
-      }
-      return success;
-    } on ApiException catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: error duplicating program',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: unexpected error duplicating program',
-        error: e,
-      );
-      rethrow;
-    }
-  }
+  Future<void> duplicateProgram(String id, String title) => _guard<void>(
+    'duplicate program $id',
+    () => datasource.duplicateProgram(id, title),
+  );
 
   @override
-  Future<WorkoutProgram?> addDay(String programId) async {
-    _logger.info('WorkoutProgramRepository: adding day to program $programId');
-    try {
-      final updated = await datasource.addDay(programId);
-      if (updated != null) {
-        _logger.info('WorkoutProgramRepository: day added successfully');
+  Future<WorkoutProgram> addDay(String programId) =>
+      _guard('add day to program $programId', () async {
+        final updated = await datasource.addDay(programId);
         return updated.toEntity();
-      }
-      _logger.warning('WorkoutProgramRepository: failed to add day');
-      return null;
-    } on ApiException catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: error adding day',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: unexpected error adding day',
-        error: e,
-      );
-      rethrow;
-    }
-  }
+      });
 
   @override
-  Future<bool> deleteDay(String programId, int day) async {
-    _logger.info(
-      'WorkoutProgramRepository: deleting day $day of program $programId',
-    );
-    try {
-      final success = await datasource.deleteDay(programId, day);
-      if (success) {
-        _logger.info('WorkoutProgramRepository: day deleted successfully');
-      } else {
-        _logger.warning('WorkoutProgramRepository: failed to delete day');
-      }
-      return success;
-    } on ApiException catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: error deleting day',
-        error: e.message,
-      );
-      throw ApiException.mapApiException(e);
-    } catch (e) {
-      _logger.error(
-        'WorkoutProgramRepository: unexpected error deleting day',
-        error: e,
-      );
-      rethrow;
-    }
-  }
+  Future<void> deleteDay(String programId, int day) => _guard<void>(
+    'delete day $day of program $programId',
+    () => datasource.deleteDay(programId, day),
+  );
 
   @override
-  Future<bool> reorderDay(String programId, int day, int targetOrder) async {
-    _logger.info(
-      'WorkoutProgramRepository: moving day $day to $targetOrder in program $programId',
-    );
+  Future<void> reorderDay(String programId, int day, int targetOrder) =>
+      _guard<void>(
+        'move day $day to $targetOrder in program $programId',
+        () => datasource.reorderDay(programId, day, targetOrder),
+      );
+
+  Future<T> _guard<T>(String action, Future<T> Function() run) async {
     try {
-      final success = await datasource.reorderDay(programId, day, targetOrder);
-      if (success) {
-        _logger.info('WorkoutProgramRepository: day reordered successfully');
-      } else {
-        _logger.warning('WorkoutProgramRepository: failed to reorder day');
-      }
-      return success;
+      return await run();
     } on ApiException catch (e) {
       _logger.error(
-        'WorkoutProgramRepository: error reordering day',
+        'WorkoutProgramRepository: failed to $action',
         error: e.message,
       );
       throw ApiException.mapApiException(e);
     } catch (e) {
       _logger.error(
-        'WorkoutProgramRepository: unexpected error reordering day',
+        'WorkoutProgramRepository: unexpected error ($action)',
         error: e,
       );
       rethrow;
