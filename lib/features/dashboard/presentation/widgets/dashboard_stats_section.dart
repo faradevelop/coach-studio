@@ -124,11 +124,11 @@ class _AthleteStatCard extends StatelessWidget {
         final statIcon = _statIcon(icon, color);
 
         return switch (state) {
-          AthleteLoaded(:final athletes) => DashboardStatCard(
+          AthleteLoaded(:final summary, :final athletes) => DashboardStatCard(
             icon: statIcon,
             iconContainerColor: color,
             label: label,
-            value: select(AthleteSummary.fromAthletes(athletes)),
+            value: select(summary ?? AthleteSummary.fromAthletes(athletes)),
             onTap: () => context.goNamed(AppRouteNames.athletes),
           ),
           AthleteError() => DashboardStatCard(
