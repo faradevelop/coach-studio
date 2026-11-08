@@ -104,7 +104,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                           label: 'نام برنامه',
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Required';
+                              return 'الزامی';
                             }
                             return null;
                           },
@@ -116,6 +116,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                           value: _goal,
                           items: ProgramGoal.values,
                           itemLabel: (goal) => goal.label,
+                          validator: (v) => v == null ? 'الزامی' : null,
                           onChanged: widget.isLoading
                               ? null
                               : (value) {
@@ -129,6 +130,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                           value: _level,
                           items: ProgramLevel.values,
                           itemLabel: (level) => level.label,
+                          validator: (v) => v == null ? 'الزامی' : null,
                           onChanged: widget.isLoading
                               ? null
                               : (value) {

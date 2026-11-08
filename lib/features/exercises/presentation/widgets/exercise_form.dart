@@ -127,9 +127,8 @@ class _ExerciseFormState extends State<ExerciseForm> {
                         AppTextField(
                           controller: _nameController,
                           label: 'نام تمرین',
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Required'
-                              : null,
+                          validator: (value) =>
+                              value == null || value.isEmpty ? 'الزامی' : null,
                         ),
                         const SizedBox(height: 20),
 
