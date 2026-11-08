@@ -41,3 +41,8 @@ class UnauthenticatedException extends AppException {
 class ForbiddenException extends AppException {
   const ForbiddenException(super.message);
 }
+
+/// Thrown when the Backend responds 429 (too many requests).
+class RateLimitException extends AppException {
+  const RateLimitException(super.message);
+}
