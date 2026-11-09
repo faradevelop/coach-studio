@@ -1,0 +1,32 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: flutter-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.47.8"   # Local version of flutter must pin
+          cache: true
+
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
+      # Both web entry points must keep compiling in release mode.
+      - name: Build coach web
+        run: flutter build web --release --dart-define=APP_ENV=production
+      - name: Build admin web
+        run: flutter build web --release -t lib/admin_main.dart --dart-define=APP_ENV=production
