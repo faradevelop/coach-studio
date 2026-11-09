@@ -17,8 +17,8 @@ import 'package:http/http.dart' as http;
 /// - reporting 401 responses via [onUnauthorized] so the app can clear the
 ///   local session and redirect to login
 class ApiClient {
-  static const Duration _timeout = Duration(seconds: 20);
-  static const Duration _retryDelay = Duration(milliseconds: 600);
+  final Duration _requestTimeout;
+  final Duration _retryWait;
 
   static const String _timeoutMessage =
       'پاسخی از سرور دریافت نشد. اتصال اینترنت خود را بررسی کنید.';
@@ -42,7 +42,10 @@ class ApiClient {
     required this.tokenStorage,
     required this._logger,
     http.Client? client,
-  }) : _client = client ?? http.Client();
+    this._requestTimeout = const Duration(seconds: 20),
+    Duration retryDelay = const Duration(milliseconds: 600),
+  }) : _client = client ?? http.Client(),
+       _retryWait = retryDelay;
 
   Map<String, String> get _headers {
     final headers = <String, String>{
@@ -89,7 +92,11 @@ class ApiClient {
     while (true) {
       attempt++;
       try {
-        final response = await _send(method, path, body).timeout(_timeout);
+        final response = await _send(
+          method,
+          path,
+          body,
+        ).timeout(_requestTimeout);
         final result = _unwrap(response);
         _logger.info(
           'API ← ${response.statusCode} $method $logPath '
@@ -105,7 +112,7 @@ class ApiClient {
         rethrow;
       } on TimeoutException catch (e) {
         if (retryOnNetworkError && attempt == 1) {
-          await Future<void>.delayed(_retryDelay);
+          await Future<void>.delayed(_retryWait);
           continue;
         }
         _logger.error('API $method $logPath timed out', error: e);
@@ -115,7 +122,7 @@ class ApiClient {
         // wraps SocketException into ClientException, so no dart:io import
         // is needed (keeps Web compiling).
         if (retryOnNetworkError && attempt == 1) {
-          await Future<void>.delayed(_retryDelay);
+          await Future<void>.delayed(_retryWait);
           continue;
         }
         _logger.error('API $method $logPath connection failed', error: e);
