@@ -6,6 +6,7 @@ import 'package:coach_studio/features/workout_programs/data/services/pdf_generat
 import 'package:coach_studio/features/workout_programs/data/services/pdf_generation/pdf_executor.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_details.dart';
+import 'package:coach_studio/features/workout_programs/domain/services/workout_program_pdf_service.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -19,7 +20,8 @@ import 'package:flutter/services.dart' show rootBundle;
 ///
 /// The PDF layout/content itself is unchanged and now lives in
 /// pdf_generation/pdf_document_builder.dart.
-class WorkoutProgramPdfGenerator {
+class WorkoutProgramPdfGenerator implements WorkoutProgramPdfService {
+  @override
   Future<Uint8List> generate({
     required WorkoutProgramDetails details,
     required AthleteInfo athlete,

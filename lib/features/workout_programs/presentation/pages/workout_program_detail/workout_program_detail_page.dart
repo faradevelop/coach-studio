@@ -9,11 +9,11 @@ import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
 import 'package:coach_studio/core/widgets/feedback/app_loading_indicator.dart';
 import 'package:coach_studio/core/widgets/navigation/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
-import 'package:coach_studio/features/workout_programs/data/services/workout_program_pdf_generator.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_details.dart';
+import 'package:coach_studio/features/workout_programs/domain/services/workout_program_pdf_service.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
@@ -199,7 +199,7 @@ class _WorkoutProgramDetailViewState extends State<_WorkoutProgramDetailView> {
       exercises: exercises,
     );
 
-    final bytes = await WorkoutProgramPdfGenerator().generate(
+    final bytes = await sl<WorkoutProgramPdfService>().generate(
       details: details,
       athlete: athlete,
     );

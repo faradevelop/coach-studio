@@ -22,8 +22,10 @@ import 'package:coach_studio/features/workout_programs/data/datasources/program_
 import 'package:coach_studio/features/workout_programs/data/datasources/workout_program_api_datasource.dart';
 import 'package:coach_studio/features/workout_programs/data/repositories/program_exercise_api_repository_impl.dart';
 import 'package:coach_studio/features/workout_programs/data/repositories/workout_program_api_repository_impl.dart';
+import 'package:coach_studio/features/workout_programs/data/services/workout_program_pdf_generator.dart';
 import 'package:coach_studio/features/workout_programs/domain/repositories/program_exercise_repository.dart';
 import 'package:coach_studio/features/workout_programs/domain/repositories/workout_program_repository.dart';
+import 'package:coach_studio/features/workout_programs/domain/services/workout_program_pdf_service.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/authentication/domain/enums/user_role.dart';
@@ -111,6 +113,12 @@ Future<void> initDependencies({
 
   sl.registerLazySingleton<AthleteRepository>(
     () => AthleteApiRepositoryImpl(datasource: sl(), logger: sl()),
+  );
+
+  // Service
+
+  sl.registerLazySingleton<WorkoutProgramPdfService>(
+    () => WorkoutProgramPdfGenerator(),
   );
 
   // Bloc / Cubit
