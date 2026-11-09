@@ -1,5 +1,3 @@
-import 'package:coach_studio/core/di/injection_container.dart';
-import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
 import 'package:coach_studio/core/widgets/feedback/app_loading_indicator.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
@@ -30,35 +28,22 @@ class ProgramExercisesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ProgramExerciseCubit, ProgramExerciseState>(
-      listenWhen: (previous, current) =>
-          current is ProgramExerciseLoaded && current.errorMessage != null,
-      listener: (context, state) {
-        if (state is ProgramExerciseLoaded && state.errorMessage != null) {
-          sl<AppNotification>().error(state.errorMessage!);
-        }
+    return BlocBuilder<ProgramExerciseCubit, ProgramExerciseState>(
+      builder: (context, state) {
+        return switch (state) {
+          ProgramExerciseLoading() => const Padding(
+            padding: EdgeInsets.only(top: 40),
+            child: Center(child: AppLoadingIndicator()),
+          ),
+          ProgramExerciseError() => AppErrorState(
+            onRetry: () =>
+                context.read<ProgramExerciseCubit>().loadExercises(program.id),
+          ),
+          ProgramExerciseLoaded(:final exercises, :final isSubmitting) =>
+            _buildTabs(exercises.groupByDay(program.daysPerWeek), isSubmitting),
+          _ => const SizedBox(),
+        };
       },
-      child: BlocBuilder<ProgramExerciseCubit, ProgramExerciseState>(
-        builder: (context, state) {
-          return switch (state) {
-            ProgramExerciseLoading() => const Padding(
-              padding: EdgeInsets.only(top: 40),
-              child: Center(child: AppLoadingIndicator()),
-            ),
-            ProgramExerciseError() => AppErrorState(
-              onRetry: () => context.read<ProgramExerciseCubit>().loadExercises(
-                program.id,
-              ),
-            ),
-            ProgramExerciseLoaded(:final exercises, :final isSubmitting) =>
-              _buildTabs(
-                exercises.groupByDay(program.daysPerWeek),
-                isSubmitting,
-              ),
-            _ => const SizedBox(),
-          };
-        },
-      ),
     );
   }
 
