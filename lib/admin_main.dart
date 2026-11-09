@@ -11,6 +11,7 @@ import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_theme.dart';
 import 'package:coach_studio/core/widgets/responsive/app_scroll_behavior.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
+import 'package:coach_studio/core/widgets/responsive/text_scale_clamp.dart';
 import 'package:coach_studio/features/authentication/domain/enums/user_role.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_cubit.dart';
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
@@ -83,12 +84,14 @@ class AdminApp extends StatelessWidget {
           routerConfig: AdminRouter.router,
           builder: (context, child) {
             if (child == null) return const SizedBox.shrink();
-            return ColoredBox(
-              color: AppColors.background,
-              child: MaxWidthBox(
-                maxWidth: _maxWidth,
-                expandHeight: true,
-                child: child,
+            return TextScaleClamp(
+              child: ColoredBox(
+                color: AppColors.background,
+                child: MaxWidthBox(
+                  maxWidth: _maxWidth,
+                  expandHeight: true,
+                  child: child,
+                ),
               ),
             );
           },
