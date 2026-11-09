@@ -10,6 +10,7 @@ import 'package:coach_studio/features/athlete/data/datasources/athlete_api_datas
 import 'package:coach_studio/features/athlete/data/repositories/athlete_api_repository_impl.dart';
 import 'package:coach_studio/features/athlete/domain/repositories/athlete_repository.dart';
 import 'package:coach_studio/features/athlete/presentation/cubit/athlete_cubit.dart';
+import 'package:coach_studio/features/athlete/presentation/cubit/athlete_detail_cubit.dart';
 import 'package:coach_studio/features/authentication/data/datasources/auth_api_datasource.dart';
 import 'package:coach_studio/features/authentication/data/repositories/auth_api_repository_impl.dart';
 import 'package:coach_studio/features/authentication/domain/repositories/auth_repository.dart';
@@ -138,8 +139,6 @@ Future<void> initDependencies({
     () => WorkoutProgramCubit(repository: sl(), logger: sl()),
   );
 
-  sl.registerLazySingleton(() => AthleteCubit(repository: sl(), logger: sl()));
-
   // ProgramExerciseCubit remains a Factory: a new instance per Program Detail
   // flow, disposed on exit — no cross-tab persistence required.
   sl.registerFactory(
@@ -147,6 +146,17 @@ Future<void> initDependencies({
   );
 
   sl.registerLazySingleton(() => CoachCubit(repository: sl(), logger: sl()));
+
+  sl.registerLazySingleton(() => AthleteCubit(repository: sl(), logger: sl()));
+
+  sl.registerFactoryParam<AthleteDetailCubit, String, AthleteCubit>(
+    (athleteId, listCubit) => AthleteDetailCubit(
+      athleteId: athleteId,
+      repository: sl(),
+      listCubit: listCubit,
+      logger: sl(),
+    ),
+  );
 
   // Wire the network layer to the auth layer: any 401 response forces the
   // app back to the unauthenticated state (see ApiClient.onUnauthorized

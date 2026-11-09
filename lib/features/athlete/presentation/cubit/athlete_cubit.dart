@@ -25,6 +25,9 @@ class AthleteCubit extends Cubit<AthleteState> {
 
   Future<void> loadAthletes() => _load(showLoading: true);
 
+  /// Single-athlete fetch for the edit form's deep-link path.
+  Future<Athlete> fetchAthlete(String id) => repository.getAthlete(id);
+
   /// Silent reload (keeps current content / the mounted search field).
   Future<void> refresh() => _load(showLoading: false);
 

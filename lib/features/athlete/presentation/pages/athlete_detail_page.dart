@@ -2,7 +2,6 @@ import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/localization/formatters/app_date_formatter.dart';
-import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
@@ -17,7 +16,6 @@ import 'package:coach_studio/core/widgets/navigation/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/athlete/domain/entities/athlete.dart';
 import 'package:coach_studio/features/athlete/domain/entities/athlete_program_assignment.dart';
-import 'package:coach_studio/features/athlete/domain/repositories/athlete_repository.dart';
 import 'package:coach_studio/features/athlete/presentation/cubit/athlete_cubit.dart';
 import 'package:coach_studio/features/athlete/presentation/cubit/athlete_detail_cubit.dart';
 import 'package:coach_studio/features/athlete/presentation/cubit/athlete_detail_state.dart';
@@ -36,11 +34,9 @@ class AthleteDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AthleteDetailCubit(
-        athleteId: athleteId,
-        repository: sl<AthleteRepository>(),
-        listCubit: context.read<AthleteCubit>(),
-        logger: sl<AppLogger>(),
+      create: (_) => sl<AthleteDetailCubit>(
+        param1: athleteId,
+        param2: context.read<AthleteCubit>(),
       )..load(),
       child: Scaffold(
         backgroundColor: AppColors.background,

@@ -16,7 +16,6 @@ import 'package:coach_studio/core/widgets/navigation/custom_app_bar.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:coach_studio/features/athlete/domain/entities/athlete.dart';
 import 'package:coach_studio/features/athlete/domain/enums/gender.dart';
-import 'package:coach_studio/features/athlete/domain/repositories/athlete_repository.dart';
 import 'package:coach_studio/features/athlete/presentation/cubit/athlete_cubit.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
@@ -47,7 +46,7 @@ class _AthleteFormPageState extends State<AthleteFormPage> {
 
   void _load() {
     if (widget.athleteId != null && widget.seedAthlete == null) {
-      _future = sl<AthleteRepository>().getAthlete(widget.athleteId!);
+      _future = context.read<AthleteCubit>().fetchAthlete(widget.athleteId!);
     }
   }
 
