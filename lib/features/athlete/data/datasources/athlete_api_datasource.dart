@@ -41,7 +41,7 @@ class AthleteApiDatasource {
         )
         .join('&');
 
-    _logger.debug('AthleteDataSource: fetching athletes ($qs)');
+    _logger.debug('AthleteDataSource: fetching athletes');
     final data = await client.get('/athletes?$qs') as List<dynamic>;
     return data
         .map((j) => AthleteModel.fromJson(j as Map<String, dynamic>))
