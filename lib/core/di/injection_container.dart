@@ -1,6 +1,7 @@
 import 'package:coach_studio/core/constants/api_config.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/core/logger/app_logger_impl.dart';
+import 'package:coach_studio/core/monitoring/crash_reporter.dart';
 import 'package:coach_studio/core/network/api_client.dart';
 import 'package:coach_studio/core/notifications/data/floating_snackbar_notification.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification.dart';
@@ -43,6 +44,7 @@ Future<void> initDependencies({
 
   // Logger must be registered first — used by other dependencies
   sl.registerLazySingleton<AppLogger>(() => AppLoggerImpl());
+  sl.registerLazySingleton<CrashReporter>(() => const NoopCrashReporter());
 
   sl.registerLazySingleton<TokenStorage>(
     () => TokenStorage(role: allowedRole.name),
