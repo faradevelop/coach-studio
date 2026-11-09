@@ -1,4 +1,5 @@
 import 'package:logger/logger.dart' as pkg_logger;
+import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'app_logger.dart';
 
 /// Production implementation of [AppLogger] using the `logger` package.
@@ -37,11 +38,14 @@ class AppLoggerImpl implements AppLogger {
   }
 }
 
-/// Filter for production logging — logs all levels by default.
+/// Debug/profile: everything. Release: warnings and errors only, so
+/// request paths, ids and other details never end up in the browser
+/// console or device logs.
 class _ProductionFilter extends pkg_logger.LogFilter {
   @override
   bool shouldLog(pkg_logger.LogEvent event) {
-    return true;
+    if (!kReleaseMode) return true;
+    return event.level.index >= pkg_logger.Level.warning.index;
   }
 }
 
@@ -52,7 +56,7 @@ class _PrettyPrinter extends pkg_logger.PrettyPrinter {
         methodCount: 0,
         errorMethodCount: 8,
         lineLength: 120,
-        colors: true,
+        colors: !kReleaseMode,
         printEmojis: true,
         dateTimeFormat: pkg_logger.DateTimeFormat.onlyTimeAndSinceStart,
       );
