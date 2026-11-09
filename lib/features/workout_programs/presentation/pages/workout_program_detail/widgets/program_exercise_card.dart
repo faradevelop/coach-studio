@@ -35,6 +35,7 @@ class ProgramExerciseCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16),
       child: AppGlassSurface(
         blur: true,
+        blurSigma: 10,
         radius: AppRadius.md + 4,
         padding: const EdgeInsets.all(0),
         child: Container(
