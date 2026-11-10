@@ -1,5 +1,4 @@
 import 'package:coach_studio/core/di/injection_container.dart';
-import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
@@ -83,16 +82,10 @@ class _WizardViewState extends State<_WizardView> {
           );
         }
 
-        return BlocConsumer<
+        return BlocBuilder<
           ProgramExerciseWizardCubit,
           ProgramExerciseWizardState
         >(
-          listenWhen: (previous, current) =>
-              previous.errorMessage != current.errorMessage &&
-              current.errorMessage != null,
-          listener: (context, state) {
-            sl<AppNotification>().error(state.errorMessage!);
-          },
           builder: (context, wizardState) {
             return PopScope(
               canPop: wizardState.step == WizardStep.day,

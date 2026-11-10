@@ -65,8 +65,6 @@ class ProgramExerciseWizardState {
     String? sets,
     String? rest,
     bool? isSubmitting,
-    String? errorMessage,
-    bool clearError = false,
   }) {
     return ProgramExerciseWizardState(
       step: step ?? this.step,
@@ -77,7 +75,6 @@ class ProgramExerciseWizardState {
       sets: sets ?? this.sets,
       rest: rest ?? this.rest,
       isSubmitting: isSubmitting ?? this.isSubmitting,
-      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
     );
   }
 }

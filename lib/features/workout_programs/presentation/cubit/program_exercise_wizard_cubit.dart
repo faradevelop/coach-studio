@@ -107,7 +107,7 @@ class ProgramExerciseWizardCubit extends Cubit<ProgramExerciseWizardState> {
 
   // ── Submission ───────────────────────────────────────────────
   Future<bool> submit() async {
-    emit(state.copyWith(isSubmitting: true, clearError: true));
+    emit(state.copyWith(isSubmitting: true));
 
     final items = state.selectedExercises.asMap().entries.map((entry) {
       final index = entry.key;
