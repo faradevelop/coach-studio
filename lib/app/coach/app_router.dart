@@ -117,6 +117,9 @@ class AppRouter {
         return _safeFrom(state.uri.queryParameters['from']) ??
             AppRoutes.dashboard;
       }
+
+      if (isResetRoute) return null;
+
       if (isAuthRoute) return AppRoutes.dashboard;
       return null;
     },

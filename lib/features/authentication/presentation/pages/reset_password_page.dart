@@ -70,6 +70,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         sl<AppNotification>().success(
           'رمز عبور با موفقیت تغییر یافت. اکنون وارد شوید.',
         );
+        await context
+            .read<AuthCubit>()
+            .logout(); // Backend has revoked all tokens
+        if (!mounted) return;
         context.goNamed(AppRouteNames.login);
       } else {
         sl<AppNotification>().error('لینک بازیابی نامعتبر یا منقضی شده است.');

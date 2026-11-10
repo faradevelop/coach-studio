@@ -101,6 +101,9 @@ class AdminRouter {
         return _safeFrom(state.uri.queryParameters['from']) ??
             AppRoutes.exercises;
       }
+
+      if (isResetRoute) return null;
+
       if (isAuthRoute) return AppRoutes.exercises;
       return null;
     },
