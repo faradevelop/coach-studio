@@ -123,7 +123,7 @@ class WorkoutProgramCard extends StatelessWidget {
 
           // Stats row
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Row(
               children: [
                 Expanded(
