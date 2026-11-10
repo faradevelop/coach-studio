@@ -164,6 +164,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                           value: _selectedDifficulty,
                           items: Difficulty.values,
                           itemLabel: (item) => item.label,
+                          validator: (v) => v == null ? 'الزامی' : null,
                           onChanged: (value) {
                             setState(() => _selectedDifficulty = value);
                           },
@@ -174,6 +175,8 @@ class _ExerciseFormState extends State<ExerciseForm> {
                           value: _selectedEquipment,
                           items: Equipment.values,
                           itemLabel: (item) => item.label,
+                          validator: (v) => v == null ? 'الزامی' : null,
+
                           onChanged: (value) {
                             setState(() => _selectedEquipment = value);
                           },
