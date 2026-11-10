@@ -7,12 +7,7 @@ class CoachApiDatasource {
   final ApiClient client;
   final AppLogger _logger;
 
-  CoachApiDatasource({required this.client, AppLogger? logger})
-    : _logger = logger ?? _createDefaultLogger();
-
-  static AppLogger _createDefaultLogger() {
-    throw StateError('AppLogger must be provided to CoachApiDatasource');
-  }
+  CoachApiDatasource({required this.client, required this._logger});
 
   Future<List<AuthUserModel>> getCoaches() async {
     _logger.debug('CoachDataSource: fetching coaches');

@@ -12,12 +12,7 @@ class AthleteApiRepositoryImpl implements AthleteRepository {
   final AthleteApiDatasource datasource;
   final AppLogger _logger;
 
-  AthleteApiRepositoryImpl({required this.datasource, AppLogger? logger})
-    : _logger = logger ?? _createDefaultLogger();
-
-  static AppLogger _createDefaultLogger() {
-    throw StateError('AppLogger must be provided to AthleteApiRepositoryImpl');
-  }
+  AthleteApiRepositoryImpl({required this.datasource, required this._logger});
 
   @override
   Future<List<Athlete>> getAthletes(AthleteFilter filter) => _guard(
@@ -32,12 +27,16 @@ class AthleteApiRepositoryImpl implements AthleteRepository {
   );
 
   @override
-  Future<AthleteSummary> getSummary() =>
-      _guard('load summary', () async => (await datasource.getSummary()).toEntity());
+  Future<AthleteSummary> getSummary() => _guard(
+    'load summary',
+    () async => (await datasource.getSummary()).toEntity(),
+  );
 
   @override
-  Future<Athlete> getAthlete(String id) =>
-      _guard('load athlete', () async => (await datasource.getAthlete(id)).toEntity());
+  Future<Athlete> getAthlete(String id) => _guard(
+    'load athlete',
+    () async => (await datasource.getAthlete(id)).toEntity(),
+  );
 
   @override
   Future<Athlete> createAthlete(Athlete athlete) => _guard(

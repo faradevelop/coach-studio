@@ -10,13 +10,8 @@ class CoachCubit extends Cubit<CoachState> {
   final CoachRepository repository;
   final AppLogger _logger;
 
-  CoachCubit({required this.repository, AppLogger? logger})
-    : _logger = logger ?? _createDefaultLogger(),
-      super(CoachInitial());
-
-  static AppLogger _createDefaultLogger() {
-    throw StateError('AppLogger must be provided to CoachCubit');
-  }
+  CoachCubit({required this.repository, required this._logger})
+    : super(CoachInitial());
 
   Future<void> load() async {
     emit(CoachLoading());

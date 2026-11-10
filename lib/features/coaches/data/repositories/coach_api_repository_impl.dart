@@ -8,12 +8,7 @@ class CoachApiRepositoryImpl implements CoachRepository {
   final CoachApiDatasource datasource;
   final AppLogger _logger;
 
-  CoachApiRepositoryImpl({required this.datasource, AppLogger? logger})
-    : _logger = logger ?? _createDefaultLogger();
-
-  static AppLogger _createDefaultLogger() {
-    throw StateError('AppLogger must be provided to CoachApiRepositoryImpl');
-  }
+  CoachApiRepositoryImpl({required this.datasource, required this._logger});
 
   @override
   Future<List<AuthUser>> getCoaches() => _guard(

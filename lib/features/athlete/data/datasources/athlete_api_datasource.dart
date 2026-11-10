@@ -8,12 +8,7 @@ class AthleteApiDatasource {
   final ApiClient client;
   final AppLogger _logger;
 
-  AthleteApiDatasource({required this.client, AppLogger? logger})
-    : _logger = logger ?? _createDefaultLogger();
-
-  static AppLogger _createDefaultLogger() {
-    throw StateError('AppLogger must be provided to AthleteApiDatasource');
-  }
+  AthleteApiDatasource({required this.client, required this._logger});
 
   /// GET /athletes — Backend max length for `search` is 100.
   Future<List<AthleteModel>> getAthletes({

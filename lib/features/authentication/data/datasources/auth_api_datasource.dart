@@ -8,13 +8,7 @@ class AuthApiDatasource {
   final ApiClient client;
   final AppLogger _logger;
 
-  AuthApiDatasource({required this.client, AppLogger? logger})
-    : _logger = logger ?? _createDefaultLogger();
-
-  static AppLogger _createDefaultLogger() {
-    // Fallback logger if not provided (shouldn't happen in normal flow)
-    throw StateError('AppLogger must be provided to AuthApiDatasource');
-  }
+  AuthApiDatasource({required this.client, required this._logger});
 
   Future<LoginResultModel> login(String identifier, String password) async {
     _logger.info('AuthDataSource: login started');

@@ -9,12 +9,7 @@ class AuthApiRepositoryImpl implements AuthRepository {
   final AuthApiDatasource datasource;
   final AppLogger _logger;
 
-  AuthApiRepositoryImpl({required this.datasource, AppLogger? logger})
-    : _logger = logger ?? _createDefaultLogger();
-
-  static AppLogger _createDefaultLogger() {
-    throw StateError('AppLogger must be provided to AuthApiRepositoryImpl');
-  }
+  AuthApiRepositoryImpl({required this.datasource, required this._logger});
 
   @override
   Future<AuthSession> login(String identifier, String password) async {

@@ -17,13 +17,8 @@ class AuthCubit extends Cubit<AuthState> {
     required this.repository,
     required this.tokenStorage,
     required this.allowedRole,
-    AppLogger? logger,
-  }) : _logger = logger ?? _createDefaultLogger(),
-       super(AuthInitial());
-
-  static AppLogger _createDefaultLogger() {
-    throw StateError('AppLogger must be provided to AuthCubit');
-  }
+    required this._logger,
+  }) : super(AuthInitial());
 
   /// Restores the session on app startup: if a token was persisted from a
   /// previous run, validates it against GET /auth/me and hydrates the

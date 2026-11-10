@@ -14,12 +14,8 @@ class AthleteCubit extends Cubit<AthleteState> {
   AthleteFilter _filter = const AthleteFilter();
   int _requestId = 0;
 
-  AthleteCubit({required this.repository, AppLogger? logger})
-    : _logger = logger ?? _createDefaultLogger(),
-      super(AthleteInitial());
-
-  static AppLogger _createDefaultLogger() =>
-      throw StateError('AppLogger must be provided to AthleteCubit');
+  AthleteCubit({required this.repository, required this._logger})
+    : super(AthleteInitial());
 
   AthleteFilter get filter => _filter;
 
