@@ -167,67 +167,76 @@ class _LoginFormCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppSurface(
       padding: const EdgeInsets.all(22),
-      child: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            AppTextField(
-              label: 'نام کاربری',
-              controller: identifierController,
-              hint: 'نام کاربری یا ایمیل',
-              prefixIcn: HugeIcon(
-                icon: HugeIcons.strokeRoundedUserIdVerification,
-                color: AppColors.textSecondary,
-                size: 22,
+      child: AutofillGroup(
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppTextField(
+                label: 'نام کاربری',
+                controller: identifierController,
+                textInputAction: TextInputAction.next,
+                autofillHints: const [AutofillHints.username],
+                hint: 'نام کاربری یا ایمیل',
+                prefixIcn: HugeIcon(
+                  icon: HugeIcons.strokeRoundedUserIdVerification,
+                  color: AppColors.textSecondary,
+                  size: 22,
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'الزامی';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'الزامی';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            AppTextField(
-              label: 'رمز عبور',
-              controller: passwordController,
-              hint: 'رمز عبور',
-              prefixIcn: HugeIcon(
-                icon: HugeIcons.strokeRoundedLockPassword,
-                color: AppColors.textSecondary,
-                size: 22,
+              const SizedBox(height: 16),
+              AppTextField(
+                label: 'رمز عبور',
+                controller: passwordController,
+                textInputAction: TextInputAction.done,
+                autofillHints: const [AutofillHints.password],
+                onFieldSubmitted: (_) {
+                  if (!isSubmitting) onSubmit();
+                },
+                hint: 'رمز عبور',
+                prefixIcn: HugeIcon(
+                  icon: HugeIcons.strokeRoundedLockPassword,
+                  color: AppColors.textSecondary,
+                  size: 22,
+                ),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'الزامی';
+                  }
+                  return null;
+                },
               ),
-              obscureText: true,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'الزامی';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 4),
-            Align(
-              alignment: AlignmentDirectional.centerEnd,
-              child: TextButton(
-                onPressed: isSubmitting
-                    ? null
-                    : () => context.pushNamed(AppRouteNames.forgotPassword),
-                child: Text(
-                  'فراموشی رمز عبور؟',
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.accent,
+              const SizedBox(height: 4),
+              Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: TextButton(
+                  onPressed: isSubmitting
+                      ? null
+                      : () => context.pushNamed(AppRouteNames.forgotPassword),
+                  child: Text(
+                    'فراموشی رمز عبور؟',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.accent,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 50),
-            AppButton(
-              text: 'ورود',
-              isLoading: isSubmitting,
-              onPressed: isSubmitting ? null : onSubmit,
-            ),
-          ],
+              const SizedBox(height: 50),
+              AppButton(
+                text: 'ورود',
+                isLoading: isSubmitting,
+                onPressed: isSubmitting ? null : onSubmit,
+              ),
+            ],
+          ),
         ),
       ),
     );

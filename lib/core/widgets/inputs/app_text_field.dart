@@ -14,6 +14,9 @@ class AppTextField extends StatefulWidget {
   final bool obscureText;
   final Widget? prefixIcn;
   final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onFieldSubmitted;
+  final Iterable<String>? autofillHints;
 
   const AppTextField({
     super.key,
@@ -25,6 +28,9 @@ class AppTextField extends StatefulWidget {
     this.obscureText = false,
     this.prefixIcn,
     this.keyboardType,
+    this.textInputAction,
+    this.onFieldSubmitted,
+    this.autofillHints,
   });
 
   @override
@@ -60,6 +66,9 @@ class _AppTextFieldState extends State<AppTextField> {
         TextFormField(
           controller: widget.controller,
           keyboardType: widget.keyboardType,
+          textInputAction: widget.textInputAction,
+          onFieldSubmitted: widget.onFieldSubmitted,
+          autofillHints: widget.autofillHints,
           maxLines: _isObscured ? 1 : widget.maxLines,
           obscureText: _isObscured,
           style: AppTextStyles.body,
