@@ -1,5 +1,5 @@
 import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
-import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/widgets/display/app_filter_chip.dart';
 import 'package:coach_studio/core/widgets/sheets/multi_select_bottom_sheet.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise_filter.dart';
 import 'package:coach_studio/features/exercises/domain/entities/muscle.dart';
@@ -37,7 +37,7 @@ class ExerciseFilterBar extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             children: [
-              _FilterChip(
+              AppFilterChip(
                 label: 'عضله',
                 activeLabel: _summaryLabel(
                   filter.muscles.map((m) => m.name).toList(),
@@ -55,7 +55,7 @@ class ExerciseFilterBar extends StatelessWidget {
                 onClear: cubit.clearMuscles,
               ),
               const SizedBox(width: 8),
-              _FilterChip(
+              AppFilterChip(
                 label: 'وسیله',
                 activeLabel: filter.equipment?.label,
                 isActive: filter.equipment != null,
@@ -74,7 +74,7 @@ class ExerciseFilterBar extends StatelessWidget {
                 onClear: cubit.clearEquipment,
               ),
               const SizedBox(width: 8),
-              _FilterChip(
+              AppFilterChip(
                 label: 'سطح',
                 activeLabel: filter.difficulty?.label,
                 isActive: filter.difficulty != null,
@@ -94,7 +94,7 @@ class ExerciseFilterBar extends StatelessWidget {
                 onClear: cubit.clearDifficulty,
               ),
               const SizedBox(width: 8),
-              _FilterChip(
+              AppFilterChip(
                 label: 'نوع تمرین',
                 activeLabel: filter.type?.label,
                 isActive: filter.type != null,
@@ -114,79 +114,6 @@ class ExerciseFilterBar extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final String? activeLabel;
-  final bool isActive;
-  final VoidCallback onTap;
-  final VoidCallback onClear;
-
-  const _FilterChip({
-    required this.label,
-    required this.activeLabel,
-    required this.isActive,
-    required this.onTap,
-    required this.onClear,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: EdgeInsetsDirectional.only(
-          end: isActive ? 12 : 14,
-          start: isActive ? 12 : 14,
-          top: 8,
-          bottom: 8,
-        ),
-        decoration: BoxDecoration(
-          color: isActive ? AppColors.primarySoft : AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isActive ? AppColors.primary : AppColors.outline,
-            width: 1.2,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              isActive ? '$label : $activeLabel' : label,
-              style: TextStyle(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w600,
-                color: isActive ? AppColors.primaryDark : AppColors.textPrimary,
-              ),
-            ),
-            if (isActive) ...[
-              const SizedBox(width: 8),
-              GestureDetector(
-                onTap: onClear,
-                child: Container(
-                  width: 18,
-                  height: 18,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.close_rounded,
-                    size: 12,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
     );
   }
 }

@@ -1,4 +1,4 @@
-import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/widgets/display/app_filter_chip.dart';
 import 'package:coach_studio/core/widgets/sheets/multi_select_bottom_sheet.dart';
 import 'package:coach_studio/features/athlete/domain/entities/athlete_filter.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class AthleteFilterBar extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         children: [
-          _FilterChip(
+          AppFilterChip(
             label: 'وضعیت',
             activeLabel: filter.status.label,
             isActive: filter.status != AthleteStatus.active,
@@ -43,7 +43,7 @@ class AthleteFilterBar extends StatelessWidget {
                 onChanged(filter.copyWith(status: AthleteStatus.active)),
           ),
           const SizedBox(width: 8),
-          _FilterChip(
+          AppFilterChip(
             label: 'برنامه',
             activeLabel: filter.hasProgram == true
                 ? 'دارای برنامه'
@@ -67,7 +67,7 @@ class AthleteFilterBar extends StatelessWidget {
             onClear: () => onChanged(filter.copyWith(clearHasProgram: true)),
           ),
           const SizedBox(width: 8),
-          _FilterChip(
+          AppFilterChip(
             label: 'مرتب‌سازی',
             activeLabel: filter.order.label,
             isActive: filter.order != AthleteOrder.nameAsc,
@@ -88,77 +88,6 @@ class AthleteFilterBar extends StatelessWidget {
                 onChanged(filter.copyWith(order: AthleteOrder.nameAsc)),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final String activeLabel;
-  final bool isActive;
-  final VoidCallback onTap;
-  final VoidCallback onClear;
-
-  const _FilterChip({
-    required this.label,
-    required this.activeLabel,
-    required this.isActive,
-    required this.onTap,
-    required this.onClear,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: 12,
-          vertical: 8,
-        ),
-        decoration: BoxDecoration(
-          color: isActive ? AppColors.primarySoft : AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isActive ? AppColors.primary : AppColors.outline,
-            width: 1.2,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              isActive ? '$label : $activeLabel' : label,
-              style: TextStyle(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w600,
-                color: isActive ? AppColors.primaryDark : AppColors.textPrimary,
-              ),
-            ),
-            if (isActive) ...[
-              const SizedBox(width: 8),
-              GestureDetector(
-                onTap: onClear,
-                child: Container(
-                  width: 18,
-                  height: 18,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.close_rounded,
-                    size: 12,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
       ),
     );
   }
