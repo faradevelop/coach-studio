@@ -21,7 +21,6 @@ class PdfBuildInput {
   final ByteData logoData;
   final ByteData instagramData;
   final ByteData phoneData;
-  final ByteData muscleData;
 
   /// When true, [buildPdfDocument] yields to the event loop between pages
   /// so the UI (e.g. a loading animation) keeps repainting. This only
@@ -38,7 +37,6 @@ class PdfBuildInput {
     required this.logoData,
     required this.instagramData,
     required this.phoneData,
-    required this.muscleData,
     required this.shouldYield,
   });
 }

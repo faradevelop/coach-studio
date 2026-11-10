@@ -33,7 +33,6 @@ class WorkoutProgramPdfGenerator implements WorkoutProgramPdfService {
     final logoData = await rootBundle.load(ClubInfo.logoAsset);
     final instagramData = await rootBundle.load(ClubInfo.instagramAsset);
     final phoneData = await rootBundle.load(ClubInfo.phoneAsset);
-    final muscleData = await rootBundle.load(ClubInfo.muscleAsset);
 
     final input = PdfBuildInput(
       details: details,
@@ -43,7 +42,6 @@ class WorkoutProgramPdfGenerator implements WorkoutProgramPdfService {
       logoData: logoData,
       instagramData: instagramData,
       phoneData: phoneData,
-      muscleData: muscleData,
       // Only Web needs to yield between pages to keep the UI responsive —
       // native platforms offload the work to a real background isolate
       // instead (see pdf_executor_io.dart / pdf_executor_web.dart).
