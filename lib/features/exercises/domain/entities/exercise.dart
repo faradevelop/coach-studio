@@ -46,6 +46,8 @@ class Exercise {
     String? imageUrl,
     String? videoUrl,
     String? description,
+    String? instructions,
+    String? mistakes,
     bool? isActive,
   }) {
     return Exercise(
@@ -58,6 +60,8 @@ class Exercise {
       imageUrl: imageUrl ?? this.imageUrl,
       videoUrl: videoUrl ?? this.videoUrl,
       description: description ?? this.description,
+      instructions: instructions ?? this.instructions,
+      mistakes: mistakes ?? this.mistakes,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt,
       updatedAt: updatedAt,

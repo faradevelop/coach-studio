@@ -33,7 +33,7 @@ class ProgramExerciseItem {
       order: order ?? this.order,
       reps: reps ?? this.reps,
       tempo: tempo ?? this.tempo,
-      description: description,
+      description: description ?? this.description,
     );
   }
 }

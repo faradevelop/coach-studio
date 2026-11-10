@@ -46,6 +46,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
