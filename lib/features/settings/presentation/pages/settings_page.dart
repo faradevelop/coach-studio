@@ -206,6 +206,7 @@ class _ProfileCard extends StatelessWidget {
               ),
               label: 'نام کاربری',
               value: user.username,
+              ltr: true,
             ),
             if (hasPhone) ...[
               const SizedBox(height: 10),
@@ -229,6 +230,7 @@ class _ProfileCard extends StatelessWidget {
                 ),
                 label: 'ایمیل',
                 value: email,
+                ltr: true,
               ),
             ],
           ],
@@ -242,11 +244,13 @@ class _ProfileInfoRow extends StatelessWidget {
   final Widget icon;
   final String label;
   final String value;
+  final bool ltr;
 
   const _ProfileInfoRow({
     required this.icon,
     required this.label,
     required this.value,
+    this.ltr = false,
   });
 
   @override
@@ -263,6 +267,7 @@ class _ProfileInfoRow extends StatelessWidget {
             child: Text(
               value,
               textAlign: TextAlign.end,
+              textDirection: ltr ? TextDirection.ltr : TextDirection.rtl,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),

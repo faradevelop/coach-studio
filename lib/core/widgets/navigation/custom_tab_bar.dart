@@ -35,6 +35,8 @@ class CustomTabBar extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final tabWidth = constraints.maxWidth / tabs.length;
+          final isRtl = Directionality.of(context) == TextDirection.rtl;
+          final offset = tabWidth * selectedIndex;
 
           return Stack(
             children: [
@@ -42,7 +44,8 @@ class CustomTabBar extends StatelessWidget {
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 250),
                 curve: Curves.easeOutCubic,
-                right: tabWidth * selectedIndex,
+                right: isRtl ? offset : null,
+                left: isRtl ? null : offset,
                 top: 0,
                 bottom: 0,
                 width: tabWidth,
