@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:coach_studio/app/coach/app_router.dart';
+import 'package:coach_studio/app/coach/coach_router.dart';
 import 'package:coach_studio/app/config/app_config.dart';
 import 'package:coach_studio/core/bootstrap/font_preloader.dart';
 import 'package:coach_studio/core/bootstrap/global_error_handling.dart';

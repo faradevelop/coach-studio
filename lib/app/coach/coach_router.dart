@@ -1,7 +1,7 @@
 import 'package:coach_studio/app/routing/app_route_names.dart';
 import 'package:coach_studio/app/routing/app_routes.dart';
 import 'package:coach_studio/app/routing/go_router_refresh_stream.dart';
-import 'package:coach_studio/app/coach/scaffold_with_bottom_nav.dart';
+import 'package:coach_studio/app/coach/coach_shell.dart';
 import 'package:coach_studio/core/di/injection_container.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/feedback/app_error_state.dart';
