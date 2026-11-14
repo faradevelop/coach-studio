@@ -1,5 +1,5 @@
 import 'package:coach_studio/core/theme/app_colors.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Filter pill shared by the exercise / athlete / program filter bars.
 class AppFilterChip extends StatelessWidget {

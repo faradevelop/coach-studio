@@ -26,7 +26,7 @@ import 'package:coach_studio/features/workout_programs/presentation/pages/exerci
 import 'package:coach_studio/features/workout_programs/presentation/pages/program_exercise_wizard/program_exercise_wizard_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_detail/workout_program_detail_page.dart';
 import 'package:coach_studio/features/workout_programs/presentation/pages/workout_program_list_page.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 

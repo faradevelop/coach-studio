@@ -12,7 +12,7 @@ import 'package:coach_studio/features/authentication/domain/entities/auth_user.d
 import 'package:coach_studio/features/coaches/presentation/cubit/coach_cubit.dart';
 import 'package:coach_studio/features/coaches/presentation/cubit/coach_state.dart';
 import 'package:coach_studio/features/coaches/presentation/widgets/coach_status_chip.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 

@@ -3,7 +3,7 @@ import 'package:coach_studio/core/notifications/domain/app_notification_message.
 import 'package:coach_studio/core/notifications/domain/app_notification_type.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:floating_snackbar/floating_snackbar.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class FloatingSnackbarNotification implements AppNotification {
   FloatingSnackbarNotification({

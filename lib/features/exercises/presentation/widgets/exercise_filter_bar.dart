@@ -7,7 +7,7 @@ import 'package:coach_studio/features/exercises/domain/enums/difficulty.dart';
 import 'package:coach_studio/features/exercises/domain/enums/equipment.dart';
 import 'package:coach_studio/features/exercises/domain/enums/exercise_type.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_filter_cubit.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Horizontal, RTL-safe, scrollable row of filter chips shown under the

@@ -18,10 +18,13 @@ import 'package:coach_studio/features/authentication/presentation/cubit/auth_sta
 import 'package:coach_studio/features/coaches/presentation/cubit/coach_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_cubit.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_state.dart';
-import 'package:flutter/material.dart';
+
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart'
+    hide GlobalMaterialLocalizations, GlobalCupertinoLocalizations;
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Run:   flutter run -d chrome -t lib/admin_main.dart
 /// Build: flutter build web -t lib/admin_main.dart
@@ -74,7 +77,7 @@ class AdminApp extends StatelessWidget {
           scrollBehavior: const AppScrollBehavior(),
           locale: const Locale('fa'),
           supportedLocales: const [Locale('fa'), Locale('en')],
-          localizationsDelegates: const [
+          localizationsDelegates: [
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,

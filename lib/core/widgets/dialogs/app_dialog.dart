@@ -1,5 +1,5 @@
 import 'package:coach_studio/core/widgets/display/app_surface.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Shared dialog shell: a transparent [Dialog] hosting one flat
 /// [AppSurface]. Callers pass only the content; they no longer need to

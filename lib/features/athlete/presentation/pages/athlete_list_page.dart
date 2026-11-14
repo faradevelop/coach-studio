@@ -16,7 +16,7 @@ import 'package:coach_studio/features/athlete/presentation/cubit/athlete_cubit.d
 import 'package:coach_studio/features/athlete/presentation/cubit/athlete_state.dart';
 import 'package:coach_studio/features/athlete/presentation/widgets/athlete_card.dart';
 import 'package:coach_studio/features/athlete/presentation/widgets/athlete_filter_bar.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';

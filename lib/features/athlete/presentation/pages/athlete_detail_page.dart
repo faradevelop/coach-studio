@@ -22,7 +22,7 @@ import 'package:coach_studio/features/athlete/presentation/cubit/athlete_detail_
 import 'package:coach_studio/features/athlete/presentation/widgets/assign_program_dialog.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';

@@ -1,5 +1,5 @@
 import 'package:coach_studio/core/widgets/display/app_status_chip.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CoachStatusChip extends StatelessWidget {
   final bool isActive;

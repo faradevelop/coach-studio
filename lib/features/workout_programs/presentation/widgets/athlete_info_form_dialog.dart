@@ -3,7 +3,7 @@ import 'package:coach_studio/core/widgets/buttons/app_button.dart';
 import 'package:coach_studio/core/widgets/dialogs/app_dialog.dart';
 import 'package:coach_studio/core/widgets/inputs/app_text_field.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/athlete_info.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AthleteInfoFormDialog extends StatefulWidget {
   const AthleteInfoFormDialog({super.key});

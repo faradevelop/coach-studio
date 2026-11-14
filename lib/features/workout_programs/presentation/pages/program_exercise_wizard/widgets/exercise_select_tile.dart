@@ -4,7 +4,7 @@ import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/display/app_surface.dart';
 import 'package:coach_studio/core/widgets/display/app_info_chip.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class ExerciseSelectTile extends StatelessWidget {

@@ -10,7 +10,7 @@ import 'package:coach_studio/core/widgets/inputs/app_number_picker.dart';
 import 'package:coach_studio/core/widgets/inputs/app_stepper.dart';
 import 'package:coach_studio/core/widgets/inputs/app_text_field.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'exercise_config_common_widgets.dart';
 import 'exercise_config_models.dart';

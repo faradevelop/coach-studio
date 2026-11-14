@@ -5,7 +5,7 @@ import 'package:coach_studio/core/widgets/dialogs/app_dialog.dart';
 import 'package:coach_studio/core/widgets/inputs/app_dropdown.dart';
 import 'package:coach_studio/core/widgets/inputs/app_text_field.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AssignProgramResult {
   final String sourceProgramId;

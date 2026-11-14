@@ -1,7 +1,7 @@
 // lib/features/workout_programs/presentation/widgets/exercise_config/exercise_config_common_widgets.dart
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Section title with the orange accent bar.
 /// (Formerly `WizardSectionLabel`.)

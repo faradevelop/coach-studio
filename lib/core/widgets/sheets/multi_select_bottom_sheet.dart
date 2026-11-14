@@ -6,7 +6,7 @@ import 'package:coach_studio/core/theme/app_spacing.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/buttons/app_button.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Generic bottom sheet for picking one or many values of type [T] from a
 /// fixed list of options. Selections made inside the sheet live in local

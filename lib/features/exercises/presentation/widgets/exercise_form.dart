@@ -11,7 +11,7 @@ import 'package:coach_studio/features/exercises/domain/enums/difficulty.dart';
 import 'package:coach_studio/features/exercises/domain/enums/equipment.dart';
 import 'package:coach_studio/features/exercises/domain/enums/exercise_type.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/muscle_selector_field.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Page background is provided by the hosting Scaffold
 /// (see AddExercisePage / EditExercisePage).

@@ -18,7 +18,7 @@ import 'package:coach_studio/features/exercises/presentation/cubit/exercise_filt
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_wizard_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_wizard_state.dart';
 import 'package:coach_studio/features/exercises/presentation/widgets/exercise_filter_bar.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 

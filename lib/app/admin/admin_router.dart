@@ -20,7 +20,7 @@ import 'package:coach_studio/features/exercises/presentation/pages/add_exercise_
 import 'package:coach_studio/features/exercises/presentation/pages/edit_exercise_page.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/exercise_detail_page.dart';
 import 'package:coach_studio/features/exercises/presentation/pages/exercise_list_page.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 
 /// Router of the Admin web app. Route NAMES/PATHS are shared with the coach

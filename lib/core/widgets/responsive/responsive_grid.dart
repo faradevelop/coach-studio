@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// One column-count rule: "from this width, use this many columns".
 class ResponsiveGridBreakpoint {

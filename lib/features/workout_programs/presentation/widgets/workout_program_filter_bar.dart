@@ -3,7 +3,7 @@ import 'package:coach_studio/core/widgets/sheets/multi_select_bottom_sheet.dart'
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program_filter.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_goal.dart';
 import 'package:coach_studio/features/workout_programs/domain/enums/program_level.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Goal / level chips under the programs search field.
 class WorkoutProgramFilterBar extends StatelessWidget {

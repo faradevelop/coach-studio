@@ -1,7 +1,7 @@
 import 'package:coach_studio/core/widgets/display/app_filter_chip.dart';
 import 'package:coach_studio/core/widgets/sheets/multi_select_bottom_sheet.dart';
 import 'package:coach_studio/features/athlete/domain/entities/athlete_filter.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Status / program / order chips under the athlete search field.
 class AthleteFilterBar extends StatelessWidget {

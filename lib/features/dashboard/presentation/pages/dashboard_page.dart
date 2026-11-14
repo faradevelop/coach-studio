@@ -6,7 +6,7 @@ import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_h
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_programs_overview.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_quick_actions.dart';
 import 'package:coach_studio/features/dashboard/presentation/widgets/dashboard_stats_section.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Top-level destination. Purely compositional: every section reads the
 /// app-wide Cubits itself, so only the section whose state changed rebuilds.

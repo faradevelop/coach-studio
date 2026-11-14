@@ -19,7 +19,7 @@ import 'package:coach_studio/features/workout_programs/presentation/cubit/workou
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/info_dialog.dart';
 import 'package:coach_studio/features/workout_programs/presentation/widgets/workout_program_card.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';

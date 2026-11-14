@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Drag-feedback builder for `reorderables` widgets (ReorderableRow /
 /// ReorderableColumn) that draws NO elevation shadow.
