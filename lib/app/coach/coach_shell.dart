@@ -59,18 +59,18 @@ class GlassBottomNav extends StatelessWidget {
     _NavItemData(
       name: 'داشبورد',
       icon: HugeIcon(
-        icon: HugeIcons.strokeRoundedHome01,
+        icon: HugeIcons.strokeRoundedHome04,
         size: 19,
         color: AppColors.textSecondary,
       ),
       activeIcon: HugeIcon(
-        icon: HugeIcons.strokeRoundedHome01,
+        icon: HugeIcons.strokeRoundedHome04,
         size: 20,
         color: AppColors.primary,
       ),
     ),
     _NavItemData(
-      name: 'برنامه',
+      name: 'برنامه‌ها',
       icon: HugeIcon(
         icon: HugeIcons.strokeRoundedTask01,
         size: 19,
@@ -83,20 +83,20 @@ class GlassBottomNav extends StatelessWidget {
       ),
     ),
     _NavItemData(
-      name: 'ورزشکار',
+      name: 'ورزشکارها',
       icon: HugeIcon(
-        icon: HugeIcons.strokeRoundedGymnastic,
+        icon: HugeIcons.strokeRoundedUserMultiple02,
         size: 19,
         color: AppColors.textSecondary,
       ),
       activeIcon: HugeIcon(
-        icon: HugeIcons.strokeRoundedGymnastic,
+        icon: HugeIcons.strokeRoundedUserMultiple02,
         size: 20,
         color: AppColors.primary,
       ),
     ),
     _NavItemData(
-      name: 'تمرین',
+      name: 'حرکات',
       icon: HugeIcon(
         icon: HugeIcons.strokeRoundedDumbbell01,
         size: 19,

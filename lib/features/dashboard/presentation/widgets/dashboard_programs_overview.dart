@@ -103,11 +103,11 @@ class _OverviewContent extends StatelessWidget {
   const _OverviewContent({required this.programs, required this.previewCount});
 
   /// Icon tones cycle orange → indigo → teal, like the reference board.
-  static const List<Color> _tones = [
-    AppColors.primary,
-    AppColors.accent,
-    AppColors.secondary,
-  ];
+  // static const List<Color> _tones = [
+  //   AppColors.primary,
+  //   AppColors.accent,
+  //   AppColors.secondary,
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +125,7 @@ class _OverviewContent extends StatelessWidget {
               icon: HugeIcon(
                 icon: HugeIcons.strokeRounded24HoursClock,
                 color: AppColors.primary,
-                size: 22,
+                size: 24,
                 strokeWidth: 1.5,
               ),
               actionLabel: preview.isNotEmpty ? 'مشاهده همه' : null,
@@ -135,7 +135,8 @@ class _OverviewContent extends StatelessWidget {
           ),
           const Divider(height: 16),
           for (var i = 0; i < preview.length; i++) ...[
-            _ProgramTile(program: preview[i], tone: _tones[i % _tones.length]),
+            //_ProgramTile(program: preview[i], tone: _tones[i % _tones.length]),
+            _ProgramTile(program: preview[i], tone: AppColors.primary),
             if (i < preview.length - 1)
               const Divider(indent: 78, endIndent: 16, height: 1),
           ],

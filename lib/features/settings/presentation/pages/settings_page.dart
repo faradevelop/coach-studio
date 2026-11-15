@@ -1,3 +1,4 @@
+import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_spacing.dart';
@@ -8,6 +9,7 @@ import 'package:coach_studio/features/authentication/presentation/cubit/auth_cub
 import 'package:coach_studio/features/authentication/presentation/cubit/auth_state.dart';
 import 'package:coach_studio/features/settings/presentation/widgets/change_password_dialog.dart';
 import 'package:coach_studio/features/settings/presentation/widgets/logout_confirmation_dialog.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -74,12 +76,12 @@ class SettingsPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _ProfileCard(user: state.user),
-                        const SizedBox(height: AppSpacing.lg),
+                        const SizedBox(height: AppSpacing.xl),
                         _SettingsActionTile(
                           icon: HugeIcon(
                             icon: HugeIcons.strokeRoundedLockSync01,
                             size: 20,
-                            color: AppColors.textPrimary,
+                            color: AppColors.accent,
                           ),
                           title: 'تغییر رمز عبور',
                           onTap: () => showDialog<void>(
@@ -87,12 +89,12 @@ class SettingsPage extends StatelessWidget {
                             builder: (_) => const ChangePasswordDialog(),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 8),
                         _SettingsActionTile(
                           icon: HugeIcon(
-                            icon: HugeIcons.strokeRoundedLogoutCircle02,
+                            icon: HugeIcons.strokeRoundedLogout01,
                             size: 20,
-                            color: AppColors.textPrimary,
+                            color: AppColors.accent,
                           ),
                           title: 'خروج از حساب',
                           onTap: () => _confirmLogout(context),
@@ -118,8 +120,6 @@ class _ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final email = user.email;
-    final hasFullName = user.fullName.isNotEmpty;
-    final hasPhone = user.phone.isNotEmpty;
 
     return AppSurface(
       padding: const EdgeInsets.all(18),
@@ -131,16 +131,18 @@ class _ProfileCard extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  width: 56,
-                  height: 56,
+                  width: 66,
+                  height: 66,
                   decoration: const BoxDecoration(
                     color: AppColors.primarySoft,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
-                    Icons.person_rounded,
-                    color: AppColors.primary,
-                    size: 30,
+                  child: Center(
+                    child: const Icon(
+                      CupertinoIcons.person_fill,
+                      color: AppColors.primary,
+                      size: 36,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -148,23 +150,8 @@ class _ProfileCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Text(
-                          user.displayName,
-                          style: AppTextStyles.titleMedium.copyWith(
-                            fontSize: 16,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 3,
-                        ),
+                        padding: const EdgeInsets.fromLTRB(14, 1, 14, 5),
                         decoration: BoxDecoration(
                           color: AppColors.secondarySoft,
                           borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -178,6 +165,17 @@ class _ProfileCard extends StatelessWidget {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5, top: 4),
+                        child: Text(
+                          user.displayName,
+                          style: AppTextStyles.titleMedium.copyWith(
+                            fontSize: 16,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -186,53 +184,38 @@ class _ProfileCard extends StatelessWidget {
             const SizedBox(height: 16),
             const Divider(),
             const SizedBox(height: 12),
-            if (hasFullName) ...[
-              _ProfileInfoRow(
-                icon: const Icon(
-                  Icons.badge_outlined,
-                  size: 18,
-                  color: AppColors.textSecondary,
-                ),
-                label: 'نام و نام خانوادگی',
-                value: user.fullName,
-              ),
-              const SizedBox(height: 10),
-            ],
+
             _ProfileInfoRow(
               icon: HugeIcon(
                 icon: HugeIcons.strokeRoundedUserAccount,
                 size: 18,
-                color: AppColors.textSecondary,
+                color: AppColors.primary,
               ),
               label: 'نام کاربری',
               value: user.username,
-              ltr: true,
             ),
-            if (hasPhone) ...[
-              const SizedBox(height: 10),
-              _ProfileInfoRow(
-                icon: const Icon(
-                  Icons.phone_outlined,
-                  size: 18,
-                  color: AppColors.textSecondary,
-                ),
-                label: 'شماره موبایل',
-                value: user.phone,
+            Divider(indent: 36, height: 20),
+            _ProfileInfoRow(
+              icon: HugeIcon(
+                icon: HugeIcons.strokeRoundedSmartphone,
+                size: 18,
+                color: AppColors.primary,
               ),
-            ],
-            if (email != null && email.isNotEmpty) ...[
-              const SizedBox(height: 10),
-              _ProfileInfoRow(
-                icon: HugeIcon(
-                  icon: HugeIcons.strokeRoundedMail01,
-                  size: 18,
-                  color: AppColors.textSecondary,
-                ),
-                label: 'ایمیل',
-                value: email,
-                ltr: true,
+              label: 'شماره موبایل',
+              value: user.phone.persianNumber,
+            ),
+
+            Divider(indent: 36, height: 20),
+            _ProfileInfoRow(
+              icon: HugeIcon(
+                icon: HugeIcons.strokeRoundedMail01,
+                size: 18,
+                color: AppColors.primary,
               ),
-            ],
+              label: 'ایمیل',
+              value: (email != null && email.isNotEmpty) ? email : '-',
+              ltr: false,
+            ),
           ],
         ),
       ),
@@ -258,7 +241,14 @@ class _ProfileInfoRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        icon,
+        Container(
+          padding: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: AppColors.primaryLight.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.all(Radius.circular(9)),
+          ),
+          child: icon,
+        ),
         const SizedBox(width: 10),
         Text(label, style: AppTextStyles.bodySmall),
         Expanded(
@@ -295,11 +285,18 @@ class _SettingsActionTile extends StatelessWidget {
     return AppSurface(
       radius: AppRadius.lg,
       elevated: false,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       onTap: onTap,
       child: Row(
         children: [
-          icon,
+          Container(
+            padding: EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: AppColors.accentSoft.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+            ),
+            child: icon,
+          ),
           const SizedBox(width: 14),
           Expanded(child: Text(title, style: AppTextStyles.label)),
           Icon(
