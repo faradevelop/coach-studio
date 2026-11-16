@@ -168,7 +168,7 @@ class _ExerciseImage extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: AppColors.surfaceVariant,
-        borderRadius: BorderRadius.circular(AppRadius.lg - 2),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.outline),
       ),
       child: imageUrl.isEmpty

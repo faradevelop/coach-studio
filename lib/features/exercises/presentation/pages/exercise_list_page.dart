@@ -72,7 +72,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                     onPressed: () {
                       context.pushNamed(AppRouteNames.createExercise);
                     },
-                    title: 'تمرین‌ها',
+                    title: 'حرکات',
                   ),
                 ),
                 const SizedBox(height: 28),
@@ -123,7 +123,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                               itemExtent:
                                   120, // ExerciseCard's content + its own 6+6 vertical margin
                               mainAxisSpacing: 4,
-                              padding: const EdgeInsets.fromLTRB(0, 12, 0, 90),
+                              padding: const EdgeInsets.fromLTRB(0, 12, 0, 100),
                               itemCount: exercises.length,
                               itemBuilder: (context, index) {
                                 final exercise = exercises[index];

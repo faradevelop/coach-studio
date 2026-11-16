@@ -6,8 +6,8 @@ import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
 import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/dialogs/delete_dialog.dart';
-import 'package:coach_studio/core/widgets/display/app_glass_surface.dart';
 import 'package:coach_studio/core/widgets/display/app_info_chip.dart';
+import 'package:coach_studio/core/widgets/display/app_surface.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
@@ -33,9 +33,7 @@ class ProgramExerciseCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: AppGlassSurface(
-        blur: true,
-        blurSigma: 10,
+      child: AppSurface(
         radius: AppRadius.md + 4,
         padding: const EdgeInsets.all(0),
         child: Container(
@@ -257,7 +255,7 @@ class ExerciseItemCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.surfaceVariant.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(

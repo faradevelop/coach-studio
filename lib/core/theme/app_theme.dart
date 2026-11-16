@@ -236,7 +236,7 @@ class AppTheme {
       splashFactory: NoSplash.splashFactory,
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
-      //hoverColor: Colors.transparent,
+      hoverColor: Colors.transparent,
     );
   }
 }

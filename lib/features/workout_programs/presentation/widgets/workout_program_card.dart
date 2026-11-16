@@ -39,14 +39,7 @@ class WorkoutProgramCard extends StatelessWidget {
                 width: double.infinity,
                 margin: EdgeInsets.all(3),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerRight,
-                    end: Alignment.centerLeft,
-                    colors: [
-                      AppColors.accent.withValues(alpha: 0.14),
-                      AppColors.accentDark.withValues(alpha: 0.2),
-                    ],
-                  ),
+                  color: AppColors.surfaceVariant.withValues(alpha: 0.7),
                   borderRadius: BorderRadius.circular(AppRadius.xl - 3),
                 ),
                 clipBehavior: Clip.antiAlias,
