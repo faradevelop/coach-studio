@@ -24,12 +24,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart'
     hide GlobalMaterialLocalizations, GlobalCupertinoLocalizations;
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Run:   flutter run -d chrome -t lib/admin_main.dart
 /// Build: flutter build web -t lib/admin_main.dart
 void main() async {
   usePathUrlStrategy(); // first line, once per entry point
+  GoRouter.optionURLReflectsImperativeAPIs = true;
   WidgetsFlutterBinding.ensureInitialized();
   setupGlobalErrorHandling();
   AppConfig.validate();
