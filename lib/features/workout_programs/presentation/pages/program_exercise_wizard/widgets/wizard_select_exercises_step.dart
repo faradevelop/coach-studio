@@ -148,14 +148,39 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
             child: Column(
               children: [
                 _buildSearchHeader(wizardState),
-                const SizedBox(height: 10),
                 ExerciseFilterBar(availableMuscles: _muscles),
-                if (wizardState.selectedExercises.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  _buildSelectedExercises(wizardState),
-                  const SizedBox(height: 8),
-                ] else
-                  const SizedBox(height: 10),
+                const SizedBox(height: 14),
+                SizedBox(
+                  height: 34,
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 30,
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        decoration: BoxDecoration(
+                          color: AppColors.secondarySoft,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${wizardState.selectedExercises.length.persianNumber}/${wizardState.maxSelection.persianNumber}',
+                            style: const TextStyle(
+                              color: AppColors.secondaryDark,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                              leadingDistribution: TextLeadingDistribution.even,
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (wizardState.selectedExercises.isNotEmpty) ...[
+                        SizedBox(width: 10),
+                        Expanded(child: _buildSelectedExercises(wizardState)),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Expanded(child: _buildExerciseList(context, wizardState)),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 20),
@@ -177,32 +202,12 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
   Widget _buildSearchHeader(ProgramExerciseWizardState state) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          Expanded(
-            child: CustomSearchBar(
-              hint: 'جستجو ...',
-              controller: _searchController,
-              onChanged: _filterCubit.applySearch,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppColors.secondarySoft,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              '${state.selectedExercises.length.persianNumber}/${state.maxSelection.persianNumber}',
-              style: const TextStyle(
-                color: AppColors.secondaryDark,
-                fontWeight: FontWeight.w700,
-                fontSize: 13,
-              ),
-            ),
-          ),
-        ],
+      child: Expanded(
+        child: CustomSearchBar(
+          hint: 'جستجو ...',
+          controller: _searchController,
+          onChanged: _filterCubit.applySearch,
+        ),
       ),
     );
   }
@@ -252,7 +257,7 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
 
   Widget _buildSelectedExercises(ProgramExerciseWizardState wizardState) {
     return SizedBox(
-      height: 40,
+      height: 34,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -281,23 +286,30 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
                     style: const TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 13,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () => context
-                      .read<ProgramExerciseWizardCubit>()
-                      .toggleExerciseSelection(exercise),
-                  tooltip: 'حذف ${exercise.name}',
-                  icon: const Icon(Icons.close_rounded, size: 16),
-                  color: AppColors.secondaryDark,
-                  visualDensity: VisualDensity.compact,
-                  constraints: const BoxConstraints.tightFor(
-                    width: 28,
-                    height: 28,
+                SizedBox(width: 4),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.secondary,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: EdgeInsets.zero,
+                  child: IconButton(
+                    onPressed: () => context
+                        .read<ProgramExerciseWizardCubit>()
+                        .toggleExerciseSelection(exercise),
+                    tooltip: 'حذف',
+                    icon: const Icon(Icons.close_rounded, size: 12),
+                    color: AppColors.onSecondary,
+                    visualDensity: VisualDensity.compact,
+                    constraints: const BoxConstraints.tightFor(
+                      width: 26,
+                      height: 26,
+                    ),
+                    padding: EdgeInsets.zero,
+                  ),
                 ),
               ],
             ),

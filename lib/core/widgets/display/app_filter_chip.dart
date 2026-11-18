@@ -29,8 +29,6 @@ class AppFilterChip extends StatelessWidget {
         padding: EdgeInsetsDirectional.only(
           end: active ? 12 : 14,
           start: active ? 12 : 14,
-          top: 8,
-          bottom: 8,
         ),
         decoration: BoxDecoration(
           color: active ? AppColors.primarySoft : AppColors.surface,
@@ -45,10 +43,12 @@ class AppFilterChip extends StatelessWidget {
           children: [
             Text(
               active ? '$label : $activeLabel' : label,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12.5,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
                 color: active ? AppColors.primaryDark : AppColors.textPrimary,
+                leadingDistribution: TextLeadingDistribution.even,
               ),
             ),
             if (active) ...[

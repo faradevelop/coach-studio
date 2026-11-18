@@ -1,4 +1,5 @@
 import 'package:coach_studio/core/localization/extensions/number_extensions.dart';
+import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/widgets/display/app_filter_chip.dart';
 import 'package:coach_studio/core/widgets/sheets/multi_select_bottom_sheet.dart';
 import 'package:coach_studio/features/exercises/domain/entities/exercise_filter.dart';
@@ -7,6 +8,7 @@ import 'package:coach_studio/features/exercises/domain/enums/difficulty.dart';
 import 'package:coach_studio/features/exercises/domain/enums/equipment.dart';
 import 'package:coach_studio/features/exercises/domain/enums/exercise_type.dart';
 import 'package:coach_studio/features/exercises/presentation/cubit/exercise_filter_cubit.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,11 +34,17 @@ class ExerciseFilterBar extends StatelessWidget {
     return BlocBuilder<ExerciseFilterCubit, ExerciseFilter>(
       builder: (context, filter) {
         return SizedBox(
-          height: 38,
+          height: 34,
           child: ListView(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             children: [
+              HugeIcon(
+                icon: HugeIcons.strokeRoundedFilterMailSquare,
+                color: AppColors.primary,
+                size: 26,
+              ),
+              SizedBox(width: 10),
               AppFilterChip(
                 label: 'عضله',
                 activeLabel: _summaryLabel(
