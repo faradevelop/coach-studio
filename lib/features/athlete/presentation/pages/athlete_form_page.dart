@@ -409,7 +409,7 @@ class _AthleteFormState extends State<_AthleteForm> {
                             if (value.isEmpty) return null;
                             final n = double.tryParse(value);
                             if (n == null || n < 20 || n > 500) {
-                              'وزن وارد شده معتبر نیست';
+                              return 'وزن وارد شده معتبر نیست';
                             }
                             return null;
                           },
