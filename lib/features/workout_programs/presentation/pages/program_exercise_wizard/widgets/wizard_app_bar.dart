@@ -14,12 +14,6 @@ class WizardAppBar extends StatelessWidget {
 
   const WizardAppBar({super.key, required this.step});
 
-  String get _title => switch (step) {
-    WizardStep.day => 'تمرین جدید',
-    WizardStep.selectExercises => 'انتخاب تمرین',
-    WizardStep.configure => 'تنظیم تمرین',
-  };
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,11 +22,11 @@ class WizardAppBar extends StatelessWidget {
         maxWidth: AppContentWidth.form,
         child: Row(
           children: [
-            _StepDots(currentStep: step),
+            const SizedBox(width: 38), // balances the back button
             const Spacer(),
             Column(
               children: [
-                Text(_title, style: AppTextStyles.titleMedium),
+                Text('تمرین جدید', style: AppTextStyles.titleMedium),
                 const SizedBox(height: 4),
                 Container(
                   height: 3,
@@ -49,35 +43,6 @@ class WizardAppBar extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _StepDots extends StatelessWidget {
-  final WizardStep currentStep;
-
-  const _StepDots({required this.currentStep});
-
-  @override
-  Widget build(BuildContext context) {
-    final currentIndex = WizardStep.values.indexOf(currentStep);
-
-    return Row(
-      children: List.generate(WizardStep.values.length, (index) {
-        final isActive = index <= currentIndex;
-
-        return Padding(
-          padding: const EdgeInsets.only(left: 4),
-          child: Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isActive ? AppColors.primary : AppColors.outline,
-            ),
-          ),
-        );
-      }),
     );
   }
 }

@@ -105,6 +105,14 @@ class ProgramExerciseWizardCubit extends Cubit<ProgramExerciseWizardState> {
     }
   }
 
+  /// Jumps BACK to an already-completed step (used by the stepper).
+  /// Forward jumps are ignored: they must go through the step's own
+  /// validated action (goToSelectExercises / goToConfigure).
+  void goToStep(WizardStep target) {
+    if (target.index >= state.step.index) return;
+    emit(state.copyWith(step: target));
+  }
+
   // ── Submission ───────────────────────────────────────────────
   Future<bool> submit() async {
     emit(state.copyWith(isSubmitting: true));

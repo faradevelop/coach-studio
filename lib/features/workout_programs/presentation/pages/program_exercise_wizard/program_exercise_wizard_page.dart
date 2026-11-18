@@ -6,6 +6,7 @@ import 'package:coach_studio/features/workout_programs/presentation/cubit/progra
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_wizard_state.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_cubit.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/workout_program_state.dart';
+import 'package:coach_studio/features/workout_programs/presentation/pages/program_exercise_wizard/widgets/wizard_stepper.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -102,6 +103,8 @@ class _WizardViewState extends State<_WizardView> {
                   child: Column(
                     children: [
                       WizardAppBar(step: wizardState.step),
+                      WizardStepper(step: wizardState.step),
+                      const SizedBox(height: 8),
                       Expanded(
                         child: _buildCurrentStep(context, program, wizardState),
                       ),
