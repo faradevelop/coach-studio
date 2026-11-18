@@ -94,6 +94,11 @@ class AppButton extends StatelessWidget {
       disabledBackgroundColor: background,
       disabledForegroundColor: foreground,
       elevation: 0,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+      minimumSize: Size(0, size == AppButtonSize.regular ? 48 : 42),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      visualDensity: VisualDensity.standard,
+      alignment: Alignment.center,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.button),
         side: _isOutlined
@@ -104,7 +109,14 @@ class AppButton extends StatelessWidget {
 
     final label = Text(
       text,
-      style: AppTextStyles.button.copyWith(color: foreground),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
+      style: AppTextStyles.button.copyWith(
+        color: foreground,
+        height: 1.2,
+        leadingDistribution: TextLeadingDistribution.even,
+      ),
     );
 
     return SizedBox(

@@ -90,6 +90,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w400,
     color: AppColors.onPrimary,
     letterSpacing: 0.2,
-    height: 1.3,
+    height: 1.2,
+    leadingDistribution: TextLeadingDistribution.even,
   );
 }
