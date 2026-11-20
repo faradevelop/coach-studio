@@ -202,12 +202,16 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
   Widget _buildSearchHeader(ProgramExerciseWizardState state) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Expanded(
-        child: CustomSearchBar(
-          hint: 'جستجو ...',
-          controller: _searchController,
-          onChanged: _filterCubit.applySearch,
-        ),
+      child: Row(
+        children: [
+          Expanded(
+            child: CustomSearchBar(
+              hint: 'جستجو ...',
+              controller: _searchController,
+              onChanged: _filterCubit.applySearch,
+            ),
+          ),
+        ],
       ),
     );
   }
