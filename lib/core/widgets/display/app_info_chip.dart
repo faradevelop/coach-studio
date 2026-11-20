@@ -38,7 +38,7 @@ class AppInfoChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: compact
-          ? EdgeInsets.fromLTRB(6, 2, 6, 6)
+          ? EdgeInsets.fromLTRB(6, 3, 6, 5)
           : EdgeInsets.fromLTRB(10, 6, 8, 8),
       decoration: BoxDecoration(
         color: backgroundColor ?? AppColors.accentSoft,

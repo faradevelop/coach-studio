@@ -202,7 +202,7 @@ class _ProgramTile extends StatelessWidget {
                       HugeIcon(
                         icon: HugeIcons.strokeRoundedTarget02,
                         size: 15,
-                        color: AppColors.secondary,
+                        color: AppColors.accentDark,
                         strokeWidth: 2,
                       ),
                       SizedBox(width: 4),
@@ -216,7 +216,7 @@ class _ProgramTile extends StatelessWidget {
                       HugeIcon(
                         icon: HugeIcons.strokeRoundedCalendarDays,
                         size: 15,
-                        color: AppColors.secondary,
+                        color: AppColors.accentDark,
                         strokeWidth: 2,
                       ),
                       SizedBox(width: 4),

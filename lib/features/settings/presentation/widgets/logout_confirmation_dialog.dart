@@ -12,7 +12,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
       destructive: true,
       color: AppColors.error,
       icon: HugeIcon(
-        icon: HugeIcons.strokeRoundedLogoutCircle02,
+        icon: HugeIcons.strokeRoundedLogout01,
         size: 20,
         color: AppColors.error,
       ),

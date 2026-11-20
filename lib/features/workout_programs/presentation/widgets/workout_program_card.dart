@@ -65,7 +65,9 @@ class WorkoutProgramCard extends StatelessWidget {
                   child: AppInfoChip(
                     compact: true,
                     text: 'پیش‌نویس',
-                    backgroundColor: AppColors.glassFill,
+                    backgroundColor: AppColors.primaryLight.withValues(
+                      alpha: 0.2,
+                    ),
                     textColor: AppColors.primary,
                   ),
                 ),
@@ -124,7 +126,7 @@ class WorkoutProgramCard extends StatelessWidget {
                     icon: HugeIcon(
                       icon: HugeIcons.strokeRoundedTarget02,
                       size: 15,
-                      color: AppColors.secondary,
+                      color: AppColors.accentDark,
                       strokeWidth: 2,
                     ),
                     text: program.goal.label,
@@ -136,7 +138,7 @@ class WorkoutProgramCard extends StatelessWidget {
                     icon: HugeIcon(
                       icon: HugeIcons.strokeRoundedLowSignal,
                       size: 15,
-                      color: AppColors.secondary,
+                      color: AppColors.accentDark,
                       strokeWidth: 2,
                     ),
                     text: program.level.label,

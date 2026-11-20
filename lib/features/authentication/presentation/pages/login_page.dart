@@ -224,7 +224,7 @@ class _LoginFormCard extends StatelessWidget {
                   child: Text(
                     'فراموشی رمز عبور؟',
                     style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.accent,
+                      color: AppColors.secondaryLight,
                     ),
                   ),
                 ),

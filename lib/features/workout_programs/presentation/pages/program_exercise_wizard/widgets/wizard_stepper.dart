@@ -78,7 +78,7 @@ class WizardStepper extends StatelessWidget {
                     ? AppColors.onPrimary
                     : index == activeIndex
                     ? AppColors.primary
-                    : AppColors.textMuted,
+                    : AppColors.textMuted.withValues(alpha: 0.6),
               );
             },
 
@@ -117,7 +117,7 @@ class WizardStepper extends StatelessWidget {
         style: AppTextStyles.caption.copyWith(
           fontSize: 11,
           fontWeight: isCurrent ? FontWeight.w500 : FontWeight.w400,
-          color: isActive ? AppColors.textPrimary : AppColors.textSecondary,
+          color: isActive ? AppColors.textPrimary : AppColors.textMuted,
           height: 2.5,
         ),
       ),

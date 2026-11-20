@@ -160,6 +160,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                         ),
                         const SizedBox(height: 20),
                         AppDropdown<Difficulty>(
+                          searchable: false,
                           label: 'سطح',
                           value: _selectedDifficulty,
                           items: Difficulty.values,

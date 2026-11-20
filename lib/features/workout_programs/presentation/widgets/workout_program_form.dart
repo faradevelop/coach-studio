@@ -126,6 +126,7 @@ class _WorkoutProgramFormState extends State<WorkoutProgramForm> {
                         const SizedBox(height: 24),
 
                         AppDropdown<ProgramLevel>(
+                          searchable: false,
                           label: 'سطح',
                           value: _level,
                           items: ProgramLevel.values,

@@ -363,9 +363,11 @@ class _WizardSelectExercisesStepState extends State<WizardSelectExercisesStep> {
                 ),
                 const SizedBox(width: 4),
                 Container(
+                  width: 18,
+                  height: 18,
                   decoration: BoxDecoration(
                     color: AppColors.secondary,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(50),
                   ),
                   child: IconButton(
                     onPressed: () => context

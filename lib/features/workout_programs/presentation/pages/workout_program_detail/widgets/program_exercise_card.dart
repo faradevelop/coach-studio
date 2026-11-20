@@ -53,7 +53,7 @@ class ProgramExerciseCard extends StatelessWidget {
                     width: 26,
                     height: 26,
                     decoration: BoxDecoration(
-                      color: AppColors.accent.withValues(alpha: 0.2),
+                      color: AppColors.primaryLight.withValues(alpha: 0.2),
                       // border: Border.all(color: AppColors.accent, width: 1.2),
                       borderRadius: BorderRadius.circular(AppRadius.sm + 2),
                     ),
@@ -112,9 +112,9 @@ class ExerciseRestLabel extends StatelessWidget {
         children: [
           HugeIcon(
             icon: HugeIcons.strokeRoundedStopWatch,
-            color: AppColors.accent,
+            color: AppColors.accentDark,
             size: 20,
-            strokeWidth: 1.8,
+            strokeWidth: 1.5,
           ),
           SizedBox(width: 4),
           Text(
@@ -303,7 +303,7 @@ class ExerciseItemCard extends StatelessWidget {
 
   static Widget _chipIcon(List<List<dynamic>> icon) => HugeIcon(
     icon: icon,
-    color: AppColors.secondary,
+    color: AppColors.accentDark,
     size: 14,
     strokeWidth: 2,
   );

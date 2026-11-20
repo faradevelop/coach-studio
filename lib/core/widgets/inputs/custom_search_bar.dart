@@ -44,10 +44,7 @@ class CustomSearchBar extends StatelessWidget {
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 20,
-            horizontal: 16,
-          ),
+          contentPadding: const EdgeInsets.fromLTRB(16, 11, 16, 0),
         ),
         onChanged: onChanged,
       ),

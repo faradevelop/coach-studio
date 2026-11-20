@@ -101,7 +101,7 @@ class ExerciseCard extends StatelessWidget {
                       HugeIcon(
                         icon: HugeIcons.strokeRoundedLowSignal,
                         size: 16,
-                        color: AppColors.secondary,
+                        color: AppColors.accentDark,
                         strokeWidth: 2,
                       ),
                       const SizedBox(width: 4),
@@ -114,7 +114,7 @@ class ExerciseCard extends StatelessWidget {
                       HugeIcon(
                         icon: HugeIcons.strokeRoundedFire02,
                         size: 16,
-                        color: AppColors.secondary,
+                        color: AppColors.accentDark,
                         strokeWidth: 2,
                       ),
                       const SizedBox(width: 4),

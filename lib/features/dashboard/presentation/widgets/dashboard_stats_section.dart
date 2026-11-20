@@ -33,7 +33,7 @@ class DashboardStatsSection extends StatelessWidget {
           child: _ProgramsStatCard(
             label: '‌برنامه‌ها پیش‌نویس',
             icon: HugeIcons.strokeRoundedCopy02,
-            color: AppColors.accent,
+            color: AppColors.secondaryDark,
             select: (summary) => summary.templates,
           ),
         ),
@@ -42,7 +42,7 @@ class DashboardStatsSection extends StatelessWidget {
           child: _AthleteStatCard(
             label: 'ورزشکارها',
             icon: HugeIcons.strokeRoundedWorkoutRun,
-            color: AppColors.secondary,
+            color: AppColors.accentDark,
             select: (summary) => summary.total,
           ),
         ),

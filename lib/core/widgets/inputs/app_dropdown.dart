@@ -362,6 +362,7 @@ class _DropdownPanelState<T> extends State<_DropdownPanel<T>> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (!widget.searchable) ...[SizedBox(height: 8)],
                 if (widget.searchable) _buildSearch(),
                 Flexible(
                   child: filtered.isEmpty

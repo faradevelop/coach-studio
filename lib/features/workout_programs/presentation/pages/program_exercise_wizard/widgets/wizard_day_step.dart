@@ -32,6 +32,7 @@ class WizardDayStep extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 AppDropdown<int>(
+                  searchable: false,
                   label: 'روز تمرین',
                   value: programDay ?? state.day,
                   items: List.generate(
@@ -47,6 +48,7 @@ class WizardDayStep extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 AppDropdown<TrainingSystem>(
+                  searchable: false,
                   label: 'سیستم تمرینی',
                   value: state.trainingSystem,
                   items: TrainingSystem.values,

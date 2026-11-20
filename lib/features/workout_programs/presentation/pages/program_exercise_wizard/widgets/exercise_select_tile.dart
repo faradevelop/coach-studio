@@ -81,7 +81,7 @@ class _ExerciseInfo extends StatelessWidget {
             HugeIcon(
               icon: HugeIcons.strokeRoundedFire02,
               size: 14,
-              color: AppColors.secondary,
+              color: AppColors.accentDark,
               strokeWidth: 2,
             ),
             const SizedBox(width: 4),
