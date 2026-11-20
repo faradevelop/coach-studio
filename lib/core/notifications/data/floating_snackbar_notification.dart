@@ -2,6 +2,7 @@ import 'package:coach_studio/core/notifications/domain/app_notification.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification_message.dart';
 import 'package:coach_studio/core/notifications/domain/app_notification_type.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:floating_snackbar/floating_snackbar.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -22,6 +23,15 @@ class FloatingSnackbarNotification implements AppNotification {
       type: _mapType(notification.type),
       backgroundColor:
           notification.backgroundColor ?? _defaultColor(notification.type),
+      textStyle: AppTextStyles.body.copyWith(
+        color: Colors.white,
+        decoration: TextDecoration.none,
+      ),
+      titleStyle: AppTextStyles.titleMedium.copyWith(
+        color: Colors.white,
+        fontSize: 15,
+        decoration: TextDecoration.none,
+      ),
       action: _buildAction(notification),
     );
   }
