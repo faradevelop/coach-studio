@@ -1,6 +1,7 @@
 import 'package:coach_studio/core/theme/app_breakpoints.dart';
 import 'package:coach_studio/core/theme/app_colors.dart';
 import 'package:coach_studio/core/theme/app_radius.dart';
+import 'package:coach_studio/core/theme/app_text_styles.dart';
 import 'package:coach_studio/core/widgets/display/app_glass_surface.dart';
 import 'package:coach_studio/core/widgets/responsive/max_width_box.dart';
 import 'package:material_ui/material_ui.dart';
@@ -127,6 +128,7 @@ class GlassBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppGlassSurface(
       blur: true,
+      blurSigma: 12,
       radius: AppRadius.full,
       padding: EdgeInsets.zero,
       child: SizedBox(
@@ -152,7 +154,7 @@ class GlassBottomNav extends StatelessWidget {
                     const SizedBox(height: 5),
                     Text(
                       item.name,
-                      style: TextStyle(
+                      style: AppTextStyles.caption.copyWith(
                         color: selected
                             ? AppColors.primary
                             : AppColors.textSecondary,
