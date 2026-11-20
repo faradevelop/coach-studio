@@ -257,9 +257,7 @@ class _AddDayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = enabled
-        ? AppColors.accent
-        : AppColors.accent.withValues(alpha: 0.4);
+    final color = enabled ? AppColors.secondary : AppColors.accent;
 
     return _RoundActionButton(
       onTap: enabled ? onTap : null,

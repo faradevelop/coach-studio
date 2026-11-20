@@ -41,7 +41,7 @@ class AppInfoChip extends StatelessWidget {
           ? EdgeInsets.fromLTRB(6, 2, 6, 6)
           : EdgeInsets.fromLTRB(10, 6, 8, 8),
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.secondary.withValues(alpha: 0.12),
+        color: backgroundColor ?? AppColors.accentSoft,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(

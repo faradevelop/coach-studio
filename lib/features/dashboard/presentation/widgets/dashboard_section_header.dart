@@ -35,7 +35,7 @@ class DashboardSectionHeader extends StatelessWidget {
                 style: AppTextStyles.titleMedium.copyWith(
                   fontSize: 12.5,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.accent,
+                  color: AppColors.secondaryLight,
                 ),
               ),
             ),

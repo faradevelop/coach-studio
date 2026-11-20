@@ -81,7 +81,7 @@ class SettingsPage extends StatelessWidget {
                           icon: HugeIcon(
                             icon: HugeIcons.strokeRoundedLockSync01,
                             size: 20,
-                            color: AppColors.accent,
+                            color: AppColors.secondary,
                           ),
                           title: 'تغییر رمز عبور',
                           onTap: () => showDialog<void>(
@@ -94,7 +94,7 @@ class SettingsPage extends StatelessWidget {
                           icon: HugeIcon(
                             icon: HugeIcons.strokeRoundedLogout01,
                             size: 20,
-                            color: AppColors.accent,
+                            color: AppColors.secondary,
                           ),
                           title: 'خروج از حساب',
                           onTap: () => _confirmLogout(context),
@@ -292,7 +292,7 @@ class _SettingsActionTile extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: AppColors.accentSoft.withValues(alpha: 0.2),
+              color: AppColors.accentSoft,
               borderRadius: BorderRadius.all(Radius.circular(12)),
             ),
             child: icon,

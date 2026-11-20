@@ -77,7 +77,7 @@ class WizardStepper extends StatelessWidget {
                 color: isCompleted
                     ? AppColors.onPrimary
                     : index == activeIndex
-                    ? AppColors.accent
+                    ? AppColors.primary
                     : AppColors.textMuted,
               );
             },
@@ -101,10 +101,14 @@ class WizardStepper extends StatelessWidget {
     final backgroundColor = isCompleted
         ? AppColors.accent
         : isCurrent
-        ? AppColors.accent.withValues(alpha: 0.2)
+        ? AppColors.primaryLight.withValues(alpha: 0.3)
         : AppColors.surface;
 
-    final borderColor = isActive ? Colors.transparent : AppColors.outline;
+    final borderColor = isCompleted
+        ? Colors.transparent
+        : isCurrent
+        ? AppColors.primaryLight.withValues(alpha: 0.3)
+        : AppColors.outline;
 
     return Step(
       title: const SizedBox.shrink(),
@@ -126,7 +130,7 @@ class WizardStepper extends StatelessWidget {
           : StepState.disabled,
       stepStyle: StepStyle(
         color: backgroundColor,
-        border: Border.all(color: borderColor, width: 1.2),
+        border: Border.all(color: borderColor, width: 1.5),
         connectorColor: isCompleted ? AppColors.accent : AppColors.outline,
         connectorThickness: 1.5,
       ),

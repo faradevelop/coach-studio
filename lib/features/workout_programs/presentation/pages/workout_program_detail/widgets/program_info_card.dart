@@ -46,7 +46,7 @@ class ProgramInfoCard extends StatelessWidget {
                   child: HugeIcon(
                     icon: HugeIcons.strokeRoundedEdit03,
                     size: 10,
-                    color: AppColors.accent,
+                    color: AppColors.secondaryLight,
                   ),
                 ),
               ),
