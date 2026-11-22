@@ -1,6 +1,7 @@
 import 'package:coach_studio/core/error/app_exception.dart';
 import 'package:coach_studio/core/logger/app_logger.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise.dart';
+import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/repositories/program_exercise_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -75,6 +76,24 @@ class ProgramExerciseCubit extends Cubit<ProgramExerciseState> {
     action: 'delete program exercise $id',
     run: () => repository.deleteProgramExercise(id),
   );
+
+  /// Moves [exercise] to the END of [targetDay]. Reuses the Backend's
+  /// PUT update (a changed `day` triggers ProgramExerciseService::moveToDay,
+  /// which renumbers both days atomically).
+  Future<bool> moveExerciseToDay(
+    ProgramExerciseDetails details,
+    int targetDay,
+  ) {
+    final exercise = details.programExercise;
+    final moved = exercise.copyWith(
+      day: targetDay,
+      items: [for (final i in details.items) i.item],
+    );
+    return _mutate(
+      action: 'move program exercise ${exercise.id} to day $targetDay',
+      run: () => repository.updateProgramExercise(moved),
+    );
+  }
 
   Future<bool> reorderProgramExercise(String exerciseId, int targetOrder) =>
       _mutate(

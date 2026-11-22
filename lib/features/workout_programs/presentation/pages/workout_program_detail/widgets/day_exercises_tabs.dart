@@ -205,6 +205,10 @@ class _DayExercisesTabsState extends State<DayExercisesTabs> {
   }
 
   Widget _buildExercisesColumn(List<ProgramExerciseDetails> exercises) {
+    final dayCounts = {
+      for (final e in widget.exercisesByDay.entries) e.key: e.value.length,
+    };
+
     return Listener(
       key: ValueKey(widget.selectedDay),
       onPointerDown: _autoScroller.updatePointer,
@@ -227,6 +231,8 @@ class _DayExercisesTabsState extends State<DayExercisesTabs> {
               key: ValueKey(details.programExercise.id),
               details: details,
               program: widget.program,
+              dayCounts: dayCounts,
+              onMoved: widget.onDayChanged,
             ),
         ],
       ),

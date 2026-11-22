@@ -12,6 +12,7 @@ import 'package:coach_studio/features/workout_programs/domain/entities/program_e
 import 'package:coach_studio/features/workout_programs/domain/entities/program_exercise_details.dart';
 import 'package:coach_studio/features/workout_programs/domain/entities/workout_program.dart';
 import 'package:coach_studio/features/workout_programs/presentation/cubit/program_exercise_cubit.dart';
+import 'package:coach_studio/features/workout_programs/presentation/widgets/move_to_day_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -20,11 +21,15 @@ import 'package:hugeicons/hugeicons.dart';
 class ProgramExerciseCard extends StatelessWidget {
   final ProgramExerciseDetails details;
   final WorkoutProgram program;
+  final Map<int, int> dayCounts;
+  final ValueChanged<int>? onMoved;
 
   const ProgramExerciseCard({
     super.key,
     required this.details,
     required this.program,
+    this.dayCounts = const {},
+    this.onMoved,
   });
 
   @override
@@ -74,7 +79,12 @@ class ProgramExerciseCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  ExerciseActionsMenu(program: program, details: details),
+                  ExerciseActionsMenu(
+                    program: program,
+                    details: details,
+                    dayCounts: dayCounts,
+                    onMoved: onMoved,
+                  ),
                 ],
               ),
               const SizedBox(height: 10),
@@ -129,19 +139,25 @@ class ExerciseRestLabel extends StatelessWidget {
   }
 }
 
-enum _ExerciseMenuAction { edit, delete }
+enum _ExerciseMenuAction { edit, move, delete }
 
 class ExerciseActionsMenu extends StatelessWidget {
   final WorkoutProgram program;
   final ProgramExerciseDetails details;
+  final Map<int, int> dayCounts;
+  final ValueChanged<int>? onMoved;
 
   const ExerciseActionsMenu({
     super.key,
     required this.program,
     required this.details,
+    this.dayCounts = const {},
+    this.onMoved,
   });
 
   ProgramExercise get _programExercise => details.programExercise;
+
+  bool get _canMove => program.daysPerWeek > 1;
 
   void _edit(BuildContext context) {
     context.pushNamed(
@@ -152,6 +168,36 @@ class ExerciseActionsMenu extends StatelessWidget {
       },
       extra: details,
     );
+  }
+
+  Future<void> _move(BuildContext context) async {
+    final targetDay = await showDialog<int>(
+      context: context,
+      builder: (_) => MoveToDayDialog(
+        currentDay: _programExercise.day,
+        totalDays: program.daysPerWeek,
+        exerciseCounts: dayCounts,
+      ),
+    );
+
+    if (targetDay == null || !context.mounted) return;
+
+    // Capture everything needed BEFORE the await: after a successful move
+    // this card leaves the list, so its context will no longer be mounted.
+    final cubit = context.read<ProgramExerciseCubit>();
+    final callback = onMoved;
+
+    final success = await cubit.moveExerciseToDay(details, targetDay);
+
+    if (!success) {
+      sl<AppNotification>().error('انتقال تمرین ناموفق بود.');
+      return;
+    }
+
+    sl<AppNotification>().success(
+      'تمرین به روز ${targetDay.persianNumber} منتقل شد.',
+    );
+    callback?.call(targetDay);
   }
 
   Future<void> _delete(BuildContext context) async {
@@ -175,7 +221,7 @@ class ExerciseActionsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Colour / shape / elevation come from AppTheme.popupMenuTheme.
+    // Color / shape / elevation come from AppTheme.popupMenuTheme.
     return PopupMenuButton<_ExerciseMenuAction>(
       padding: EdgeInsets.zero,
       iconSize: 18,
@@ -185,12 +231,14 @@ class ExerciseActionsMenu extends StatelessWidget {
         switch (action) {
           case _ExerciseMenuAction.edit:
             _edit(context);
+          case _ExerciseMenuAction.move:
+            await _move(context);
           case _ExerciseMenuAction.delete:
             await _delete(context);
         }
       },
-      itemBuilder: (_) => const [
-        PopupMenuItem(
+      itemBuilder: (_) => [
+        const PopupMenuItem(
           value: _ExerciseMenuAction.edit,
           child: Row(
             children: [
@@ -203,8 +251,27 @@ class ExerciseActionsMenu extends StatelessWidget {
             ],
           ),
         ),
-        PopupMenuDivider(height: 0.8, indent: 10, endIndent: 10),
-        PopupMenuItem(
+        if (_canMove) ...[
+          const PopupMenuDivider(height: 0.8, indent: 10, endIndent: 10),
+          const PopupMenuItem(
+            value: _ExerciseMenuAction.move,
+            child: Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(5),
+                  child: HugeIcon(
+                    icon: HugeIcons.strokeRoundedArrowDataTransferHorizontal,
+                    size: 16,
+                  ),
+                ),
+                SizedBox(width: 2),
+                Text('انتقال'),
+              ],
+            ),
+          ),
+        ],
+        const PopupMenuDivider(height: 0.8, indent: 10, endIndent: 10),
+        const PopupMenuItem(
           value: _ExerciseMenuAction.delete,
           child: Row(
             children: [
@@ -225,7 +292,7 @@ class ExerciseActionsMenu extends StatelessWidget {
       child: Container(
         width: 26,
         height: 26,
-        padding: EdgeInsets.all(1),
+        padding: const EdgeInsets.all(1),
         decoration: BoxDecoration(
           color: AppColors.outline,
           borderRadius: BorderRadius.circular(10),
